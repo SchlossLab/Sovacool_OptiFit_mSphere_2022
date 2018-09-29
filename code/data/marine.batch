@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# Pulls data and processes it for later analysis
 
 #Adapted from: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/master/code/marine.batch
 #Requires R installed in path
 #Requires sra-tools for fastq-dump https://github.com/ncbi/sra-tools/wiki/Building-and-Installing-from-Source
 #Requires mothur (I used dev version 1.41.0) installed in path
+
+
 
 MARINE=data/marine
 
@@ -45,7 +48,7 @@ mv $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wan
 
 
 
-rm $MARINE/*fastq.gz
+rm $MARINE/*fastq
 rm $MARINE/*.contigs.good.groups
 rm $MARINE/*.contigs.groups
 rm $MARINE/*.contigs.report

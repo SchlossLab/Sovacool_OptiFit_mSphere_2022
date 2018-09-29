@@ -1,4 +1,5 @@
 #Adapted from: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/master/code/marine.R
+#Creates a .names file to facilitate data processing by mothur
 
 make_files_file <- function(){
 	sample_map <- c("SRR3085688" = "JLB",
