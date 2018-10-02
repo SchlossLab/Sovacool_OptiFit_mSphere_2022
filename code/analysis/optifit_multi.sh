@@ -22,7 +22,7 @@ do
 	do
 		REFP=$((REFPI*5))
 		#Calculate the actual number of sequences that will be subsampled
-		SEQNUM=$(($REFP*$NUMSEQS/100))
+		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100))
 		./code/analysis/optifit_marine.sh $SEQNUM 200.
 		#Appends sensspec data onto a permanent file that accumulates data from all runs
 		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1)
