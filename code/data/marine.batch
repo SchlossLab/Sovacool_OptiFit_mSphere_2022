@@ -20,8 +20,8 @@ do
 	#I couldn't get mothur to do make.contigs on the zipped files so I skipped this step
 	#gzip $MARINE/SRR3085${ACC}_1.fastq
 	#gzip $MARINE/SRR3085${ACC}_2.fastq
-done
 
+done
 rm -f $MARINE/*sra
 
 R -e "source('code/data/marine.R'); make_files_file()"
@@ -72,6 +72,7 @@ rm $MARINE/*.trim.contigs.good.unique.good.filter.fasta
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.fasta
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.count_table
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.fasta
+rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.names
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique*map
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.count_table
 rm $MARINE/*.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.chimeras
