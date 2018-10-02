@@ -1,13 +1,15 @@
 #!/bin/bash
 
-#Usage: optifit_multi.sh numseqs
+#Usage: optifit_multi.sh numseqs suffix
 #numseqs is an integer argument telling the script how many total sequences are in your dataset
+#suffix is an optional argument in case you are using a subset of the original data
 #Takes a dataset and runs optifit on it using incremental amounts of the original dataset as a reference
 #Creates a table with the sensspec data for each runs
 
 MARINE=data/marine
 FINAL=data/marine/marine.sensspec.final
 NUMSEQS=$1
+SUFFIX=$2
 
 rm $FINAL
 touch $FINAL
@@ -23,7 +25,7 @@ do
 		REFP=$((REFPI*5))
 		#Calculate the actual number of sequences that will be subsampled
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100))
-		./code/analysis/optifit_marine.sh $SEQNUM 200.
+		./code/analysis/optifit_marine.sh $SEQNUM $SUFFIX
 		#Appends sensspec data onto a permanent file that accumulates data from all runs
 		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1)
 		echo "$LINE	$REFP" >> $FINAL
