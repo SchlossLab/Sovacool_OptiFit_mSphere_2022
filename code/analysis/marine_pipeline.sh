@@ -22,4 +22,4 @@ fi
 ./code/analysis/optifit_multi.sh $NUMSEQS $SUFFIX
 
 #Plot resulting data
-R -e "source('code/analysis/plot_marine_sensspec.R'); make_plot()"
+R --no-restore -e "source('code/analysis/plot_marine_sensspec.R'); make_plot()"
