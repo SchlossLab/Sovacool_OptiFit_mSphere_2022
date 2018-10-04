@@ -34,10 +34,12 @@ mothur "#set.dir(output=$MARINE);
 	sub.sample(inputdir=$MARINE, fasta=marine.${SUFFIX}fasta, size=$SIZE);
 	list.seqs(fasta=current);
 	get.seqs(accnos=current, count=marine.${SUFFIX}count_table);
-	rename.file(fasta=current, count=current, accnos = current, prefix=sample);
-	dist.seqs(fasta=current, cutoff=0.03);
+	get.dists(column=marine.${SUFFIX}dist, accnos=current);
+	rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample);
+	cluster(column=current, count=current);
 	remove.seqs(fasta=marine.${SUFFIX}fasta, count=marine.${SUFFIX}count_table, accnos=current);
-	rename.file(fasta=current, count=current, prefix=reference);
-	dist.seqs(fasta=current, cutoff=0.03);
+	list.seqs(fasta=current);
+	get.dists(column=marine.${SUFFIX}dist, accnos=current);
+	rename.file(fasta=current, count=current, column=curent, prefix=reference);
 	cluster(column=current, count=current);
 	cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, inputdir=$MARINE, printref=t)"
