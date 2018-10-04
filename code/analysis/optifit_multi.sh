@@ -29,8 +29,5 @@ do
 		#Appends sensspec data onto a permanent file that accumulates data from all runs
 		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1)
 		echo "$LINE	$REFP" >> $FINAL
-		#Adds the percent used as reference to the last column of the last line of the file
-		#sed '$s/$/,' "\t$REFP" '/' $FINAL | tee $MARINE/temp.txt
-		#mv $MARINE/temp.txt $FINAL
 	done
 done
