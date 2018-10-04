@@ -3,8 +3,8 @@ library(dplyr)
 #every sequence in the file has
 
 #Returns a sorted table with the most connected sequences at the top
-get_connections <- function() {
-  distances <- read.table(file = "data/marine/marine.200.dist", header = FALSE)
+get_connections <- function(infile, outfile) {
+  distances <- read.table(file = infile, header = FALSE)
   
   #Each sequence can appear in either column of an entry in the dist table,
   #so to get total number of connections per seq stack both columns together
@@ -16,5 +16,6 @@ get_connections <- function() {
     arrange(desc(n))
   seqs$v1 <- as.character(seqs$v1)
   
-  write.table(seqs, file = "data/marine/marine.200.connections", row.names = FALSE, quote = FALSE)
+  write.table(seqs, file = outfile, row.names = FALSE, quote = FALSE)
 }
+
