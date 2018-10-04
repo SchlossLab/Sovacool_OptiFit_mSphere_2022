@@ -1,5 +1,6 @@
 #Make the plots
 make_plot <- function() {
+  #Read in accumulated sensspec data created by optifit_multi.sh
   sensspec <- read.table(file = "data/marine/marine.sensspec.final", header = TRUE)
   sensspec <- sensspec[, 4:ncol(sensspec)]
   
