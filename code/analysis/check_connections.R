@@ -1,8 +1,11 @@
 #Uses a connections file and an accnos file to see how many highly connected sequences are in the reference
+#Usage: check_connections.R infile
+args = commandArgs(trailingOnly = TRUE)
+infile = args[1]
 
-check_connections <- function() {
+check_connections <- function(infile) {
   #Get all sequences and take the top 10% most connected ones
-  connections <- read.table(file = "data/marine/marine.235.connections", header = TRUE)
+  connections <- read.table(file = infile, header = TRUE)
   connections <- connections[1:floor(nrow(connections)/10), ]
   connections$v1 <- as.character(connections$v1)
   
@@ -18,4 +21,4 @@ check_connections <- function() {
   cat(ref_seqs)
 }
 
-check_connections()
+check_connections(infile)
