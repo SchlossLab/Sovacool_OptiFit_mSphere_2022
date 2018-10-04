@@ -13,7 +13,7 @@ SUFFIX=$2
 
 rm $FINAL
 touch $FINAL
-echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp" >> $FINAL
+echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refseqs" >> $FINAL
 
 #Do optifit using various % of the original data as the reference
 #REFP iterates from 1..19, times 5 gives us 5..95 in increments of 5
@@ -28,6 +28,7 @@ do
 		./code/analysis/optifit_marine.sh $SEQNUM $SUFFIX
 		#Appends sensspec data onto a permanent file that accumulates data from all runs
 		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1)
-		echo "$LINE	$REFP" >> $FINAL
+		REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
+		echo "$LINE	$REFP	$REFSEQS" >> $FINAL
 	done
 done
