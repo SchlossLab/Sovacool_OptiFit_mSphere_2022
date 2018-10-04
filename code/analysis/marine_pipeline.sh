@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #Usage: marine_pipeline.sh numseqs trimsize
-NUMSEQS=$1
-TRIMSIZE=$2
+NUMSEQS=$1 #number of seqs in the dataset that will go to optifit_multi
+TRIMSIZE=$2 #size to trim the original dataset too if not using the whole thing
 
 #If raw data does not exist, get the raw data
 if [ ! -f data/marine/marine.fasta ]
