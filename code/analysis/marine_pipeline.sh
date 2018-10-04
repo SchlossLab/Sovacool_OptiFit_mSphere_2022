@@ -4,8 +4,11 @@
 NUMSEQS=$1
 TRIMSIZE=$2
 
-#Get data
-./code/data/marine.batch
+#If raw data does not exist, get the raw data
+if [ ! -f /data/marine/marine.fasta ]
+then
+	./code/data/marine.batch
+fi
 
 #Subset data (optional)
 #Arg to marine_trim.sh is the number of sequences to include in subet
@@ -23,3 +26,6 @@ fi
 
 #Plot resulting data
 R --no-restore -e "source('code/analysis/plot_marine_sensspec.R'); make_plot()"
+
+#Get all of the logfiles out of the main directory
+mv *.logfile logfiles
