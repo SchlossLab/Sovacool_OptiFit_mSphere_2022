@@ -5,7 +5,7 @@ NUMSEQS=$1
 TRIMSIZE=$2
 
 #If raw data does not exist, get the raw data
-if [ ! -f /data/marine/marine.fasta ]
+if [ ! -f data/marine/marine.fasta ]
 then
 	./code/data/marine.batch
 fi
