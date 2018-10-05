@@ -13,22 +13,22 @@ SUFFIX=$2
 
 rm $FINAL
 touch $FINAL
-echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refseqs" >> $FINAL
+echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refmcc	sampmcc" >> $FINAL
 
 #Do optifit using various % of the original data as the reference
-#REFP iterates from 1..19, times 5 gives us 5..95 in increments of 5
+#REFP iterates from 1..9, times 10 gives us 10..90 in increments of 10
 #0% and 100% are skipped because that is equivalent to just running opticlust
-for REFPI in {1..19}
+for REFPI in {1..9}
 do
 	for I in {1..10} #10 iters for each REFP
 	do
-		REFP=$((REFPI*5))
-		#Calculate the actual number of sequences that will be subsampled
-		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100))
+		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
+		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
 		./code/analysis/optifit_marine.sh $SEQNUM $SUFFIX
-		#Appends sensspec data onto a permanent file that accumulates data from all runs
-		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1)
-		REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
-		echo "$LINE	$REFP	$REFSEQS" >> $FINAL
+		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
+		#REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
+		REFMCC=$(awk 'FNR==2{print $13}' data/marine/reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
+		SAMPMCC=$(awk 'FNR==2{print $13}' data/marine/sample.opti_mcc.sensspec)
+		echo "$LINE	$REFP	$REFMCC	$SAMPMCC" >> $FINAL
 	done
 done
