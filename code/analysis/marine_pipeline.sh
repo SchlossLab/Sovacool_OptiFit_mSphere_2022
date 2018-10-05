@@ -11,7 +11,7 @@ then
 fi
 
 #Subset data (optional)
-#Arg to marine_trim.sh is the number of sequences to include in subet
+#Arg to marine_trim.sh is the number of sequences to include in subset
 if [ ! -z "$2" ] #if second command line argument is not an empty string
 then
 	./code/data/marine_trim.sh $TRIMSIZE
