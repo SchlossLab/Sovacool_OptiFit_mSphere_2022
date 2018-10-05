@@ -1,15 +1,15 @@
 #!/bin/bash
 
 #Usage: optifit_multi.sh numseqs suffix
-#numseqs is an integer argument telling the script how many total sequences are in your dataset
-#suffix is an optional argument in case you are using a subset of the original data
+NUMSEQS=$1 #numseqs is an integer argument telling the script how many total sequences are in your dataset
+SUFFIX=$2 #suffix is an optional argument in case you are using a subset of the original data
+
 #Takes a dataset and runs optifit on it using incremental amounts of the original dataset as a reference
 #Creates a table with the sensspec data for each runs
 
 MARINE=data/marine
 FINAL=data/marine/marine.sensspec.final
-NUMSEQS=$1
-SUFFIX=$2
+
 
 rm $FINAL
 touch $FINAL
