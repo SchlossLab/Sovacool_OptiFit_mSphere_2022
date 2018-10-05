@@ -23,8 +23,6 @@ fi
 mothur "#set.dir(input=data/marine, output=data/marine);
 	dist.seqs(fasta=data/marine/marine.${SUFFIX}fasta, cutoff=0.03);"
 
-R --no-restore -e "source('code/analysis/get_connections.R'); get_connections(infile='data/marine/marine.${SUFFIX}dist',outfile='data/marine/marine.${SUFFIX}connections')"
-
 #Run optifit iteratively
 ./code/analysis/optifit_multi.sh $NUMSEQS $SUFFIX
 

@@ -7,7 +7,7 @@ make_plot <- function() {
   sensspec_long <- tidyr::gather(sensspec, key = "Score", value = "Value", c(1:11, 13, 14))
   
   #Plot of mcc values against the % of data used as reference
-  mcc <- ggplot2::ggplot(data = sensspec, ggplot2::aes(x = refp, y = mcc, color = refseqs)) +
+  mcc <- ggplot2::ggplot(data = sensspec, ggplot2::aes(x = refp, y = mcc)) +
     ggplot2::geom_jitter(width = 0.1, height = 0) +
     ggplot2::labs(title = "OptiFit de novo clustering using partial human dataset") +
     ggplot2::ylab("MCC") +
