@@ -8,7 +8,7 @@ SUFFIX=$2 #suffix is an optional argument in case you are using a subset of the 
 #Creates a table with the sensspec data for each runs
 
 MARINE=data/marine
-FINAL=data/marine/marine.sensspec.final
+FINAL=data/marine/marine.${SUFFIX}sensspec.final
 
 
 rm $FINAL
