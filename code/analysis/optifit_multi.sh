@@ -25,10 +25,10 @@ do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
 		./code/analysis/optifit_marine.sh $SEQNUM $SUFFIX
-		LINE=$(head -2 $MARINE/sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
+		LINE=$(head -2 $MARINE/${SUFFIX}sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
 		#REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
-		REFMCC=$(awk 'FNR==2{print $13}' data/marine/reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
-		SAMPMCC=$(awk 'FNR==2{print $13}' data/marine/sample.opti_mcc.sensspec)
+		REFMCC=$(awk 'FNR==2{print $13}' data/marine/${SUFFIX}reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
+		SAMPMCC=$(awk 'FNR==2{print $13}' data/marine/${SUFFIX}sample.opti_mcc.sensspec)
 		echo "$LINE	$REFP	$REFMCC	$SAMPMCC" >> $FINAL
 	done
 done

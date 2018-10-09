@@ -12,11 +12,11 @@ mothur "#set.dir(output=$MARINE);
 	list.seqs(fasta=current);
 	get.seqs(accnos=current, count=marine.${SUFFIX}count_table);
 	get.dists(column=marine.${SUFFIX}dist, accnos=current);
-	rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample);
+	rename.file(fasta=current, count=current, accnos = current, column=current, prefix=${SUFFIX}sample);
 	cluster(column=current, count=current);
 	remove.seqs(fasta=marine.${SUFFIX}fasta, count=marine.${SUFFIX}count_table, accnos=current);
 	list.seqs(fasta=current);
 	get.dists(column=marine.${SUFFIX}dist, accnos=current);
-	rename.file(fasta=current, count=current, column=current, prefix=reference);
+	rename.file(fasta=current, count=current, column=current, prefix=${SUFFIX}reference);
 	cluster(column=current, count=current);
-	cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, inputdir=$MARINE, printref=t)"
+	cluster.fit(reflist=${SUFFIX}reference.opti_mcc.list, refcolumn=${SUFFIX}reference.dist, refcount=${SUFFIX}reference.count_table, reffasta=${SUFFIX}reference.fasta, fasta=${SUFFIX}sample.fasta, count=${SUFFIX}sample.count_table, column=${SUFFIX}sample.dist, inputdir=$MARINE, printref=t)"
