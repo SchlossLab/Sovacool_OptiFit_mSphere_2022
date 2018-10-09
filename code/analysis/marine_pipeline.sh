@@ -27,7 +27,8 @@ mothur "#set.dir(input=data/marine, output=data/marine);
 ./code/analysis/optifit_multi.sh $NUMSEQS $SUFFIX
 
 #Plot resulting data
-R --no-restore -e "source('code/analysis/plot_marine_sensspec.R'); make_plot()"
+Rscript code/analysis/plot_marine_sensspec.R
+#REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles
