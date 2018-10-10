@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#Usage: optifit_multi.sh numseqs suffix
-NUMSEQS=$1 #numseqs is an integer argument telling the script how many total sequences are in your dataset
-SUFFIX=$2 #suffix is an optional argument in case you are using a subset of the original data
+#Usage: optifit_multi.sh outputdir numseqs suffix
+OUTPUTDIR=$1 #Directory to put output in
+NUMSEQS=$2 #numseqs is an integer argument telling the script how many total sequences are in your dataset
+SUFFIX=$3 #suffix is an optional argument in case you are using a subset of the original data
 
 #Takes a dataset and runs optifit on it using incremental amounts of the original dataset as a reference
 #Creates a table with the sensspec data for each runs
 
-MARINE=data/marine
-FINAL=data/marine/marine.${SUFFIX}sensspec.final
+FINAL=${OUTPUTDIR}marine.${SUFFIX}sensspec.final
 
 
 rm $FINAL
@@ -24,11 +24,10 @@ do
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		./code/analysis/optifit_marine.sh $SEQNUM $SUFFIX
-		LINE=$(head -2 $MARINE/${SUFFIX}sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
-		#REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${SUFFIX}connections)
-		REFMCC=$(awk 'FNR==2{print $13}' data/marine/${SUFFIX}reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
-		SAMPMCC=$(awk 'FNR==2{print $13}' data/marine/${SUFFIX}sample.opti_mcc.sensspec)
+		./code/analysis/optifit_marine.sh $OUTPUTDIR $SEQNUM $SUFFIX
+		LINE=$(head -2 ${OUTPUTDIR}${SUFFIX}sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
+		REFMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}${SUFFIX}reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
+		SAMPMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}${SUFFIX}sample.opti_mcc.sensspec)
 		echo "$LINE	$REFP	$REFMCC	$SAMPMCC" >> $FINAL
 	done
 done
