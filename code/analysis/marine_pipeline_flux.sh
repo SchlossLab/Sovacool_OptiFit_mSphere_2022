@@ -17,7 +17,7 @@ fi
 
 #Subset data (optional)
 #Arg to marine_trim.sh is the number of sequences to include in subset
-if [ ! -z "$2" ] #if second command line argument is not an empty string
+if [ ! -z "$3" ] #if second command line argument is not an empty string
 then
 	./code/data/marine_trim.sh $OUTPUTDIR $TRIMSIZE
 	PREFIX=$(echo $TRIMSIZE.)
@@ -43,7 +43,8 @@ do
 		cat optihead.pbs >> job.pbs
 		echo "./code/analysis/optifit_marine.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $SEQNUM $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
 		qsub -N opti_${REFPI}_${I} 	job.pbs
-		done
+		rm job.pbs
+	done
 done
 
 #Get all of the logfiles out of the main directory
