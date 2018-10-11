@@ -28,11 +28,6 @@ fi
 mothur "#set.dir(input=${OUTPUTDIR}, output=${OUTPUTDIR});
 	dist.seqs(fasta=${PREFIX}marine.fasta, cutoff=0.03);"
 
-FINAL=${OUTPUTDIR}marine.${PREFIX}sensspec.final
-
-touch $FINAL
-echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refmcc	sampmcc" >> $FINAL
-
 #Schedule one job per iteration
 #Do optifit using various % of the original data as the reference
 #REFP iterates from 1..9, times 10 gives us 10..90 in increments of 10
