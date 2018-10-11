@@ -47,7 +47,7 @@ do
 		#Create and fire off flux jobs
 		cat optihead.pbs >> job.pbs
 		echo "./code/analysis/optifit_marine.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $SEQNUM $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
-		qsub -N opti_${REFPI}_${I} job.pbs
+		qsub -N opti_${REFPI}_${I} 	job.pbs
 		done
 done
 
