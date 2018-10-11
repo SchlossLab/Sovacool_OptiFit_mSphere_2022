@@ -33,25 +33,23 @@ FINAL=${OUTPUTDIR}marine.${PREFIX}sensspec.final
 touch $FINAL
 echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refmcc	sampmcc" >> $FINAL
 
+#Schedule one job per iteration
 #Do optifit using various % of the original data as the reference
 #REFP iterates from 1..9, times 10 gives us 10..90 in increments of 10
 #0% and 100% are skipped because that is equivalent to just running opticlust
 for REFPI in {1..9}
 do
-	for I in {1..2} #10 iters for each REFP
+	for I in {1..10} #10 iters for each REFP
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		./code/analysis/optifit_marine.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $SEQNUM $PREFIX #Create different output subdirectories so multiple flux jobs don't interfere with each other
-		LINE=$(head -2 ${OUTPUTDIR}/${REFPI}_${I}/${PREFIX}sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
-		REFMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}/${REFPI}_${I}/${PREFIX}reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
-		SAMPMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}/${REFPI}_${I}/${PREFIX}sample.opti_mcc.sensspec)
-		echo "$LINE	$REFP	$REFMCC	$SAMPMCC" >> $FINAL
-	done
+		
+		#Create and fire off flux jobs
+		cat optihead.pbs >> job.pbs
+		echo "./code/analysis/optifit_marine.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $SEQNUM $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
+		qsub -N opti_${REFPI}_${I} job.pbs
+		done
 done
-
-#Plot resulting data
-Rscript code/analysis/plot_marine_sensspec.R ${OUTPUTDIR}marine.${PREFIX}sensspec.final
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles
