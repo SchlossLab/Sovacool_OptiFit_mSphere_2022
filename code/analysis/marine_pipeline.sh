@@ -30,7 +30,6 @@ mothur "#set.dir(input=${OUTPUTDIR}, output=${OUTPUTDIR});
 
 #Plot resulting data
 Rscript code/analysis/plot_marine_sensspec.R ${OUTPUTDIR}marine.${PREFIX}sensspec.final
-#REFSEQS=$(Rscript code/analysis/check_connections.R data/marine/marine.${PREFIX}connections)
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles
