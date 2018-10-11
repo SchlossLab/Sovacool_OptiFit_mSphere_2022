@@ -1,13 +1,16 @@
 #!/bin/bash
 
-#Usage: optifit_marine.sh size PREFIX
+#Usage: optifit_marine.sh INPUTDIR OUTPUTDIR SIZE PREFIX
 
-OUTPUTDIR=$1 #Directory to put output in
-SIZE=$2 #Required: Size is an int and tells the script how many sequences to cut out to fit against the rest of the sample
-PREFIX=$3 #Optional: PREFIX allows you to add an optional PREFIX after marine. in case there are alternative files to use
+INPUTDIR=$1
+OUTPUTDIR=$2 #Directory to put output in
+SIZE=$3 #Required: Size is an int and tells the script how many sequences to cut out to fit against the rest of the sample
+PREFIX=$4 #Optional: PREFIX allows you to add an optional PREFIX after marine. in case there are alternative files to use
+
+mkdir -p ${OUTPUTDIR}
 
 mothur "#set.dir(output=${OUTPUTDIR});
-	sub.sample(inputdir=${OUTPUTDIR}, fasta=${PREFIX}marine.fasta, size=$SIZE);
+	sub.sample(inputdir=${INPUTDIR}, fasta=${PREFIX}marine.fasta, size=$SIZE);
 	list.seqs(fasta=current);
 	get.seqs(accnos=current, count=${PREFIX}marine.count_table);
 	get.dists(column=${PREFIX}marine.dist, accnos=current);

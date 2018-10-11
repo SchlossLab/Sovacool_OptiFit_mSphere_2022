@@ -24,7 +24,7 @@ do
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		./code/analysis/optifit_marine.sh $OUTPUTDIR $SEQNUM $PREFIX
+		./code/analysis/optifit_marine.sh $OUTPUTDIR $OUTPUTDIR $SEQNUM $PREFIX
 		LINE=$(head -2 ${OUTPUTDIR}${PREFIX}sample.optifit_mcc.sensspec | tail -1) #Appends sensspec data onto a permanent file that accumulates data from all runs
 		REFMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}${PREFIX}reference.opti_mcc.sensspec) #from the second line (FNR==2) print data from the 13th column ({print $13})
 		SAMPMCC=$(awk 'FNR==2{print $13}' ${OUTPUTDIR}${PREFIX}sample.opti_mcc.sensspec)
