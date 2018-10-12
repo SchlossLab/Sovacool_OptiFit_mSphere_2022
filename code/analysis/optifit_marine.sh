@@ -19,6 +19,9 @@ mothur "#set.dir(output=${OUTPUTDIR});
 	remove.seqs(fasta=${PREFIX}marine.fasta, count=${PREFIX}marine.count_table, accnos=current);
 	list.seqs(fasta=current);
 	get.dists(column=${PREFIX}marine.dist, accnos=current);
-	rename.file(fasta=current, count=current, column=current, prefix=${PREFIX}reference);
+	rename.file(fasta=current, count=current, column=current, accnos=current, prefix=${PREFIX}reference);
 	cluster(column=current, count=current);
-	cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=t)"
+	cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=t);
+	rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.open.ref);
+	cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=t, method=closed);
+	rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.closed.ref);"
