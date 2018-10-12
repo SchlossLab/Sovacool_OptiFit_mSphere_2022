@@ -8,8 +8,7 @@ PREFIX=$3 #PREFIX is an optional argument in case you are using a subset of the 
 #Takes a dataset and runs optifit on it using incremental amounts of the original dataset as a reference
 #Creates a table with the sensspec data for each runs
 
-FINAL=${OUTPUTDIR}marine.${PREFIX}sensspec.final
-
+FINAL=${OUTPUTDIR}${PREFIX}marine.sensspec.final
 
 rm $FINAL
 touch $FINAL
