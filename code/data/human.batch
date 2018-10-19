@@ -26,7 +26,7 @@ done
 
 rm -f $HUMAN/*.sra
 
-R -e "source('code/human.R'); make_files_file()"
+R -e "source('code/data/human.R'); make_files_file()"
 
 
 mothur "#set.dir(output=$HUMAN);

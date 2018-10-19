@@ -31,7 +31,7 @@ wget -N -P $MICE_PATH http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMeta
 tar xvf $MICE_PATH/StabilityNoMetaG.tar -C $MICE_PATH/
 rm $MICE_PATH/StabilityNoMetaG.tar
 
-R -e 'source("code/mice.R");get_contigsfile("data/mice")'
+R -e 'source("code/data/mice.R");get_contigsfile("data/mice")'
 
 mothur "#set.dir(output=$MICE_PATH);
 	make.contigs(inputdir=$MICE_PATH, file=mice.files, processors=12);

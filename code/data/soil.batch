@@ -19,7 +19,7 @@ done
 rm -f data/soil/ERR1039470* #this wasn't part of the current study
 rm -f data/soil/*sra
 
-R -e "source('code/soil.R'); make_files_file()"
+R -e "source('code/data/soil.R'); make_files_file()"
 
 
 mothur "#set.dir(output=$SOIL);
