@@ -8,7 +8,7 @@ make_files_file <- function(){
   sample_map <- mimarks$Sample_Name_s
   names(sample_map) <- mimarks$Run_s
   
-  read_1 <- list.files(path="data/soil/", pattern="*1.fastq.gz")
+  read_1 <- list.files(path="data/soil/", pattern="*1.fastq")
   read_2 <- gsub("_1", "_2", read_1)
   
   stub <- gsub("_1.*", "", read_1)
