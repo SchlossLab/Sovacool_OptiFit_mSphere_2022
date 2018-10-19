@@ -23,7 +23,7 @@ do
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		./code/analysis/optifit_marine.sh $OUTPUTDIR $OUTPUTDIR $SEQNUM $PREFIX
+		./code/analysis/optifit_marine.sh $OUTPUTDIR $OUTPUTDIR $SEQNUM $I $PREFIX
 		
 		#opticlust_marine.sh will run opticlust on the reference alone and the sample alone, and then
 		#optifit with fitting the sample to the reference with all pairwise possibilities of
