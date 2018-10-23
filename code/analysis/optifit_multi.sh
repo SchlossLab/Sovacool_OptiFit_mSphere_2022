@@ -2,13 +2,14 @@
 
 #Usage: optifit_multi.sh outputdir numseqs PREFIX
 OUTPUTDIR=$1 #Directory to put output in
-NUMSEQS=$2 #numseqs is an integer argument telling the script how many total sequences are in your dataset
-PREFIX=$3 #PREFIX is an optional argument in case you are using a subset of the original data
+DATASET=$2 #Dataset to use (human, mice, marine, soil)
+NUMSEQS=$3 #numseqs is an integer argument telling the script how many total sequences are in your dataset
+PREFIX=$4 #PREFIX is an optional argument in case you are using a subset of the original data
 
 #Takes a dataset and runs optifit on it using incremental amounts of the original dataset as a reference
 #Creates a table with the sensspec data for each runs
 
-FINAL=${OUTPUTDIR}${PREFIX}marine.sensspec.final
+FINAL=${OUTPUTDIR}${PREFIX}${DATASET}.sensspec.final
 
 rm $FINAL
 touch $FINAL
@@ -23,9 +24,9 @@ do
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		./code/analysis/optifit_marine.sh $OUTPUTDIR $OUTPUTDIR $SEQNUM $I $PREFIX
+		./code/analysis/optifit_test.sh $OUTPUTDIR $OUTPUTDIR $DATASET $SEQNUM $I $PREFIX
 		
-		#opticlust_marine.sh will run opticlust on the reference alone and the sample alone, and then
+		#optifit_test.sh will run opticlust on the reference alone and the sample alone, and then
 		#optifit with fitting the sample to the reference with all pairwise possibilities of
 		#method = (open, closed) and printref = (T, F)
 		

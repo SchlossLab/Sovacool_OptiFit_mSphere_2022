@@ -4,10 +4,11 @@
 
 #Usage: marine_pipeline.sh OUTPUTDIR PREFIX
 OUTPUTDIR=$1 #Directory where marine_pipeline_flux output to (must have trailing /)
-PREFIX=$2 #Prefix used to create sensspec files
+DATASET=$2 #Dataset to use (human, mice, marine, soil)
+PREFIX=$3 #Prefix used to create sensspec files
 
 mkdir -p $OUTPUTDIR
-FINAL=${OUTPUTDIR}${PREFIX}marine.sensspec.final
+FINAL=${OUTPUTDIR}${PREFIX}${DATASET}.sensspec.final
 
 touch $FINAL
 echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refpi	type" >> $FINAL
@@ -42,7 +43,7 @@ do
 done
 
 #Plot resulting data
-Rscript code/analysis/plot_marine_sensspec.R ${OUTPUTDIR}marine.${PREFIX}sensspec.final
+Rscript code/analysis/plot_marine_sensspec.R ${OUTPUTDIR}${DATASET}.${PREFIX}sensspec.final
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles

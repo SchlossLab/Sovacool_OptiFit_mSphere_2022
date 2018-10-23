@@ -5,28 +5,32 @@
 
 #Usage: marine_pipeline.sh outputdir numseqs trimsize
 OUTPUTDIR=$1 #Directory to put output in (must have trailing /)
-NUMSEQS=$2 #number of seqs in the dataset (must equal trimsize if trimming)
-TRIMSIZE=$3 #size to trim the original dataset too if not using the whole set
+DATASET=$2 #Dataset to use (human, mice, marine, soil)
+NUMSEQS=$3 #number of seqs in the dataset (must equal trimsize if trimming)
+TRIMSIZE=$4 #size to trim the original dataset too if not using the whole set
 
 mkdir -p $OUTPUTDIR
 
-if [ ! -f data/marine/marine.fasta ] #If raw data does not exist, get the raw data
+if [ ! -f data/${DATASET}/${DATASET}.fasta ] #If raw data does not exist, get the raw data
 then
-	./code/data/marine.batch
+	./code/data/${DATASET}.batch
 fi
 
 #Subset data (optional)
-#Arg to marine_trim.sh is the number of sequences to include in subset
+#Arg to trim.sh is the number of sequences to include in subset
 if [ ! -z "$3" ] #if second command line argument is not an empty string
 then
-	./code/data/marine_trim.sh $OUTPUTDIR $TRIMSIZE
+	./code/data/trim.sh $OUTPUTDIR $TRIMSIZE
 	PREFIX=$(echo $TRIMSIZE.)
 else
 	PREFIX=""
 fi
 
-mothur "#set.dir(input=${OUTPUTDIR}, output=${OUTPUTDIR});
-	dist.seqs(fasta=${PREFIX}marine.fasta, cutoff=0.03);"
+if [ ! -f data/${DATASET}/${DATASET}.dist ] #If dist data doesn't exist, get dists
+then
+	mothur "#set.dir(input=${OUTPUTDIR}, output=${OUTPUTDIR});
+dist.seqs(fasta=${PREFIX}${DATASET}.fasta, cutoff=0.03);"
+fi
 
 #Schedule one job per iteration
 #Do optifit using various % of the original data as the reference
@@ -41,7 +45,7 @@ do
 		
 		#Create and fire off flux jobs
 		cat optihead.pbs >> job.pbs
-		echo "./code/analysis/optifit_marine.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $SEQNUM $I $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
+		echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $DATASET $SEQNUM $I $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
 		qsub -N opti_${REFPI}_${I} 	job.pbs
 		rm job.pbs
 	done
