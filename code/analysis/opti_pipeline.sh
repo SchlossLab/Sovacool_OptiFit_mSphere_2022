@@ -17,7 +17,7 @@ fi
 #Arg to marine_trim.sh is the number of sequences to include in subset
 if [ ! -z "$2" ] #if second command line argument is not an empty string
 then
-	./code/data/${DATASET}_trim.sh $OUTPUTDIR $TRIMSIZE
+	./code/data/trim.sh $OUTPUTDIR $DATASET $TRIMSIZE
 	PREFIX=$(echo $TRIMSIZE.)
 else
 	PREFIX=""
