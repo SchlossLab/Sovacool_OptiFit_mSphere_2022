@@ -43,7 +43,7 @@ do
 done
 
 #Plot resulting data
-Rscript code/analysis/plot_sensspec.R ${OUTPUTDIR}${DATASET}.${PREFIX}sensspec.final
+Rscript code/analysis/plot_sensspec.R ${OUTPUTDIR}${DATASET}.${PREFIX}sensspec.final ${DATASET}
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles

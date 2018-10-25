@@ -30,7 +30,7 @@ mothur "#set.dir(input=${OUTPUTDIR}, output=${OUTPUTDIR});
 ./code/analysis/optifit_multi.sh $OUTPUTDIR $DATASET $NUMSEQS $PREFIX
 
 #Plot resulting data
-Rscript code/analysis/plot_sensspec.R ${OUTPUTDIR}${PREFIX}${DATASET}.sensspec.final
+Rscript code/analysis/plot_sensspec.R ${OUTPUTDIR}${PREFIX}${DATASET}.sensspec.final ${DATASET}
 
 #Get all of the logfiles out of the main directory
 mv *.logfile logfiles
