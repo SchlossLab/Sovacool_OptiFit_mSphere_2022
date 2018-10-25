@@ -52,7 +52,7 @@ do
 			
 			#Create and fire off flux jobs
 			cat optihead.pbs >> job.pbs
-			echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $DATASET $SEQNUM $I $J $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
+			echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}_${J}/ $DATASET $SEQNUM $I $J $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
 			qsub -N opti_${REFPI}_${I}_${J} 	job.pbs
 			rm job.pbs
 		done
