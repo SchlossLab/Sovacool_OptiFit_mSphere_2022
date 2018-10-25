@@ -43,16 +43,19 @@ fi
 #0% is skipped because that is equivalent to just running 100% (both of which are equivalent to just running opticlust)
 for REFPI in {1..20}
 do
-	for I in {1..20} #20 iters for each REFP
+	for I in {1..10} #20 iters for each REFP
 	do
-		REFP=$((REFPI*5)) #Counter increments by 1, but we want to increment by 10
-		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
-		
-		#Create and fire off flux jobs
-		cat optihead.pbs >> job.pbs
-		echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $DATASET $SEQNUM $I $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
-		qsub -N opti_${REFPI}_${I} 	job.pbs
-		rm job.pbs
+		for J in {1..10}
+		do
+			REFP=$((REFPI*5)) #Counter increments by 1, but we want to increment by 10
+			SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
+			
+			#Create and fire off flux jobs
+			cat optihead.pbs >> job.pbs
+			echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}/ $DATASET $SEQNUM $I $J $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
+			qsub -N opti_${REFPI}_${I}_${J} 	job.pbs
+			rm job.pbs
+		done
 	done
 done
 
