@@ -58,6 +58,3 @@ do
 		done
 	done
 done
-
-#Get all of the logfiles out of the main directory
-mv *.logfile logfiles
