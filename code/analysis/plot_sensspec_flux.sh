@@ -10,15 +10,16 @@ PREFIX=$3 #Prefix used to create sensspec files
 mkdir -p $OUTPUTDIR
 FINAL=${OUTPUTDIR}${PREFIX}${DATASET}.sensspec.final
 
+rm $FINAL
 touch $FINAL
 echo "iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refpi	type" >> $FINAL
 
 #Once all jobs are completed
-for REFPI in {1..9}
+for REFPI in {1..20}
 do
-	for I in {1..10} #10 iters for each REFP
+	for I in {1..20} #20 iters for each REFP
 	do
-		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
+		REFP=$((REFPI*5)) #Counter increments by 1, but we want to increment by 5
 		#optifit_test.sh will run opticlust on the reference alone and the sample alone, and then
 		#optifit with fitting the sample to the reference with all pairwise possibilities of
 		#method = (open, closed) and printref = (T, F)

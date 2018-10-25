@@ -39,13 +39,13 @@ fi
 
 #Schedule one job per iteration
 #Do optifit using various % of the original data as the reference
-#REFP iterates from 1..9, times 10 gives us 10..90 in increments of 10
-#0% and 100% are skipped because that is equivalent to just running opticlust
-for REFPI in {1..9}
+#REFP iterates from 1..20, times 5 gives us 5..100 in increments of 5
+#0% is skipped because that is equivalent to just running 100% (both of which are equivalent to just running opticlust)
+for REFPI in {1..20}
 do
-	for I in {1..10} #10 iters for each REFP
+	for I in {1..20} #20 iters for each REFP
 	do
-		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
+		REFP=$((REFPI*5)) #Counter increments by 1, but we want to increment by 10
 		SEQNUM=$(($NUMSEQS-$REFP*$NUMSEQS/100)) #Calculate the actual number of sequences that will be subsampled
 		
 		#Create and fire off flux jobs
