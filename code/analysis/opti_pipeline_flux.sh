@@ -18,7 +18,7 @@ fi
 
 #Subset data (optional)
 #Arg to trim.sh is the number of sequences to include in subset
-if [ ! -z "$3" ] #if second command line argument is not an empty string
+if [ ! -z "${TRIMSIZE}" ] #if TRIMSIZE is not an empty string
 then
 	./code/data/trim.sh $OUTPUTDIR $DATASET $TRIMSIZE
 	PREFIX=$(echo $TRIMSIZE.)
