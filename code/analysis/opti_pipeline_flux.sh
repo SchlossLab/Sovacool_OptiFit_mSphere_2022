@@ -17,10 +17,15 @@ then
 fi
 
 #Subset data (optional)
-#Arg to trim.sh is the number of sequences to include in subset
+#Takes the full dataset and randomly selects a subset to use in script testing
+#Used to test the pipeline when doing something that takes too long on the full dataset
 if [ ! -z "${TRIMSIZE}" ] #if TRIMSIZE is not an empty string
 then
-	./code/data/trim.sh $OUTPUTDIR $DATASET $TRIMSIZE
+	mothur "#set.dir(output=${OUTPUTDIR});
+	sub.sample(inputdir=data/${DATASET}/, fasta=${DATASET}.fasta, size=$NUMSEQS);
+	list.seqs(fasta=current);
+	get.seqs(accnos=current, count=${DATASET}.count_table);
+	rename.file(accnos = current, fasta=current, count=current, prefix=$NUMSEQS.${DATASET});"
 	PREFIX=$(echo $TRIMSIZE.)
 else
 	PREFIX=""
