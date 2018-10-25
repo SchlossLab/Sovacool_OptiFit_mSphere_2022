@@ -2,8 +2,8 @@
 
 #Use this to plot the output of the flux jobs after they have finished running
 
-#Usage: marine_pipeline.sh OUTPUTDIR PREFIX
-OUTPUTDIR=$1 #Directory where marine_pipeline_flux output to (must have trailing /)
+#Usage: sensspec_plot_flux.sh OUTPUTDIR DATASET PREFIX
+OUTPUTDIR=$1 #Directory where opti_pipeline_flux output to (must have trailing /)
 DATASET=$2 #Dataset to use (human, mice, marine, soil)
 PREFIX=$3 #Prefix used to create sensspec files
 
@@ -19,7 +19,7 @@ do
 	for I in {1..10} #10 iters for each REFP
 	do
 		REFP=$((REFPI*10)) #Counter increments by 1, but we want to increment by 10
-		#opticlust_marine.sh will run opticlust on the reference alone and the sample alone, and then
+		#optifit_test.sh will run opticlust on the reference alone and the sample alone, and then
 		#optifit with fitting the sample to the reference with all pairwise possibilities of
 		#method = (open, closed) and printref = (T, F)
 		
@@ -31,6 +31,8 @@ do
 		SAMP=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
 		SAMP_O_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.open.ref.sensspec | tail -1)
 		SAMP_C_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.closed.ref.sensspec | tail -1)
+		SAMP_O_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.open.noref.sensspec | tail -1)
+		SAMP_C_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.closed.noref.sensspec | tail -1)
 		
 		#REF and SAMP were run with opticlust, which produces sensspec files with 2 less columns than optifit
 		#Add two extra tabs at the beginning of their lines so that confusion matrix values line up
@@ -39,6 +41,8 @@ do
 		echo "${SAMP}${REFP}	$I	SAMP" >> $FINAL
 		echo "$SAMP_O_REF	$REFP	$I	SAMP_O_REF" >> $FINAL
 		echo "$SAMP_C_REF	$REFP	$I	SAMP_C_REF" >> $FINAL
+		echo "$SAMP_O_NOREF	$REFP	$I	SAMP_O_NOREF" >> $FINAL
+		echo "$SAMP_C_NOREF	$REFP	$I	SAMP_C_NOREF" >> $FINAL
 	done
 done
 
