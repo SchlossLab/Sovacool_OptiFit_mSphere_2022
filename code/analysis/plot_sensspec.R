@@ -6,6 +6,7 @@ require(dplyr)
 args <- commandArgs(trailingOnly = TRUE)
 
 filename <- args[1]
+dataset <- args[2]
 #Make the plots
 make_plot <- function(filename) {
   #Read in accumulated sensspec data created by optifit_multi.sh
