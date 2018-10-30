@@ -28,3 +28,10 @@ After ending a session, close the active environment with:
 ```
 source deactivate
 ```
+
+Almost all dependencies are listed in `environment.txt`. The exception is  the `mothur` program. Instead of installing with conda, [download the precompiled binary](https://github.com/mothur/mothur/releases) and append the path to the `PATH` in your `.bash_profile`. Then, run:
+
+```
+source ~/.bash_profile
+```
+I'm currently using `mothur` version `1.41.0`.
