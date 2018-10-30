@@ -15,16 +15,40 @@ rule untar:
 	input:
 		"{dir}/Silva.nr_{{version}}.tgz".format(dir=output_dir)
 	output:
-		"README.md",
-		"silva.nr_{version}.align",
-		"silva.nr_{version}.tax"
+		"{dir}/README.md",
+		"{dir}/silva.nr_{version}.align",
+		"{dir}/silva.nr_{version}.tax"
 	shell:
 		"tar xvzf {dir}/Silva.nr_{{version}}.tgz -C {dir}/".format(dir=output_dir)
 
-'''
-rule get_prokaryotic_lineage:
+rule get_prok_lineage:
 	input:
+		readme="{dir}/README.md"
+		align="{dir}/silva.nr_{version}.align",
+		tax="{dir}/silva.nr_{version}.tax"
 	output:
+		"{dir}/silva.nr_{version}.pick.align",
+		"{dir}/silva.nr_{version}.pick.tax"
 	shell:
-		"mothur '#get.lineage(fasta={dir}/silva.nr_{version}.align, taxonomy={dir}/silva.nr_{version}.tax, taxon=Bacteria-Archaea)'".format(dir=output_dir, version=db_version)
+		"mothur '#get.lineage(fasta={input.align}, taxonomy={dir}/silva.nr_{version}.tax, taxon=Bacteria-Archaea)'"
+
 '''
+rule rename:
+	input:
+		align="{dir}/silva.nr_{VERSION}.pick.align",
+		tax="{dir}/silva.nr_{VERSION}.pick.tax"
+	output:
+		align="{dir}/silva.bact_archaea.align",
+		tax="{dir}/silva.bact_archaea.tax"
+	shell:
+		"mv {input.align} {output.align} ; "
+		"mv {input.tax} {output.tax}"
+'''
+
+rule rename:
+	input:
+		"{dir}/silva.nr_{version}.pick.{ext}"
+	output:
+		"{dir}/silva.bact_archeae.{ext}"
+	shell:
+		"mv {input} {output}"
