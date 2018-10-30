@@ -16,7 +16,7 @@ fi
 #Subset data (optional)
 #Takes the full dataset and randomly selects a subset to use in script testing
 #Used to test the pipeline when doing something that takes too long on the full dataset
-if [ ! -z "${TRIMSIZE}" ] #if second command line argument is not an empty string
+if [ ! -z "${TRIMSIZE}" ] #if trimsize command line argument is not an empty string
 then
 	mothur "#set.dir(output=${OUTPUTDIR});
 	sub.sample(inputdir=data/${DATASET}/, fasta=${DATASET}.fasta, size=$NUMSEQS);
