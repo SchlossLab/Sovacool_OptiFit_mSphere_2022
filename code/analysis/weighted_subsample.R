@@ -5,6 +5,7 @@
 #
 #Args:
 # filename: path to a count_table file
+# outputdir: path to save accnos files in
 # size: size of subsample to take
 # weight: boolean, whether or not to weight the sample
 require(dplyr)
@@ -13,8 +14,9 @@ require(readr)
 args <- commandArgs(trailingOnly = TRUE)
 
 filename <- args[1]
-size <- as.numeric(args[2])
-weight <- as.logical(args[3])
+outputdir <- args[2]
+size <- as.numeric(args[3])
+weight <- as.logical(args[4])
 
 #filename <- "data\\marine\\marine.count_table"
 #size <- 1000
@@ -36,6 +38,4 @@ reference <- dplyr::filter(count_table, !(Representative_Sequence %in% sample$Re
 #Create .accnos files for both the sample, and the sample_complement for later use in mothur
 #.accnos files contain a column of sequence names and nothing else
 readr::write_tsv(dplyr::select(sample, "Representative_Sequence"), col_names = FALSE,
-                 path = paste(dirname(filename), "sample.accnos", sep = "/"))
-#readr::write_tsv(dplyr::select(reference, "Representative_Sequence"), col_names = FALSE,
-#                 path = paste(dirname(filename), "reference.accnos", sep = "/"))
+                 path = paste(outputdir, "sample.accnos", sep = "/"))
