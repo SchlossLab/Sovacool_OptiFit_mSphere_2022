@@ -30,12 +30,12 @@ do
 			#Optifit output is missing the iter and numOTUs columns, so we use sed {'s_\(\S*\t\S*\t\)\(.*\)_\1\t\2_'} to insert a tab in the beginning of the line
 			#and then find the second tab and turn it into two tabs to give us the correct number of columns
 			#head -2: return first 2 lines, tail -1 from those 2 lines take only the bottom one
-			REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}reference.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
-			SAMP=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
-			SAMP_O_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.open.ref.sensspec | tail -1)
-			SAMP_C_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.closed.ref.sensspec | tail -1)
-			SAMP_O_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.open.noref.sensspec | tail -1)
-			SAMP_C_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}/${PREFIX}sample.closed.noref.sensspec | tail -1)
+			REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}reference.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
+			SAMP=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
+			SAMP_O_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.open.ref.sensspec | tail -1)
+			SAMP_C_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.closed.ref.sensspec | tail -1)
+			SAMP_O_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.open.noref.sensspec | tail -1)
+			SAMP_C_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.closed.noref.sensspec | tail -1)
 			
 			#REF and SAMP were run with opticlust, which produces sensspec files with 2 less columns than optifit
 			#Add two extra tabs at the beginning of their lines so that confusion matrix values line up
