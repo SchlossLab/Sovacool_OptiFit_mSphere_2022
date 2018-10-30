@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#Usage: marine_pipeline.sh outputdir numseqs trimsize
+#Usage: opti_pipeline.sh outputdir dataset numseqs trimsize
 OUTPUTDIR=$1 #Directory to put output in (must have trailing /)
 DATASET=$2 #Dataset to use (human, mice, marine, soil)
 NUMSEQS=$3 #number of seqs in the dataset (must equal trimsize if trimming)
-TRIMSIZE=$4 #size to trim the original dataset too if not using the whole set
+TRIMSIZE=$4 #size to trim the original dataset to if not using the whole set
 
 mkdir -p $OUTPUTDIR
 
