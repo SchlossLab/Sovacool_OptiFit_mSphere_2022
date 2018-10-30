@@ -6,8 +6,9 @@
 #Usage: opti_pipeline_flux.sh outputdir dataset numseqs trimsize
 OUTPUTDIR=$1 #Directory to put output in (must have trailing /)
 DATASET=$2 #Dataset to use (human, mice, marine, soil)
-NUMSEQS=$3 #number of seqs in the dataset (must equal trimsize if trimming)
-TRIMSIZE=$4 #size to trim the original dataset to if not using the whole set
+WEIGHT=$3 #Boolean, whether or not to weight the reference subsample
+NUMSEQS=$4 #number of seqs in the dataset (must equal trimsize if trimming)
+TRIMSIZE=$5 #size to trim the original dataset to if not using the whole set
 
 mkdir -p $OUTPUTDIR
 
@@ -52,7 +53,7 @@ do
 			
 			#Create and fire off flux jobs
 			cat optihead.pbs >> job.pbs
-			echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}_${J}/ $DATASET $SEQNUM $I $J $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
+			echo "./code/analysis/optifit_test.sh ${OUTPUTDIR} ${OUTPUTDIR}${REFPI}_${I}_${J}/ $DATASET $SEQNUM $WEIGHT $I $J $PREFIX" >> job.pbs #Create different output subdirectories so multiple flux jobs don't interfere with each other
 			qsub -N opti_${REFPI}_${I}_${J} 	job.pbs
 			rm job.pbs
 		done
