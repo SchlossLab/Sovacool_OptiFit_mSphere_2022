@@ -13,7 +13,7 @@ PREFIX=$8 #Optional: PREFIX allows you to add an optional PREFIX before DATASET.
 
 mkdir -p ${OUTPUTDIR}
 
-Rscript code/analysis/weighted_subsample.R ${INPUTDIR}${PREFIX}${DATASET}.count_table $OUTPUTDIR $SIZE $WEIGHT
+Rscript code/analysis/weighted_subsample.R ${INPUTDIR}${PREFIX}${DATASET}.count_table $OUTPUTDIR $SIZE $WEIGHT ${INPUTDIR}${PREFIX}${DATASET}.dist
 
 mothur "#set.seed(seed=${SEED1});
 	set.dir(output=${OUTPUTDIR}, input=${INPUTDIR});
