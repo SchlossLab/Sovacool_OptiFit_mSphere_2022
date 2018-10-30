@@ -40,7 +40,7 @@ make_plot <- function(filename, dataset) {
   ggplot2::ggsave(paste("results/figures/", dataset, "/", basename(filename), ".mcc.full.png", sep = ""),
                   plot = combo_mcc_full, width = 6.5, height = 4.5, unit = "in")
   
-  iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, refp == 90 & (type == "SAMP" | type == "SAMP_O_NOREF")),
+  iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, refp == 50 & (type == "SAMP" | type == "SAMP_O_NOREF")),
                            ggplot2::aes(x = refpi, y = mcc, color = type)) +
     ggplot2::geom_jitter(width = .1, height = 0, size = 3) +
     ggplot2::labs(title = title) +
@@ -48,7 +48,7 @@ make_plot <- function(filename, dataset) {
     ggplot2::xlab("Cut") +
     ggplot2::scale_x_continuous(breaks = seq(1, 10, by = 1))
   
-  ggplot2::ggsave(paste("results/figures/", dataset, "/", basename(filename), ".mcc.ful.png", sep = ""),
+  ggplot2::ggsave(paste("results/figures/", dataset, "/", basename(filename), ".mcc.iters.png", sep = ""),
                   plot = iters, width = 6.5, height = 4.5, unit = "in")
 }
 
