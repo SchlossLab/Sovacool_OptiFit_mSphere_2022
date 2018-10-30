@@ -6,7 +6,7 @@
 #Usage: opti_pipeline_flux.sh outputdir dataset numseqs trimsize
 OUTPUTDIR=$1 #Directory to put output in (must have trailing /)
 DATASET=$2 #Dataset to use (human, mice, marine, soil)
-WEIGHT=$3 #Boolean, whether or not to weight the reference subsample
+WEIGHT=$3 #Required: How to weight the subsample (none, sample_abundance, sample_dists, ref_abundance, ref_dists)
 NUMSEQS=$4 #number of seqs in the dataset (must equal trimsize if trimming)
 TRIMSIZE=$5 #size to trim the original dataset to if not using the whole set
 
