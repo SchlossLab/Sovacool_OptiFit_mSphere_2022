@@ -6,7 +6,7 @@ I'm using the [conda](https://conda.io/docs/) package manager to manage dependen
 
 Create an environment for the project:
 ```
-conda create --name OptiFitAnalysis --file environment.yaml
+conda env create --name OptiFitAnalysis --file environment.yaml
 ```
 
 Activate the environment before running any code:
