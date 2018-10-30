@@ -13,18 +13,18 @@ PREFIX=$8 #Optional: PREFIX allows you to add an optional PREFIX before DATASET.
 
 mkdir -p ${OUTPUTDIR}
 
-Rscript code/analysis/weighted_subsample.R ${INPUTDIR}${PREFIX}${DATASET}.count_table $SIZE $WEIGHT
+Rscript code/analysis/weighted_subsample.R ${INPUTDIR}${PREFIX}${DATASET}.count_table $OUTPUTDIR $SIZE $WEIGHT
 
 mothur "#set.seed(seed=${SEED1});
 	set.dir(output=${OUTPUTDIR}, input=${INPUTDIR});
-	get.seqs(accnos=sample.accnos, fasta=${PREFIX}${DATASET}.fasta);
-	get.seqs(accnos=sample.accnos, count=${PREFIX}${DATASET}.count_table);
+	get.seqs(accnos=${OUTPUTDIR}sample.accnos, fasta=${PREFIX}${DATASET}.fasta);
+	get.seqs(accnos=${OUTPUTDIR}sample.accnos, count=${PREFIX}${DATASET}.count_table);
 	get.dists(column=${PREFIX}${DATASET}.dist, accnos=current);
 	rename.file(fasta=current, count=current, accnos = current, column=current, prefix=${PREFIX}sample);
 	set.seed(seed=${SEED2});
 	cluster(column=current, count=current);
 	set.seed(seed=${SEED1});
-	remove.seqs(fasta=${PREFIX}${DATASET}.fasta, count=${PREFIX}${DATASET}.count_table, accnos=${PREFIX}sample.accnos);
+	remove.seqs(fasta=${PREFIX}${DATASET}.fasta, count=${PREFIX}${DATASET}.count_table, accnos=${OUTPUTDIR}${PREFIX}sample.accnos);
 	list.seqs(fasta=current);
 	get.dists(column=${PREFIX}${DATASET}.dist, accnos=current);
 	rename.file(fasta=current, count=current, column=current, accnos=current, prefix=${PREFIX}reference);
