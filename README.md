@@ -21,7 +21,7 @@ conda install new_package_name
 
 Periodically update the dependencies list:
 ```
-conda list --explicit > environment.txt
+conda list --export > environment.txt
 ```
 
 After ending a session, close the active environment with:
