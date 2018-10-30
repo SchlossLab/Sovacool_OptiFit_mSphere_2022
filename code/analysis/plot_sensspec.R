@@ -42,7 +42,6 @@ make_plot <- function(filename, dataset) {
   
   iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, refp == 90 & (type == "SAMP" | type == "SAMP_O_NOREF")),
                            ggplot2::aes(x = refpi, y = mcc, color = type)) +
-    ggplot2::facet_wrap(~ refp) +
     ggplot2::geom_jitter(width = .1, height = 0, size = 3) +
     ggplot2::labs(title = title) +
     ggplot2::ylab("MCC") +
