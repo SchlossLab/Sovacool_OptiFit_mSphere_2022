@@ -3,14 +3,15 @@
 #Adapted from: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/master/Makefile
 
 REFS=data/references
+VERSION=v132
 
-wget -N -P $REFS/ http://www.mothur.org/w/images/b/be/Silva.nr_v123.tgz
-tar xvzf $REFS/Silva.nr_v123.tgz -C $REFS/;
-mothur "#get.lineage(fasta=$REFS/silva.nr_v123.align, taxonomy=$REFS/silva.nr_v123.tax, taxon=Bacteria-Archaea)"
-mv $REFS/silva.nr_v123.pick.align $REFS/silva.bact_archaea.align
-mv $REFS/silva.nr_v123.pick.tax $REFS/silva.bact_archaea.tax
+wget -N -P $REFS/ http://www.mothur.org/w/images/3/32/Silva.nr_${VERSION}.tgz
+tar xvzf $REFS/Silva.nr_${VERSION}.tgz -C $REFS/;
+mothur "#get.lineage(fasta=$REFS/silva.nr_${VERSION}.align, taxonomy=$REFS/silva.nr_${VERSION}.tax, taxon=Bacteria-Archaea)"
+mv $REFS/silva.nr_${VERSION}.pick.align $REFS/silva.bact_archaea.align
+mv $REFS/silva.nr_${VERSION}.pick.tax $REFS/silva.bact_archaea.tax
 rm $REFS/README.Rmd $REFS/README.html
-rm $REFS/?ilva.nr_v123.*
+rm $REFS/?ilva.nr_${VERSION}.*
 
 mothur "#get.lineage(fasta=$REFS/silva.bact_archaea.align, taxonomy=$REFS/silva.bact_archaea.tax, taxon=Bacteria)"
 mv $REFS/silva.bact_archaea.pick.align $REFS/silva.bacteria.align
