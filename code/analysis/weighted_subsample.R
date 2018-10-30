@@ -8,7 +8,7 @@
 # outputdir: path to save accnos files in
 # size: size of subsample to take
 # weight: none, sample_abundance, sample_dists, ref_abundance, ref_dists
-# dist_file: optional, dist file to use if doing weight by distances
+# dist_file: dist file to use if doing weight by distances
 require(dplyr)
 require(readr)
 
@@ -20,10 +20,10 @@ size <- as.numeric(args[3])
 weight <- args[4]
 dist_file <- args[5]
 
-#filename <- "data\\marine\\testjob4\\1001.marine.count_table"
-#size <- 100
+#filename <- "data\\mice\\mice.count_table"
+#size <- 10000
 #weight <- FALSE
-#dist_file <- "data\\marine\\testjob4\\1001.reference.dist"
+#dist_file <- "data\\mice\\mice.dist"
 
 count_table <- readr::read_tsv(file = filename)
 
@@ -39,7 +39,7 @@ if (weight == "none") {
   sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 } else if (weight == "sample_dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
-  dists <- readr::read_tsv(file = dist_file, col_names = FALSE)
+  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
   
   #Each row of a dist file is a pair of sequences that are pairwise close under our threshold
   #Since we want the total number of distances for each sequence, we need to check both columns
@@ -57,7 +57,7 @@ if (weight == "none") {
 } else if(weight == "ref_dists") {
   #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
   #and use the leftovers as the sample
-  dists <- readr::read_tsv(file = dist_file, col_names = FALSE)
+  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
   
   dist_seqs <- tibble(Representative_Sequence = c(dists$X1, dists$X2, count_table$Representative_Sequence)) %>%
     group_by(Representative_Sequence) %>% #Group so that mutate knows what to count
