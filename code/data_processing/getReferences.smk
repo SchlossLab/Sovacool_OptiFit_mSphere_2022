@@ -1,54 +1,43 @@
 " Download the reference database and process with mothur "
 import subprocess
 
-config: config.yaml
+configfile: 'code/data_processing/config_test.yaml'
 output_dir = config['output_dir']
 db_version = config['db_version']
 
+rule all:
+	input:
+		["{output_dir}/silva.bact_archeae.{ext}".format(output_dir=output_dir, ext=ext) for ext in ('tax', 'align')]
+
 rule download:
 	output:
-		"{dir}/Silva.nr_{version}.tgz".format(dir=output_dir, version=db_version)
+		"{{output_dir}}/Silva.nr_{version}.tgz".format(version=db_version)
 	shell:
-		'wget -N -P {dir} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'.format(dir=output_dir, version=db_version)
+		'wget -N -P {output_dir} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'
 
 rule untar:
 	input:
-		"{dir}/Silva.nr_{{version}}.tgz".format(dir=output_dir)
+		"{output_dir}/Silva.nr_{version}.tgz"
 	output:
-		"{dir}/README.md",
-		"{dir}/silva.nr_{version}.align",
-		"{dir}/silva.nr_{version}.tax"
+		"{output_dir}/silva.nr_{version}.align",
+		"{output_dir}/silva.nr_{version}.tax"
 	shell:
-		"tar xvzf {dir}/Silva.nr_{{version}}.tgz -C {dir}/".format(dir=output_dir)
+		"tar xvzf {output_dir}/Silva.nr_{version}.tgz -C {output_dir}/"
 
 rule get_prok_lineage:
 	input:
-		readme="{dir}/README.md"
-		align="{dir}/silva.nr_{version}.align",
-		tax="{dir}/silva.nr_{version}.tax"
+		align="{output_dir}/silva.nr_{version}.align",
+		tax="{output_dir}/silva.nr_{version}.tax"
 	output:
-		"{dir}/silva.nr_{version}.pick.align",
-		"{dir}/silva.nr_{version}.pick.tax"
+		"{output_dir}/silva.nr_{version}.pick.align",
+		"{output_dir}/silva.nr_{version}.pick.tax"
 	shell:
-		"mothur '#get.lineage(fasta={input.align}, taxonomy={dir}/silva.nr_{version}.tax, taxon=Bacteria-Archaea)'"
-
-'''
-rule rename:
-	input:
-		align="{dir}/silva.nr_{VERSION}.pick.align",
-		tax="{dir}/silva.nr_{VERSION}.pick.tax"
-	output:
-		align="{dir}/silva.bact_archaea.align",
-		tax="{dir}/silva.bact_archaea.tax"
-	shell:
-		"mv {input.align} {output.align} ; "
-		"mv {input.tax} {output.tax}"
-'''
+		"mothur '#get.lineage(fasta={input.align}, taxonomy={output_dir}/silva.nr_{version}.tax, taxon=Bacteria-Archaea)'"
 
 rule rename:
 	input:
-		"{dir}/silva.nr_{version}.pick.{ext}"
+		"{{output_dir}}/silva.nr_{version}.pick.{{ext}}".format(version=db_version)
 	output:
-		"{dir}/silva.bact_archeae.{ext}"
+		"{output_dir}/silva.bact_archeae.{ext}"
 	shell:
 		"mv {input} {output}"
