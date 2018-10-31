@@ -15,7 +15,7 @@ rule download_silva_db:
 	output:
 		"{{output_dir}}/Silva.nr_{version}.tgz".format(version=db_version)
 	shell:
-		'wget -N -P {output_dir} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'
+		'wget -N -P {{output_dir}} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'.format(version=db_version)
 
 rule unpack_silva_db:
 	input:
@@ -24,7 +24,7 @@ rule unpack_silva_db:
 		"{output_dir}/silva.nr_{version}.align",
 		"{output_dir}/silva.nr_{version}.tax"
 	shell:
-		"tar xvzf {output_dir}/Silva.nr_{version}.tgz -C {output_dir}/"
+		"tar xvzf {{output_dir}}/Silva.nr_{version}.tgz -C {{output_dir}}/".format(version=db_version)
 
 rule get_prok_lineage:
 	input:
