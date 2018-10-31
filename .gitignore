@@ -1,3 +1,4 @@
 mothur.*.logfile
 testdir/
 *.o*
+.snakemake/
