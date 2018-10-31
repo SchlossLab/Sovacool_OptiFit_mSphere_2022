@@ -7,7 +7,7 @@ db_version = config['db_version']
 
 rule all:
 	input:
-		["{output_dir}/silva.bact_archeae.{ext}".format(output_dir=output_dir, ext=ext) for ext in ('tax', 'align')]
+		expand("{output_dir}/silva.bact_archeae.{ext}", output_dir=output_dir, ext={'tax', 'align'})
 
 rule download:
 	output:
