@@ -35,17 +35,9 @@ rule get_prok_lineage:
 		"{output_dir}/silva.bact_archaea.tax"
 	shell:
 		"mothur '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria-Archaea)' ; "
-		"mv {output_dir}/silva.nr_{version}.pick.align {output_dir}/silva.bact_archaea.align ; "
-		"mv {output_dir}/silva.nr{version}.pick.tax {output_dir}/silva.bact_archaea.tax"
-'''
-rule rename_prok:
-	input:
-		"{{output_dir}}/silva.nr_{version}.pick.{{ext}}".format(version=db_version)
-	output:
-		"{output_dir}/silva.bact_archaea.{ext}"
-	shell:
-		"mv {input} {output}"
-'''
+		"mv {{output_dir}}/silva.nr_{version}.pick.align {{output_dir}}/silva.bact_archaea.align ; ".format(version=db_version)
+		"mv {{output_dir}}/silva.nr{version}.pick.tax {{output_dir}}/silva.bact_archaea.tax".format(version=db_version)
+
 rule get_bact_lineage:
 	input:
 		fasta='{output_dir}/silva.bact_archaea.align',
