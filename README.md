@@ -38,7 +38,16 @@ I'm currently using `mothur` version `1.41.0`.
 
 ## Snakemake Workflows
 
-Snakemake creates a directed acyclic graph (DAG) for a workflow with the following command:
+### Dry run
+Before committing changes, test your snakefile for syntax errors with a dry run:
+```
+snakemake --dryrun -s path/to/snakefile
+```
+This command is also useful for seeing what jobs snakemake would run without actually running them.
+
+### Visualizing the DAG
+
+Snakemake creates an image representing the directed acyclic graph (DAG) for a workflow with the following command:
 ```
 snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/dag.svg
 ```
