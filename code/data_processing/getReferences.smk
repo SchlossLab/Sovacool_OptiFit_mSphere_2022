@@ -36,7 +36,7 @@ rule get_prok_lineage:
 	shell:
 		"mothur '#get.lineage(fasta={{input.fasta}}, taxonomy={{input.tax}}, taxon=Bacteria-Archaea)' ; "
 		"mv {{output_dir}}/silva.nr_{version}.pick.align {{output_dir}}/silva.bact_archaea.align ; "
-		"mv {{output_dir}}/silva.nr{version}.pick.tax {{output_dir}}/silva.bact_archaea.tax".format(version=db_version)
+		"mv {{output_dir}}/silva.nr_{version}.pick.tax {{output_dir}}/silva.bact_archaea.tax".format(version=db_version)
 
 rule get_bact_lineage:
 	input:
