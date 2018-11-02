@@ -3,7 +3,7 @@ import subprocess
 
 configfile: 'code/data_processing/config_test.yaml'
 output_dir = config['output_dir']
-wildcards.version = config['db_version']
+db_version = config['db_version']
 
 rule all:
 	input:
@@ -13,9 +13,10 @@ rule all:
 
 rule download_silva_db:
 	output:
-		"{output_dir}/Silva.nr_{version}.tgz"
+		"{{output_dir}}/Silva.nr_{version}.tgz".format(version=db_version)
 	shell:
-		'wget -N -P {output_dir} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'
+		'wget -N -P {{output_dir}} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'.format(version=db_version)
+
 rule unpack_silva_db:
 	input:
 		"{output_dir}/Silva.nr_{version}.tgz"
@@ -23,19 +24,19 @@ rule unpack_silva_db:
 		"{output_dir}/silva.nr_{version}.align",
 		"{output_dir}/silva.nr_{version}.tax"
 	shell:
-		"tar xvzf {output_dir}/Silva.nr_{version}.tgz -C {output_dir}/"
+		"tar xvzf {{output_dir}}/Silva.nr_{version}.tgz -C {{output_dir}}/".format(version=db_version)
 
 rule get_prok_lineage:
 	input:
-		fasta="{output_dir}/silva.nr_{version}.align",
-		tax="{output_dir}/silva.nr_{version}.tax"
+		fasta="{{output_dir}}/silva.nr_{version}.align".format(version=db_version),
+		tax="{{output_dir}}/silva.nr_{version}.tax".format(version=db_version)
 	output:
 		"{output_dir}/silva.bact_archaea.align",
 		"{output_dir}/silva.bact_archaea.tax"
 	shell:
-		"mothur '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria-Archaea)' ; "
-		"mv {output_dir}/silva.nr_{version}.pick.align {output_dir}/silva.bact_archaea.align ; "
-		"mv {output_dir}/silva.nr_{version}.pick.tax {output_dir}/silva.bact_archaea.tax"
+		"mothur '#get.lineage(fasta={{input.fasta}}, taxonomy={{input.tax}}, taxon=Bacteria-Archaea)' ; "
+		"mv {{output_dir}}/silva.nr_{version}.pick.align {{output_dir}}/silva.bact_archaea.align ; "
+		"mv {{output_dir}}/silva.nr_{version}.pick.tax {{output_dir}}/silva.bact_archaea.tax".format(version=db_version)
 
 rule get_bact_lineage:
 	input:
