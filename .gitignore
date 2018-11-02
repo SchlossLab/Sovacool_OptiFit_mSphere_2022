@@ -1,0 +1,5 @@
+mothur.*.logfile
+testdir/
+*.o*
+.snakemake/
+.DS_Store
