@@ -1,0 +1,77 @@
+#Usage: Rscript weighted_subsample.R filename size weight
+#
+#Takes a count_table file and takes a random subsample based on abundance
+#Used to separate a dataset into a reference and a sample for optifit
+#
+#Args:
+# filename: path to a count_table file
+# outputdir: path to save accnos files in
+# size: size of subsample to take
+# weight: none, sample_abundance, sample_dists, ref_abundance, ref_dists
+# dist_file: dist file to use if doing weight by distances
+require(dplyr)
+require(readr)
+
+args <- commandArgs(trailingOnly = TRUE)
+
+filename <- args[1]
+outputdir <- args[2]
+size <- as.numeric(args[3])
+weight <- args[4]
+dist_file <- args[5]
+
+#filename <- "data\\mice\\mice.count_table"
+#size <- 10000
+#weight <- FALSE
+#dist_file <- "data\\mice\\mice.dist"
+
+count_table <- readr::read_tsv(file = filename)
+
+if (weight == "none") {
+  #Take an unweighted random sample
+  sample <- dplyr::sample_n(count_table, size)
+} else if (weight == "sample_abundance") {
+  #Take a random subsampling weighted by total abundance
+  sample <- dplyr::sample_n(count_table, size, weight = count_table$total)
+} else if (weight == "ref_abundance") {
+  #Take a random subsampling of the complement of the sample by total abundance, and use the leftovers as sample
+  sample_complement <- dplyr::sample_n(count_table, size = nrow(count_table)-size, weight = count_table$total)
+  sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
+} else if (weight == "sample_dists") {
+  #Take a random subsample weighted by number of pairwise connections to other seqs
+  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
+  
+  #Each row of a dist file is a pair of sequences that are pairwise close under our threshold
+  #Since we want the total number of distances for each sequence, we need to check both columns
+  #for a given sequence. Do this by simply stacking both columns and counting the number of occurences
+  #of each sequence. We also stack in count_table$Representative_Sequence so that every sequence appears
+  #at least once, otherwise many would have a weight of zero. This means that if every sequence has X number
+  #of connections, we will assign it a weight of X+1 when subsampling.
+  dist_seqs <- tibble(Representative_Sequence = c(dists$X1, dists$X2, count_table$Representative_Sequence)) %>%
+    group_by(Representative_Sequence) %>% #Group so that mutate knows what to count
+    mutate(count = n()) %>%
+    unique() %>% #Don't need duplicate rows
+    ungroup() #Have to remove groups to do sample_n
+  
+  sample <- dplyr::sample_n(dist_seqs, size, weight = dist_seqs$count)
+} else if(weight == "ref_dists") {
+  #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
+  #and use the leftovers as the sample
+  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
+  
+  dist_seqs <- tibble(Representative_Sequence = c(dists$X1, dists$X2, count_table$Representative_Sequence)) %>%
+    group_by(Representative_Sequence) %>% #Group so that mutate knows what to count
+    mutate(count = n()) %>%
+    unique() %>% #Don't need duplicate rows
+    ungroup() #Have to remove groups to do sample_n
+  
+  sample_complement <- dplyr::sample_n(dist_seqs, size = nrow(dist_seqs)-size, weight = dist_seqs$count)
+  sample <- dplyr::filter(dist_seqs, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
+}
+
+reference <- dplyr::filter(count_table, !(Representative_Sequence %in% sample$Representative_Sequence))
+
+#Create .accnos files for both the sample, and the sample_complement for later use in mothur
+#.accnos files contain a column of sequence names and nothing else
+readr::write_tsv(dplyr::select(sample, "Representative_Sequence"), col_names = FALSE,
+                 path = paste(outputdir, "sample.accnos", sep = "/"))
