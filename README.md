@@ -35,3 +35,14 @@ Almost all dependencies are listed in `environment.txt`. The exception is  the `
 source ~/.bash_profile
 ```
 I'm currently using `mothur` version `1.41.0`.
+
+## Snakemake Workflows
+
+Snakemake creates a directed acyclic graph (DAG) for a workflow with the following command:
+```
+snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/dag.svg
+```
+
+Example DAG for `code/data_processing/getReferences.smk`:
+
+![getReferences.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/snakemake/results/figures/workflows/getReferences.dag.svg)
