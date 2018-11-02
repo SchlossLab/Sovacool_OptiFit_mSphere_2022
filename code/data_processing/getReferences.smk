@@ -1,7 +1,7 @@
 " Download the reference database and process with mothur "
 import subprocess
 
-configfile: 'code/data_processing/config_test.yaml'
+configfile: 'code/data_processing/config.yaml'
 output_dir = config['output_dir']
 db_version = config['db_version']
 
