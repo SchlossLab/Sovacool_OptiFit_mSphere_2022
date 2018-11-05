@@ -1,0 +1,4 @@
+input_dir: data/
+output_dir: results/
+dataset: soil
+weight: sample_dists
