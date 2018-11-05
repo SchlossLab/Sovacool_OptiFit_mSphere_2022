@@ -3,3 +3,4 @@ testdir/
 *.o*
 .snakemake/
 .DS_Store
+.Rproj.user
