@@ -3,3 +3,4 @@ output_dir: results/
 dataset: soil
 weight: sample_dists
 db_version: v132
+trimsize: 100
