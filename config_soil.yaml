@@ -1,7 +1,9 @@
-input_dir: data/
-output_dir: results/
+input_dir: data
+output_dir: results
 dataset: soil
 weight: sample_dists
 db_version: v132
 subsample_test: True
-subsample_size: 100
+subsample_size: 1000
+iterations: 2
+replicates: 2
