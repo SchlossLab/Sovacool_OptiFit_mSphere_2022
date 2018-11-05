@@ -55,4 +55,4 @@ snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/
 
 Example DAG for `code/data_processing/get-references.smk`:
 
-![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/tree/snakemake-analysis/results/figures/workflows/get-references.dag.svg)
+![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/tree/snakemake-analysis/results/figures/workflows/get-references.dag.svg?sanitize=true)
