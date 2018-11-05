@@ -38,6 +38,27 @@ I'm currently using `mothur` version `1.41.0`.
 
 ## Snakemake Workflows
 
+### Running a workflow
+Run a snakemake workflow with 2 cores:
+```
+snakemake -j 2 -s path/to/snakefile
+```
+Any independent rules are then run in parallel. Without the `-j` or `--cores` flag, snakemake defaults to using only 1 core.
+Run a workflow with as many cores as are available with:
+```
+snakemake -j -s path/to/snakefile
+```
+
+Snakemake will only run jobs for rules whose output files do not exist and haven't been modified since the last run. To override this behavior, force a specific rule to run:
+```
+snakemake -s path/to/snakefile --forcerun rule_name
+```
+
+Or force all rules to run:
+```
+snakemake -s path/to/snakefile --forceall
+```
+
 ### Dry run
 
 Do a dry run to see which jobs snakemake would run without actually running them.
