@@ -39,11 +39,12 @@ I'm currently using `mothur` version `1.41.0`.
 ## Snakemake Workflows
 
 ### Dry run
-Before committing changes, test your snakefile for syntax errors with a dry run:
+
+Do a dry run to see which jobs snakemake would run without actually running them.
 ```
 snakemake --dryrun -s path/to/snakefile
 ```
-This command is also useful for seeing what jobs snakemake would run without actually running them.
+Before committing changes or submitting jobs to the cluster, test your snakefile for syntax errors with a dry run.
 
 ### Visualizing the DAG
 
@@ -52,6 +53,6 @@ Snakemake creates an image representing the directed acyclic graph (DAG) for a w
 snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/dag.svg
 ```
 
-Example DAG for `code/data_processing/getReferences.smk`:
+Example DAG for `code/data_processing/get-references.smk`:
 
-![getReferences.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/snakemake/results/figures/workflows/getReferences.dag.svg)
+![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/snakemake/results/figures/workflows/get-references.dag.svg)
