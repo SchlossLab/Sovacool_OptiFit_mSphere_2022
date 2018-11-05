@@ -3,29 +3,23 @@
 #Takes a count_table file and takes a random subsample based on abundance
 #Used to separate a dataset into a reference and a sample for optifit
 #
-#Args:
-# filename: path to a count_table file
-# outputdir: path to save accnos files in
-# size: size of subsample to take
-# weight: none, sample_abundance, sample_dists, ref_abundance, ref_dists
-# dist_file: dist file to use if doing weight by distances
 require(dplyr)
 require(readr)
 
 args <- commandArgs(trailingOnly = TRUE)
 
-filename <- args[1]
-outputdir <- args[2]
-size <- as.numeric(args[3])
-weight <- args[4]
-dist_file <- args[5]
+filename_counts <- snakemake@input[['counts']]
+filename_output <- snakemake@output[[1]]
+size <- snakemake@params[['size']]
+weight <- snakemake@params[['weight']]
+filename_dists <- snakemake@input[['dist']]
 
 #filename <- "data\\mice\\mice.count_table"
 #size <- 10000
 #weight <- FALSE
 #dist_file <- "data\\mice\\mice.dist"
 
-count_table <- readr::read_tsv(file = filename)
+count_table <- readr::read_tsv(file = filename_counts)
 
 if (weight == "none") {
   #Take an unweighted random sample
@@ -39,7 +33,7 @@ if (weight == "none") {
   sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 } else if (weight == "sample_dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
-  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
+  dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
   
   #Each row of a dist file is a pair of sequences that are pairwise close under our threshold
   #Since we want the total number of distances for each sequence, we need to check both columns
@@ -57,7 +51,7 @@ if (weight == "none") {
 } else if(weight == "ref_dists") {
   #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
   #and use the leftovers as the sample
-  dists <- readr::read_delim(file = dist_file, delim = " ", col_names = FALSE)
+  dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
   
   dist_seqs <- tibble(Representative_Sequence = c(dists$X1, dists$X2, count_table$Representative_Sequence)) %>%
     group_by(Representative_Sequence) %>% #Group so that mutate knows what to count
@@ -74,4 +68,4 @@ reference <- dplyr::filter(count_table, !(Representative_Sequence %in% sample$Re
 #Create .accnos files for both the sample, and the sample_complement for later use in mothur
 #.accnos files contain a column of sequence names and nothing else
 readr::write_tsv(dplyr::select(sample, "Representative_Sequence"), col_names = FALSE,
-                 path = paste(outputdir, "sample.accnos", sep = "/"))
+                 path = paste(filename_output, sep = "/"))
