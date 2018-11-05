@@ -1,8 +1,9 @@
 " Download the reference database and process with mothur "
+import os
 import subprocess
 
-configfile: 'code/data_processing/config.yaml'
-output_dir = config['output_dir']
+configfile: 'config_soil.yaml'
+output_dir = os.path.join(config['input_dir'], 'references')
 db_version = config['db_version']
 
 rule all:
