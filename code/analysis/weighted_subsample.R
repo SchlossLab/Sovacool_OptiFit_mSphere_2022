@@ -7,6 +7,7 @@ require(dplyr)
 require(readr)
 
 filename_counts <- snakemake@input[['counts']]
+print(snakemake@input)
 print(class(filename_counts))
 filename_output <- snakemake@output[[1]]
 size <- snakemake@params[['size']]
