@@ -14,16 +14,15 @@ def count_input_seqs(infilename):
 		num_seqs = len([line for line in infile if line[0] == '>'])
 	return num_seqs
 num_seqs = count_input_seqs(os.path.join(input_dir, dataset + '.fasta'))
-sizes = [math.floor(num_seqs * i/100) for i in range(5,100,5)]
+sizes = [math.floor(num_seqs * i/100) for i in range(5,10,5)]
 
 rule all:
 	input:
-		'{input_dir}/{dataset}.dist'.format(input_dir=input_dir, dataset=dataset),
-		expand("{input_dir}/subsamples/{dataset}_size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, dataset=dataset, size=sizes, weight=config['weight'], iter=config['iterations'], rep=config['replicates'])
+		expand("{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, size=sizes, weight=config['weight'], iter=range(config['iterations']), rep=range(config['replicates']))
 
 rule get_dists:
 	input:
-		'{input_dir}/{dataset}.fasta'
+		'{{input_dir}}/{dataset}.fasta'.format(dataset=dataset)
 	output:
 		'{input_dir}/{dataset}.dist'
 	shell:
@@ -40,9 +39,9 @@ rule split_weighted_subsample:
 		iter="{iter}",
 		rep="{rep}"
 	output:
-		"{input_dir}/subsamples/{dataset}_size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos"
+		"{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos"
 	script:
-		"weighted_subsample.R"
+		"code/analysis/weighted_subsample.R"
 
 """
 rule optifit_test:
