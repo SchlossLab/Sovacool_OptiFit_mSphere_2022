@@ -21,7 +21,7 @@ rep = range(config['replicates'])
 
 rule all:
 	input:
-		'{input_dir}/{dataset}.dist'.format(dataset=dataset, input_dir=input_dir),
+		expand('{input_dir}/{dataset}.{ext}', dataset=dataset, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
 		expand("{output_dir}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos", output_dir=output_dir, dataset=dataset, size=sizes, weight=weight, iter=iter)
 
 rule get_dists:
@@ -35,13 +35,11 @@ rule get_dists:
 
 rule split_weighted_subsample:
 	input:
-		count="{input_dir}/{dataset}.count_table",
-		dist="{input_dir}/{dataset}.dist"
+		count="{input_dir}/{{dataset}}.count_table".format(input_dir=input_dir),
+		dist="{input_dir}/{{dataset}}.dist".format(input_dir=input_dir)
 	params:
 		size="{size}",
-		weight="{weight}",
-		iter="{iter}",
-		rep="{rep}"
+		weight="{weight}"
 	output:
 		"{output_dir}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	script:
