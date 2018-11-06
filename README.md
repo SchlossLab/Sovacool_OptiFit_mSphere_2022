@@ -74,7 +74,7 @@ Before committing changes or submitting jobs to the cluster, test your snakefile
 
 Snakemake creates an image representing the directed acyclic graph (DAG) for a workflow with the following command:
 ```
-snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/dag.svg
+snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/workflows/dag.svg
 ```
 
 Example DAG for `code/data_processing/get-references.smk`:
