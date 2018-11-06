@@ -45,31 +45,34 @@ rule split_weighted_subsample:
 	script:
 		"weighted_subsample.R"
 
-"""
-rule optifit_test:
+rule prep_subsample:
+	input:
+		fasta="{input_dir}/{dataset}.fasta",
+		accnos="{output_dir}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
+	output:
+		""
 	shell:
-		'mothur "#set.seed(seed=${SEED1}); '
-		'set.dir(output=${OUTPUTDIR}, input=${INPUTDIR}); '
-		'get.seqs(accnos=${OUTPUTDIR}sample.accnos, fasta=${PREFIX}${DATASET}.fasta); '
-		'get.seqs(accnos=${OUTPUTDIR}sample.accnos, count=${PREFIX}${DATASET}.count_table); '
-		'get.dists(column=${PREFIX}${DATASET}.dist, accnos=current); '
-		'rename.file(fasta=current, count=current, accnos = current, column=current, prefix=${PREFIX}sample); '
-		'set.seed(seed=${SEED2}); '
-		'cluster(column=current, count=current); '
-		'set.seed(seed=${SEED1}); '
-		'remove.seqs(fasta=${PREFIX}${DATASET}.fasta, count=${PREFIX}${DATASET}.count_table, accnos=${OUTPUTDIR}${PREFIX}sample.accnos); '
+		'mothur "#set.seed(seed={iter}}); '
+		'set.dir(output={output_dir}, input={input_dir}); '
+		'get.seqs(accnos={input.accnos}, fasta={input.fasta}); '
+		'get.seqs(accnos={input.accnos}, count={dataset}.count_table); '
+		'get.dists(column={dataset}.dist, accnos=current); '
+		'rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample); '
+		'remove.seqs(fasta={dataset}.fasta, count={dataset}.count_table, accnos={output_dir}sample.accnos); '
 		'list.seqs(fasta=current); '
-		'get.dists(column=${PREFIX}${DATASET}.dist, accnos=current); '
-		'rename.file(fasta=current, count=current, column=current, accnos=current, prefix=${PREFIX}reference); '
-		'set.seed(seed=${SEED2}); '
+		'get.dists(column={dataset}.dist, accnos=current); '
+		'rename.file(fasta=current, count=current, column=current, accnos=current, prefix=reference)"'
+
+rule run_optifit:
+	shell:
+		'mothur "set.seed(seed=${rep}); '
 		'cluster(column=current, count=current); '
-		'set.dir(input=${OUTPUTDIR}); '
-		'cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=t); '
-		'rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.open.ref); '
-		'cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=t, method=closed); '
-		'rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.closed.ref); '
-		'cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=f); '
-		'rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.open.noref); '
-		'cluster.fit(reflist=${PREFIX}reference.opti_mcc.list, refcolumn=${PREFIX}reference.dist, refcount=${PREFIX}reference.count_table, reffasta=${PREFIX}reference.fasta, fasta=${PREFIX}sample.fasta, count=${PREFIX}sample.count_table, column=${PREFIX}sample.dist, printref=f, method=closed); '
-		'rename.file(file=${PREFIX}sample.optifit_mcc.sensspec, prefix=${PREFIX}sample.closed.noref);"'
-"""
+		'set.dir(input={output_dir}); '
+		'cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, printref=t); '
+		'rename.file(file=sample.optifit_mcc.sensspec, prefix=sample.open.ref); '
+		'cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, printref=t, method=closed); '
+		'rename.file(file=sample.optifit_mcc.sensspec, prefix=sample.closed.ref); '
+		'cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, printref=f); '
+		'rename.file(file=sample.optifit_mcc.sensspec, prefix=sample.open.noref); '
+		'cluster.fit(reflist=reference.opti_mcc.list, refcolumn=reference.dist, refcount=reference.count_table, reffasta=reference.fasta, fasta=sample.fasta, count=sample.count_table, column=sample.dist, printref=f, method=closed); '
+		'rename.file(file=sample.optifit_mcc.sensspec, prefix=sample.closed.noref)"'
