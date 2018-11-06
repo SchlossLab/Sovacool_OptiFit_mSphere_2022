@@ -22,13 +22,16 @@ mothur "#set.seed(seed=${SEED1});
 	get.seqs(accnos=${OUTPUTDIR}sample.accnos, count=${PREFIX}${DATASET}.count_table);
 	get.dists(column=${PREFIX}${DATASET}.dist, accnos=current);
 	rename.file(fasta=current, count=current, accnos = current, column=current, prefix=${PREFIX}sample);
+
 	set.seed(seed=${SEED2});
 	cluster(column=current, count=current);
+
 	set.seed(seed=${SEED1});
 	remove.seqs(fasta=${PREFIX}${DATASET}.fasta, count=${PREFIX}${DATASET}.count_table, accnos=${OUTPUTDIR}${PREFIX}sample.accnos);
 	list.seqs(fasta=current);
 	get.dists(column=${PREFIX}${DATASET}.dist, accnos=current);
 	rename.file(fasta=current, count=current, column=current, accnos=current, prefix=${PREFIX}reference);
+
 	set.seed(seed=${SEED2});
 	cluster(column=current, count=current);
 	set.dir(input=${OUTPUTDIR});
