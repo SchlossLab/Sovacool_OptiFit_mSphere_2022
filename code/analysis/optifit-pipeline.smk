@@ -22,13 +22,13 @@ reps = range(config['replicates'])
 rule all:
 	input:
 		expand('{input_dir}/{dataset}.{ext}', dataset=dataset, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
-		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=dataset, weight=weight, size=sizes, iter=iters, rep=reps, methods={'open', 'closed'}, printref={'t', 'f'}, ext={'list', 'steps', 'sensspec'})
+		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=dataset, weight=weight, size=sizes, iter=iters, rep=reps, method={'open', 'closed'}, printref={'t', 'f'}, ext={'list', 'steps', 'sensspec'})
 
 rule get_dists:
 	input:
-		'{input_dir}/{dataset}.fasta'
+		'{input_dir}/{{dataset}}.fasta'.format(input_dir=input_dir)
 	output:
-		'{input_dir}/{dataset}.dist'
+		'{input_dir}/{{dataset}}.dist'.format(input_dir=input_dir)
 	shell:
 		'mothur "#set.dir(input={input_dir}, output={input_dir}); '
 		'dist.seqs(fasta={dataset}.fasta, cutoff=0.03);"'
@@ -41,15 +41,15 @@ rule split_weighted_subsample:
 		size="{size}",
 		weight="{weight}"
 	output:
-		"{output_dir}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
+		"{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	script:
 		"weighted_subsample.R"
 
 rule prep_weighted_subsample:
 	input:
-		fasta="{input_dir}/{dataset}.fasta",
-		count="{input_dir}/{dataset}.count_table",
-		dist="{input_dir}/{dataset}.dist",
+		fasta="{input_dir}/{{dataset}}.fasta".format(input_dir=input_dir),
+		count="{input_dir}/{{dataset}}.count_table".format(input_dir=input_dir),
+		dist="{input_dir}/{{dataset}}.dist".format(input_dir=input_dir),
 		accnos="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
 		fasta="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.fasta",
