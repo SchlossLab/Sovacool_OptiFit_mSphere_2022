@@ -22,7 +22,7 @@ rule all:
 
 rule get_dists:
 	input:
-		'{input_dir}/{dataset}.fasta'
+		'{{input_dir}}/{dataset}.fasta'.format(dataset=dataset)
 	output:
 		'{input_dir}/{dataset}.dist'
 	shell:
