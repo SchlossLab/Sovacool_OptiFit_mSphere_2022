@@ -18,7 +18,7 @@ sizes = [math.floor(num_seqs * i/100) for i in range(5,100,5)]
 
 rule all:
 	input:
-		expand("{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, size=sizes, weight=config['weight'], i=config['iterations'], r=config['replicates'])
+		expand("{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, size=sizes, weight=config['weight'], iter=config['iterations'], rep=config['replicates'])
 
 rule get_dists:
 	input:
