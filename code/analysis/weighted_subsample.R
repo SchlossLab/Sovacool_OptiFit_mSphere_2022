@@ -22,14 +22,14 @@ count_table <- readr::read_tsv(file = filename_counts)
 if (weight == "none") {
   #Take an unweighted random sample
   sample <- dplyr::sample_n(count_table, size)
-} else if (weight == "sample_abundance") {
+} else if (weight == "sample-abundance") {
   #Take a random subsampling weighted by total abundance
   sample <- dplyr::sample_n(count_table, size, weight = count_table$total)
-} else if (weight == "ref_abundance") {
+} else if (weight == "ref-abundance") {
   #Take a random subsampling of the complement of the sample by total abundance, and use the leftovers as sample
   sample_complement <- dplyr::sample_n(count_table, size = nrow(count_table)-size, weight = count_table$total)
   sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
-} else if (weight == "sample_dists") {
+} else if (weight == "sample-dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
   dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
   
@@ -46,7 +46,7 @@ if (weight == "none") {
     ungroup() #Have to remove groups to do sample_n
   
   sample <- dplyr::sample_n(dist_seqs, size, weight = dist_seqs$count)
-} else if(weight == "ref_dists") {
+} else if(weight == "ref-dists") {
   #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
   #and use the leftovers as the sample
   dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
