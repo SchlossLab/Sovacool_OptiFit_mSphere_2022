@@ -8,7 +8,7 @@ require(readr)
 
 filename_counts <- snakemake@input[['count']]
 filename_output <- snakemake@output[[1]]
-size <- snakemake@params[['size']]
+size <- as.numeric(snakemake@params[['size']])
 weight <- snakemake@params[['weight']]
 filename_dists <- snakemake@input[['dist']]
 
