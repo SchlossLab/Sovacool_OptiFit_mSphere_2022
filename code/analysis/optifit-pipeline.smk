@@ -18,11 +18,12 @@ sizes = [math.floor(num_seqs * i/100) for i in range(5,100,5)]
 
 rule all:
 	input:
-		expand("{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, size=sizes, weight=config['weight'], iter=config['iterations'], rep=config['replicates'])
+		'{input_dir}/{dataset}.dist'.format(input_dir=input_dir, dataset=dataset),
+		expand("{input_dir}/subsamples/{dataset}_size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos", input_dir=input_dir, dataset=dataset, size=sizes, weight=config['weight'], iter=config['iterations'], rep=config['replicates'])
 
 rule get_dists:
 	input:
-		'{{input_dir}}/{dataset}.fasta'.format(dataset=dataset)
+		'{input_dir}/{dataset}.fasta'
 	output:
 		'{input_dir}/{dataset}.dist'
 	shell:
@@ -39,7 +40,7 @@ rule split_weighted_subsample:
 		iter="{iter}",
 		rep="{rep}"
 	output:
-		"{input_dir}/subsamples/size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos"
+		"{input_dir}/subsamples/{dataset}_size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos"
 	script:
 		"code/analysis/weighted_subsample.R"
 
