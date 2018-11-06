@@ -42,7 +42,7 @@ rule split_weighted_subsample:
 	output:
 		"{input_dir}/subsamples/{dataset}_size={size}_weight={weight}_i={iter}_r={rep}/sample.accnos"
 	script:
-		"code/analysis/weighted_subsample.R"
+		"weighted_subsample.R"
 
 """
 rule optifit_test:
