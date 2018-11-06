@@ -6,9 +6,8 @@
 require(dplyr)
 require(readr)
 
-args <- commandArgs(trailingOnly = TRUE)
-
 filename_counts <- snakemake@input[['counts']]
+print(class(filename_counts))
 filename_output <- snakemake@output[[1]]
 size <- snakemake@params[['size']]
 weight <- snakemake@params[['weight']]
