@@ -5,9 +5,9 @@ import os
 
 configfile: 'config_soil.yaml'
 
+input_dir = os.path.join(config['input_dir'], config['dataset'])
+output_dir = os.path.join(config['output_dir'], config['dataset'])
 dataset = config['dataset'] if not config['subsample_test'] else '.'.join([str(config['subsample_size']), config['dataset']])
-input_dir = os.path.join(config['input_dir'], dataset)
-output_dir = os.path.join(config['output_dir'], dataset)
 
 def count_input_seqs(infilename):
 	with open(infilename, 'r') as infile:
