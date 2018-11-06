@@ -1,5 +1,8 @@
 # OptiFitAnalysis
 
+## Project progress
+See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
+
 ## Managing software dependencies
 
 I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project. If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution. [Here's a link](https://conda.io/docs/_downloads/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
@@ -54,4 +57,4 @@ snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/figures/workflows/
 
 Example DAG for `code/data_processing/getReferences.smk`:
 
-![getReferences.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/snakemake/results/figures/workflows/getReferences.dag.svg)
+![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/results/figures/workflows/get-references.dag.svg)
