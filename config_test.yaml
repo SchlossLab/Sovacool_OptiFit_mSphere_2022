@@ -1,6 +1,7 @@
 input_dir: data
 output_dir: results
-dataset: soil
+datasets: 
+- soil
 weight: sample-dists
 db_version: v132
 subsample_test: True

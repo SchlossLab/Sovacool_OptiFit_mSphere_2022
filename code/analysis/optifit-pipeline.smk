@@ -7,7 +7,7 @@ configfile: 'config_soil.yaml'
 
 input_dir = os.path.join(config['input_dir'], config['dataset'])
 output_dir = os.path.join(config['output_dir'], config['dataset'])
-dataset = config['dataset'] if not config['subsample_test'] else '.'.join([str(config['subsample_size']), config['dataset']])
+datasets = config['dataset'] if not config['subsample_test'] else '.'.join([str(config['subsample_size']), config['dataset']])
 
 def count_input_seqs(infilename):
 	with open(infilename, 'r') as infile:
@@ -23,8 +23,9 @@ printrefs = {'t', 'f'}
 
 rule all:
 	input:
-		expand('{input_dir}/{dataset}.{ext}', dataset=dataset, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
-		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=dataset, weight=weight, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
+		expand('{input_dir}/{dataset}.{ext}', dataset=datasets, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
+		expand("{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}", output_dir=output_dir, dataset=datasets, weight=weight, size=sizes, iter=iters, ext=['fasta','count_table', 'dist']),
+		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=datasets, weight=weight, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
 
 rule get_dists:
 	input:
@@ -54,9 +55,7 @@ rule prep_weighted_subsample:
 		dist="{input_dir}/{{dataset}}.dist".format(input_dir=input_dir),
 		accnos="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
-		fasta="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.fasta",
-		count="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.count_table",
-		dist="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.dist"
+		expand("{{output_dir}}/dataset-as-reference/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/sample.{ext}", ext=['fasta','count_table', 'dist'])
 	shell:
 		'mothur "#set.seed(seed={iter}}); '
 		'set.dir(output={output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/); '
