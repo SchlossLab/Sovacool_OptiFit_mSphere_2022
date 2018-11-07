@@ -18,11 +18,13 @@ weight = config['weight']
 sizes = [math.floor(num_seqs * i/100) for i in range(5,10,5)]
 iters = range(config['iterations'])
 reps = range(config['replicates'])
+methods = {'open', 'closed'}
+printrefs = {'t', 'f'}
 
 rule all:
 	input:
 		expand('{input_dir}/{dataset}.{ext}', dataset=dataset, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
-		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=dataset, weight=weight, size=sizes, iter=iters, rep=reps, method={'open', 'closed'}, printref={'t', 'f'}, ext={'list', 'steps', 'sensspec'})
+		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=dataset, weight=weight, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
 
 rule get_dists:
 	input:
