@@ -16,6 +16,7 @@ Activate the environment before running any code:
 ```
 source activate OptiFitAnalysis
 ```
+Be sure to activate the environment from the login node before submitting jobs on the cluster.
 
 Install new packages with:
 ```
