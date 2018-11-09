@@ -8,7 +8,7 @@ require(readr)
 
 filename_counts <- snakemake@input[['count']]
 filename_output <- snakemake@output[[1]]
-size <- as.numeric(snakemake@params[['size']])
+size <- as.numeric(snakemake@params[['num_seqs']])
 weight <- snakemake@params[['weight']]
 filename_dists <- snakemake@input[['dist']]
 
@@ -32,7 +32,7 @@ if (weight == "none") {
 } else if (weight == "sample-dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
   dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
-  
+
   #Each row of a dist file is a pair of sequences that are pairwise close under our threshold
   #Since we want the total number of distances for each sequence, we need to check both columns
   #for a given sequence. Do this by simply stacking both columns and counting the number of occurences
@@ -44,19 +44,19 @@ if (weight == "none") {
     mutate(count = n()) %>%
     unique() %>% #Don't need duplicate rows
     ungroup() #Have to remove groups to do sample_n
-  
+
   sample <- dplyr::sample_n(dist_seqs, size, weight = dist_seqs$count)
 } else if(weight == "ref-dists") {
   #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
   #and use the leftovers as the sample
   dists <- readr::read_delim(file = filename_dists, delim = " ", col_names = FALSE)
-  
+
   dist_seqs <- tibble(Representative_Sequence = c(dists$X1, dists$X2, count_table$Representative_Sequence)) %>%
     group_by(Representative_Sequence) %>% #Group so that mutate knows what to count
     mutate(count = n()) %>%
     unique() %>% #Don't need duplicate rows
     ungroup() #Have to remove groups to do sample_n
-  
+
   sample_complement <- dplyr::sample_n(dist_seqs, size = nrow(dist_seqs)-size, weight = dist_seqs$count)
   sample <- dplyr::filter(dist_seqs, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 }
