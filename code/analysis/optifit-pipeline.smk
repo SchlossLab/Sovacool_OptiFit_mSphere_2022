@@ -47,8 +47,8 @@ rule get_dists:
 
 rule split_weighted_subsample:
 	input:
-		count="{input_dir}/{dataset}.count_table",
-		dist="{input_dir}/{dataset}.dist"
+		count="{input_dir}/{{dataset}}/{{dataset}}.count_table".format(input_dir=input_dir),
+		dist="{input_dir}/{{dataset}}/{{dataset}}.dist".format(input_dir=input_dir)
 	params:
 		size="{size}",
 		weight="{weight}"
@@ -59,12 +59,12 @@ rule split_weighted_subsample:
 
 rule prep_weighted_subsample:
 	input:
-		fasta="{input_dir}/{dataset}.fasta",
-		count="{input_dir}/{dataset}.count_table",
-		dist="{input_dir}/{dataset}.dist",
+		fasta="{input_dir}/{{dataset}}/{{dataset}}.fasta".format(input_dir=input_dir),
+		count="{input_dir}/{{dataset}}/{{dataset}}.count_table".format(input_dir=input_dir),
+		dist="{input_dir}/{{dataset}}/{{dataset}}.dist".format(input_dir=input_dir),
 		accnos="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
-		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}{}_weight-{{weight}}_size-{{size}}_i-{{iter}}/sample.{ext}", ext=['fasta','count_table', 'dist'])
+		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/sample.{ext}", ext=['fasta','count_table', 'dist'])
 	shell:
 		'mothur "#set.seed(seed={iter}}); '
 		'set.dir(output={output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/); '
@@ -74,12 +74,12 @@ rule prep_weighted_subsample:
 
 rule prep_reference_from_dataset:
 	input:
-		fasta="{input_dir}/{dataset}.fasta",
-		count="{input_dir}/{dataset}.count_table",
-		dist="{input_dir}/{dataset}.dist",
+		fasta="{input_dir}/{{dataset}}/{{dataset}}.fasta".format(input_dir=input_dir),
+		count="{input_dir}/{{dataset}}/{{dataset}}.count_table".format(input_dir=input_dir),
+		dist="{input_dir}/{{dataset}}/{{dataset}}.dist".format(input_dir=input_dir),
 		accnos="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
-		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}{}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.{ext}", ext={"accnos", 'count_table', 'dist', 'fasta'})
+		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.{ext}", ext={"accnos", 'count_table', 'dist', 'fasta'})
 	shell:
 		'mothur "#set.seed(seed={iter}); '
 		'set.dir(output={output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/); '
@@ -93,7 +93,7 @@ rule cluster_samples:
 		count="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.count_table",
 		column="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.dist"
 	output:
-		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}{}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	shell:
 		'mothur "#set.seed(seed={rep}); '
 		'set.dir(output={output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/); '
@@ -104,7 +104,7 @@ rule cluster_reference:
 		count="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.count_table",
 		column="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.dist"
 	output:
-		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}{}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	shell:
 		'mothur "#set.seed(seed={rep}); '
 		'set.dir(output={output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/); '
@@ -112,15 +112,15 @@ rule cluster_reference:
 
 rule fit:
 	input:
-		reflist='reference.opti_mcc.list',
-		refcolumn='reference.dist',
-		refcount='reference.count_table',
-		reffasta='reference.fasta',
-		fasta='sample.fasta',
-		count='sample.count_table',
-		column='sample.dist',
+		reflist='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.opti_mcc.list',
+		refcolumn='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.dist',
+		refcount='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.count_table',
+		reffasta='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.fasta',
+		fasta='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.fasta',
+		count='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.count_table',
+		column='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.dist',
 	output:
-		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}{}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	shell:
 		'mothur "set.seed(seed={rep}); '
 		'set.dir(input={output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/, output={output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/); '
