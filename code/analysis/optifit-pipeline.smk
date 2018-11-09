@@ -3,43 +3,54 @@
 import math
 import os
 
-configfile: 'config_soil.yaml'
+configfile: 'config_test.yaml'
 
-input_dir = os.path.join(config['input_dir'], config['dataset'])
-output_dir = os.path.join(config['output_dir'], config['dataset'])
-datasets = config['dataset'] if not config['subsample_test'] else '.'.join([str(config['subsample_size']), config['dataset']])
-
-def count_input_seqs(infilename):
-	with open(infilename, 'r') as infile:
-		num_seqs = len([line for line in infile if line[0] == '>'])
-	return num_seqs
-num_seqs = count_input_seqs(os.path.join(input_dir, dataset + '.fasta'))
 weight = config['weight']
-sizes = [math.floor(num_seqs * i/100) for i in range(5,10,5)]
 iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
 
+class Dataset:
+	def __init__(self, name, input_dir, output_dir):
+		self.name = name
+		self.input_dir = input_dir
+		self.output_dir = output_dir
+		self.num_seqs = self.count_input_seqs()
+		self.sizes = [math.floor(self.num_seqs * i/100) for i in range(5,11,5)] 
+
+	def count_input_seqs(self):
+		with open(os.path.join(self.input_dir, self.name + '.fasta'), 'r') as infile:
+			num_seqs = len([line for line in infile if line[0] == '>'])
+		return num_seqs
+
+datasets = dict()
+for dataset_name in config['datasets']:
+	input_dir = os.path.join(config['input_dir'], dataset_name)
+	output_dir = os.path.join(config['output_dir'], dataset_name)
+	name = dataset_name if not config['subsample_test'] else '.'.join([str(config['subsample_size']), dataset_name])
+	print(name, input_dir, output_dir)
+	datasets[name] = Dataset(name, input_dir, output_dir)
+
 rule all:
 	input:
-		expand('{input_dir}/{dataset}.{ext}', dataset=datasets, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
-		expand("{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}", output_dir=output_dir, dataset=datasets, weight=weight, size=sizes, iter=iters, ext=['fasta','count_table', 'dist']),
-		expand('{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=datasets, weight=weight, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
+		['{input_dir}/{dataset}.{ext}'.format( dataset=datasets[name], input_dir=datasets[name].input_dir, ext=extension) for name in datasets for extension in {'fasta', 'dist', 'count_table'}],
+		["{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}".format(output_dir=datasets[name].output_dir, dataset=name, weight=weight, size=size, iter=iter, ext=ext) for name in datasets for size in datasets[name].sizes for iter in iters for ext in {'fasta','count_table', 'dist'}],
+		['{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}'.format( output_dir=datasets[name].output_dir, dataset=name, weight=weight, size=size, iter=iter, rep=rep, method=method, printref=printref, ext=ext) for name in datasets for size in datasets[name].sizes for iter in iters for rep in reps for method in methods for printref in printrefs for ext in {'list', 'steps', 'sensspec'}]
 
 rule get_dists:
 	input:
-		'{input_dir}/{{dataset}}.fasta'.format(input_dir=input_dir)
+		'{input_dir}/{dataset}.fasta'
 	output:
-		'{input_dir}/{{dataset}}.dist'.format(input_dir=input_dir)
+		'{input_dir}/{dataset}.dist'
 	shell:
 		'mothur "#set.dir(input={input_dir}, output={input_dir}); '
 		'dist.seqs(fasta={dataset}.fasta, cutoff=0.03);"'
 
 rule split_weighted_subsample:
 	input:
-		count="{input_dir}/{{dataset}}.count_table".format(input_dir=input_dir),
-		dist="{input_dir}/{{dataset}}.dist".format(input_dir=input_dir)
+		count="{input_dir}/{dataset}.count_table",
+		dist="{input_dir}/{dataset}.dist"
 	params:
 		size="{size}",
 		weight="{weight}"
@@ -50,9 +61,9 @@ rule split_weighted_subsample:
 
 rule prep_weighted_subsample:
 	input:
-		fasta="{input_dir}/{{dataset}}.fasta".format(input_dir=input_dir),
-		count="{input_dir}/{{dataset}}.count_table".format(input_dir=input_dir),
-		dist="{input_dir}/{{dataset}}.dist".format(input_dir=input_dir),
+		fasta="{input_dir}/{{dataset}}.fasta",
+		count="{input_dir}/{{dataset}}.count_table",
+		dist="{input_dir}/{{dataset}}.dist",
 		accnos="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
 		expand("{{output_dir}}/dataset-as-reference/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/sample.{ext}", ext=['fasta','count_table', 'dist'])
