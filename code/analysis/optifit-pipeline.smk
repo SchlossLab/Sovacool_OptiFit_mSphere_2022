@@ -93,7 +93,7 @@ rule prep_reference_from_dataset:
 		iter="{iter}"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); '
-		'set.dir(output={prams.output_dir}); '
+		'set.dir(output={params.output_dir}); '
 		'remove.seqs(fasta={input.fasta}, count={input.count}, accnos={input.accnos}); '
 		'list.seqs(fasta=current); '
 		'get.dists(column={input.dist}, accnos=current); '
