@@ -42,10 +42,10 @@ rule get_dists:
 	output:
 		'{input_dir}/{dataset}/{dataset}.dist'
 	params:
-		dataset='{dataset}'
+		output_dir='{input_dir}/{dataset}/{dataset}/'
 	shell:
-		'mothur "#set.dir(input={input_dir}/{params.dataset}/, output={input_dir}/{params.dataset}/); '
-		'dist.seqs(fasta={params.dataset}.fasta, cutoff=0.03);"'
+		'mothur "#set.dir(output={params.output_dir}); '
+		'dist.seqs(fasta={input[0]}, cutoff=0.03);"'
 
 rule split_weighted_subsample:
 	input:
@@ -68,14 +68,11 @@ rule prep_weighted_subsample:
 	output:
 		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/sample.{ext}", ext=['fasta','count_table', 'dist'])
 	params:
-		dataset="{dataset}",
-		output_dir="{output_dir}",
-		weight="{weight}",
-		size="{size}",
+		output_dir="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_size-{size}_i-{iter}/",
 		iter="{iter}"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); '
-		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/); '
+		'set.dir(output={params.output_dir}); '
 		'get.seqs(accnos={input.accnos}, fasta={input.fasta}, count={input.count}); '
 		'get.dists(column={input.dist}, accnos=current); '
 		'rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample)"'
@@ -92,14 +89,11 @@ rule prep_reference_from_dataset:
 		size="\d+",
 		iter="\d+"
 	params:
-		dataset="{dataset}",
-		output_dir="{output_dir}",
-		weight="{weight}",
-		size="{size}",
+		output_dir="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/",
 		iter="{iter}"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); '
-		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/); '
+		'set.dir(output={prams.output_dir}); '
 		'remove.seqs(fasta={input.fasta}, count={input.count}, accnos={input.accnos}); '
 		'list.seqs(fasta=current); '
 		'get.dists(column={input.dist}, accnos=current); '
@@ -116,15 +110,11 @@ rule cluster_samples:
 		iter="\d+",
 		rep="\d+"
 	params:
-		dataset="{dataset}",
-		output_dir='{output_dir}',
-		weight="{weight}",
-		size="{size}",
-		iter="{iter}",
+		output_dir='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/',
 		rep="{rep}"
 	shell:
 		'mothur "#set.seed(seed={params.rep}); '
-		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/r-{params.rep}/); '
+		'set.dir(output={params.output_dir}); '
 		'cluster(column={input.column}, count={input.count})"'
 
 rule cluster_reference:
@@ -138,15 +128,11 @@ rule cluster_reference:
 		iter="\d+",
 		rep="\d+"
 	params:
-		dataset="{dataset}",
-		output_dir='{output_dir}',
-		weight="{weight}",
-		size="{size}",
-		iter="{iter}",
+		output_dir='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/',
 		rep="{rep}"
 	shell:
 		'mothur "#set.seed(seed={params.rep}); '
-		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/r-{params.rep}/); '
+		'set.dir(output={params.output_dir}); '
 		'cluster(column={input.column}, count={input.count})"'
 
 rule fit:
@@ -165,14 +151,12 @@ rule fit:
 		iter="\d+",
 		rep="\d+"
 	params:
-		dataset="{dataset}",
-		weight="{weight}",
-		size="{size}",
-		iter="{iter}",
+		input_dir="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/",
+		output_dir="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}",
 		rep="{rep}",
 		method="{method}",
 		printref='{printref}'
 	shell:
 		'mothur "set.seed(seed={params.rep}); '
-		'set.dir(input={output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/r-{params.rep}/, output={output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/r-{params.rep}/method-{params.method}_printref-{params.printref}/); '
-		'cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={printref}, method={params.method}); '
+		'set.dir(input={params.input_dir}, output={params.output_dir}); '
+		'cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={params.printref}, method={params.method})'
