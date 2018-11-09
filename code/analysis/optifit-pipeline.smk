@@ -32,7 +32,7 @@ for dataset_name in config['datasets']:
 
 rule all:
 	input:
-		['{input_dir}/{dataset}/{dataset}.{ext}'.format( dataset=datasets[name], input_dir=input_dir, ext=extension) for name in datasets for extension in {'fasta', 'dist', 'count_table'}],
+		['{input_dir}/{dataset}/{dataset}.{ext}'.format( dataset=name, input_dir=input_dir, ext=extension) for name in datasets for extension in {'fasta', 'dist', 'count_table'}],
 		["{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}".format(output_dir=output_dir, dataset=name, weight=weight, size=size, iter=iter, ext=ext) for name in datasets for size in datasets[name].sizes for iter in iters for ext in {'fasta','count_table', 'dist'}],
 		['{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}'.format( output_dir=output_dir, dataset=name, weight=weight, size=size, iter=iter, rep=rep, method=method, printref=printref, ext=ext) for name in datasets for size in datasets[name].sizes for iter in iters for rep in reps for method in methods for printref in printrefs for ext in {'list', 'steps', 'sensspec'}]
 
