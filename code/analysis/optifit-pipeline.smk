@@ -72,12 +72,11 @@ rule prep_weighted_subsample:
 		output_dir="{output_dir}",
 		weight="{weight}",
 		size="{size}",
-		iter="{iter}",
-		rep="{rep}"
+		iter="{iter}"
 	shell:
-		'mothur "#set.seed(seed={params.iter}}); '
+		'mothur "#set.seed(seed={params.iter}); '
 		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/); '
-		'get.seqs(accnos={input.accnos}, fasta={input.fasta}, count={input.count_table}); '
+		'get.seqs(accnos={input.accnos}, fasta={input.fasta}, count={input.count}); '
 		'get.dists(column={input.dist}, accnos=current); '
 		'rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample)"'
 
@@ -89,13 +88,15 @@ rule prep_reference_from_dataset:
 		accnos="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	output:
 		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/reference.{ext}", ext={"accnos", 'count_table', 'dist', 'fasta'})
+	wildcard_constraints:
+		size="\d+",
+		iter="\d+"
 	params:
 		dataset="{dataset}",
 		output_dir="{output_dir}",
 		weight="{weight}",
 		size="{size}",
-		iter="{iter}",
-		rep="{rep}"
+		iter="{iter}"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); '
 		'set.dir(output={params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{params.weight}_size-{params.size}_i-{params.iter}/); '
@@ -110,6 +111,10 @@ rule cluster_samples:
 		column="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.dist"
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+	wildcard_constraints:
+		size="\d+",
+		iter="\d+",
+		rep="\d+"
 	params:
 		dataset="{dataset}",
 		output_dir='{output_dir}',
@@ -128,6 +133,10 @@ rule cluster_reference:
 		column="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.dist"
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+	wildcard_constraints:
+		size="\d+",
+		iter="\d+",
+		rep="\d+"
 	params:
 		dataset="{dataset}",
 		output_dir='{output_dir}',
@@ -143,14 +152,18 @@ rule cluster_reference:
 rule fit:
 	input:
 		reflist='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.opti_mcc.list',
-		refcolumn='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.dist',
-		refcount='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.count_table',
-		reffasta='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/reference.fasta',
+		refcolumn='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.dist',
+		refcount='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.count_table',
+		reffasta='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/reference.fasta',
 		fasta='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.fasta',
 		count='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.count_table',
 		column='{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/sample.dist',
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+	wildcard_constraints:
+		size="\d+",
+		iter="\d+",
+		rep="\d+"
 	params:
 		dataset="{dataset}",
 		weight="{weight}",
