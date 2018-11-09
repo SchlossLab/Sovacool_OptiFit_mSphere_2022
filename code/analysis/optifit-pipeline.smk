@@ -41,9 +41,11 @@ rule get_dists:
 		'{input_dir}/{dataset}/{dataset}.fasta'
 	output:
 		'{input_dir}/{dataset}/{dataset}.dist'
+	params:
+		dataset='{dataset}'
 	shell:
-		'mothur "#set.dir(input={input_dir}/{dataset}/, output={input_dir}/{dataset}/); '
-		'dist.seqs(fasta={dataset}.fasta, cutoff=0.03);"'
+		'mothur "#set.dir(input={input_dir}/{params.dataset}/, output={input_dir}/{params.dataset}/); '
+		'dist.seqs(fasta={params.dataset}.fasta, cutoff=0.03);"'
 
 rule split_weighted_subsample:
 	input:
