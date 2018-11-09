@@ -15,7 +15,7 @@ rule subset:
 		expand('{{input_dir}}/{{dataset}}/{{dataset}}{{subsample_size}}.{ext}', ext={'fasta', 'accnos', 'count_table'})
 	shell:
 		'mothur "#set.dir(output={input_dir}/{dataset}); '
-		'sub.sample(inputdir={input_dir}/{dataset}, fasta={dataset}.fasta, size={subsample_size}); '
+		'sub.sample(inputdir={input_dir}/{dataset}, fasta={dataset}{subsample_size}.fasta, size={subsample_size}); '
 		'list.seqs(fasta=current); '
-		'get.seqs(accnos=current, count={dataset}.count_table); '
-		'rename.file(accnos = current, fasta=current, count=current, prefix={subsample_size}.{dataset});"'
+		'get.seqs(accnos=current, count={dataset}{subsample_size}.count_table); '
+		'rename.file(accnos = current, fasta=current, count=current, prefix={dataset}{subsample_size});"'
