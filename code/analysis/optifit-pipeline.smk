@@ -43,7 +43,7 @@ rule get_dists:
 	output:
 		'{input_dir}/{dataset}/{dataset}.dist'
 	params:
-		output_dir='{input_dir}/{dataset}/{dataset}/'
+		output_dir='{input_dir}/{dataset}/'
 	shell:
 		'mothur "#set.dir(output={params.output_dir}); '
 		'dist.seqs(fasta={input[0]}, cutoff=0.03);"'
@@ -52,12 +52,14 @@ rule split_weighted_subsample:
 	input:
 		count="{input_dir}/{{dataset}}/{{dataset}}.count_table".format(input_dir=input_dir),
 		dist="{input_dir}/{{dataset}}/{{dataset}}.dist".format(input_dir=input_dir)
+	output:
+		"{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
 	params:
 		dataset="{dataset}",
 		size="{size}",
 		weight="{weight}"
-	output:
-		"{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.accnos"
+	log:
+		"logfiles/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/split_weighted_subsample.log"
 	script:
 		"weighted_subsample.R"
 
