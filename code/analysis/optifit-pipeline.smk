@@ -165,6 +165,8 @@ rule aggregate_sensspec:
 		printrefs=printrefs,
 		prefixes=['sample','reference']
 	shell:
+		"if [ -e {output[0]} ]; then rm {output[0]} ; fi ; "
+		"echo 'iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refpi	iter	type' >> {output[0]} "
 		"for weight in {params.weights}; do "
 		"	for size in {params.sizes}; do "
 		"		for iter in {params.iters}; do "
@@ -183,3 +185,13 @@ rule aggregate_sensspec:
 		"		done; "
 		"	done: "
 		"done; "
+
+rule plot_sensspec:
+	input:
+		"{output_dir}/dataset-as-reference/{dataset}/aggregate.sensspec"
+	output:
+		combo_mcc="{output_dir}/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.png",
+		mcc_full="{output_dir}/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.full.png",
+		iters="{output_dir}/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
+	script:
+		"plot_sensspec.R"
