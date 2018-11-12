@@ -13,7 +13,7 @@ iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
-sizes = [math.floor(i/100) for i in range(50,61,10)]
+sizes = [i/100 for i in range(50,61,10)]
 
 rule all:
 	input:
@@ -73,7 +73,6 @@ rule prep_reference_from_dataset:
 	output:
 		expand("{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/reference.{ext}", ext={"accnos", 'count_table', 'dist', 'fasta'})
 	wildcard_constraints:
-		size="\d+",
 		iter="\d+"
 	params:
 		output_dir="{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/",
@@ -93,7 +92,6 @@ rule cluster_samples:
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	wildcard_constraints:
-		size="\d+",
 		iter="\d+",
 		rep="\d+"
 	params:
@@ -111,7 +109,6 @@ rule cluster_reference:
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/reference.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	wildcard_constraints:
-		size="\d+",
 		iter="\d+",
 		rep="\d+"
 	params:
@@ -134,7 +131,6 @@ rule fit:
 	output:
 		expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_size-{{size}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
 	wildcard_constraints:
-		size="\d+",
 		iter="\d+",
 		rep="\d+"
 	params:
