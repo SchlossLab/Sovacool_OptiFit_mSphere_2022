@@ -7,7 +7,7 @@ configfile: 'config_test.yaml'
 
 input_dir = config['input_dir']
 output_dir = config['output_dir']
-datasets = ["{}_{}".format(dataset_name, config['subsample_size'])  for dataset_name in config['datasets'] if config['subsample_test'] else dataset_name ]
+datasets = [dataset_name if config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
 weights = config['weights']
 print('weights:', weights)
 iters = range(config['iterations'])
@@ -19,9 +19,9 @@ sizes = [math.floor(i/100) for i in range(50,56,5)]
 
 rule all:
 	input:
-		['{input_dir}/{dataset}/{dataset}.{ext}'.format( dataset=dataset, input_dir=input_dir, ext=extension) for dataset in datasets for extension in {'fasta', 'dist', 'count_table'}],
-		["{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}".format(output_dir=output_dir, dataset=dataset, weight=weights, size=size, iter=iter, ext=ext) for dataset in datasets for size in sizes for iter in iters for ext in {'fasta','count_table', 'dist'}],
-		['{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}'.format( output_dir=output_dir, dataset=dataset, weight=weights, size=size, iter=iter, rep=rep, method=method, printref=printref, ext=ext) for dataset in datasets for size in sizes for iter in iters for rep in reps for method in methods for printref in printrefs for ext in {'list', 'steps', 'sensspec'}]
+		expand('{input_dir}/{dataset}/{dataset}.{ext}', dataset=datasets, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
+		expand("{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}", output_dir=output_dir, dataset=datasets, weight=weights, size=sizes, iter=iters, ext={'fasta','count_table', 'dist'}),
+		expand('{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=datasets, weight=weights, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
 
 rule get_dists:
 	input:
