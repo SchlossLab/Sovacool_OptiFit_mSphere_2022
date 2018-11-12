@@ -9,7 +9,6 @@ input_dir = config['input_dir']
 output_dir = config['output_dir']
 datasets = [dataset_name if config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
 weights = config['weights']
-print('weights:', weights)
 iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
