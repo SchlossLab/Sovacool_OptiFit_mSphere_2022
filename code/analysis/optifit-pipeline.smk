@@ -7,35 +7,21 @@ configfile: 'config_test.yaml'
 
 input_dir = config['input_dir']
 output_dir = config['output_dir']
+datasets = ["{}_{}".format(dataset_name, config['subsample_size'])  for dataset_name in config['datasets'] if config['subsample_test'] else dataset_name ]
 weights = config['weights']
+print('weights:', weights)
 iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
 sizes = [math.floor(i/100) for i in range(50,56,5)]
 
-class Dataset:
-	def __init__(self, name, fasta_filename):
-		self.name = name
-		self.num_seqs = self.count_input_seqs(fasta_filename)
-		self.sizes = {i: math.floor(self.num_seqs * i/100) for i in range(50, 56, 5)}  # { % seqs: num seqs in cut }
-
-	def count_input_seqs(self, fasta_filename):
-		with open(fasta_filename, 'r') as infile:
-			num_seqs = len([line for line in infile if line[0] == '>'])
-		return num_seqs
-
-datasets = dict()
-for dataset_name in config['datasets']:
-	dataset_name = "{}_{}".format(dataset_name, config['subsample_size']) if config['subsample_test'] else dataset_name
-	fasta_filename = os.path.join(input_dir, dataset_name, '{}.fasta'.format(dataset_name))
-	datasets[dataset_name] = Dataset(dataset_name, fasta_filename)
 
 rule all:
 	input:
-		['{input_dir}/{dataset}/{dataset}.{ext}'.format( dataset=name, input_dir=input_dir, ext=extension) for name in datasets for extension in {'fasta', 'dist', 'count_table'}],
-		["{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}".format(output_dir=output_dir, dataset=name, weight=weights, size=size, iter=iter, ext=ext) for name in datasets for size in sizes for iter in iters for ext in {'fasta','count_table', 'dist'}],
-		['{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}'.format( output_dir=output_dir, dataset=name, weight=weights, size=size, iter=iter, rep=rep, method=method, printref=printref, ext=ext) for name in datasets for size in sizes for iter in iters for rep in reps for method in methods for printref in printrefs for ext in {'list', 'steps', 'sensspec'}]
+		['{input_dir}/{dataset}/{dataset}.{ext}'.format( dataset=dataset, input_dir=input_dir, ext=extension) for dataset in datasets for extension in {'fasta', 'dist', 'count_table'}],
+		["{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}".format(output_dir=output_dir, dataset=dataset, weight=weights, size=size, iter=iter, ext=ext) for dataset in datasets for size in sizes for iter in iters for ext in {'fasta','count_table', 'dist'}],
+		['{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}'.format( output_dir=output_dir, dataset=dataset, weight=weights, size=size, iter=iter, rep=rep, method=method, printref=printref, ext=ext) for dataset in datasets for size in sizes for iter in iters for rep in reps for method in methods for printref in printrefs for ext in {'list', 'steps', 'sensspec'}]
 
 rule get_dists:
 	input:
@@ -58,8 +44,6 @@ rule split_weighted_subsample:
 		dataset="{dataset}",
 		size="{size}",
 		weight="{weight}"
-	log:
-		"logfiles/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/split_weighted_subsample.log"
 	script:
 		"weighted_subsample.R"
 
