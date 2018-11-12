@@ -20,7 +20,8 @@ rule all:
 	input:
 		expand('{input_dir}/{dataset}/{dataset}.{ext}', dataset=datasets, input_dir=input_dir, ext={'fasta', 'dist', 'count_table'}),
 		expand("{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/sample.{ext}", output_dir=output_dir, dataset=datasets, weight=weights, size=sizes, iter=iters, ext={'fasta','count_table', 'dist'}),
-		expand('{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=datasets, weight=weights, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'})
+		expand('{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.opti_mcc.{ext}', output_dir=output_dir, dataset=datasets, weight=weights, size=sizes, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'}),
+		expand("{output_dir}/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dir, dataset=datasets, suffix={'', '.full', '.iters'})
 
 rule get_dists:
 	input:
