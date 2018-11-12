@@ -147,7 +147,7 @@ rule fit:
 		'mothur "set.seed(seed={params.rep}); '
 		'set.dir(input={params.input_dir}, output={params.output_dir}); '
 		'cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={params.printref}, method={params.method})'
-"""
+
 rule aggregate_sensspec:
 	input:
 		opticlust=expand('{{output_dir}}/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_size-{size}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', weight=weights, size=sizes, iter=iters, rep=reps, prefix=['sample', 'reference']),
@@ -170,21 +170,16 @@ rule aggregate_sensspec:
 		"		for iter in {params.iters}; do "
 		"			for rep in {params.reps}; do "
 		"				for prefix in {params.prefixes}; do "
-		"					result=$(head -2 ) "
-		REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}reference.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
-		SAMP=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_')
-		SAMP_O_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.open.ref.sensspec | tail -1)
-		SAMP_C_REF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.closed.ref.sensspec | tail -1)
-		SAMP_O_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.open.noref.sensspec | tail -1)
-		SAMP_C_NOREF=$(head -2 ${OUTPUTDIR}${REFPI}_${I}_${J}/${PREFIX}sample.closed.noref.sensspec | tail -1)
-
-		#REF and SAMP were run with opticlust, which produces sensspec files with 2 less columns than optifit
-		#Add two extra tabs at the beginning of their lines so that confusion matrix values line up
-		#REF and SAMP also have records that end in a tab, so one less tab at the end
-		echo "${REF}${REFP}	$I	$J	REF" >> $FINAL
-		echo "${SAMP}${REFP}	$I	$J	SAMP" >> $FINAL
-		echo "$SAMP_O_REF	$REFP	$I	$J	SAMP_O_REF" >> $FINAL
-		echo "$SAMP_C_REF	$REFP	$I	$J	SAMP_C_REF" >> $FINAL
-		echo "$SAMP_O_NOREF	$REFP	$I	$J	SAMP_O_NOREF" >> $FINAL
-		echo "$SAMP_C_NOREF	$REFP	$I	$J	SAMP_C_NOREF" >> $FINAL
-"""
+		"					opticlust=$(head -2 {params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${weight}_size-${size}_i-${iter}/r-${rep}/${prefix}.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_' ); "
+		"					echo '${opticlust}${size} ${iter} ${rep} ${prefix}' >> {output[0]}; "
+		"				done; "
+		"				for method in {params.methods}; do "
+		"					for printref in {params.printrefs}; do "
+		"						optifit=$(head -2 {params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${weight}_size-${size}_i-${iter}/r-${rep}/method-${method}_printref-${printref}/sample.opti_mcc.sensspec | tail -1); "
+		"						echo '${optifit} ${size} ${iter} ${rep} method-${method}_printref-${printref}' >> ${output[0]}; "
+		"					done; "
+		"				done; "
+		"			done; "
+		"		done; "
+		"	done: "
+		"done; "
