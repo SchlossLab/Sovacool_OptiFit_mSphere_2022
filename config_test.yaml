@@ -7,5 +7,5 @@ weights:
 db_version: v132
 subsample_test: True
 subsample_size: 1000
-iterations: 2
-replicates: 2
+iterations: 1
+replicates: 1
