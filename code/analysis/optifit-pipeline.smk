@@ -13,8 +13,7 @@ iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
-sizes = [math.floor(i/100) for i in range(50,56,5)]
-
+sizes = [math.floor(i/100) for i in range(50,61,10)]
 
 rule all:
 	input:
@@ -168,16 +167,17 @@ rule aggregate_sensspec:
 	shell:
 		"if [ -e {output[0]} ]; then rm {output[0]} ; fi ; "
 		"echo 'iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	refp	refpi	iter	type' >> {output[0]} "
-		"for weight in {params.weights}; do "
-		"	for size in {params.sizes}; do "
-		"		for iter in {params.iters}; do "
-		"			for rep in {params.reps}; do "
-		"				for prefix in {params.prefixes}; do "
+		"sizes=({params.sizes}); weights=({params.weights}); iters=({params.iters}); reps=({params.reps}); methods=({params.methods}); printrefs=({params.printrefs}); prefixes=({params.prefixes}); "
+		"for weight in ${{weights[@]}}; do "
+		"	for size in ${{sizes[@]}}; do "
+		"		for iter in ${{iters[@]}}; do "
+		"			for rep in ${{reps[2]}}; do "
+		"				for prefix in ${{prefixes[@]}}; do "
 		"					opticlust=$(head -2 {params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_size-${{size}}_i-${{iter}}/r-${{rep}}/${{prefix}}.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_' ); "
 		"					echo '${{opticlust}}${{size}} ${{iter}} ${{rep}} ${{prefix}}' >> {output[0]}; "
 		"				done; "
-		"				for method in {params.methods}; do "
-		"					for printref in {params.printrefs}; do "
+		"				for method in ${{methods[@]}}; do "
+		"					for printref in ${{params.printrefs[@]}}; do "
 		"						optifit=$(head -2 {params.output_dir}/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_size-${{size}}_i-${{iter}}/r-${{rep}}/method-${{method}}_printref-${{printref}}/sample.opti_mcc.sensspec | tail -1); "
 		"						echo '${{optifit}} ${{size}} ${{iter}} ${{rep}} method-${{method}}_printref-${{printref}}' >> {output[0]}; "
 		"					done; "
