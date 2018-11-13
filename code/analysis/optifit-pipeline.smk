@@ -7,7 +7,7 @@ configfile: 'config_test.yaml'
 
 input_dir = config['input_dir']
 output_dir = config['output_dir']
-datasets = [dataset_name if config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
+datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
 weights = config['weights']
 iters = range(config['iterations'])
 reps = range(config['replicates'])
