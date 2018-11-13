@@ -64,5 +64,4 @@ reference <- dplyr::filter(count_table, !(Representative_Sequence %in% sample$Re
 
 #Create .accnos files for both the sample, and the sample_complement for later use in mothur
 #.accnos files contain a column of sequence names and nothing else
-readr::write_tsv(dplyr::select(sample, "Representative_Sequence"), col_names = FALSE,
-                 path = paste(filename_output, sep = "/"))
+readr::write_tsv(dplyr::select(sample, "Representative_Sequence"), col_names = FALSE, path = filename_output)
