@@ -1,4 +1,4 @@
-cluster: "pbs-submit.py --depend \"{dependencies}\""
+cluster: "pbs-submit.py --depend \"{dependencies}\" -N OptiFitAnalysis -A pschloss_fluxod -q fluxod -l qos=flux -M sovacool@umich.edu -m abe -j oe -V -o logfiles/ -w $PBS_O_WORKDIR "
 cluster-status: "pbs-status.py"
 jobscript: "pbs-jobscript.sh"
 jobs: 5000
