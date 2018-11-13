@@ -14,7 +14,7 @@ make_plot <- function(dataset, input_filename, output_filenames) {
   sensspec <- readr::read_tsv(file = input_filename) %>%
     dplyr::select(c(4:ncol(.))) #First 3 columns don't contain any useful information
   
-  combo_mcc <- ggplot2::ggplot(data=sensspec, ggplot2::aes(x = refp, y = mcc, color = type)) +
+  combo_mcc <- ggplot2::ggplot(data=sensspec, ggplot2::aes(x = reference_fraction, y = mcc, color = type)) +
     ggplot2::geom_jitter(width = 1, height = 0) +
     ggplot2::labs(title = title) +
     ggplot2::ylab("MCC") +
@@ -24,7 +24,7 @@ make_plot <- function(dataset, input_filename, output_filenames) {
   ggplot2::ggsave(output_filenames[["combo_mcc"]],
                   plot = combo_mcc, width = 6.5, height = 4.5, unit = "in")
   
-  combo_mcc_full <- ggplot2::ggplot(data=sensspec, ggplot2::aes(x = refp, y = mcc, color = type)) +
+  combo_mcc_full <- ggplot2::ggplot(data=sensspec, ggplot2::aes(x = reference_fraction, y = mcc, color = type)) +
     ggplot2::geom_jitter(width = 1, height = 0) +
     ggplot2::labs(title = title) +
     ggplot2::ylab("MCC") +
@@ -35,7 +35,7 @@ make_plot <- function(dataset, input_filename, output_filenames) {
   ggplot2::ggsave(output_filenames[["mcc_full"]],
                   plot = combo_mcc_full, width = 6.5, height = 4.5, unit = "in")
   
-  iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, refp == 50 & (type == "SAMP" | type == "SAMP_O_NOREF")),
+  iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, reference_fraction == 50 & (type == "SAMP" | type == "SAMP_O_NOREF")),
                            ggplot2::aes(x = refpi, y = mcc, color = type)) +
     ggplot2::geom_jitter(width = .1, height = 0, size = 3) +
     ggplot2::labs(title = title) +
