@@ -1,5 +1,4 @@
-#Usage: Rscript weighted_subsample.R filename size weight
-#
+#Usage: call from snakemake script directive
 #Takes a count_table file and takes a random subsample based on abundance
 #Used to separate a dataset into a reference and a sample for optifit
 #
@@ -7,10 +6,10 @@ require(dplyr)
 require(readr)
 
 filename_counts <- snakemake@input[['count']]
+filename_dists <- snakemake@input[['dist']]
 filename_output <- snakemake@output[[1]]
 size_fraction <- as.numeric(snakemake@params[['size']])
 weight <- snakemake@params[['weight']]
-filename_dists <- snakemake@input[['dist']]
 
 #filename <- "data\\mice\\mice.count_table"
 #size <- 10000
