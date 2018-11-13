@@ -8,7 +8,7 @@ require(readr)
 filename_counts <- snakemake@input[['count']]
 filename_dists <- snakemake@input[['dist']]
 filename_output <- snakemake@output[[1]]
-size_fraction <- as.numeric(snakemake@params[['size']])
+reference_fraction <- as.numeric(snakemake@params[['reference_fraction']])
 weight <- snakemake@params[['weight']]
 
 #filename <- "data\\mice\\mice.count_table"
@@ -20,13 +20,13 @@ count_table <- readr::read_tsv(file = filename_counts)
 
 if (weight == "none") {
   #Take an unweighted random sample
-  sample <- dplyr::sample_frac(count_table, size_fraction)
+  sample <- dplyr::sample_frac(count_table, reference_fraction)
 } else if (weight == "sample-abundance") {
   #Take a random subsampling weighted by total abundance
-  sample <- dplyr::sample_frac(count_table, size_fraction, weight = count_table$total)
+  sample <- dplyr::sample_frac(count_table, reference_fraction, weight = count_table$total)
 } else if (weight == "ref-abundance") {
   #Take a random subsampling of the complement of the sample by total abundance, and use the leftovers as sample
-  sample_complement <- dplyr::sample_frac(count_table, size = 1-size_fraction, weight = count_table$total)
+  sample_complement <- dplyr::sample_frac(count_table, size = 1-reference_fraction, weight = count_table$total)
   sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 } else if (weight == "sample-dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
@@ -44,7 +44,7 @@ if (weight == "none") {
     unique() %>% #Don't need duplicate rows
     ungroup() #Have to remove groups to do sample_n
 
-  sample <- dplyr::sample_frac(dist_seqs, size_fraction, weight = dist_seqs$count)
+  sample <- dplyr::sample_frac(dist_seqs, reference_fraction, weight = dist_seqs$count)
 } else if(weight == "ref-dists") {
   #Take a random subsample of the complement of the sample weighted by number of pairwise connections to other seqs,
   #and use the leftovers as the sample
@@ -56,7 +56,7 @@ if (weight == "none") {
     unique() %>% #Don't need duplicate rows
     ungroup() #Have to remove groups to do sample_n
 
-  sample_complement <- dplyr::sample_frac(dist_seqs, size = 1-size_fraction, weight = dist_seqs$count)
+  sample_complement <- dplyr::sample_frac(dist_seqs, size = 1-reference_fraction, weight = dist_seqs$count)
   sample <- dplyr::filter(dist_seqs, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 }
 
