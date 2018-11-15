@@ -57,7 +57,7 @@ rule prep_weighted_subsample:
 		"{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.count_table",
 		temp("{output_dir}/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.dist")
 	params:
-		output_dir="{output_dir}/dataset-as-reference/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/",
+		output_dir="{output_dir}/{dataset}/dataset-as-reference/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/",
 		iter="{iter}"
 	wildcard_constraints:
 		iter="\d+"
