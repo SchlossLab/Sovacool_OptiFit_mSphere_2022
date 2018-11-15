@@ -27,6 +27,8 @@ rule get_dists:
 		temp('{input_dir}/{dataset}/{dataset}.dist')
 	params:
 		output_dir='{input_dir}/{dataset}/'
+	benchmark:
+		'benchmarks/{input_dir}/{dataset}/get_dists.log'
 	shell:
 		'mothur "#set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
 
@@ -42,6 +44,8 @@ rule split_weighted_subsample:
 		weight="{weight}"
 	wildcard_constraints:
 		iter="\d+"
+	benchmark:
+		'benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/split_weighted_subsample.log'
 	script:
 		"weighted_subsample.R"
 
@@ -60,6 +64,8 @@ rule prep_weighted_subsample:
 		iter="{iter}"
 	wildcard_constraints:
 		iter="\d+"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/prep_weighted_subsample.log"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); set.dir(output={params.output_dir}); get.seqs(accnos={input.accnos}, fasta={input.fasta}, count={input.count}); get.dists(column={input.dist}, accnos=current); rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample)"'
 
@@ -74,11 +80,13 @@ rule prep_reference_from_dataset:
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference.count_table",
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference.fasta",
 		temp("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference.dist")
-	wildcard_constraints:
-		iter="\d+"
 	params:
 		output_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/",
 		iter="{iter}"
+	wildcard_constraints:
+		iter="\d+"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/prep_reference_from_dataset.log"
 	shell:
 		'mothur "#set.seed(seed={params.iter}); set.dir(output={params.output_dir}); remove.seqs(fasta={input.fasta}, count={input.count}, accnos={input.accnos}); list.seqs(fasta=current); get.dists(column={input.dist}, accnos=current); rename.file(fasta=current, count=current, column=current, accnos=current, prefix=reference)"'
 
@@ -88,13 +96,15 @@ rule cluster:
 		column="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/{sampleref}.dist"
 	output:
 		expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/{{sampleref}}.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+	params:
+		output_dir='results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/',
+		rep="{rep}"
 	wildcard_constraints:
 		iter="\d+",
 		rep="\d+",
 		sampleref="\w+"
-	params:
-		output_dir='results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/',
-		rep="{rep}"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{sampleref}.cluster.log"
 	shell:
 		'mothur "#set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count})"'
 
@@ -112,13 +122,15 @@ rule fit:
 		temp(expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/sample.{suffix}.dist', suffix={'pick', 'fit'}))
 	params:
 		input_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/",
-		output_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}",
+		output_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/",
 		rep="{rep}",
 		method="{method}",
 		printref='{printref}'
 	wildcard_constraints:
 		iter="\d+",
 		rep="\d+"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/fit.log"
 	shell:
 		'mothur "set.seed(seed={params.rep}); set.dir(input={params.input_dir}, output={params.output_dir}); cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={params.printref}, method={params.method})'
 
@@ -140,6 +152,8 @@ rule aggregate_sensspec:
 	wildcard_constraints:
 		iter="\d+",
 		rep="\d+"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/aggregate_sensspec.log"
 	shell:
 		"if [ -e {output[0]} ]; then rm {output[0]} ; fi ; "
 		"echo 'iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	reference_fraction	iter	rep	type' >> {output[0]} "
@@ -170,5 +184,7 @@ rule plot_sensspec:
 		combo_mcc="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.png",
 		mcc_full="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.full.png",
 		iters="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
+	benchmark:
+		"benchmarks/dataset-as-reference/{dataset}/plot_sensspec.log"
 	script:
 		"plot_sensspec.R"
