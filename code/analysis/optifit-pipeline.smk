@@ -106,7 +106,7 @@ rule cluster:
 	benchmark:
 		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{sampleref}.cluster.log"
 	shell:
-		'mothur "#set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count})"'
+		'mothur "#set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count}, cutoff=0.3)"'
 
 rule fit:
 	input:
