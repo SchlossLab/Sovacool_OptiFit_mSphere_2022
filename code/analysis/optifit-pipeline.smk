@@ -67,7 +67,7 @@ rule prep_weighted_subsample:
 	benchmark:
 		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/prep_weighted_subsample.log"
 	shell:
-		'mothur "#set.seed(seed={params.iter}); set.dir(output={params.output_dir}); get.seqs(accnos={input.accnos}, fasta={input.fasta}, count={input.count}); get.dists(column={input.dist}, accnos=current); rename.file(fasta=current, count=current, accnos = current, column=current, prefix=sample)"'
+		'mothur "#set.seed(seed={params.iter}); set.dir(output={params.output_dir}); get.seqs(accnos={input.accnos}, fasta={input.fasta}); get.seqs(accnos={input.accnos}, count={input.count}); get.dists(column={input.dist}, accnos=current); rename.file(fasta=current, count=current, accnos=current, column=current, prefix=sample)"'
 
 rule prep_reference_from_dataset:
 	input:
