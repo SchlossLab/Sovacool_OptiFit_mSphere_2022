@@ -71,9 +71,9 @@ rule prep_weighted_subsample:
 
 rule prep_reference_from_dataset:
 	input:
-		fasta="{input_dir}/{{dataset}}/{{dataset}}.fasta".format(input_dir=input_dir),
-		count="{input_dir}/{{dataset}}/{{dataset}}.count_table".format(input_dir=input_dir),
-		dist="{input_dir}/{{dataset}}/{{dataset}}.dist".format(input_dir=input_dir),
+		fasta=f"{input_dir}/{{dataset}}/{{dataset}}.fasta",
+		count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
+		dist=f"{input_dir}/{{dataset}}/{{dataset}}.dist",
 		accnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.accnos"
 	output:
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference.accnos",
