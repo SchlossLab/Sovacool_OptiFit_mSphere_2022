@@ -132,7 +132,7 @@ rule fit:
 	benchmark:
 		"benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/fit.log"
 	shell:
-		'mothur "set.seed(seed={params.rep}); set.dir(input={params.input_dir}, output={params.output_dir}); cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={params.printref}, method={params.method})'
+		'mothur "set.seed(seed={params.rep}); set.dir(input={params.input_dir}, output={params.output_dir}); cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, refcount={input.refcount}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={params.printref}, method={params.method})"'
 
 rule aggregate_sensspec:
 	input:
