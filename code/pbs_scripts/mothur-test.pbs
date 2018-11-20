@@ -20,4 +20,12 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-time mothur "#set.dir(output=test/); get.dists(column=data/soil_1000/soil_1000.dist, accnos=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.5_i-0/sample.accnos) "
+accnos=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.5_i-0/sample.accnos
+fasta=data/soil_1000/soil_1000.fasta
+count=data/soil_1000/soil_1000.count_table
+column=data/soil_1000/soil_1000.dist
+time mothur "#set.dir(output=test/);
+  remove.seqs(fasta=${fasta}, count=${count}, accnos=${accnos});
+	list.seqs(fasta=current);
+	get.dists(column=${dist}, accnos=current);
+	rename.file(fasta=current, count=current, column=current, accnos=current, prefix=reference);"
