@@ -1,3 +1,4 @@
+base_dir: /home/sovacool/schloss-lab-sovacool/OptiFitAnalysis/snakemake-analysis
 input_dir: data
 datasets:
 - soil
