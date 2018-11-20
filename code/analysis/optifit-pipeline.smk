@@ -167,9 +167,7 @@ rule aggregate_sensspec:
 								with open(input_filename, 'r') as input_file:
 									for line in input_file:
 										pass
-									opticlust_result = re.sub("\(\S*\t\S*\t\)\(.*\)", "\t\1\t\2", line)
-									if len(header_str.split()) != (len(modded_line.split() + 4)):
-										raise ValueError(f"regex didn't work for {input_filename}")
+									opticlust_result = re.sub("\(\S*\t\S*\t\)\(.*\)", "\t\1\t\2", line.strip())
 									output_file.write(f"{opticlust_result} {reference_fraction} {iter} {rep} {prefix}\n")
 							for method in params.methods:
 								for printref in params.printrefs:
@@ -177,6 +175,7 @@ rule aggregate_sensspec:
 									with open(input_filename, 'r') as input_file:
 										for line in input_file:
 											pass
+										line = line.strip()
 										output_file.write(f"{line} {reference_fraction} {iter} {rep} method-{method}_printref{printref}\n")
 
 
