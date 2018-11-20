@@ -178,30 +178,6 @@ rule aggregate_sensspec:
 										line = line.strip()
 										output_file.write(f"{line} {reference_fraction} {iter} {rep} method-{method}_printref{printref}\n")
 
-
-"""	shell:
-		"if [ -e {output[0]} ]; then rm {output[0]} ; fi ; "
-		"echo 'iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	reference_fraction	iter	rep	type' >> {output[0]} ; "
-		"reference_fractions=({params.reference_fractions}); weights=({params.weights}); iters=({params.iters}); reps=({params.reps}); methods=({params.methods}); printrefs=({params.printrefs}); prefixes=({params.prefixes}); "
-		"for weight in ${{weights[@]}}; do "
-		"	for reference_fraction in ${{reference_fractions[@]}}; do "
-		"		for iter in ${{iters[@]}}; do "
-		"			for rep in ${{reps[@]}}; do "
-		"				for prefix in ${{prefixes[@]}}; do "
-		"					opticlust=$(head -2 results/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_reference-fraction-${{reference_fraction}}_i-${{iter}}/r-${{rep}}/${{prefix}}.opti_mcc.sensspec | tail -1 | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_'); "
-		"					echo '${{opticlust}}${{reference_fraction}} ${{iter}} ${{rep}} ${{prefix}}' >> {output[0]}; "
-		"				done; "
-		"				for method in ${{methods[@]}}; do "
-		"					for printref in ${{params.printrefs[@]}}; do "
-		"						optifit=$(head -2 results/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_reference-fraction-${{reference_fraction}}_i-${{iter}}/r-${{rep}}/method-${{method}}_printref-${{printref}}/sample.optifit_mcc.sensspec | tail -1); "
-		"						echo '${{optifit}} ${{reference_fraction}} ${{iter}} ${{rep}} method-${{method}}_printref-${{printref}}' >> {output[0]}; "
-		"					done; "
-		"				done; "
-		"			done; "
-		"		done; "
-		"	done: "
-		"done; "
-"""
 rule plot_sensspec:
 	input:
 		"results/dataset-as-reference/{dataset}/aggregate.sensspec"
