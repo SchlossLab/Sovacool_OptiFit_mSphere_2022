@@ -167,7 +167,7 @@ rule aggregate_sensspec:
 		"				done; "
 		"				for method in ${{methods[@]}}; do "
 		"					for printref in ${{params.printrefs[@]}}; do "
-		"						optifit=$(head -2 results/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_reference-fraction-${{reference_fraction}}_i-${{iter}}/r-${{rep}}/method-${{method}}_printref-${{printref}}/sample.opti_mcc.sensspec | tail -1); "
+		"						optifit=$(head -2 results/dataset-as-reference/{params.dataset}/{params.dataset}_weight-${{weight}}_reference-fraction-${{reference_fraction}}_i-${{iter}}/r-${{rep}}/method-${{method}}_printref-${{printref}}/sample.optifit_mcc.sensspec | tail -1); "
 		"						echo '${{optifit}} ${{reference_fraction}} ${{iter}} ${{rep}} method-${{method}}_printref-${{printref}}' >> {output[0]}; "
 		"					done; "
 		"				done; "
