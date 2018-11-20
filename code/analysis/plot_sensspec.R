@@ -48,6 +48,6 @@ make_plot <- function(dataset, input_filename, output_filenames) {
 }
 
 dataset <- snakemake@params[["dataset"]]
-input_filename <- snakemake@input[[0]]
+input_filename <- snakemake@input[[1]]
 output_filenames <- snakemake@output
 make_plot(dataset, input_filename, output_filenames)
