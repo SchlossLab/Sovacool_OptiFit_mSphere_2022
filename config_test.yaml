@@ -1,4 +1,3 @@
-base_dir: /nfs/turbo/schloss-lab/sovacool/OptiFitAnalysis/snakemake-analysis
 input_dir: data
 datasets:
 - soil
