@@ -176,7 +176,7 @@ rule aggregate_sensspec:
 										for line in input_file:
 											pass
 										line = line.strip()
-										output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref{printref}\n")
+										output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref-{printref}\n")
 
 rule plot_sensspec:
 	input:
