@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake -j 8 --forceall -s code/analysis/optifit-pipeline.smk
+snakemake -j 8 --forcerun prep_reference_from_dataset -s code/analysis/optifit-pipeline.smk 
