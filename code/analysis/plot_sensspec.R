@@ -36,7 +36,7 @@ make_plot <- function(dataset, input_filename, output_filenames) {
                   plot = combo_mcc_full, width = 6.5, height = 4.5, unit = "in")
   
   iters <- ggplot2::ggplot(data=dplyr::filter(sensspec, reference_fraction == .5 & (type == "SAMP" | type == "SAMP_O_NOREF")),
-                           ggplot2::aes(x = refpi, y = mcc, color = type)) +
+                           ggplot2::aes(x = reference_fraction, y = mcc, color = type)) +
     ggplot2::geom_jitter(width = .1, height = 0, size = 3) +
     ggplot2::labs(title = title) +
     ggplot2::ylab("MCC") +
