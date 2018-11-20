@@ -155,7 +155,7 @@ rule aggregate_sensspec:
 	benchmark:
 		"benchmarks/dataset-as-reference/{dataset}/aggregate_sensspec.log"
 	run:
-		header_str = 'iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	reference_fraction	iter	rep	type\n'
+		header_str = 'iter\tlabel\tcutoff\tnumotus\ttp\ttn\tfp\tfn\tsensitivity\tspecificity\tppv\tnpv\tfdr\taccuracy\tmcc\tf1score\treference_fraction\titer\trep\ttype\n'
 		with open(output[0], 'w') as output_file:
 			output_file.write(header_str)
 			for weight in params.weights:
@@ -168,7 +168,7 @@ rule aggregate_sensspec:
 									for line in input_file:
 										pass
 									opticlust_result = re.sub("\(\S*\t\S*\t\)\(.*\)", "\t\1\t\2", line.strip())
-									output_file.write(f"{opticlust_result} {reference_fraction} {iter} {rep} {prefix}\n")
+									output_file.write(f"{opticlust_result}\t{reference_fraction}\t{iter}\t{rep}\t{prefix}\n")
 							for method in params.methods:
 								for printref in params.printrefs:
 									input_filename = f"results/dataset-as-reference/{params.dataset}/{params.dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.optifit_mcc.sensspec"
@@ -176,7 +176,7 @@ rule aggregate_sensspec:
 										for line in input_file:
 											pass
 										line = line.strip()
-										output_file.write(f"{line} {reference_fraction} {iter} {rep} method-{method}_printref{printref}\n")
+										output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref{printref}\n")
 
 rule plot_sensspec:
 	input:
