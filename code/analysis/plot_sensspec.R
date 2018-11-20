@@ -47,4 +47,7 @@ make_plot <- function(dataset, input_filename, output_filenames) {
                   plot = iters, width = 6.5, height = 4.5, unit = "in")
 }
 
-make_plot(snakemake@params[["dataset"]], snakemake@input[[0]], snakemake@output)
+dataset <- snakemake@params[["dataset"]]
+input_filename <- snakemake@input[[0]]
+output_filenames <- snakemake@output
+make_plot(dataset, input_filename, output_filenames)
