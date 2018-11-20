@@ -1,7 +1,7 @@
 #PBS -N optifit-pipeline.smk ## Name of the job for the scheduler
 #PBS -A pschloss_fluxod ## name of the allocation (who is paying for the compute time)
 #PBS -q fluxod            ## name of the queue to submit the job to. Will match the suffix on allocation name
-#PBS -l procs=8,pmem=40GB,walltime=24:00:00    ## resource reservation  max walltime = 672 hours
+#PBS -l procs=1,pmem=8GB,walltime=24:00:00    ## resource reservation  max walltime = 672 hours
 #PBS -l qos=flux        ## quality of service DO NOT CHANGE THIS
 #PBS -M sovacool@umich.edu  ## send email notifications to umich email listed
 #PBS -m abe                ## when to send email a=abort b=job begin e=job end
@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake -j 8 --forcerun prep_reference_from_dataset -s code/analysis/optifit-pipeline.smk 
+snakemake -j 8 --forceall -s code/analysis/optifit-pipeline.smk 
