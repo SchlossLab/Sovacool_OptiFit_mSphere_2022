@@ -1,0 +1,47 @@
+Linux version
+
+Using ReadLine,Boost
+mothur v.1.41.0
+Last updated: 11/20/2018
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://www.mothur.org/forum
+
+Type 'quit()' to exit program
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/fit.log)
+
+mothur > set.seed(seed=0)
+Setting random seed to 0.
+
+Setting random seed to 0.
+
+
+mothur > set.dir(output=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/)
+Mothur's directories:
+outputDir=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/
+
+mothur > cluster.fit(reflist=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/reference.opti_mcc.list, refcolumn=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/reference/reference.dist, refcount=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/reference/reference.count_table, reffasta=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/reference/reference.fasta, fasta=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.fasta, count=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.count_table, column=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.dist, printref=t, method=closed)
+/******************************************/
+Running command: dist.seqs(fitcalc=t, fasta=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/reference/reference.fasta, oldfasta=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.fasta, cutoff=0.03, column=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.dist, outputdir=results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/)
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.dist. Trying output directory results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/sample.dist.
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/r-0/method-closed_printref-t/sample.dist. Trying default /home/sovacool/bin/sample.dist.
+Unable to open /home/sovacool/bin/sample.dist. Trying mothur's executable location /home/sovacool/bin/sample.dist.
+Unable to open /home/sovacool/bin/sample.dist.
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-sample-dists_reference-fraction-0.6_i-0/sample/sample.dist
