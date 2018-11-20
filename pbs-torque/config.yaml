@@ -1,4 +1,4 @@
-cluster: "/home/sovacool/schloss-lab-sovacool/OptiFitAnalysis/snakemake-analysis/pbs-torque/pbs-submit.py --depend \"{dependencies}\" -N OptiFitAnalysis -A pschloss_fluxod -q fluxod -l qos=flux,walltime=12:00:00 -M sovacool@umich.edu -m abe -j oe -V -o logfiles/ "
+cluster: "/home/sovacool/schloss-lab-sovacool/OptiFitAnalysis/snakemake-analysis/pbs-torque/pbs-submit.py --depend \"{dependencies}\" -N OptiFitAnalysis -A pschloss_fluxod -q fluxod -l qos=flux,walltime=12:00:00 -M sovacool@umich.edu -m abe -j oe -V -o logfiles/pbs/ "
 cluster-status: "pbs-status.py"
 jobscript: "pbs-jobscript.sh"
 jobs: 5000
