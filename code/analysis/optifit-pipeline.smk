@@ -118,6 +118,8 @@ rule copy:  # necessary to avoid clashing temp files when running multiple optif
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/{sampleref}/{sampleref}.{ext}"
 	output:
 		temp("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{sampleref}.{ext}")
+	wildcard_constraints:
+		ext="dist|count_table"
 	shell:
 		"cp {input} {output}"
 
