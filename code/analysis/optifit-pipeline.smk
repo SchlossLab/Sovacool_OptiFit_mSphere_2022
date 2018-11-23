@@ -113,6 +113,14 @@ rule cluster:
 	shell:
 		'mothur "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count}, cutoff=0.3)"'
 
+rule copy:  # necessary to avoid clashing temp files when running multiple optifit jobs in parallel
+	input:
+		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/{sampleref}/{sampleref}.{ext}"
+	output:
+		temp("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{sampleref}.{ext}")
+	shell:
+		"cp {input} {output}"
+
 rule fit:
 	input:
 		reflist='results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/reference.opti_mcc.list',
