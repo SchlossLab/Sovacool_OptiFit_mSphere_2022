@@ -4,3 +4,4 @@ test/
 .snakemake/
 .DS_Store
 .Rproj.user
+.Rhistory
