@@ -2,11 +2,11 @@
 import os
 import subprocess
 
-configfile: 'config_soil.yaml'
+configfile: 'config_test.yaml'
 output_dir = os.path.join(config['input_dir'], 'references')
 db_version = config['db_version']
 
-rule all:
+rule ref_db_targets:
 	input:
 		expand("{output_dir}/silva.bacteria.{ext}", output_dir=output_dir, ext={'tax','align'}),
 		expand("{output_dir}/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax','fasta'}),
