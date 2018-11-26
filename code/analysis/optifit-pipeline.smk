@@ -2,7 +2,7 @@
 
 import math
 import os
-import re
+import subprocess
 
 configfile: 'config_test.yaml'
 
@@ -176,7 +176,7 @@ rule aggregate_sensspec:
 								with open(input_filename, 'r') as input_file:
 									for line in input_file:
 										pass
-									opticlust_result = re.sub("\(\S*\t\S*\t\)\(.*\)", "\t\1\t\2", line.strip())
+									opticlust_result = subprocess.call(f"echo {line} | sed 's_\(\S*\t\S*\t\)\(.*\)_\t\1\t\2_'".split(), stdout=subprocess.PIPE)
 									output_file.write(f"{opticlust_result}\t{reference_fraction}\t{iter}\t{rep}\t{prefix}\n")
 							for method in params.methods:
 								for printref in params.printrefs:
