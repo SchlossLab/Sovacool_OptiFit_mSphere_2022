@@ -75,7 +75,6 @@ depend=""
 resourceparams=""
 extras=""
 
-
 if args.depend:
 	for m in args.depend.split(" "):
 		depend = depend + ":" + m
