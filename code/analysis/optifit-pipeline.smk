@@ -4,8 +4,6 @@ import math
 import os
 import re
 
-configfile: 'config_test.yaml'
-
 input_dir = config['input_dir']
 datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
 weights = config['weights']
@@ -13,7 +11,7 @@ iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
-reference_fractions = [i/100 for i in range(50,70,10)]
+reference_fractions = [i/100 for i in range(10,100,10)]
 
 wildcard_constraints:
 	dataset="\w+",

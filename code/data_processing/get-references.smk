@@ -2,7 +2,6 @@
 import os
 import subprocess
 
-configfile: 'config_test.yaml'
 output_dir = os.path.join(config['input_dir'], 'references')
 db_version = config['db_version']
 

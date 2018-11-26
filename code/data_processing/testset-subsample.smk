@@ -1,5 +1,5 @@
 import os
-configfile: 'config_test.yaml'
+
 datasets = config['datasets']
 input_dir = config['input_dir']
 subsample_size = config['subsample_size']

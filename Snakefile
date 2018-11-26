@@ -1,6 +1,6 @@
 " Download references, download & process data, and run tests to benchmark the OptiFit algorithm"
 
-configfile: 'config_test.yaml'
+configfile: 'config.yaml'
 
 input_dir = config['input_dir']
 datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]

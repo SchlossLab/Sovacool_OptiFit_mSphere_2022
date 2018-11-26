@@ -1,0 +1,10 @@
+input_dir: data
+datasets:
+- soil
+weights:
+- sample-dists
+db_version: v132
+subsample_test: False
+subsample_size: 1000
+iterations: 10
+replicates: 10
