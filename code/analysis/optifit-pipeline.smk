@@ -176,7 +176,7 @@ rule aggregate_sensspec:
 								with open(input_filename, 'r') as input_file:
 									for line in input_file:
 										pass
-									opticlust_result = re.sub(r'(\S*\t\S*\t)(.*)', r'\t\1\t\2', line)
+									opticlust_result = re.sub(r'(\S*\t\S*\t)(.*)', r'\t\1\t\2', line).rstrip()
 									output_file.write(f"{opticlust_result}\t{reference_fraction}\t{iter}\t{rep}\t{prefix}\n")
 							for method in params.methods:
 								for printref in params.printrefs:
