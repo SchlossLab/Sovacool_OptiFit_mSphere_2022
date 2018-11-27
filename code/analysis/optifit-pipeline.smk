@@ -33,9 +33,9 @@ rule calc_seq_dists:
 	params:
 		output_dir=f'{input_dir}/{{dataset}}/'
 	benchmark:
-		f'benchmarks/{input_dir}/{{dataset}}/get_dists.log'
+		f'benchmarks/{input_dir}/{{dataset}}/calc_seq_dists.log'
 	log:
-		f"logfiles/{input_dir}/{{dataset}}/get_dists.log"
+		f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
 	shell:
 		'mothur "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
 
