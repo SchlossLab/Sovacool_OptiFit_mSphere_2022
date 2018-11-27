@@ -11,7 +11,7 @@ iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
-reference_fractions = [i/100 for i in range(10,100,10)]
+reference_fractions = [i/100 for i in range(50,60,10)]
 
 wildcard_constraints:
 	dataset="\w+",
@@ -29,7 +29,7 @@ rule calc_seq_dists:
 	input:
 		f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
 	output:
-		f'{input_dir}/{{dataset}}/{{dataset}}.dist'
+		protected(f'{input_dir}/{{dataset}}/{{dataset}}.dist')
 	params:
 		output_dir=f'{input_dir}/{{dataset}}/'
 	benchmark:
