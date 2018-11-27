@@ -2,6 +2,8 @@
 import os
 import subprocess
 
+# TODO: add greengenes download
+
 output_dir = os.path.join(config['input_dir'], 'references')
 db_version = config['db_version']
 
@@ -15,7 +17,7 @@ rule download_silva_db:
 	output:
 		"{{output_dir}}/Silva.nr_{version}.tgz".format(version=db_version)
 	shell:
-		'wget -N -P {{output_dir}} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'.format(version=db_version)
+		'wget -N -P {{output_dir}} http://www.mothur.org/w/images/3/32/Silva.seed_{version}.tgz'.format(version=db_version)
 
 rule unpack_silva_db:
 	input:
@@ -115,7 +117,7 @@ rule rename_taxon:
 	shell:
 		'mv {input} {output}'
 
-rule download_ribosomal_db:
+rule download_rdp_db:
 	output:
 		"{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.tax",
 		"{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.fasta"
@@ -123,7 +125,7 @@ rule download_ribosomal_db:
 		"wget -N -P {output_dir} http://www.mothur.org/w/images/8/88/Trainset14_032015.pds.tgz ; "
 		"tar xvzf {output_dir}/Trainset14_032015.pds.tgz -C {output_dir}/rdp ; "
 
-rule organize_ribosomal_db:
+rule organize_rdp_db:
 	input:
 		expand("{{output_dir}}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", ext={'tax', 'fasta'})
 	output:
