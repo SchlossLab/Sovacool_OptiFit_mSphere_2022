@@ -43,19 +43,39 @@ I'm currently using `mothur` version `1.41.0`.
 ## Snakemake Workflows
 
 ### Running a workflow
+
+If your workflow is a file named `Snakefile` in your current working dir, run it with:
+```
+snakemake
+```
+
+Otherwise, specify the path to the snakemake file:
+```
+snakemake -s /path/to/snakefile
+```
+
+Override any default `configfile` specified in the workflow with:
+```
+snakemake --configfile /path/to/config.yaml
+```
+
+#### Cores
+
 Run a snakemake workflow with 2 cores:
 ```
-snakemake -j 2 -s path/to/snakefile
+snakemake -j 2
 ```
 Any independent rules are then run in parallel. Without the `-j` or `--cores` flag, snakemake defaults to using only 1 core.
 Run a workflow with as many cores as are available with:
 ```
-snakemake -j -s path/to/snakefile
+snakemake -j
 ```
+
+#### Force run
 
 Snakemake will only run jobs for rules whose output files do not exist and haven't been modified since the last run. To override this behavior, force a specific rule to run:
 ```
-snakemake -s path/to/snakefile --forcerun rule_name
+snakemake --forcerun rule_name
 ```
 
 Or force all rules to run:
@@ -63,13 +83,23 @@ Or force all rules to run:
 snakemake -s path/to/snakefile --forceall
 ```
 
-### Dry run
+#### Dry run
 
 Do a dry run to see which jobs snakemake would run without actually running them.
 ```
 snakemake --dryrun -s path/to/snakefile
 ```
 Before committing changes or submitting jobs to the cluster, test your snakefile for syntax errors with a dry run.
+
+#### On the cluster
+
+Edit the `pbs-torque/config.yaml` with the full path to the working dir and your email for PBS to send job notifications.
+On the cluster, run snakemake using:
+```
+snakemake --profile pbs-torque
+```
+
+Profiles for other cluster systems are available in the [snakemake profiles GitHub](https://github.com/snakemake-profiles/doc).
 
 ### Visualizing the DAG
 
