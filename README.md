@@ -5,7 +5,9 @@ See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/ma
 
 ## Managing software dependencies
 
-I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project. If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution. [Here's a link](https://conda.io/docs/_downloads/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
+I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project.
+If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
+[Here's a link](https://conda.io/docs/_downloads/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
 
 Create an environment for the project:
 ```
@@ -33,7 +35,8 @@ After ending a session, close the active environment with:
 source deactivate
 ```
 
-Almost all dependencies are listed in `environment.txt`. The exception is  the `mothur` program. Instead of installing with conda, [download the precompiled binary](https://github.com/mothur/mothur/releases) and append the path to the `PATH` in your `.bash_profile`. Then, run:
+Almost all dependencies are listed in `environment.txt`. The exception is  the `mothur` program.
+Instead of installing with conda, [download the precompiled binary](https://github.com/mothur/mothur/releases) and append the path to the `PATH` in your `.bash_profile`. Then, run:
 
 ```
 source ~/.bash_profile
@@ -73,7 +76,8 @@ snakemake -j
 
 #### Force run
 
-Snakemake will only run jobs for rules whose output files do not exist and haven't been modified since the last run. To override this behavior, force a specific rule to run:
+Snakemake will only run jobs for rules whose output files do not exist and haven't been modified since the last run.
+To override this behavior, force a specific rule to run:
 ```
 snakemake --forcerun rule_name
 ```
@@ -85,7 +89,7 @@ snakemake -s path/to/snakefile --forceall
 
 #### Dry run
 
-Do a dry run to see which jobs snakemake would run without actually running them.
+Do a dry run to see which jobs snakemake would run without actually running them:
 ```
 snakemake --dryrun -s path/to/snakefile
 ```
@@ -93,11 +97,12 @@ Before committing changes or submitting jobs to the cluster, test your snakefile
 
 #### On the cluster
 
-Edit the `pbs-torque/config.yaml` with the full path to the working dir and your email for PBS to send job notifications.
-On the cluster, run snakemake using:
+Edit the cluster config file `cluster.json` with your email for PBS to send job notifications.
+On the cluster, create a PBS script with the following command:
 ```
 snakemake --profile pbs-torque
 ```
+Then submit the PBS script to the cluster with `qsub`. See `code/pbs_scripts` for examples.
 
 Profiles for other cluster systems are available in the [snakemake profiles GitHub](https://github.com/snakemake-profiles/doc).
 
