@@ -1,5 +1,9 @@
 mothur.*.logfile
-testdir/
+test/
 *.o*
 .snakemake/
 .DS_Store
+.Rproj.user
+.Rhistory
+Rplots.pdf
+data/

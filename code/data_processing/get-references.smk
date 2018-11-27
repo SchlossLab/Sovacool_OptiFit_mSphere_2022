@@ -1,135 +1,126 @@
 " Download the reference database and process with mothur "
+import os
 import subprocess
 
-configfile: 'code/data_processing/config.yaml'
-output_dir = config['output_dir']
-db_version = config['db_version']
+# TODO: add greengenes download
 
-rule all:
+output_dir = os.path.join(config['input_dir'], 'references')
+version = config['db_version']
+
+rule ref_db_targets:
 	input:
-		expand("{output_dir}/silva.bacteria.{ext}", output_dir=output_dir, ext={'tax','align'}),
-		expand("{output_dir}/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax','fasta'}),
-		expand("{output_dir}/silva.v4.{ext}", output_dir=output_dir, ext={'accnos','align','tax'})
+		expand("{output_dir}/silva/silva.v4.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
+		expand("{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
 
 rule download_silva_db:
 	output:
-		"{{output_dir}}/Silva.nr_{version}.tgz".format(version=db_version)
+		f"{output_dir}/silva/Silva.seed_{version}.tgz"
 	shell:
-		'wget -N -P {{output_dir}} http://www.mothur.org/w/images/3/32/Silva.nr_{version}.tgz'.format(version=db_version)
+		f'wget -N -P {output_dir}/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_{version}.tgz'
 
 rule unpack_silva_db:
 	input:
-		"{output_dir}/Silva.nr_{version}.tgz"
+		tar=f"{output_dir}/silva/Silva.seed_{version}.tgz"
 	output:
-		"{output_dir}/silva.nr_{version}.align",
-		"{output_dir}/silva.nr_{version}.tax"
+		f"{output_dir}/silva/silva.seed_{version}.align",
+		f"{output_dir}/silva/silva.seed_{version}.tax"
 	shell:
-		"tar xvzf {{output_dir}}/Silva.nr_{version}.tgz -C {{output_dir}}/".format(version=db_version)
+		f"tar xvzf {{input.tar}} -C {output_dir}/"
 
 rule get_prok_lineage:
 	input:
-		fasta="{{output_dir}}/silva.nr_{version}.align".format(version=db_version),
-		tax="{{output_dir}}/silva.nr_{version}.tax".format(version=db_version)
+		fasta=f"{output_dir}/silva/silva.seed_{version}.align",
+		tax=f"{output_dir}/silva/silva.seed_{version}.tax"
 	output:
-		"{output_dir}/silva.bact_archaea.align",
-		"{output_dir}/silva.bact_archaea.tax"
+		fasta=f"{output_dir}/silva/silva.bact_archaea.align",
+		tax=f"{output_dir}/silva/silva.bact_archaea.tax"
+	params:
+		version=version
 	shell:
-		"mothur '#get.lineage(fasta={{input.fasta}}, taxonomy={{input.tax}}, taxon=Bacteria-Archaea)' ; "
-		"mv {{output_dir}}/silva.nr_{version}.pick.align {{output_dir}}/silva.bact_archaea.align ; "
-		"mv {{output_dir}}/silva.nr_{version}.pick.tax {{output_dir}}/silva.bact_archaea.tax".format(version=db_version)
+		"mothur '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria-Archaea)' ; "
+		"mv {output_dir}/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
+		"mv {output_dir}/silva/silva.nr_{params.version}.pick.tax {output.tax}"
 
 rule get_bact_lineage:
 	input:
-		fasta='{output_dir}/silva.bact_archaea.align',
-		tax='{output_dir}/silva.bact_archaea.tax'
+		fasta=f'{output_dir}/silva/silva.bact_archaea.align',
+		tax=f'{output_dir}/silva/silva.bact_archaea.tax'
 	output:
-		'{output_dir}/silva.bact_archaea.pick.align',
-		'{output_dir}/silva.bact_archaea.pick.tax'
+		f'{output_dir}/silva/silva.bact_archaea.pick.align',
+		f'{output_dir}/silva/silva.bact_archaea.pick.tax'
 	shell:
 		"mothur '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria)'"
 
 rule rename_bact:
 	input:
-		"{output_dir}/silva.bact_archaea.pick.{ext}"
+		"{output_dir}/silva/silva.bact_archaea.pick.{ext}"
 	output:
-		"{output_dir}/silva.bacteria.{ext}"
+		"{output_dir}/silva/silva.bacteria.{ext}"
+	wildcard_constraints:
+		ext="align|tax"
 	shell:
 		"mv {input} {output}"
 
 rule pcr_seqs:
 	input:
-		"{output_dir}/silva.bacteria.align"
+		"{output_dir}/silva/silva.bacteria.align"
 	output:
-		"{output_dir}/silva.bacteria.pcr.ng.names",
-		"{output_dir}/silva.bacteria.pcr.align"
+		"{output_dir}/silva/silva.bacteria.pcr.ng.names",
+		"{output_dir}/silva/silva.bacteria.pcr.align"
 	shell:
 		'mothur "#pcr.seqs(fasta={input}, start=13862, end=23445, keepdots=F);degap.seqs();unique.seqs()"'
 
 rule get_pcr_accession_numbers:
 	input:
-		"{output_dir}/silva.bacteria.pcr.ng.names"
+		"{output_dir}/silva/silva.bacteria.pcr.ng.names"
 	output:
-		"{output_dir}/silva.bacteria.pcr.ng.accnos"
+		"{output_dir}/silva/silva.bacteria.pcr.ng.accnos"
 	shell:
 		'cut -f 1 {input} > {output}'
 
 rule get_fasta_seqs:
 	input:
-		fasta="{output_dir}/silva.bacteria.pcr.align",
-		accnos="{output_dir}/silva.bacteria.pcr.ng.accnos"
+		fasta="{output_dir}/silva/silva.bacteria.pcr.align",
+		accnos="{output_dir}/silva/silva.bacteria.pcr.ng.accnos"
 	output:
-		"{output_dir}/silva.bacteria.pcr.pick.good.filter.fasta"
+		"{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
 	shell:
 		'mothur "#get.seqs(fasta={input.fasta}, accnos={input.accnos});screen.seqs(minlength=240, maxlength=275, maxambig=0, maxhomop=8); filter.seqs(vertical=T)"'
 
 rule rename_pcr_fasta:
 	input:
-		"{output_dir}/silva.bacteria.pcr.pick.good.filter.fasta"
+		"{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
 	output:
-		"{output_dir}/silva.v4.align"
+		"{output_dir}/silva/silva.v4.align"
 	shell:
 		'mv {input} {output}'
 
 rule get_filtered_accession_numbers:
 	input:
-		"{output_dir}/silva.v4.align"
+		"{output_dir}/silva/silva.v4.align"
 	output:
-		"{output_dir}/silva.v4.accnos"
+		"{output_dir}/silva/silva.v4.accnos"
 	shell:
 		'grep "^>" {input} | cut -c 2- > {output}'
 
 rule get_taxon_seqs:
 	input:
-		tax="{output_dir}/silva.bacteria.tax",
-		accnos="{output_dir}/silva.v4.accnos"
+		tax="{output_dir}/silva/silva.bacteria.tax",
+		accnos="{output_dir}/silva/silva.v4.accnos"
 	output:
-		"{output_dir}/silva.bacteria.pick.tax"
+		tax="{output_dir}/silva/silva.v4.tax"
+	params:
+		pick="{output_dir}/silva/silva.bacteria.pick.tax"
 	shell:
-		'mothur "#get.seqs(taxonomy={input.tax}, accnos={input.accnos})"'
+		'mothur "#get.seqs(taxonomy={input.tax}, accnos={input.accnos})"; '
+		'mv {params.pick} {output.tax}'
 
-rule rename_taxon:
-	input:
-		"{output_dir}/silva.bacteria.pick.tax"
+rule download_rdp_db:
 	output:
-		"{output_dir}/silva.v4.tax"
+		expand("{{output_dir}}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}",ext={'tax', 'fasta'})
+	params:
+		dir="{output_dir}/rdp/",
+		tar="Trainset14_032015.pds.tgz"
 	shell:
-		'mv {input} {output}'
-
-rule download_ribosomal_db:
-	output:
-		"{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.tax",
-		"{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.fasta"
-	shell:
-		"wget -N -P {output_dir} http://www.mothur.org/w/images/8/88/Trainset14_032015.pds.tgz ; "
-		"tar xvzf {output_dir}/Trainset14_032015.pds.tgz -C {output_dir}/rdp ; "
-
-rule organize_ribosomal_db:
-	input:
-		expand("{{output_dir}}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", ext={'tax', 'fasta'})
-	output:
-		expand("{{output_dir}}/trainset14_032015.pds.{ext}", ext={'tax', 'fasta'})
-	wildcard_constraints:
-		output_dir="\w+"
-	shell:
-		"mv {output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.* {output_dir}/ "
-		#"rm -rf $REFS/rdp $REFS/Trainset*"
+		"wget -N -P {params.dir} http://www.mothur.org/w/images/8/88/{params.tar} ; "
+		"tar xvzf {params.dir}{params.tar} -C {params.dir} ; "

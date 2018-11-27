@@ -1,0 +1,10 @@
+input_dir: data
+datasets:
+- mice
+weights:
+- sample-dists
+db_version: v132
+subsample_test: False
+subsample_size: 1000
+iterations: 2
+replicates: 2

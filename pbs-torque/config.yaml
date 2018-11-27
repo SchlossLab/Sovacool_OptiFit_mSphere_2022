@@ -1,0 +1,7 @@
+cluster: "pbs-torque/pbs-submit.py -N {rule}.{wildcards} -A pschloss_fluxod -q fluxod -l qos=flux,procs=1,mem=4GB,walltime=12:00:00 -M sovacool@umich.edu -m a -j oe -V -o logfiles/pbs/ "
+cluster-status: "pbs-status.py"
+jobscript: "pbs-jobscript.sh"
+jobs: 5000
+immediate-submit: False
+verbose: true
+notemp: true
