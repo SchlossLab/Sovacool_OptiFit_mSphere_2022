@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake -j 8
+snakemake -j 8 --configfile config_test.yaml
