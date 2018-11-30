@@ -22,4 +22,4 @@ rule subset:
 		'sub.sample(fasta={params.dataset}.fasta, size={subsample_size}); '
 		'list.seqs(fasta=current); '
 		'get.seqs(accnos=current, count={params.dataset}.count_table); '
-		'rename.file(accnos = current, fasta=current, count=current, prefix={params.output_dir}{params.dataset}_{subsample_size});"'
+		'rename.file(accnos = current, fasta=current, count=current, prefix={params.dataset}_{subsample_size});"'
