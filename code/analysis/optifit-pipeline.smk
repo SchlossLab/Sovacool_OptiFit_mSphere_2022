@@ -29,7 +29,7 @@ rule calc_seq_dists:
 	input:
 		f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
 	output:
-		protected(f'{input_dir}/{{dataset}}/{{dataset}}.dist')
+		f'{input_dir}/{{dataset}}/{{dataset}}.dist'
 	params:
 		output_dir=f'{input_dir}/{{dataset}}/'
 	benchmark:
