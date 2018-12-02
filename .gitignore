@@ -7,3 +7,5 @@ test/
 .Rhistory
 Rplots.pdf
 data/
+results/
+snakemake.pbs
