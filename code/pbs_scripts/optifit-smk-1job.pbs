@@ -1,4 +1,4 @@
-#PBS -N optifit-pipeline.smk ## Name of the job for the scheduler
+#PBS -N optifit-smk-1job ## Name of the job for the scheduler
 #PBS -A pschloss_fluxod ## name of the allocation (who is paying for the compute time)
 #PBS -q fluxod            ## name of the queue to submit the job to. Will match the suffix on allocation name
 #PBS -l procs=8,pmem=8GB,walltime=24:00:00    ## resource reservation  max walltime = 672 hours
@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake -j 8
+snakemake -j 8 --configfile config_test.yaml 

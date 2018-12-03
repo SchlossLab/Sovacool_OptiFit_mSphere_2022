@@ -4,14 +4,7 @@ import math
 import os
 import re
 
-input_dir = config['input_dir']
 datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
-weights = config['weights']
-iters = range(config['iterations'])
-reps = range(config['replicates'])
-methods = {'open', 'closed'}
-printrefs = {'t', 'f'}
-reference_fractions = [i/100 for i in range(50,60,10)]
 
 wildcard_constraints:
 	dataset="\w+",
@@ -19,17 +12,11 @@ wildcard_constraints:
 	rep="\d+",
 	sampleref="sample|reference"
 
-rule fit_all:
-	input:
-		expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{sampleref}.opti_mcc.{ext}', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, sampleref=['sample', 'reference'], ext={'list', 'steps', 'sensspec'}),
-		expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.optifit_mcc.{ext}', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs, ext={'list', 'steps', 'sensspec'}),
-		expand("results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", dataset=datasets, suffix={'', '.full', '.iters'})
-"""
 rule calc_seq_dists:
 	input:
 		f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
 	output:
-		protected(f'{input_dir}/{{dataset}}/{{dataset}}.dist')
+		f'{input_dir}/{{dataset}}/{{dataset}}.dist'
 	params:
 		output_dir=f'{input_dir}/{{dataset}}/'
 	benchmark:
@@ -37,8 +24,7 @@ rule calc_seq_dists:
 	log:
 		f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
 	shell:
-		'mothur "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
-"""
+
 rule split_weighted_subsample:  # TODO: use mothur refweight option instead of this rule
 	input:
 		count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
@@ -63,8 +49,12 @@ rule prep_weighted_subsample:
 	output:
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.fasta",
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.count_table",
+<<<<<<< HEAD
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.dist",
 		"results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.accnos"
+=======
+		protected("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.dist")
+>>>>>>> fab165fdb6e1ce18c1d4d836f9e455acb3d0e1ff
 	params:
 		output_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/",
 		iter="{iter}"

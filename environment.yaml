@@ -4,8 +4,10 @@ channels:
 - conda-forge
 - r
 dependencies:
+- boost>=1.68.0
+- hdf>=1.10.4
 - python>=3.6
 - r>=3.5.1
+- r-tidyverse
 - snakemake>=5.3.0
 - sra-tools>=2.9.1
-- r-tidyverse

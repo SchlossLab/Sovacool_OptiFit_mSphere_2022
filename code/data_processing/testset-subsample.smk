@@ -18,8 +18,8 @@ rule subset:
 		input_dir = f'{input_dir}/',
 		output_dir = f'{input_dir}/{{dataset}}_{{subsample_size}}/'
 	shell:
-		'mothur "#set.dir(input={params.input_dir}{params.dataset}, output={params.input_dir}{params.dataset}_{subsample_size}); '
+		'mothur "#set.dir(input={params.input_dir}{params.dataset}, output={params.output_dir}); '
 		'sub.sample(fasta={params.dataset}.fasta, size={subsample_size}); '
 		'list.seqs(fasta=current); '
 		'get.seqs(accnos=current, count={params.dataset}.count_table); '
-		'rename.file(accnos = current, fasta=current, count=current, prefix={params.output_dir}{params.dataset}_{subsample_size});"'
+		'rename.file(accnos = current, fasta=current, count=current, prefix={params.dataset}_{subsample_size});"'

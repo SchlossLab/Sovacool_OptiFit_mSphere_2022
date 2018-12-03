@@ -3,7 +3,7 @@
     "queue": "fluxod",
     "jobname": "{rule}.{wildcards}",
     "procs": 1,
-    "mem": "4GB",
+    "pmem": "8GB",
     "walltime": "12:00:00",
     "email": "sovacool@umich.edu",
     "mailon": "a",
