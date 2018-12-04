@@ -1,10 +1,13 @@
+mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
 input_dir: data
 datasets:
 - soil
 weights:
-- ref-abundance
+- sample-dists
 db_version: v132
 subsample_test: False
 subsample_size: 1000
-iterations: 5
-replicates: 5
+iterations: 10
+replicates: 10
+dataset-as-reference: True
+silva-as-reference: True

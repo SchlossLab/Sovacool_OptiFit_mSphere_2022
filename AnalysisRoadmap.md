@@ -15,6 +15,13 @@
 	- How does fitting into a reference using OptiFit perform vs. VSEARCH- [ ]based open/closed clustering
 	- How important is the composition of the reference database?
  	- How sensitive is OptiFit to random variation?
+* First, use SILVA (without greengenes or rdp):
+    - [x] Download silva v132
+    - [ ] Cluster the silva reference (OptiClust)
+    - [ ] For test dataset (soil_1000):
+        - [ ] De novo clustering on samples (OptiClust)
+        - [ ] Open reference clustering against silva reference
+        - [ ] Closed reference clusering against silva reference
 * Create reference OTUs and find representative sequence for each OTU using SILVA and greengenes databases
 	- [ ] Align greengenes database to SILVA reference alignment (talk to me about what these should be)
 	- [ ] Trim to V4 region of 16S rRNA gene
