@@ -1,13 +1,36 @@
 # OptiFitAnalysis
 
-## Project progress
+## Quickstart
 
-See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
+1. Install `mothur` version `1.42.0` and all the dependencies listed in `environment.yaml`.
+2. Clone this repository.
+    ```
+    git clone https://github.com/SchlossLab/OptiFitAnalysis
+    cd OptiFitAnalysis/
+    ```
 
-## Developer Notes
+3. Run the pipeline.
 
- I have my editor set to convert tabs to spaces with a tab length of 4.
- It's crucial for this to be consistent within Python & Snakemake files.
+    Locally:
+    ```
+    snakemake
+    ```
+    Or on the cluster:
+    ```
+    qsub code/pbs_scripts/optifit-analysis.pbs
+    ```
+
+4. Take a look at the results.
+    * Each dataset has its own directory in `results/dataset-as-reference` and `results/silva-as-reference`. Within those directories:
+        * The main output file is aggregated in `{dataset}/aggregate.sensspec`.
+        * Results figures are in `{dataset}/figures/`.
+
+5. Visualize the workflow.
+    ```
+    snakemake --dag | dot -Tsvg > results/workflows/dag.svg
+    ```
+    You can open the svg file in your GUI web browser to view it.
+
 
 ## Managing software dependencies
 
@@ -15,16 +38,31 @@ I'm using the [conda](https://conda.io/docs/) package manager to manage dependen
 If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
 [Here's a link](https://conda.io/docs/_downloads/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
 
-Create an environment for the project:
+### Create a conda environment
+
+If you plan to run this workflow on Flux or other 64-bit Linux machine,
+you can get an exact replica of my environment with:
+```
+conda create --name OptiFitAnalysis --file environment.export.txt
+```
+
+Otherwise, run:
 ```
 conda env create --name OptiFitAnalysis --file environment.yaml
 ```
 
-Activate the environment before running any code:
+The conda project is [in the process of merging conda-env into conda](https://groups.google.com/a/continuum.io/forum/#!topic/conda/EBVVtS8bNRA),
+so the syntax for these commands may change.
+
+## Activate
+
+Activate the environment before running any code with:
 ```
 source activate OptiFitAnalysis
 ```
 Be sure to activate the environment from the login node before submitting jobs on the cluster.
+
+## Update
 
 Install new packages with:
 ```
@@ -35,6 +73,8 @@ Periodically update the dependencies list:
 ```
 conda list --export > environment.export.txt
 ```
+
+## Deactivate
 
 After ending a session, close the active environment with:
 ```
@@ -159,3 +199,19 @@ snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/workflows/dag.svg
 Example DAG for `code/data_processing/get-references.smk`:
 
 ![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/results/workflows/get-references.dag.svg)
+
+## Developer Notes
+
+### Project progress
+
+See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
+
+### Whitespace in Python
+
+I have my editor set to convert tabs to spaces with a tab length of 4.
+It's crucial for this to be consistent within Python & Snakemake files.
+If you get an error while running snakemake like:
+```
+Unexpected keyword <word> in rule definition (Snakefile, line <line>)
+```
+It's likely a whitespace issue.
