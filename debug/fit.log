@@ -1,0 +1,90 @@
+Linux version
+
+Using ReadLine
+mothur v.1.42.0
+Last updated: 12/04/2018
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://www.mothur.org/forum
+
+Type 'quit()' to exit program
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/fit.log)
+
+mothur > set.seed(seed=0)
+Setting random seed to 0.
+
+Setting random seed to 0.
+
+
+mothur > set.dir(output=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/)
+Mothur's directories:
+outputDir=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/
+
+mothur > cluster.fit(reflist=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/reference.opti_mcc.list, refcolumn=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/reference/reference.dist, refcount=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/reference/reference.count_table, reffasta=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/reference/reference.fasta, fasta=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.fasta, count=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.count_table, column=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist, printref=f, method=closed)
+/******************************************/
+Running command: dist.seqs(fitcalc=t, fasta=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/reference/reference.fasta, oldfasta=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.fasta, cutoff=0.03, column=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist, outputdir=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/)
+
+Using 12 processors.
+
+Sequence	Time	Num_Dists_Below_Cutoff
+
+It took 18 secs to find distances for 500 sequences. 266 distances below cutoff 0.03.
+
+
+Output File Names: 
+results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.fit.dist
+
+/******************************************/
+[ERROR]: Could not open results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist
+[ERROR]: Could not open results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist
+
+Clustering results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist
+
+
+state	iter	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+combo	0	0.03	1302	0.03	73	182425	8	204	0.263538	0.999956	0.901235	0.998883	0.901235	0.99884	0.487007	0.407821	
+fit	0	0.03	0	0.03	0	5460	0	0	0	1	0	1	1	1	0	0	
+combo	1	0.03	1217	0.03	208	182384	49	69	0.750903	0.999731	0.809339	0.999622	0.809339	0.999354	0.779252	0.779026	
+fit	1	0.03	64	0.03	0	5435	25	0	0	0.995421	0	1	0	0.995421	0	0	
+combo	2	0.03	1217	0.03	211	182386	47	66	0.761733	0.999742	0.817829	0.999638	0.817829	0.999382	0.788975	0.788785	
+fit	2	0.03	64	0.03	0	5435	25	0	0	0.995421	0	1	0	0.995421	0	0	
+combo	3	0.03	1217	0.03	211	182386	47	66	0.761733	0.999742	0.817829	0.999638	0.817829	0.999382	0.788975	0.788785	
+fit	3	0.03	64	0.03	0	5435	25	0	0	0.995421	0	1	0	0.995421	0	0	
+
+
+
+Fitted 85 sequences to 64 existing OTUs.
+Disregarding sequences that were unable to be fitted existing OTUs.
+iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+/******************************************/
+Running command: list.seqs(list=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.optifit_mcc.list)
+
+Output File Names: 
+results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.optifit_mcc.accnos
+
+
+/***** NOTE: Please ignore warnings for get.dists command *****/
+Running command: get.dists(column=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist, accnos=results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.optifit_mcc.accnos)
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist. Trying output directory results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.dist.
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.dist. Trying default /nfs/turbo/schloss-lab/bin/mothur-1.42.0/sample.dist.
+Unable to open /nfs/turbo/schloss-lab/bin/mothur-1.42.0/sample.dist. Trying mothur's executable location /nfs/turbo/schloss-lab/bin/mothur-1.42.0/sample.dist.
+Unable to open /nfs/turbo/schloss-lab/bin/mothur-1.42.0/sample.dist.
+Unable to open results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/sample/sample.dist
+Using results/dataset-as-reference/soil_1000/soil_1000_weight-none_reference-fraction-0.5_i-0/r-0/method-closed_printref-f/sample.fit.dist as input file for the column parameter.
