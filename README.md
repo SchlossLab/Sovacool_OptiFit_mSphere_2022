@@ -60,6 +60,9 @@ datasets:
 - mice
 - marine
 weights:
+- none
+- ref-abundance
+- sample-abundance
 - sample-dists
 db_version: v132
 subsample_test: False
@@ -71,7 +74,9 @@ silva-as-reference: True
 ```
 
 - Set `mothur_bin` to the path to your mothur binary if you're not using the default one on Flux.
-- Add or remove `dataset` names as needed.
+- Add or remove samples to the `datasets` list as needed.
+- Add or remove weight methods to the `weights` list.
+    - Only applies to using the dataset as its own reference.
 - To run the workflow with just a subset of the input data for debugging purposes:
     - Set `subsample_test` to `True`.
     - Set `subsample_size` to the number of sequences you want to use.

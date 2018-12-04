@@ -3,6 +3,9 @@ input_dir: data
 datasets:
 - soil
 weights:
+- none
+- ref-abundance
+- sample-abundance
 - sample-dists
 db_version: v132
 subsample_test: False
