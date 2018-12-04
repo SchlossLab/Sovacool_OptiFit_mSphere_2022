@@ -9,3 +9,5 @@ subsample_test: True
 subsample_size: 1000
 iterations: 2
 replicates: 2
+dataset-as-reference: False
+silva-as-reference: True
