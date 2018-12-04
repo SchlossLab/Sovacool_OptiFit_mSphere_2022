@@ -1,7 +1,13 @@
 # OptiFitAnalysis
 
 ## Project progress
+
 See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
+
+## Developer Notes
+
+ I have my editor set to convert tabs to spaces with a tab length of 4.
+ It's crucial for this to be consistent within Python & Snakemake files.
 
 ## Managing software dependencies
 
@@ -35,13 +41,12 @@ After ending a session, close the active environment with:
 source deactivate
 ```
 
-Almost all dependencies are listed in `environment.txt`. The exception is  the `mothur` program.
-Instead of installing with conda, [download the precompiled binary](https://github.com/mothur/mothur/releases) (or compile the source yourself) and append the mothur path to the `PATH` in your `.bash_profile`. Then, run:
+Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment. The exception to this is the `mothur` program.
+If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary in `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/`. Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or [compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
+Be sure to use `mothur` version `1.42.0` or higher.
+In any case, set `mothur_bin` in `config.yaml` to the path to your mothur binary.
 
-```
-source ~/.bash_profile
-```
-I'm currently using `mothur` version `1.42.0`.
+## Snakemake Configuration
 
 ## Snakemake Workflows
 
