@@ -5,7 +5,7 @@ channels:
 - r
 dependencies:
 - boost>=1.68.0
-- hdf>=1.10.4
+- hdf5>=1.10.4
 - python>=3.6
 - r>=3.5.1
 - r-tidyverse
