@@ -3,9 +3,9 @@
     "queue": "fluxod",
     "jobname": "{rule}.{wildcards}",
     "procs": 1,
-    "pmem": "8GB",
+    "pmem": "4GB",
     "walltime": "12:00:00",
-    "email": "sovacool@umich.edu",
+    "email": "mumphrey@umich.edu",
     "mailon": "a",
     "jobout": "oe",
     "outdir": "logfiles/pbs/"

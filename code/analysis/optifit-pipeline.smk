@@ -11,7 +11,7 @@ wildcard_constraints:
 	iter="\d+",
 	rep="\d+",
 	sampleref="sample|reference"
-
+"""
 rule calc_seq_dists:
 	input:
 		f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
@@ -25,6 +25,7 @@ rule calc_seq_dists:
 		f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
 	shell:
 		'mothur "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
+"""
 
 rule split_weighted_subsample:  # TODO: use mothur refweight option instead of this rule
 	input:
