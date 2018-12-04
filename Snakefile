@@ -8,9 +8,9 @@ datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dat
 weights = config['weights']
 iters = range(config['iterations'])
 reps = range(config['replicates'])
-methods = {'open', 'closed'}
-printrefs = {'t', 'f'}
-reference_fractions = [i/100 for i in range(50,60,10)]
+methods = config['methods']
+printrefs = config['printrefs']
+reference_fractions = [i for i in range(config['reference_fractions']['start'], config['reference_fractions']['stop'], config['reference_fractions']['step'])]
 
 wildcard_constraints:
     dataset="\w+",

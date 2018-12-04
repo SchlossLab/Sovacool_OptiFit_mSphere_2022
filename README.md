@@ -90,41 +90,23 @@ Be sure to use `mothur` version `1.42.0` or higher.
 ## Snakemake Configuration
 
 The Snakemake workflow relies on a configuration file called `config.yaml`.
-It looks like this:
-
-```
-mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
-input_dir: data
-datasets:
-- soil
-- mice
-- marine
-weights:
-- none
-- ref-abundance
-- sample-abundance
-- sample-dists
-db_version: v132
-subsample_test: False
-subsample_size: 1000
-iterations: 10
-replicates: 10
-dataset-as-reference: True
-silva-as-reference: True
-```
 
 - Set `mothur_bin` to the path to your mothur binary if you're not using the default one on Flux.
-- Add or remove samples to the `datasets` list as needed.
-- Add or remove weight methods to the `weights` list.
-    - Only applies to using the dataset as its own reference.
 - To run the workflow with just a subset of the input data for debugging purposes:
     - Set `subsample_test` to `True`.
     - Set `subsample_size` to the number of sequences you want to use.
-- `iterations` is the number of times the dataset will be randomly subsampled for each fraction.
-    - Only applies to using the dataset as its own reference.
-- `replicates` is the number of times OptiClust and OptiFit will run on each sample.
 - Set `dataset-as-reference` to `True` to run the workflow in `code/analysis/optifit-dataset-as-ref.smk`.
-- Set `silva-as-reference` to `True` to run the workflow in `code/analysis/optifit-silva-ref.smk`
+- Set `silva-as-reference` to `True` to run the workflow in `code/analysis/optifit-silva-ref.smk`.
+    - Update the version number in `silva_db_version` if needed.
+- Add or remove samples in the `datasets` list as needed.
+- If using `dataset-as-reference`:
+    - `weights` are the methods used to subsample the dataset.
+    - `methods` are for controlling `closed`- or `open`-reference clustering in optifit.
+    - `printrefs` must be `t` or `f` (mothur parameter) for including the reference data in the output files from optifit.
+    - `reference_fractions` controls the different sizes to subsample the dataset to.
+    - `iterations` is the number of times the dataset will be randomly subsampled for each fraction.
+    - `replicates` is the number of times OptiClust and OptiFit will run on each sample.
+
 
 ## Snakemake Workflows
 

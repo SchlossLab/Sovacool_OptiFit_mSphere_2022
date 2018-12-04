@@ -1,13 +1,26 @@
 mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
 input_dir: data
+subsample_test: True
+subsample_size: 1000
+dataset-as-reference: True
+silva-as-reference: False
+silva_db_version: v132
 datasets:
 - soil
 weights:
+- none
+- ref-abundance
+- sample-abundance
 - sample-dists
-db_version: v132
-subsample_test: True
-subsample_size: 1000
+methods:
+- open
+- closed
+printrefs:
+- t
+- f
+reference_fractions:
+    start: 50
+    stop: 60
+    step: 10
 iterations: 2
 replicates: 2
-dataset-as-reference: False
-silva-as-reference: True

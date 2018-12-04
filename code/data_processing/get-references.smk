@@ -5,7 +5,7 @@ import subprocess
 # TODO: add greengenes download
 
 output_dir = os.path.join(config['input_dir'], 'references')
-version = config['db_version']
+version = config['silva_db_version']
 
 rule ref_db_targets:
     input:
