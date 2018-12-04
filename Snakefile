@@ -10,7 +10,7 @@ iters = range(config['iterations'])
 reps = range(config['replicates'])
 methods = config['methods']
 printrefs = config['printrefs']
-reference_fractions = [i for i in range(config['reference_fractions']['start'], config['reference_fractions']['stop'], config['reference_fractions']['step'])]
+reference_fractions = [i/100 for i in range(config['reference_fractions']['start'], config['reference_fractions']['stop'], config['reference_fractions']['step'])]
 
 wildcard_constraints:
     dataset="\w+",
