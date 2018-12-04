@@ -9,8 +9,6 @@ datasets:
 - soil
 weights:
 - none
-- ref-abundance
-- sample-abundance
 - sample-dists
 methods:
 - open
