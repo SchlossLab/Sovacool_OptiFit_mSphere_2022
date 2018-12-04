@@ -9,3 +9,4 @@ Rplots.pdf
 data/
 results/
 snakemake.pbs
+cluster.json
