@@ -42,11 +42,44 @@ source deactivate
 ```
 
 Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment. The exception to this is the `mothur` program.
-If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary in `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/`. Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or [compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
+If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
+Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
+[compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
 Be sure to use `mothur` version `1.42.0` or higher.
-In any case, set `mothur_bin` in `config.yaml` to the path to your mothur binary.
 
 ## Snakemake Configuration
+
+The Snakemake workflow relies on a configuration file called `config.yaml`.
+It looks like this:
+
+```
+mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
+input_dir: data
+datasets:
+- soil
+- mice
+- marine
+weights:
+- sample-dists
+db_version: v132
+subsample_test: False
+subsample_size: 1000
+iterations: 10
+replicates: 10
+dataset-as-reference: True
+silva-as-reference: True
+```
+
+- Set `mothur_bin` to the path to your mothur binary if you're not using the default one on Flux.
+- Add or remove `dataset` names as needed.
+- To run the workflow with just a subset of the input data for debugging purposes:
+    - Set `subsample_test` to `True`.
+    - Set `subsample_size` to the number of sequences you want to use.
+- `iterations` is the number of times the dataset will be randomly subsampled for each fraction.
+    - Only applies to using the dataset as its own reference.
+- `replicates` is the number of times OptiClust and OptiFit will run on each sample.
+- Set `dataset-as-reference` to `True` to run the workflow in `code/analysis/optifit-dataset-as-ref.smk`.
+- Set `silva-as-reference` to `True` to run the workflow in `code/analysis/optifit-silva-ref.smk`
 
 ## Snakemake Workflows
 
