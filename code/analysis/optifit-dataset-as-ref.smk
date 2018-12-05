@@ -84,15 +84,17 @@ rule cluster:
 
 rule copy_cluster:
     input:
-        'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/r-{rep}/reference.opti_mcc.list'
+        'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/reference.opti_mcc.list'
     output:
-        'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/r-{rep}/method-{method}_printref-{printref}/reference.opti_mcc.list'
+        'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/reference.opti_mcc.list'
 
 rule copy_fit_input:  # necessary to avoid clashing temp files when running multiple optifit jobs in parallel
     input:
         "results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/{sampleref}/{sampleref}.{ext}"
     output:
         "results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{sampleref}.{ext}"
+    wildcard_constraints:
+        ext="fasta|count_table|dist"
     shell:
         "cp {input} {output}"
 
