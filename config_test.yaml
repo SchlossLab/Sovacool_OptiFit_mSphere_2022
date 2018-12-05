@@ -11,11 +11,13 @@ weights:
 - sample-dists
 methods:
 - open
+- closed
 printrefs:
 - f
+- t
 reference_fractions:
     start: 50
     stop: 60
     step: 10
-iterations: 1
-replicates: 1
+iterations: 2
+replicates: 2
