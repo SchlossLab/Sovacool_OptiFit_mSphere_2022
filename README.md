@@ -172,9 +172,9 @@ Snakemake creates an image representing the directed acyclic graph (DAG) for a w
 snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/workflows/dag.svg
 ```
 
-Example DAG for `code/data_processing/get-references.smk`:
+Here's a small example DAG:
 
-![get-references.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/results/workflows/get-references.dag.svg)
+![optifit-pipeline.config_test.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/results/workflows/optifit-pipeline.config_test.dag.svg)
 
 ## Developer Notes
 
