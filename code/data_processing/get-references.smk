@@ -9,7 +9,7 @@ version = config['silva_db_version']
 
 rule ref_db_targets:
     input:
-        expand("{output_dir}/silva/silva.v4.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
+        f"{output_dir}/silva/silva.v4.tax",
         expand("{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
 
 rule download_silva_db:
@@ -88,19 +88,13 @@ rule get_fasta_seqs:
         fasta="{output_dir}/silva/silva.bacteria.pcr.align",
         accnos="{output_dir}/silva/silva.bacteria.pcr.ng.accnos"
     output:
-        "{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
+        "{output_dir}/silva/silva.v4.align"
     params:
         mothur=mothur_bin,
+        pick="{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     shell:
-        '{params.mothur} "#get.seqs(fasta={input.fasta}, accnos={input.accnos});screen.seqs(minlength=240, maxlength=275, maxambig=0, maxhomop=8); filter.seqs(vertical=T)"'
-
-rule rename_pcr_fasta:
-    input:
-        "{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
-    output:
-        "{output_dir}/silva/silva.v4.align"
-    shell:
-        'mv {input} {output}'
+        '{params.mothur} "#get.seqs(fasta={input.fasta}, accnos={input.accnos});screen.seqs(minlength=240, maxlength=275, maxambig=0, maxhomop=8); filter.seqs(vertical=T)"; '
+        'mv {params.pick} {output}'
 
 rule get_filtered_accession_numbers:
     input:
