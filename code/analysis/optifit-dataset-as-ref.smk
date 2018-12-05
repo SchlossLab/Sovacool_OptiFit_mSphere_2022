@@ -92,6 +92,8 @@ rule copy_cluster:
         'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/reference.opti_mcc.list'
     output:
         'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/reference.opti_mcc.list'
+    shell:
+        "cp {input} {output}"
 
 rule copy_fit_input:  # necessary to avoid clashing temp files when running multiple optifit jobs in parallel
     input:
