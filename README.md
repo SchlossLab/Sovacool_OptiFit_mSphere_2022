@@ -73,13 +73,7 @@ Periodically update the dependencies list:
 ```
 conda list --export > environment.export.txt
 ```
-
-## Deactivate
-
-After ending a session, close the active environment with:
-```
-source deactivate
-```
+(We update the less-detailed `environment.yaml` manually when we install a new package.)
 
 Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment. The exception to this is the `mothur` program.
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
