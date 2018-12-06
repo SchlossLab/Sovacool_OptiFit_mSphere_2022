@@ -11,6 +11,7 @@ reps = range(config['replicates'])
 methods = config['methods']
 printrefs = config['printrefs']
 reference_fractions = [i/100 for i in range(config['reference_fractions']['start'], config['reference_fractions']['stop'], config['reference_fractions']['step'])]
+output_dirs = [option for option in config['workflows'] if config['workflows'][option]]
 
 wildcard_constraints:
     dataset="\w+",
@@ -25,7 +26,6 @@ include: 'code/data_processing/testset-subsample.smk'
 include: 'code/analysis/optifit-dataset-as-ref.smk'
 #include: 'code/analysis/optifit-silva-ref.smk'
 
-output_dirs = [option for option in ['dataset-as-reference', 'silva-as-reference'] if config[option]]
 
 rule all:
         input:
