@@ -185,6 +185,7 @@ See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/ma
 ### Whitespace in Python
 
 I have my editor set to convert tabs to spaces with a tab length of 4.
+In [Atom](atom.io) you can use [:untabify](https://atom.io/packages/tabs-to-spaces) to convert tabs to spaces.
 It's crucial for this to be consistent within Python & Snakemake files.
 If you get an error while running snakemake like:
 ```
