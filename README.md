@@ -143,21 +143,21 @@ snakemake --forcerun rule_name
 
 Or force all rules to run:
 ```
-snakemake -s path/to/snakefile --forceall
+snakemake --forceall
 ```
 
 #### Dry run
 
 Do a dry run to see which jobs snakemake would run without actually running them:
 ```
-snakemake --dryrun -s path/to/snakefile
+snakemake --dryrun
 ```
 Before committing changes or submitting jobs to the cluster, test your snakefile for syntax errors with a dry run.
 
 #### On the cluster
 
 Edit the cluster config file `cluster.json` with your email for PBS to send job notifications.
-On the cluster, create a PBS script with the following command:
+On the cluster, create a PBS script and append the following command:
 ```
 snakemake --profile pbs-torque
 ```
@@ -169,7 +169,7 @@ Profiles for other cluster systems are available in the [snakemake profiles GitH
 
 Snakemake creates an image representing the directed acyclic graph (DAG) for a workflow with the following command:
 ```
-snakemake --dag -s path/to/workflow.smk | dot -Tsvg > results/workflows/dag.svg
+snakemake --dag | dot -Tsvg > results/workflows/dag.svg
 ```
 
 Here's a small example DAG:
