@@ -163,7 +163,7 @@ snakemake --profile pbs-torque
 ```
 Then submit the PBS script to the cluster with `qsub`. See `code/pbs_scripts` for examples.
 
-Profiles for other cluster systems are available in the [snakemake profiles GitHub](https://github.com/snakemake-profiles/doc).
+Profiles for other cluster systems are available in the [snakemake profiles GitHub](https://github.com/snakemake-profiles/doc) such as [Slurm](https://github.com/Snakemake-Profiles/slurm). You may need to edit `cluster.json` for use with a different cluster system profile.
 
 ### Visualizing the DAG
 
