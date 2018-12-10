@@ -20,5 +20,5 @@ reference_fractions:
     start: 50
     stop: 60
     step: 10
-iterations: 10
-replicates: 10
+iterations: 2
+replicates: 2
