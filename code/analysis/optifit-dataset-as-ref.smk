@@ -147,7 +147,7 @@ rule aggregate_sensspec:
                                         line = line.strip()
                                         output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref-{printref}\n")
 
-rule plot_sensspec:
+rule plot_agg_sensspec:
     input:
         "results/dataset-as-reference/{dataset}/aggregate.sensspec"
     output:
