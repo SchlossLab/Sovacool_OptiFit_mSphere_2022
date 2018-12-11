@@ -23,7 +23,7 @@ include: 'code/data_processing/get-references.smk'
 # TODO: write & include snakemake workflows to replace {dataset}.batch and {dataset}.R files
 include: 'code/data_processing/testset-subsample.smk'
 include: 'code/analysis/optifit-dataset-as-ref.smk'
-#include: 'code/analysis/optifit-silva-ref.smk'
+#include: 'code/analysis/optifit-ref-db.smk'
 
 output_dirs = [option for option in ['dataset-as-reference', 'silva-as-reference'] if config[option]]
 
