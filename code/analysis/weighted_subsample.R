@@ -20,13 +20,13 @@ count_table <- readr::read_tsv(file = filename_counts)
 
 if (weight == "none") {
   #Take an unweighted random sample
-  sample <- dplyr::sample_frac(count_table, reference_fraction)
+  sample <- dplyr::sample_frac(count_table, 1-reference_fraction)
 } else if (weight == "sample-abundance") {
   #Take a random subsampling weighted by total abundance
-  sample <- dplyr::sample_frac(count_table, reference_fraction, weight = count_table$total)
+  sample <- dplyr::sample_frac(count_table, 1-reference_fraction, weight = count_table$total)
 } else if (weight == "ref-abundance") {
   #Take a random subsampling of the complement of the sample by total abundance, and use the leftovers as sample
-  sample_complement <- dplyr::sample_frac(count_table, size = 1-reference_fraction, weight = count_table$total)
+  sample_complement <- dplyr::sample_frac(count_table, size = reference_fraction, weight = count_table$total)
   sample <- dplyr::filter(count_table, !(Representative_Sequence %in% sample_complement$Representative_Sequence))
 } else if (weight == "sample-dists") {
   #Take a random subsample weighted by number of pairwise connections to other seqs
