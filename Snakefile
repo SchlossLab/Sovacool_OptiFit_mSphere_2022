@@ -29,7 +29,8 @@ include: 'code/analysis/optifit-dataset-as-ref.smk'
 
 rule all:
         input:
-            expand("results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", dataset=datasets, suffix={'', '.full', '.iters'})
+            expand("results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dirs, dataset=datasets, suffix={'', '.full', '.iters'}),
+            expand("results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv", output_dir=output_dirs, dataset=datasets)
 
 rule calc_seq_dists:
     input:
@@ -45,3 +46,25 @@ rule calc_seq_dists:
         f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
+
+rule fraction_mapped:
+    input:
+        mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-sample-dists_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", reference_fraction=reference_fractions, iter=iters, rep=reps)),
+        original=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-sample-dists_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", reference_fraction=reference_fractions, iter=iters, rep=reps))
+    output:
+        "results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv"
+    run:
+        if len(input.mapped) != len(input.original):
+            raise ValueError("Unequal number of optifit_mcc.list and count_table files")
+        with open(output[0], 'w') as output_file:
+            output_file.write('input_filename\tmapped_filename\tfraction_mapped\n')
+            for mapped_filename, original_filename in zip(input.mapped, input.original):
+                with open(original_filename, 'r') as input_file:
+                    line = next(input_file)  # first column of all lines except first line
+                    input_samples = set([line.split()[0] for line in input_file])
+                with open(mapped_filename, 'r') as mapped_file:
+                    line = next(mapped_file)
+                    line = next(mapped_file) # third column onward of second line
+                    mapped_samples = set(line.split()[2:])
+                fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
+                output_file.write(f'{input_filename}\t{mapped_filename}\t{fraction_mapped}\n')
