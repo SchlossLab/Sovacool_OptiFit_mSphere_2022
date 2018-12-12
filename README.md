@@ -8,11 +8,11 @@
     git clone https://github.com/SchlossLab/OptiFitAnalysis
     cd OptiFitAnalysis/
     ```
-3. Edit the configuration file as needed with your preferred text editor.
+3. Edit the (configuration)[https://github.com/SchlossLab/OptiFitAnalysis#snakemake-configuration] file as needed with your preferred text editor.
     ```
     vi config.yaml
     ```
-4. Run the pipeline.
+4. (Run)[https://github.com/SchlossLab/OptiFitAnalysis#running-a-workflow] the pipeline.
 
     Locally:
     ```
