@@ -8,8 +8,11 @@
     git clone https://github.com/SchlossLab/OptiFitAnalysis
     cd OptiFitAnalysis/
     ```
-
-3. Run the pipeline.
+3. Edit the configuration file as needed with your preferred text editor.
+    ```
+    vi config.yaml
+    ```
+4. Run the pipeline.
 
     Locally:
     ```
@@ -20,12 +23,12 @@
     qsub code/pbs_scripts/optifit-analysis.pbs
     ```
 
-4. Take a look at the results.
+5. Take a look at the results.
     * Each dataset has its own directory in `results/dataset-as-reference` and `results/silva-as-reference`. Within those directories:
         * The main output file is aggregated in `{dataset}/aggregate.sensspec`.
         * Results figures are in `{dataset}/figures/`.
 
-5. Visualize the workflow.
+6. Visualize the workflow.
     ```
     snakemake --dag | dot -Tsvg > results/workflows/dag.svg
     ```
@@ -75,7 +78,8 @@ conda list --export > environment.export.txt
 ```
 (We update the less-detailed `environment.yaml` manually when we install a new package.)
 
-Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment. The exception to this is the `mothur` program.
+Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment.
+The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
 Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
 [compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
