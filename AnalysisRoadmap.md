@@ -12,7 +12,7 @@
 ## 1. Independent database [Kelly]
 * Questions:
 	- How well does fitting into a reference perform vs. de novo
-	- How does fitting into a reference using OptiFit perform vs. VSEARCH- [ ]based open/closed clustering
+	- How does fitting into a reference using OptiFit perform vs. VSEARCH-based open/closed clustering
 	- How important is the composition of the reference database?
  	- How sensitive is OptiFit to random variation?
 * First, use SILVA (without greengenes or rdp):
@@ -26,30 +26,17 @@
 	- [ ] Align greengenes database to SILVA reference alignment (talk to me about what these should be)
 	- [ ] Trim to V4 region of 16S rRNA gene
 	- [ ] Use OptiClust to cluster reference sequences
-* Perform de novo clustering on human, murine, marine, and soil samples
-	- [ ] get MCC values
-	- [ ] 10 reps
-* Perform open reference clustering (OptiFit) against reference OTUs
-	- [ ] get MCC values
-	- [ ] 10 reps
-* Perform closed reference clustering (OptiFit) against reference OTUs
-	- [ ] % of sequences that map to references
-	- [ ] get MCC values
-	- [ ] 10 reps
-* Perform open reference clustering (VSEARCH) against representative sequences from each OTU
-	- [ ] get MCC values
-	- [ ] 10 reps
-* Perform closed reference clustering (VSEARCH) against representative sequences from each OTU
-	- [ ] % of sequences that map to references
-	- [ ] get MCC values
-	- [ ] 10 reps
-* Perform open reference clustering (VSEARCH) against core_gg_97 collection
-	- [ ] get MCC values
-	- [ ] 10 reps, randomize reference order each time
-* Perform closed reference clustering (VSEARCH) against core_gg_97 collection
-	- [ ] % of sequences that map to references
-	- [ ] get MCC values
-	- [ ] 10 reps, randomize reference order each time
+* For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
+    - [ ] De novo clustering on  samples
+    - [ ] Open reference clustering (OptiFit) against reference OTUs
+	- [ ] Closed reference clustering (OptiFit) against reference OTUs
+    	- [ ] % of sequences that map to references
+	- [ ] Open reference clustering (VSEARCH) against representative sequences from each OTU
+	- [ ] Closed reference clustering (VSEARCH) against representative sequences from each OTU
+    	- [ ] % of sequences that map to references
+	- [ ] Open reference clustering (VSEARCH) against core_gg_97 collection
+	- [ ] Closed reference clustering (VSEARCH) against core_gg_97 collection
+    	- [ ] % of sequences that map to references
 
 ## 2. Importance of database [Brodie]
 * Questions:
