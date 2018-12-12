@@ -8,14 +8,12 @@ silva_db_version: v132
 datasets:
 - soil
 weights:
-- none
 - sample-dists
 methods:
 - open
 - closed
 printrefs:
 - f
-- t
 reference_fractions:
     start: 50
     stop: 60
