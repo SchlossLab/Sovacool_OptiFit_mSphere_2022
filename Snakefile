@@ -29,7 +29,7 @@ output_dirs = [option for option in ['dataset-as-reference', 'silva-as-reference
 
 rule all:
         input:
-            expand("results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", dataset=datasets, suffix={'', '.full', '.iters'})
+            expand("results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dirs, dataset=datasets, suffix={'', '.full', '.iters'})
 
 rule calc_seq_dists:
     input:
@@ -45,3 +45,15 @@ rule calc_seq_dists:
         f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
+
+rule plot_sensspec:
+    input:
+        "results/{output_dir}/{dataset}/aggregate.sensspec"
+    output:
+        combo_mcc="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.png",
+        mcc_full="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.full.png",
+        iters="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
+    benchmark:
+        "benchmarks/{output_dir}/{dataset}/plot_sensspec.log"
+    script:
+        "plot_sensspec.R"
