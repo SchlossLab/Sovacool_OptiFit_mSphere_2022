@@ -8,8 +8,7 @@
 * Baxter: [(GitHub repo)](https://github.com/SchlossLab/Baxter_glne007Modeling_GenomeMed_2015)
 	- Describes RF modeling and CRC
 
-
-## 1. Independent database [Kelly]
+## 1. Independent database
 * Questions:
 	- How well does fitting into a reference perform vs. de novo
 	- How does fitting into a reference using OptiFit perform vs. VSEARCH-based open/closed clustering
@@ -38,7 +37,7 @@
 	- [ ] Closed reference clustering (VSEARCH) against core_gg_97 collection
     	- [ ] % of sequences that map to references
 
-## 2. Importance of database [Brodie]
+## 2. Importance of database
 * Questions:
 	- Is there an optimal way to select sequences to be in the database?
 	- Suspect that random without accounting for abundance is just as good as all the rest
@@ -49,16 +48,17 @@
 	- [x] Sequences with the fewest connections
 * For each method of generating reference
 	- [x] Cluster reference sequences using OptiClust, get MCC value
-	- [ ] With remaining 80%(?) of data
+	- [x] With remaining 80%(?) of data
 		- [x] OptiClust sequences, get MCC values
 		- [x] OptiFit sequences
  			- [x] Capture MCC values for U sequences with and without R sequences included
-			- [ ] % of sequences that map to references
+			- [x] % of sequences that map to references
 			- [x] Run 10 times to see level of variation
 
-## 3. Use dataset as its own reference [Brodie]
+## 3. Use dataset as its own reference
 * Questions:
 	- How much of the dataset is needed to generate the reference?
+        - Need to fix the sample size and vary the reference size to answer this.
 	- How does OptiFit on fraction of dataset perform relative to entire dataset?
 	- How sensitive is OptiFit to random variation?
 * Perform de novo clustering on human, murine, marine, and soil samples (same as above)
@@ -74,17 +74,17 @@
 		- [x] Cluster reference sequences using OptiClust
 		- [x] Get MCC
 		- [x] Run 10 times to get the seed that gives the best clustering for each set of references
-	- [ ] On remaining fraction of data (U)
+	- [x] On remaining fraction of data (U)
 		- [x] OptiClust on its own
 			- [x] get MCC values
 			- [x] 10 random seeds
-		- [ ] Use OptiFit/open to fit U sequences into R OTUs
+		- [x] Use OptiFit/open to fit U sequences into R OTUs
 			- [x] Capture MCC values for U sequences with and without R sequences included
-			- [ ] % of sequences that map to references
+			- [x] % of sequences that map to references
 			- [x] Run 10 times to see level of variation
-		- [ ] Use OptiFit/closed to fit U sequences into R OTUs
+		- [x] Use OptiFit/closed to fit U sequences into R OTUs
 			- [x] Capture MCC values for U sequences with and without R sequences included
-			- [ ] % of sequences that map to references
+			- [x] % of sequences that map to references
 			- [x] Run 10 times to see level of variation
 
 ## 4. Deploy
