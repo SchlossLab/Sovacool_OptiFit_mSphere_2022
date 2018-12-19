@@ -276,7 +276,7 @@ See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/ma
     │           ├── aggregate.sensspec.mcc.full.png
     │           ├── aggregate.sensspec.mcc.iters.png
     │           └── aggregate.sensspec.mcc.png
-    ├── silva-as-reference               # Results form using Silva as the reference
+    ├── silva-as-reference               # Results from using Silva as the reference
     └── workflows                        # Visuals created by Snakemake --dag
         ├── optifit-pipeline.FULL.dag.svg
         ├── optifit-pipeline.config_test.dag.svg
