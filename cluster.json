@@ -1,0 +1,12 @@
+"__default__": {
+    "account": "pschloss_fluxod",
+    "queue": "fluxod",
+    "jobname": "{rule}.{wildcards}",
+    "procs": 1,
+    "pmem": "6GB",
+    "walltime": "12:00:00",
+    "email": "",
+    "mailon": "a",
+    "jobout": "oe",
+    "outdir": "logfiles/pbs/rule_jobs/"
+}
