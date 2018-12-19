@@ -4,7 +4,7 @@ subsample_test: False
 subsample_size: 1000
 workflows:
     dataset-as-reference: True
-    silva-as-reference: True
+    silva-as-reference: False
 silva_db_version: v132
 datasets:
 - soil
