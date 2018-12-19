@@ -198,6 +198,8 @@ It's likely a whitespace issue.
 See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
 
 ### Directory structure
+
+```
 .
 ├── AnalysisRoadmap.md                  # Project progress
 ├── OptiFitAnalysis.Rproj
@@ -279,3 +281,4 @@ See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/ma
         ├── optifit-pipeline.FULL.dag.svg
         ├── optifit-pipeline.config_test.dag.svg
         ├── optifit-pipeline.test.dag.svg
+```
