@@ -2,7 +2,7 @@
 
 ## Quickstart
 
-1. Install `mothur` version `1.42.0` and all the dependencies listed in `environment.yaml`.
+1. Install `mothur` version `1.42.0` and all the dependencies listed in `config/environment.yaml`.
 2. Clone this repository.
     ```
     git clone https://github.com/SchlossLab/OptiFitAnalysis
@@ -10,7 +10,7 @@
     ```
 3. Edit the [configuration](https://github.com/SchlossLab/OptiFitAnalysis#snakemake-configuration) file as needed with your preferred text editor.
     ```
-    vi config.yaml
+    vi config/config.yaml
     ```
 4. [Run](https://github.com/SchlossLab/OptiFitAnalysis#running-a-workflow) the pipeline.
 
@@ -46,12 +46,12 @@ If you don't already have it, I recommend installing the [Miniconda](https://con
 If you plan to run this workflow on Flux or other 64-bit Linux machine,
 you can get an exact replica of my environment with:
 ```
-conda create --name OptiFitAnalysis --file environment.export.txt
+conda create --name OptiFitAnalysis --file config/environment.export.txt
 ```
 
 Otherwise, run:
 ```
-conda env create --name OptiFitAnalysis --file environment.yaml
+conda env create --name OptiFitAnalysis --file config/environment.yaml
 ```
 
 The conda project is [in the process of merging conda-env into conda](https://groups.google.com/a/continuum.io/forum/#!topic/conda/EBVVtS8bNRA),
@@ -74,11 +74,11 @@ conda install new_package_name
 
 Periodically update the dependencies list:
 ```
-conda list --export > environment.export.txt
+conda list --export > config/environment.export.txt
 ```
-(We update the less-detailed `environment.yaml` manually when we install a new package.)
+(We update the less-detailed `config/environment.yaml` manually when we install a new package.)
 
-Almost all dependencies are listed in `environment.export.txt`, which will be installed by conda when you create the environment.
+Almost all dependencies are listed in `config/environment.export.txt`, which will be installed by conda when you create the environment.
 The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
 Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
@@ -87,7 +87,7 @@ Be sure to use `mothur` version `1.42.0` or higher.
 
 ## Snakemake Configuration
 
-The Snakemake workflow relies on a configuration file called `config.yaml`.
+The Snakemake workflow relies on a configuration file in `YAML` format. Our default is `config/config.yaml`:
 
 - Set `mothur_bin` to the path to your mothur binary if you're not using the default one on Flux.
 - To run the workflow with just a subset of the input data for debugging purposes:
