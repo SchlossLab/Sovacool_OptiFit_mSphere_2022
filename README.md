@@ -182,10 +182,6 @@ Here's a small example DAG:
 
 ## Developer Notes
 
-### Project progress
-
-See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
-
 ### Whitespace in Python
 
 I have my editor set to convert tabs to spaces with a tab length of 4.
@@ -196,3 +192,17 @@ If you get an error while running snakemake like:
 Unexpected keyword <word> in rule definition (Snakefile, line <line>)
 ```
 It's likely a whitespace issue.
+
+### Project progress
+
+See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
+
+### To-Do
+
+- [ ] Finish implementing support for using external databases as the reference for optifit.
+    - On branch `silva-ref-db`. Merge into `master` when complete.
+- [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
+    - Need to fix the sample size and vary the reference size to answer this.
+- [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
+    - Call the data processing workflows from the main Snakefile with the `include` statement.
+- [ ] Download the human sample dataset.
