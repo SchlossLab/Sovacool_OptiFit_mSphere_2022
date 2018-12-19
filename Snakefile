@@ -1,6 +1,6 @@
 " Download references, download & process data, and run tests to benchmark the OptiFit algorithm"
 
-configfile: 'config.yaml'
+configfile: 'config/config.yaml'
 
 mothur_bin=config['mothur_bin']
 input_dir = config['input_dir']
