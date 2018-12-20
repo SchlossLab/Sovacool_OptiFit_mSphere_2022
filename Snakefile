@@ -49,8 +49,8 @@ rule calc_seq_dists:
 
 rule fraction_mapped:
     input:
-        mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-sample-dists_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", reference_fraction=reference_fractions, iter=iters, rep=reps)),
-        original=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-sample-dists_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", reference_fraction=reference_fractions, iter=iters, rep=reps))
+        mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
+        original=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps))
     output:
         "results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv"
     run:
@@ -67,4 +67,4 @@ rule fraction_mapped:
                     line = next(mapped_file) # third column onward of second line
                     mapped_samples = set(line.split()[2:])
                 fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
-                output_file.write(f'{input_filename}\t{mapped_filename}\t{fraction_mapped}\n')
+                output_file.write(f'{original_filename}\t{mapped_filename}\t{fraction_mapped}\n')
