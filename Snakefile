@@ -11,6 +11,7 @@ reps = range(config['replicates'])
 methods = {'open', 'closed'}
 printrefs = {'t', 'f'}
 reference_fractions = [i/100 for i in range(50,60,10)]
+output_dirs = [option for option in config['workflows'] if config['workflows'][option]]
 
 wildcard_constraints:
     dataset="\w+",
@@ -24,9 +25,7 @@ include: 'code/data_processing/get-references.smk'
 # TODO: write & include snakemake workflows to replace {dataset}.batch and {dataset}.R files
 include: 'code/data_processing/testset-subsample.smk'
 include: 'code/analysis/optifit-dataset-as-ref.smk'
-#include: 'code/analysis/optifit-ref-db.smk'
-
-output_dirs = [option for option in ['dataset-as-reference', 'silva-as-reference'] if config[option]]
+include: 'code/analysis/optifit-ref-db.smk'
 
 rule all:
         input:
