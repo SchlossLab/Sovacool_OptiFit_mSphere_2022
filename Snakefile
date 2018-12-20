@@ -51,7 +51,7 @@ rule fraction_mapped:
     input:
         mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
         original=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps))
-   output:
+    output:
         "results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv"
     run:
         if len(input.mapped) != len(input.count_table):
