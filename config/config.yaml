@@ -1,4 +1,4 @@
-mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
+mothur_bin: /nfs/turbo/schloss-lab/mumphrey/OptiFitAnalysis/mothur
 input_dir: data
 subsample_test: False
 subsample_size: 1000
@@ -7,12 +7,12 @@ workflows:
     silva-as-reference: False
 silva_db_version: v132
 datasets:
-- soil
+- mice
 weights:
 - none
 - ref-abundance
-- sample-abundance
-- sample-dists
+#- sample-abundance
+#- sample-dists
 methods:
 - open
 - closed
@@ -24,4 +24,4 @@ reference_fractions:
     stop: 100
     step: 10
 iterations: 10
-replicates: 10
+replicates: 5
