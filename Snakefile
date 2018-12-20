@@ -16,7 +16,8 @@ wildcard_constraints:
     dataset="\w+",
     iter="\d+",
     rep="\d+",
-    sampleref="sample|reference"
+    sampleref="sample|reference",
+    reference="silva|greengenes"
 
 
 include: 'code/data_processing/get-references.smk'
