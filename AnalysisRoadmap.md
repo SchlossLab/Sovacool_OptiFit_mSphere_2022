@@ -8,6 +8,7 @@
 - [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
     - Call the data processing workflows from the main Snakefile with the `include` statement.
 - [ ] Download the human sample dataset.
+- [ ] What percent of sequences map to the reference
 
 # Analysis Roadmap
 
