@@ -3,7 +3,6 @@
 #PBS -q fluxod            ## name of the queue to submit the job to. Will match the suffix on allocation name
 #PBS -l procs=1,pmem=2GB,walltime=24:00:00    ## resource reservation  max walltime = 672 hours
 #PBS -l qos=flux        ## quality of service DO NOT CHANGE THIS
-#PBS -M sovacool@umich.edu  ## send email notifications to umich email listed
 #PBS -m abe                ## when to send email a=abort b=job begin e=job end
 #PBS -j oe                 ## send output and error information to the email listed above
 #PBS -V                 ## IMPORTANT always use this. send environment setup to node job will be run on
@@ -20,4 +19,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake --profile pbs-torque --configfile config.yaml --latency-wait 10
+snakemake --profile pbs-torque --configfile config/config.yaml --latency-wait 10
