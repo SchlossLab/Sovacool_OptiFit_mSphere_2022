@@ -1,6 +1,6 @@
 " Download references, download & process data, and run tests to benchmark the OptiFit algorithm"
 
-configfile: 'config.yaml'
+configfile: 'config/config.yaml'
 
 mothur_bin=config['mothur_bin']
 input_dir = config['input_dir']
@@ -29,8 +29,7 @@ include: 'code/analysis/optifit-dataset-as-ref.smk'
 
 rule all:
         input:
-            expand("results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dirs, dataset=datasets, suffix={'', '.full', '.iters'}),
-            expand("results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv", output_dir=output_dirs, dataset=datasets)
+            expand("results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dirs, dataset=datasets, suffix={'', '.full', '.iters'})
 
 rule calc_seq_dists:
     input:
@@ -46,7 +45,7 @@ rule calc_seq_dists:
         f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
-
+"""
 rule fraction_mapped:
     input:
         mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-sample-dists_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", reference_fraction=reference_fractions, iter=iters, rep=reps)),
@@ -68,3 +67,4 @@ rule fraction_mapped:
                     mapped_samples = set(line.split()[2:])
                 fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
                 output_file.write(f'{input_filename}\t{mapped_filename}\t{fraction_mapped}\n')
+"""
