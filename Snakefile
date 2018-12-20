@@ -57,7 +57,7 @@ rule fraction_mapped:
         if len(input.mapped) != len(input.original):
             raise ValueError("Unequal number of optifit_mcc.list and count_table files")
         with open(output[0], 'w') as output_file:
-            output_file.write('input_filename\tmapped_filename\tfraction_mapped\n')
+            output_file.write('original_filename\tmapped_filename\tfraction_mapped\n')
             for mapped_filename, original_filename in zip(input.mapped, input.original):
                 with open(original_filename, 'r') as input_file:
                     line = next(input_file)  # first column of all lines except first line
@@ -67,4 +67,4 @@ rule fraction_mapped:
                     line = next(mapped_file) # third column onward of second line
                     mapped_samples = set(line.split()[2:])
                 fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
-                output_file.write(f'{input_filename}\t{mapped_filename}\t{fraction_mapped}\n')
+                output_file.write(f'{original_filename}\t{mapped_filename}\t{fraction_mapped}\n')
