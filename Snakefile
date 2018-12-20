@@ -34,16 +34,16 @@ rule all:
 
 rule calc_seq_dists:
     input:
-        f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
+        f'{input_dir}/{{sample}}/{{sample}}.fasta'
     output:
-        f'{input_dir}/{{dataset}}/{{dataset}}.dist'
+        f'{input_dir}/{{sample}}/{{sample}}.dist'
     params:
         mothur=mothur_bin,
-        output_dir=f'{input_dir}/{{dataset}}/'
+        output_dir=f'{input_dir}/{{sample}}/'
     benchmark:
-        f'benchmarks/{input_dir}/{{dataset}}/calc_seq_dists.log'
+        f'benchmarks/{input_dir}/{{sample}}/calc_seq_dists.log'
     log:
-        f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
+        f"logfiles/{input_dir}/{{sample}}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
 
