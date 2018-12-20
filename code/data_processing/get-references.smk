@@ -9,7 +9,7 @@ version = config['db_version']
 
 rule ref_db_targets:
     input:
-        expand("{output_dir}/silva/silva.v4.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
+        expand("{output_dir}/silva/silva.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
         expand("{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
 
 rule download_silva_db:
@@ -98,24 +98,24 @@ rule rename_pcr_fasta:
     input:
         "{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     output:
-        "{output_dir}/silva/silva.v4.align"
+        "{output_dir}/silva/silva.align"
     shell:
         'mv {input} {output}'
 
 rule get_filtered_accession_numbers:
     input:
-        "{output_dir}/silva/silva.v4.align"
+        "{output_dir}/silva/silva.align"
     output:
-        "{output_dir}/silva/silva.v4.accnos"
+        "{output_dir}/silva/silva.accnos"
     shell:
         'grep "^>" {input} | cut -c 2- > {output}'
 
 rule get_taxon_seqs:
     input:
         tax="{output_dir}/silva/silva.bacteria.tax",
-        accnos="{output_dir}/silva/silva.v4.accnos"
+        accnos="{output_dir}/silva/silva.accnos"
     output:
-        tax="{output_dir}/silva/silva.v4.tax"
+        tax="{output_dir}/silva/silva.tax"
     params:
         mothur=mothur_bin,
         pick="{output_dir}/silva/silva.bacteria.pick.tax"

@@ -1,34 +1,61 @@
-""" Benchmarking the OptiFit algorithm using the SILVA reference """
+""" Benchmarking the OptiFit algorithm using an external reference database """
 
 reference = 'silva'
 
 rule prep_sample:
 
 rule prep_reference:
+    input:
+        accnos="{input_dir}/{reference}/{reference}.accnos",
+        fasta="{input_dir}/{reference}/{reference}.align",
+        dist="{input_dir}/{reference}/{reference}.align"
+    output:
+        accnos="{output_dir}/{reference}-as-reference/{reference}.accnos",
+        fasta="{output_dir}/{reference}-as-reference/{reference}.fasta"
+    shell:
+        "cp {input.accnos} {output.accnos}; cp {input.fasta} {output.fasta}; "
+        "{params.mothur} "
+
+rule reference_cluster:
+    input:
+        count="{input_dir}/references/{reference}/{reference}.count_table"
+        column="{input_dir}/references/{reference}/{reference}.dist"
+    output:
+        expand('results/{reference}-as-reference/{reference}.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+    params:
+        mothur=mothur_bin,
+        output_dir='results/{reference}-as-reference/'
+    benchmark:
+        "benchmarks/{reference}-as-reference/{reference}.cluster.log"
+    log:
+        "logfiles/{reference}-as-reference/{reference}.cluster.log"
+    shell:
+        '{params.mothur} "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count}, cutoff=0.3)"'
+
 
 rule sample_cluster:
     input:
-        count="{input_dir}/{dataset}/{sampleref}.count_table",
-        column="results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/{sampleref}/{sampleref}.dist"
+        count="{input_dir}/{dataset}/sample.count_table",
+        column="results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample/sample.dist"
     output:
-        expand('results/{reference}-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/{{sampleref}}.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
+        expand('results/{reference}-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
     params:
         mothur=mothur_bin,
-        output_dir='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/r-{rep}/',
+        output_dir='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/',
         rep="{rep}"
     benchmark:
-        "benchmarks/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/r-{rep}/{sampleref}.cluster.log"
+        "benchmarks/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample.cluster.log"
     log:
-        "logfiles/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/r-{rep}/{sampleref}.cluster.log"
+        "logfiles/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample.cluster.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count}, cutoff=0.3)"'
 
 rule fit_to_ref:
     input:
-        reflist='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/r-{rep}/reference.opti_mcc.list',
-        refcolumn='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/reference/reference.dist',
-        refcount='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/reference/reference.count_table',
-        reffasta='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/reference/reference.fasta',
+        reflist='results/{reference}-as-reference/{reference}.opti_mcc.list',
+        refcolumn='results/{reference}-as-reference/{reference}.dist',
+        refcount='results/{reference}-as-reference/{reference}.count_table',
+        reffasta='results/{reference}-as-reference/{reference}.fasta',
         fasta='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample/sample.fasta',
         count='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample/sample.count_table',
         column='results/{reference}-as-reference/{dataset}/{dataset}_i-{iter}/sample/sample.dist'
