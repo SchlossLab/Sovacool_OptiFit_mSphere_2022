@@ -3,7 +3,7 @@ input_dir: data
 datasets:
 - soil
 weights:
-- sample-dists
+- none
 db_version: v132
 subsample_test: True
 subsample_size: 1000

@@ -146,15 +146,3 @@ rule aggregate_sensspec:
                                             pass
                                         line = line.strip()
                                         output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref-{printref}\n")
-
-rule plot_sensspec:
-    input:
-        "results/dataset-as-reference/{dataset}/aggregate.sensspec"
-    output:
-        combo_mcc="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.png",
-        mcc_full="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.full.png",
-        iters="results/dataset-as-reference/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
-    benchmark:
-        "benchmarks/dataset-as-reference/{dataset}/plot_sensspec.log"
-    script:
-        "plot_sensspec.R"
