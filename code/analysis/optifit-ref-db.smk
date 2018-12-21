@@ -1,4 +1,5 @@
 """ Benchmarking the OptiFit algorithm using an external reference database """
+import shutil
 
 rule fit_to_external_ref_db:
     input:
@@ -6,27 +7,36 @@ rule fit_to_external_ref_db:
         expand('results/{{reference}}-as-reference/{{dataset}}/i-{iter}/method-{method}_printref-f/sample.optifit_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods),
         "results/{reference}-as-reference/{dataset}/aggregate.sensspec"
 
-rule prep_reference:
+rule get_reference_names:
     input:
-        accnos="data/references/{reference}.accnos",
-        fasta="data/references/{reference}.align",
-        column="data/references/{reference}.dist"
+        fasta="data/references/{reference}/{reference}.align"
     output:
-        accnos="results/{reference}-as-reference/{dataset}/i-{iter}/reference.accnos",
-        fasta="results/{reference}-as-reference/{dataset}/i-{iter}/reference.fasta",
-        column="results/{reference}-as-reference/{dataset}/i-{iter}/reference.dist",
-        name="results/{reference}-as-reference/{dataset}/i-{iter}/reference.names",
-        unique="results/{reference}-as-reference/{dataset}/i-{iter}/reference.unique.fasta"
+        names="data/references/{reference}/{reference}.names",
+        unique="data/references/{reference}/{reference}.unique.fasta"
     params:
         mothur=mothur_bin,
-        output_dir="results/{reference}-as-reference/{dataset}/i-{iter}/"
+        output_dir="data/references/{reference}/"
     benchmark:
-        "benchmarks/{reference}-as-reference/{dataset}/i-{iter}/reference.prep_reference.log"
+        "benchmarks/{reference}-as-reference/get_ref_names.log"
     log:
-        "logfiles/{reference}-as-reference/{dataset}/i-{iter}/reference.prep_reference.log"
+        "logfiles/{reference}-as-reference/get_ref_names.log"
     shell:
-        'cp {input.accnos} {output.accnos}; cp {input.fasta} {output.fasta}; '
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); unique.seqs(fasta={input.fasta})" '
+
+rule copy_reference:
+    input:
+        expand("data/references/{{reference}}/{{reference}}.{ext}", ext=['accnos', 'align', 'dist', 'names', 'fasta'])
+    output:
+        expand("results/{{reference}}-as-reference/{{dataset}}/i-{{iter}}/reference.{ext}", ext=['accnos', 'align', 'dist', 'names', 'fasta'])
+    benchmark:
+        "benchmarks/{reference}-as-reference/{dataset}/i-{iter}/copy_reference.log"
+    log:
+        "logfiles/{reference}-as-reference/{dataset}/i-{iter}/copy_reference.log"
+    run:
+        for input_filename, output_filename in zip(input, output):
+            if not output_filename.endswith(input_filename.split('.')[-1]):
+                raise ValueError(f'Extensions of input & output filenames are not the same! {input_filename} != {output_filename}')
+            shutil.copyfile(input_filename, output_filename)
 
 rule reference_cluster:
     input:
