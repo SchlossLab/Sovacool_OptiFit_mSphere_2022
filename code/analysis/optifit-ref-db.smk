@@ -1,19 +1,16 @@
 """ Benchmarking the OptiFit algorithm using an external reference database """
-reference_options = {"silva", "greengenes"}
-
-
 
 rule fit_to_external_ref_db:
     input:
-        expand('results/{reference}-as-reference/{{dataset}}/{{dataset}}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
-        expand('results/{reference}-as-reference/{{dataset}}/{{dataset}}_i-{iter}/r-{rep}/method-{method}_printref-f/sample.optifit_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods),
+        expand('results/{{reference}}-as-reference/{{dataset}}/{{dataset}}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
+        expand('results/{{reference}}-as-reference/{{dataset}}/{{dataset}}_i-{iter}/r-{rep}/method-{method}_printref-f/sample.optifit_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods),
         "results/{reference}-as-reference/{dataset}/aggregate.sensspec"
 
 rule prep_reference:
     input:
-        accnos="{input_dir}/{reference}/{reference}.accnos",
-        fasta="{input_dir}/{reference}/{reference}.align",
-        column="{input_dir}/{reference}/{reference}.dist"
+        accnos="data/references/{reference}.accnos",
+        fasta="data/references/{reference}.align",
+        column="data/references/{reference}.dist"
     output:
         accnos="results/{reference}-as-reference/{reference}.accnos",
         fasta="results/{reference}-as-reference/{reference}.fasta",
@@ -31,8 +28,8 @@ rule prep_reference:
 
 rule reference_cluster:
     input:
-        names="{input_dir}/references/{reference}/{reference}.names",
-        column="{input_dir}/references/{reference}/{reference}.dist"
+        names="data/references/{reference}/{reference}.names",
+        column="data/references/{reference}/{reference}.dist"
     output:
         expand('results/{{reference}}-as-reference/{{reference}}.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
     params:
@@ -48,8 +45,8 @@ rule reference_cluster:
 
 rule sample_cluster:
     input:
-        count="{input_dir}/{dataset}/{dataset}.count_table",
-        column="{input_dir}/{dataset}/{dataset}.dist"
+        count="data/{dataset}/{dataset}.count_table",
+        column="data/{dataset}/{dataset}.dist"
     output:
         expand('results/{{reference}}-as-reference/{{dataset}}/{{dataset}}__i-{{iter}}/sample.opti_mcc.{ext}', ext={'list', 'steps', 'sensspec'})
     params:
