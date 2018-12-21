@@ -9,7 +9,7 @@ rule fit_to_external_ref_db:
 
 rule get_reference_names:
     input:
-        fasta="data/references/{reference}/{reference}.align"
+        fasta="data/references/{reference}/{reference}.fasta"
     output:
         names="data/references/{reference}/{reference}.names",
         unique="data/references/{reference}/{reference}.unique.fasta"
@@ -25,9 +25,9 @@ rule get_reference_names:
 
 rule copy_reference:
     input:
-        expand("data/references/{{reference}}/{{reference}}.{ext}", ext=['accnos', 'align', 'dist', 'names', 'fasta'])
+        expand("data/references/{{reference}}/{{reference}}.{ext}", ext=['accnos', 'dist', 'names', 'fasta'])
     output:
-        expand("results/{{reference}}-as-reference/{{dataset}}/i-{{iter}}/reference.{ext}", ext=['accnos', 'align', 'dist', 'names', 'fasta'])
+        expand("results/{{reference}}-as-reference/{{dataset}}/i-{{iter}}/reference.{ext}", ext=['accnos', 'dist', 'names', 'fasta'])
     benchmark:
         "benchmarks/{reference}-as-reference/{dataset}/i-{iter}/copy_reference.log"
     log:

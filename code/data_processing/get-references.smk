@@ -9,7 +9,7 @@ version = config['silva_db_version']
 
 rule ref_db_targets:
     input:
-        expand("data/references/silva/silva.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
+        expand("data/references/silva/silva.{ext}", output_dir=output_dir, ext={'accnos','fasta','tax'}),
         expand("data/references/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
 
 rule download_silva_db:
@@ -32,7 +32,7 @@ rule get_prok_lineage:
         fasta=f"data/references/silva/silva.seed_{version}.align",
         tax=f"data/references/silva/silva.seed_{version}.tax"
     output:
-        fasta="data/references/silva/silva.bact_archaea.align",
+        fasta="data/references/silva/silva.bact_archaea.fasta",
         tax="data/references/silva/silva.bact_archaea.tax"
     params:
         mothur=mothur_bin,
@@ -44,10 +44,10 @@ rule get_prok_lineage:
 
 rule get_bact_lineage:
     input:
-        fasta='data/references/silva/silva.bact_archaea.align',
+        fasta='data/references/silva/silva.bact_archaea.fasta',
         tax='data/references/silva/silva.bact_archaea.tax'
     output:
-        'data/references/silva/silva.bact_archaea.pick.align',
+        'data/references/silva/silva.bact_archaea.pick.fasta',
         'data/references/silva/silva.bact_archaea.pick.tax'
     params:
         mothur=mothur_bin,
@@ -60,16 +60,16 @@ rule rename_bact:
     output:
         "data/references/silva/silva.bacteria.{ext}"
     wildcard_constraints:
-        ext="align|tax"
+        ext="fasta|tax"
     shell:
         "mv {input} {output}"
 
 rule pcr_seqs:
     input:
-        "data/references/silva/silva.bacteria.align"
+        "data/references/silva/silva.bacteria.fasta"
     output:
         "data/references/silva/silva.bacteria.pcr.ng.names",
-        "data/references/silva/silva.bacteria.pcr.align"
+        "data/references/silva/silva.bacteria.pcr.fasta"
     params:
         mothur=mothur_bin,
     shell:
@@ -85,7 +85,7 @@ rule get_pcr_accession_numbers:
 
 rule get_fasta_seqs:
     input:
-        fasta="data/references/silva/silva.bacteria.pcr.align",
+        fasta="data/references/silva/silva.bacteria.pcr.fasta",
         accnos="data/references/silva/silva.bacteria.pcr.ng.accnos"
     output:
         "data/references/silva/silva.bacteria.pcr.pick.good.filter.fasta"
@@ -98,13 +98,13 @@ rule rename_pcr_fasta:
     input:
         "data/references/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     output:
-        "data/references/silva/silva.align"
+        "data/references/silva/silva.fasta"
     shell:
         'mv {input} {output}'
 
 rule get_filtered_accession_numbers:
     input:
-        "data/references/silva/silva.align"
+        "data/references/silva/silva.fasta"
     output:
         "data/references/silva/silva.accnos"
     shell:
