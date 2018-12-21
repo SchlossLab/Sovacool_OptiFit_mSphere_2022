@@ -34,11 +34,9 @@ rule all:
 
 rule calc_seq_dists:
     input:
-        '{input_dir}/{sample}/{sample}.{fasta}'
+        '{input_dir}/{sample}/{sample}.fasta'
     output:
         '{input_dir}/{sample}/{sample}.dist'
-    wildcard_constraints:
-        fasta="fasta|align"
     params:
         mothur=mothur_bin,
         output_dir='{input_dir}/{sample}/'
