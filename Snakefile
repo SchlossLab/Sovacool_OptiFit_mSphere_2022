@@ -13,6 +13,7 @@ printrefs = {'t', 'f'}
 reference_fractions = [i/100 for i in range(50,60,10)]
 output_dirs = [option for option in config['workflows'] if config['workflows'][option]]
 
+
 wildcard_constraints:
     dataset="\w+",
     iter="\d+",
@@ -33,16 +34,16 @@ rule all:
 
 rule calc_seq_dists:
     input:
-        f'{input_dir}/{{sample}}/{{sample}}.fasta'
+        '{input_dir}/{sample}/{sample}.fasta'
     output:
-        f'{input_dir}/{{sample}}/{{sample}}.dist'
+        '{input_dir}/{sample}/{sample}.dist'
     params:
         mothur=mothur_bin,
-        output_dir=f'{input_dir}/{{sample}}/'
+        output_dir='{input_dir}/{sample}/'
     benchmark:
-        f'benchmarks/{input_dir}/{{sample}}/calc_seq_dists.log'
+        'benchmarks/{input_dir}/{sample}/calc_seq_dists.log'
     log:
-        f"logfiles/{input_dir}/{{sample}}/calc_seq_dists.log"
+        "logfiles/{input_dir}/{sample}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
 
