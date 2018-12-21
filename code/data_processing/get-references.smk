@@ -9,46 +9,46 @@ version = config['silva_db_version']
 
 rule ref_db_targets:
     input:
-        expand("{output_dir}/silva/silva.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
-        expand("{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
+        expand("data/references/silva/silva.{ext}", output_dir=output_dir, ext={'accnos','align','tax'}),
+        expand("data/references/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
 
 rule download_silva_db:
     output:
-        f"{output_dir}/silva/Silva.seed_{version}.tgz"
+        f"data/references/silva/Silva.seed_{version}.tgz"
     shell:
-        f'wget -N -P {output_dir}/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_{version}.tgz'
+        f'wget -N -P data/references/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_{version}.tgz'
 
 rule unpack_silva_db:
     input:
-        tar=f"{output_dir}/silva/Silva.seed_{version}.tgz"
+        tar=f"data/references/silva/Silva.seed_{version}.tgz"
     output:
-        f"{output_dir}/silva/silva.seed_{version}.align",
-        f"{output_dir}/silva/silva.seed_{version}.tax"
+        f"data/references/silva/silva.seed_{version}.align",
+        f"data/references/silva/silva.seed_{version}.tax"
     shell:
-        f"tar xvzf {{input.tar}} -C {output_dir}/"
+        "tar xvzf {input.tar} -C data/references/"
 
 rule get_prok_lineage:
     input:
-        fasta=f"{output_dir}/silva/silva.seed_{version}.align",
-        tax=f"{output_dir}/silva/silva.seed_{version}.tax"
+        fasta=f"data/references/silva/silva.seed_{version}.align",
+        tax=f"data/references/silva/silva.seed_{version}.tax"
     output:
-        fasta=f"{output_dir}/silva/silva.bact_archaea.align",
-        tax=f"{output_dir}/silva/silva.bact_archaea.tax"
+        fasta="data/references/silva/silva.bact_archaea.align",
+        tax="data/references/silva/silva.bact_archaea.tax"
     params:
         mothur=mothur_bin,
         version=version
     shell:
         "{params.mothur} '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria-Archaea)' ; "
-        "mv {output_dir}/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
-        "mv {output_dir}/silva/silva.nr_{params.version}.pick.tax {output.tax}"
+        "mv data/references/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
+        "mv data/references/silva/silva.nr_{params.version}.pick.tax {output.tax}"
 
 rule get_bact_lineage:
     input:
-        fasta=f'{output_dir}/silva/silva.bact_archaea.align',
-        tax=f'{output_dir}/silva/silva.bact_archaea.tax'
+        fasta='data/references/silva/silva.bact_archaea.align',
+        tax='data/references/silva/silva.bact_archaea.tax'
     output:
-        f'{output_dir}/silva/silva.bact_archaea.pick.align',
-        f'{output_dir}/silva/silva.bact_archaea.pick.tax'
+        'data/references/silva/silva.bact_archaea.pick.align',
+        'data/references/silva/silva.bact_archaea.pick.tax'
     params:
         mothur=mothur_bin,
     shell:
@@ -56,9 +56,9 @@ rule get_bact_lineage:
 
 rule rename_bact:
     input:
-        "{output_dir}/silva/silva.bact_archaea.pick.{ext}"
+        "data/references/silva/silva.bact_archaea.pick.{ext}"
     output:
-        "{output_dir}/silva/silva.bacteria.{ext}"
+        "data/references/silva/silva.bacteria.{ext}"
     wildcard_constraints:
         ext="align|tax"
     shell:
@@ -66,10 +66,10 @@ rule rename_bact:
 
 rule pcr_seqs:
     input:
-        "{output_dir}/silva/silva.bacteria.align"
+        "data/references/silva/silva.bacteria.align"
     output:
-        "{output_dir}/silva/silva.bacteria.pcr.ng.names",
-        "{output_dir}/silva/silva.bacteria.pcr.align"
+        "data/references/silva/silva.bacteria.pcr.ng.names",
+        "data/references/silva/silva.bacteria.pcr.align"
     params:
         mothur=mothur_bin,
     shell:
@@ -77,18 +77,18 @@ rule pcr_seqs:
 
 rule get_pcr_accession_numbers:
     input:
-        "{output_dir}/silva/silva.bacteria.pcr.ng.names"
+        "data/references/silva/silva.bacteria.pcr.ng.names"
     output:
-        "{output_dir}/silva/silva.bacteria.pcr.ng.accnos"
+        "data/references/silva/silva.bacteria.pcr.ng.accnos"
     shell:
         'cut -f 1 {input} > {output}'
 
 rule get_fasta_seqs:
     input:
-        fasta="{output_dir}/silva/silva.bacteria.pcr.align",
-        accnos="{output_dir}/silva/silva.bacteria.pcr.ng.accnos"
+        fasta="data/references/silva/silva.bacteria.pcr.align",
+        accnos="data/references/silva/silva.bacteria.pcr.ng.accnos"
     output:
-        "{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
+        "data/references/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     params:
         mothur=mothur_bin,
     shell:
@@ -96,38 +96,38 @@ rule get_fasta_seqs:
 
 rule rename_pcr_fasta:
     input:
-        "{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
+        "data/references/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     output:
-        "{output_dir}/silva/silva.align"
+        "data/references/silva/silva.align"
     shell:
         'mv {input} {output}'
 
 rule get_filtered_accession_numbers:
     input:
-        "{output_dir}/silva/silva.align"
+        "data/references/silva/silva.align"
     output:
-        "{output_dir}/silva/silva.accnos"
+        "data/references/silva/silva.accnos"
     shell:
         'grep "^>" {input} | cut -c 2- > {output}'
 
 rule get_taxon_seqs:
     input:
-        tax="{output_dir}/silva/silva.bacteria.tax",
-        accnos="{output_dir}/silva/silva.accnos"
+        tax="data/references/silva/silva.bacteria.tax",
+        accnos="data/references/silva/silva.accnos"
     output:
-        tax="{output_dir}/silva/silva.tax"
+        tax="data/references/silva/silva.tax"
     params:
         mothur=mothur_bin,
-        pick="{output_dir}/silva/silva.bacteria.pick.tax"
+        pick="data/references/silva/silva.bacteria.pick.tax"
     shell:
         '{params.mothur} "#get.seqs(taxonomy={input.tax}, accnos={input.accnos})"; '
         'mv {params.pick} {output.tax}'
 
 rule download_rdp_db:
     output:
-        expand("{{output_dir}}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}",ext={'tax', 'fasta'})
+        expand("data/references/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}",ext={'tax', 'fasta'})
     params:
-        dir="{output_dir}/rdp/",
+        dir="data/references/rdp/",
         tar="Trainset14_032015.pds.tgz"
     shell:
         "wget -N -P {params.dir} http://www.mothur.org/w/images/8/88/{params.tar} ; "
