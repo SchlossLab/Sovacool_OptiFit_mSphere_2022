@@ -110,24 +110,28 @@ rule fit:
     input:
         count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
         column=f"{input_dir}/{{dataset}}/{{dataset}}.dist",
-	accnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference/reference.accnos"
+	accnos=f"{input_dir}/{{dataset}}/{{dataset}}.accnos",
+	refaccnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference/reference.accnos"
     output:
+        temp("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{dataset}.dist"),
         expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/{{dataset}}.optifit_mcc.{ext}', ext={'list', 'sensspec'})
     params:
         mothur=mothur_bin,
         output_dir="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/",
         rep="{rep}",
         method="{method}",
-        printref='{printref}'
+        printref='{printref}',
+	dataset="{dataset}"
     benchmark:
         "benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/fit.log"
     log:
         "logfiles/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/fit.log"
     shell:
-        '{params.mothur} "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster.fit(column={input.column}, count={input.count}, accnos={input.accnos}, printref={params.printref}, method={params.method})"'
+        '{params.mothur} "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); get.dists(column={input.column}, accnos={input.accnos}); rename.file(column=current, prefix={params.dataset});cluster.fit(column=current, count={input.count}, accnos={input.refaccnos}, printref={params.printref}, method={params.method})"'
 
 rule aggregate_sensspec:
     input:
+        expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{{dataset}}.dist", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs),
         opticlust=expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
         optifit=expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{{dataset}}.optifit_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs)
     output:
