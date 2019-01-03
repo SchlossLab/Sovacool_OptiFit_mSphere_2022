@@ -7,21 +7,21 @@ workflows:
     silva-as-reference: False
 silva_db_version: v132
 datasets:
-- mice
+- soil
 weights:
 - none
-- ref-abundance
+#- ref-abundance
 #- sample-abundance
 #- sample-dists
 methods:
 - open
-- closed
+#- closed
 printrefs:
 - t
-- f
+#- f
 reference_fractions:
-    start: 10
-    stop: 100
+    start: 30
+    stop: 40
     step: 10
-iterations: 10
-replicates: 5
+iterations: 1
+replicates: 1
