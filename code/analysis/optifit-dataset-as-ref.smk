@@ -87,25 +87,7 @@ rule cluster:
         "logfiles/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{sampleref}.cluster.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.seed(seed={params.rep}); set.dir(output={params.output_dir}); cluster(column={input.column}, count={input.count}, cutoff=0.3)"'
-"""
-rule copy_cluster:
-    input:
-        'results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/reference.opti_mcc.list'
-    output:
-        expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/method-{method}_printref-{printref}/reference.opti_mcc.list", method=methods, printref=printrefs)
-    run:
-        for output_filename in output:
-            shutil.copyfile(input[0], output_filename)
 
-rule copy_fit_input:  # necessary to avoid clashing temp files when running multiple optifit jobs in parallel
-    input:
-        expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/{sampleref}/{sampleref}.{ext}", sampleref=['sample', 'reference'], ext=['fasta', 'count_table', 'dist'])
-    output:
-        expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/{sampleref}.{ext}", sampleref=['sample', 'reference'], ext=['fasta', 'count_table', 'dist'])
-    run:
-        for input_filename, output_filename in zip(input, output):
-            shutil.copyfile(input_filename, output_filename)
-"""
 rule fit:
     input:
         count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
