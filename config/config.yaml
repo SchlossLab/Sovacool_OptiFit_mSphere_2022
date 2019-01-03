@@ -20,8 +20,8 @@ printrefs:
 - t
 #- f
 reference_fractions:
-    start: 30
-    stop: 40
+    start: 40
+    stop: 50
     step: 10
 iterations: 1
 replicates: 1
