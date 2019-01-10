@@ -7,18 +7,18 @@ workflows:
     silva-as-reference: False
 silva_db_version: v132
 datasets:
-- soil
+- marine
 weights:
 - none
 #- ref-abundance
 #- sample-abundance
 #- sample-dists
 methods:
-- open
-#- closed
+#- open
+- closed
 printrefs:
 - t
-#- f
+- f
 reference_fractions:
     start: 40
     stop: 50
