@@ -31,17 +31,45 @@
 	- How does fitting into a reference using OptiFit perform vs. VSEARCH-based open/closed clustering
 	- How important is the composition of the reference database?
  	- How sensitive is OptiFit to random variation?
-* First, use SILVA (without greengenes or rdp):
-    - [x] Download silva v132
+[ ] Run through [MiSeQ SOP](https://mothur.org/wiki/MiSeq_SOP)
+* Use SILVA database to generate full length database (like gg_97):
+    - [x] Download "full lengthsilva v132 (https://www.mothur.org/wiki/Silva_reference_files)
+    - [ ] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
+    - [ ] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
+    - [ ] Cluster the silva reference (OptiClust) (i.e. cluster)
+    - [ ] Find representative sequence from each OTU (i.e. get.oturep w/ method=abundance)
+* Use RDP database to generate full length database (like gg_97):
+    - [ ] Download rdp (https://www.mothur.org/wiki/RDP_reference_files)
+    - [ ] Remove archaea and eukarya and select for bacteria
+    - [ ] Align to silva SEED reference alignment (i.e. align.seqs)
+    - [ ] Filter sequences for full length sequences
     - [ ] Cluster the silva reference (OptiClust)
-    - [ ] For test dataset (soil_1000):
+    - [ ] Find representative sequence from each OTU
+* Use greengenes database to generate full length database (like gg_97):
+    - [ ] Download greengenes (https://mothur.org/wiki/Greengenes-formatted_databases)
+    - [ ] Remove archaea and eukarya and select for bacteria
+    - [ ] Relign to silva SEED reference alignment (original gg ref alignment is bad)
+    - [ ] Filter sequences for full length sequences
+    - [ ] Cluster the silva reference (OptiClust)
+    - [ ] Find representative sequence from each OTU
+* Create reference databases and OTUs for V4 regions
+    - [ ] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
+    - [ ] Trim RDP to V4 region of 16S rRNA gene 
+    - [ ] Trim greengenes to V4 region of 16S rRNA gene 
+    - [ ] Use OptiClust to cluster reference sequences
+    - [ ] Find representative sequence from each OTU
+* Test clustering of small soil dataset (soil_1000) against references
+	- [x] Find soil_1000 (ask Pat/Brodie/Kelly)
         - [ ] De novo clustering on samples (OptiClust)
-        - [ ] Open reference clustering against silva reference
-        - [ ] Closed reference clusering against silva reference
-* Create reference OTUs and find representative sequence for each OTU using SILVA and greengenes databases
-	- [ ] Align greengenes database to SILVA reference alignment (talk to me about what these should be)
-	- [ ] Trim to V4 region of 16S rRNA gene
-	- [ ] Use OptiClust to cluster reference sequences
+        - [ ] Open reference clustering against full length references (w/ VSEARCH)
+        - [ ] Open reference clustering against V4 references (w/ VSEARCH)
+        - [ ] Closed reference clusering against full length reference (w/ VSEARCH)
+        - [ ] Closed reference clusering against V4 reference (w/ VSEARCH)
+        - [ ] Open reference clustering against full length references (w/ OptiFit)
+        - [ ] Open reference clustering against V4 references (w/ OptiFit)
+        - [ ] Closed reference clusering against full length reference (w/ OptiFit)
+        - [ ] Closed reference clusering against V4 reference (w/ OptiFit)
+* Save this for later when we have the above worked out...
 * For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
     - [ ] De novo clustering on  samples
     - [ ] Open reference clustering (OptiFit) against reference OTUs
