@@ -34,33 +34,33 @@
 [ ] Run through [MiSeQ SOP](https://mothur.org/wiki/MiSeq_SOP)
 * Use SILVA database to generate full length database (like gg_97):
     - [x] Download "full lengthsilva v132 (https://www.mothur.org/wiki/Silva_reference_files)
-    - [ ] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
-    - [ ] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
+    - [X] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
+    - [X] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
     - [ ] Cluster the silva reference (OptiClust) (i.e. cluster)
     - [ ] Find representative sequence from each OTU (i.e. get.oturep w/ method=abundance)
 * Use RDP database to generate full length database (like gg_97):
-    - [ ] Download rdp (https://www.mothur.org/wiki/RDP_reference_files)
-    - [ ] Remove archaea and eukarya and select for bacteria
-    - [ ] Align to silva SEED reference alignment (i.e. align.seqs)
-    - [ ] Filter sequences for full length sequences
-    - [ ] Cluster the silva reference (OptiClust)
-    - [ ] Find representative sequence from each OTU
+    - [X] Download rdp (https://www.mothur.org/wiki/RDP_reference_files)
+    - [X] Remove archaea and eukarya and select for bacteria
+    - [X] Align to silva SEED reference alignment (i.e. align.seqs)
+    - [X] Filter sequences for full length sequences
+    - [X] Cluster the silva reference (OptiClust)
+    - [X] Find representative sequence from each OTU
 * Use greengenes database to generate full length database (like gg_97):
-    - [ ] Download greengenes (https://mothur.org/wiki/Greengenes-formatted_databases)
-    - [ ] Remove archaea and eukarya and select for bacteria
-    - [ ] Relign to silva SEED reference alignment (original gg ref alignment is bad)
-    - [ ] Filter sequences for full length sequences
+    - [X] Download greengenes (https://mothur.org/wiki/Greengenes-formatted_databases)
+    - [X] Remove archaea and eukarya and select for bacteria
+    - [X] Relign to silva SEED reference alignment (original gg ref alignment is bad)
+    - [X] Filter sequences for full length sequences
     - [ ] Cluster the silva reference (OptiClust)
     - [ ] Find representative sequence from each OTU
 * Create reference databases and OTUs for V4 regions
-    - [ ] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
-    - [ ] Trim RDP to V4 region of 16S rRNA gene 
-    - [ ] Trim greengenes to V4 region of 16S rRNA gene 
+    - [X] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
+    - [X] Trim RDP to V4 region of 16S rRNA gene 
+    - [X] Trim greengenes to V4 region of 16S rRNA gene 
     - [ ] Use OptiClust to cluster reference sequences
     - [ ] Find representative sequence from each OTU
 * Test clustering of small soil dataset (soil_1000) against references
 	- [x] Find soil_1000 (ask Pat/Brodie/Kelly)
-        - [ ] De novo clustering on samples (OptiClust)
+        - [X] De novo clustering on samples (OptiClust)
         - [ ] Open reference clustering against full length references (w/ VSEARCH)
         - [ ] Open reference clustering against V4 references (w/ VSEARCH)
         - [ ] Closed reference clusering against full length reference (w/ VSEARCH)
