@@ -46,12 +46,12 @@ If you don't already have it, I recommend installing the [Miniconda](https://con
 If you plan to run this workflow on Flux or another 64-bit Linux machine,
 you can get an exact replica of my environment with:
 ```
-conda env create --name OptiFitAnalysis --file config/environment.export.yaml
+conda env create --file config/environment.export.yaml
 ```
 
 Otherwise, run:
 ```
-conda env create --name OptiFitAnalysis --file config/environment.simple.yaml
+conda env create --name optiFit --file config/environment.simple.yaml
 ```
 
 The conda project is [in the process of merging conda-env into conda](https://groups.google.com/a/continuum.io/forum/#!topic/conda/EBVVtS8bNRA),
@@ -61,7 +61,7 @@ so the syntax for these commands may change.
 
 Activate the environment before running any code with:
 ```
-source activate OptiFitAnalysis
+conda activate optiFit
 ```
 Be sure to activate the environment from the login node before submitting jobs on the cluster.
 
