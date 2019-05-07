@@ -2,7 +2,7 @@
 
 ## Quickstart
 
-1. Install `mothur` version `1.42.0` and all the dependencies listed in `config/environment.yaml`.
+1. Install `mothur` version `1.42.0` and the dependencies listed in `config/environment.simple.yaml`.
 2. Clone this repository.
     ```
     git clone https://github.com/SchlossLab/OptiFitAnalysis
@@ -39,19 +39,19 @@
 
 I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project.
 If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
-[Here's a link](https://conda.io/docs/_downloads/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
+[Here's a link](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
 
 ### Create a conda environment
 
-If you plan to run this workflow on Flux or other 64-bit Linux machine,
+If you plan to run this workflow on Flux or another 64-bit Linux machine,
 you can get an exact replica of my environment with:
 ```
-conda create --name OptiFitAnalysis --file config/environment.export.txt
+conda env create --name OptiFitAnalysis --file config/environment.export.yaml
 ```
 
 Otherwise, run:
 ```
-conda env create --name OptiFitAnalysis --file config/environment.yaml
+conda env create --name OptiFitAnalysis --file config/environment.simple.yaml
 ```
 
 The conda project is [in the process of merging conda-env into conda](https://groups.google.com/a/continuum.io/forum/#!topic/conda/EBVVtS8bNRA),
@@ -79,7 +79,7 @@ conda env export > environment.export.yaml
 And update the simple version (`environment.simple.yaml`) with your favorite text editor.
 
 
-Almost all dependencies are listed in `config/environment.export.txt`, which will be installed by conda when you create the environment.
+Almost all dependencies are listed in `config/environment.export.yaml`, which will be installed by conda when you create the environment.
 The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
 Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
@@ -243,8 +243,8 @@ See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/ma
 │   ├── cluster_sovacool.json
 │   ├── config.yaml                      # Default config file for Snakemake
 │   ├── config_test.yaml
-│   ├── environment.export.txt           # Exhaustive list of dependencies for use on Flux
-│   └── environment.yaml                 # Minimum list of dependencies for other computing environments
+│   ├── environment.export.yaml           # Exhaustive list of dependencies for use on Flux
+│   └── environment.simple.yaml                 # Minimum list of dependencies for other computing environments
 ├── data                                 # Raw and processed data
 │   ├── human
 │   ├── marine
