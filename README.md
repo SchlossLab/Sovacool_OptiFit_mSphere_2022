@@ -57,7 +57,7 @@ conda env create --name OptiFitAnalysis --file config/environment.yaml
 The conda project is [in the process of merging conda-env into conda](https://groups.google.com/a/continuum.io/forum/#!topic/conda/EBVVtS8bNRA),
 so the syntax for these commands may change.
 
-## Activate
+### Activate
 
 Activate the environment before running any code with:
 ```
@@ -65,18 +65,19 @@ source activate OptiFitAnalysis
 ```
 Be sure to activate the environment from the login node before submitting jobs on the cluster.
 
-## Update
+### Update the environment
 
 Install new packages with:
 ```
 conda install new_package_name
 ```
 
-Periodically update the dependencies list:
+Always update the environment file after installing new packages:
 ```
-conda list --export > config/environment.export.txt
+conda env export > environment.export.yaml
 ```
-(We update the less-detailed `config/environment.yaml` manually when we install a new package.)
+And update the simple version (`environment.simple.yaml`) with your favorite text editor.
+
 
 Almost all dependencies are listed in `config/environment.export.txt`, which will be installed by conda when you create the environment.
 The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
