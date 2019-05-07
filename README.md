@@ -74,9 +74,9 @@ conda install new_package_name
 
 Always update the environment file after installing new packages:
 ```
-conda env export > environment.export.yaml
+conda env export > config/environment.export.yaml
 ```
-And update the simple version (`environment.simple.yaml`) with your favorite text editor.
+And update the simple version (`config/environment.simple.yaml`) with your favorite text editor.
 
 
 Almost all dependencies are listed in `config/environment.export.yaml`, which will be installed by conda when you create the environment.
