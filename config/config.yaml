@@ -1,0 +1,27 @@
+mothur_bin: /nfs/turbo/schloss-lab/mumphrey/OptiFitAnalysis/mothur
+input_dir: data
+subsample_test: False
+subsample_size: 1000
+workflows:
+    dataset-as-reference: True
+    silva-as-reference: False
+silva_db_version: v132
+datasets:
+- marine
+weights:
+- none
+#- ref-abundance
+#- sample-abundance
+#- sample-dists
+methods:
+#- open
+- closed
+printrefs:
+- t
+- f
+reference_fractions:
+    start: 40
+    stop: 50
+    step: 10
+iterations: 1
+replicates: 1

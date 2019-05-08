@@ -7,5 +7,6 @@ test/
 .Rhistory
 Rplots.pdf
 data/
-results/
 snakemake.pbs
+cluster.json
+!results/workflows
