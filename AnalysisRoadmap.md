@@ -1,18 +1,20 @@
 ### To-Do
-#### In progress
+- [ ] Incorporate mothur commands from pbs scripts in `data/reference` into the snakemake workflow.
+    - [ ] Organize `data/reference/`.
+- [ ] Finish implementing support for using external databases as the reference for optifit.
+    - On branch `silva-ref-db`. Merge into `master` when complete.
 - [ ] What percent of sequences map to the reference?
     - Rule written, need to test.
     - Output in `results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv`.
-- [ ] Finish implementing support for using external databases as the reference for optifit.
-    - On branch `silva-ref-db`. Merge into `master` when complete.
-
-#### Not in progress
 - [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
     - Need to fix the sample size and vary the reference size to answer this.
     - Ask Sarah to implement a sample.accnos parameter in OptiFit.
 - [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
-    - Call the data processing workflows from the main Snakefile with the `include` statement.
-- [ ] Download the human sample dataset.
+    - [ ] Fix out-of-date commands in batch files.
+    - [ ] Call the data processing workflows from the main Snakefile with the `include` statement.
+    - [ ] Download the human sample dataset.
+- [ ] Add function or rule to test that the config file is formatted properly.
+    - Is there something like json schema for yaml?
 
 
 # Analysis Roadmap
@@ -24,6 +26,7 @@
     - Includes human, murine, marine, and soil datasets
 * Baxter: [(GitHub repo)](https://github.com/SchlossLab/Baxter_glne007Modeling_GenomeMed_2015)
     - Describes RF modeling and CRC
+* [MiSeq SOP](https://mothur.org/wiki/MiSeq_SOP)
 
 ## 1. Independent database
 * Questions:
@@ -31,9 +34,8 @@
     - How does fitting into a reference using OptiFit perform vs. VSEARCH-based open/closed clustering
     - How important is the composition of the reference database?
     - How sensitive is OptiFit to random variation?
-[ ] Run through [MiSeQ SOP](https://mothur.org/wiki/MiSeq_SOP)
 * Use SILVA database to generate full length database (like gg_97):
-    - [x] Download "full lengthsilva v132 (https://www.mothur.org/wiki/Silva_reference_files)
+    - [x] Download full length silva v132 (https://www.mothur.org/wiki/Silva_reference_files)
     - [x] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
     - [x] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
     - [ ] Cluster the silva reference (OptiClust)
@@ -43,14 +45,14 @@
     - [x] Remove archaea and eukarya and select for bacteria
     - [x] Align to silva SEED reference alignment (i.e. align.seqs)
     - [x] Filter sequences for full length sequences
-    - [x] Cluster the silva reference (OptiClust)
+    - [x] Cluster the rdp reference (OptiClust)
     - [x] Find representative sequence from each OTU
 * Use greengenes database to generate full length database (like gg_97):
     - [x] Download greengenes (https://mothur.org/wiki/Greengenes-formatted_databases)
     - [x] Remove archaea and eukarya and select for bacteria
-    - [x] Relign to silva SEED reference alignment (original gg ref alignment is bad)
+    - [x] Realign to silva SEED reference alignment (original gg ref alignment is bad)
     - [x] Filter sequences for full length sequences
-    - [ ] Cluster the silva reference (OptiClust)
+    - [ ] Cluster the greengenes reference (OptiClust)
     - [ ] Find representative sequence from each OTU
 * Create reference databases and OTUs for V4 regions
     - [x] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
@@ -63,12 +65,12 @@
         - [x] De novo clustering on samples (OptiClust)
         - [ ] Open reference clustering against full length references (w/ VSEARCH)
         - [ ] Open reference clustering against V4 references (w/ VSEARCH)
-        - [ ] Closed reference clusering against full length reference (w/ VSEARCH)
-        - [ ] Closed reference clusering against V4 reference (w/ VSEARCH)
+        - [ ] Closed reference clustering against full length reference (w/ VSEARCH)
+        - [ ] Closed reference clustering against V4 reference (w/ VSEARCH)
         - [ ] Open reference clustering against full length references (w/ OptiFit)
         - [ ] Open reference clustering against V4 references (w/ OptiFit)
-        - [ ] Closed reference clusering against full length reference (w/ OptiFit)
-        - [ ] Closed reference clusering against V4 reference (w/ OptiFit)
+        - [ ] Closed reference clustering against full length reference (w/ OptiFit)
+        - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
 * Save this for later when we have the above worked out...
 * For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
     - [ ] De novo clustering on  samples
