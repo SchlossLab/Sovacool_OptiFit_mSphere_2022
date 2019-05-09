@@ -1,31 +1,35 @@
-" Download references, download & process data, and run tests to benchmark the OptiFit algorithm"
+" Download references, download & process data, and run tests to benchmark the OptiFit algorithm "
 
 configfile: 'config/config.yaml'
 
-mothur_bin=config['mothur_bin']
+mothur_bin = config['mothur_bin']
 input_dir = config['input_dir']
 datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
-weights = config['weights']
+weights = set(config['weights'])
+methods = set(config['methods'])
+printrefs = set(config['printrefs'])
+start = int(config['reference_fractions']['start'])
+stop = int(config['reference_fractions']['stop'])
+step = int(config['reference_fractions']['step'])
+reference_fractions = [i/100 for i in range(start, stop, step)]
 iters = range(config['iterations'])
 reps = range(config['replicates'])
-methods = config['methods']
-printrefs = config['printrefs']
-reference_fractions = [i/100 for i in range(config['reference_fractions']['start'], config['reference_fractions']['stop'], config['reference_fractions']['step'])]
-output_dirs = [option for option in config['workflows'] if config['workflows'][option]]
+output_dirs = [option for option in config['workflows'] if config['workflows'][option]]  # controls which workflows will run
+
 
 wildcard_constraints:
     dataset="\w+",
     iter="\d+",
     rep="\d+",
-    sampleref="sample|reference"
+    sampleref="sample|reference",
+    reference="silva|greengenes"
 
 
 include: 'code/data_processing/get-references.smk'
-# TODO: write & include snakemake workflows to replace {dataset}.batch and {dataset}.R files
+# TODO: write & include snakemake workflows to replace {dataset}.batch files
 include: 'code/data_processing/testset-subsample.smk'
 include: 'code/analysis/optifit-dataset-as-ref.smk'
-#include: 'code/analysis/optifit-silva-ref.smk'
-
+include: 'code/analysis/optifit-ref-db.smk'
 
 rule all:
         input:
@@ -33,19 +37,31 @@ rule all:
 
 rule calc_seq_dists:
     input:
-        f'{input_dir}/{{dataset}}/{{dataset}}.fasta'
+        '{input_dir}/{sample}/{sample}.fasta'
     output:
-        f'{input_dir}/{{dataset}}/{{dataset}}.dist'
+        '{input_dir}/{sample}/{sample}.dist'
     params:
         mothur=mothur_bin,
-        output_dir=f'{input_dir}/{{dataset}}/'
+        output_dir='{input_dir}/{sample}/'
     benchmark:
-        f'benchmarks/{input_dir}/{{dataset}}/calc_seq_dists.log'
+        'benchmarks/{input_dir}/{sample}/calc_seq_dists.log'
     log:
-        f"logfiles/{input_dir}/{{dataset}}/calc_seq_dists.log"
+        "logfiles/{input_dir}/{sample}/calc_seq_dists.log"
     shell:
         '{params.mothur} "#set.logfile(name={log}); set.dir(output={params.output_dir}); dist.seqs(fasta={input[0]}, cutoff=0.03)"'
-"""
+
+rule plot_sensspec:
+    input:
+        "results/{output_dir}/{dataset}/aggregate.sensspec"
+    output:
+        combo_mcc="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.png",
+        mcc_full="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.full.png",
+        iters="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
+    benchmark:
+        "benchmarks/{output_dir}/{dataset}/plot_sensspec.log"
+    script:
+        "plot_sensspec.R"
+
 rule fraction_mapped:
     input:
         mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
@@ -67,4 +83,3 @@ rule fraction_mapped:
                     mapped_samples = set(seq for column in line.split()[2:] for seq in column.split(','))
                 fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
                 output_file.write(f'{count_table_filename}\t{mapped_filename}\t{fraction_mapped}\n')
-"""
