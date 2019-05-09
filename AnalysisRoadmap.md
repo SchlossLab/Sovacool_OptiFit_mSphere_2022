@@ -10,7 +10,8 @@
     - Need to fix the sample size and vary the reference size to answer this.
     - Ask Sarah to implement a sample.accnos parameter in OptiFit.
 - [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
-    - Call the data processing workflows from the main Snakefile with the `include` statement.
+    - [ ] Fix out-of-date commands in batch files.
+    - [ ] Call the data processing workflows from the main Snakefile with the `include` statement.
     - [ ] Download the human sample dataset.
 
 
