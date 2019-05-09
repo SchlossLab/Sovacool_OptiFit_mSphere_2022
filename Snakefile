@@ -1,4 +1,4 @@
-" Download references, download & process data, and run tests to benchmark the OptiFit algorithm"
+" Download references, download & process data, and run tests to benchmark the OptiFit algorithm "
 
 configfile: 'config.yaml'
 
@@ -23,7 +23,7 @@ wildcard_constraints:
 
 
 include: 'code/data_processing/get-references.smk'
-# TODO: write & include snakemake workflows to replace {dataset}.batch and {dataset}.R files
+# TODO: write & include snakemake workflows to replace {dataset}.batch files
 include: 'code/data_processing/testset-subsample.smk'
 include: 'code/analysis/optifit-dataset-as-ref.smk'
 include: 'code/analysis/optifit-ref-db.smk'
@@ -58,3 +58,25 @@ rule plot_sensspec:
         "benchmarks/{output_dir}/{dataset}/plot_sensspec.log"
     script:
         "plot_sensspec.R"
+        
+rule fraction_mapped:
+    input:
+        mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
+        original=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps))
+    output:
+        "results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv"
+    run:
+        if len(input.mapped) != len(input.count_table):
+            raise ValueError("Unequal number of optifit_mcc.list and count_table files")
+        with open(output[0], 'w') as output_file:
+            output_file.write('count_table_filename\tmapped_filename\tfraction_mapped\n')
+            for mapped_filename, count_table_filename in zip(input.mapped, input.count_table):
+                with open(count_table_filename, 'r') as input_file:
+                    line = next(input_file)  # first column of all lines except first line
+                    input_samples = set([line.split()[0] for line in input_file])
+                with open(mapped_filename, 'r') as mapped_file:
+                    line = next(mapped_file)
+                    line = next(mapped_file) # third column onward of second line, each seq in each OTU delimited by comma
+                    mapped_samples = set(seq for column in line.split()[2:] for seq in column.split(','))
+                fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
+                output_file.write(f'{count_table_filename}\t{mapped_filename}\t{fraction_mapped}\n')
