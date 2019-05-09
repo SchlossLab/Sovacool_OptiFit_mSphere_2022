@@ -2,16 +2,19 @@
 
 configfile: 'config.yaml'
 
-mothur_bin=config['mothur_bin']
+mothur_bin = config['mothur_bin']
 input_dir = config['input_dir']
 datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
-weights = config['weights']
+weights = set(config['weights'])
+methods = set(config['methods'])
+printrefs = set(config['printrefs'])
+start = int(config['reference_fractions']['start'])
+stop = int(config['reference_fractions']['stop'])
+step = int(config['reference_fractions']['step'])
+reference_fractions = [i/100 for i in range(start, stop, step)]
 iters = range(config['iterations'])
 reps = range(config['replicates'])
-methods = {'open', 'closed'}
-printrefs = {'t', 'f'}
-reference_fractions = [i/100 for i in range(50,60,10)]
-output_dirs = [option for option in config['workflows'] if config['workflows'][option]]
+output_dirs = [option for option in config['workflows'] if config['workflows'][option]]  # controls which workflows will run
 
 
 wildcard_constraints:
@@ -58,7 +61,7 @@ rule plot_sensspec:
         "benchmarks/{output_dir}/{dataset}/plot_sensspec.log"
     script:
         "plot_sensspec.R"
-        
+
 rule fraction_mapped:
     input:
         mapped=sorted(expand("results/{{output_dir}}/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
