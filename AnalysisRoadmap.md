@@ -1,12 +1,11 @@
 ### To-Do
-#### In progress
+- [ ] Incorporate mothur commands from pbs scripts in `data/reference` into the snakemake workflow.
+    - [ ] Organize `data/reference/`.
+- [ ] Finish implementing support for using external databases as the reference for optifit.
+    - On branch `silva-ref-db`. Merge into `master` when complete.
 - [ ] What percent of sequences map to the reference?
     - Rule written, need to test.
     - Output in `results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv`.
-- [ ] Finish implementing support for using external databases as the reference for optifit.
-    - On branch `silva-ref-db`. Merge into `master` when complete.
-
-#### Not in progress
 - [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
     - Need to fix the sample size and vary the reference size to answer this.
     - Ask Sarah to implement a sample.accnos parameter in OptiFit.
@@ -24,6 +23,7 @@
     - Includes human, murine, marine, and soil datasets
 * Baxter: [(GitHub repo)](https://github.com/SchlossLab/Baxter_glne007Modeling_GenomeMed_2015)
     - Describes RF modeling and CRC
+* [MiSeq SOP](https://mothur.org/wiki/MiSeq_SOP)
 
 ## 1. Independent database
 * Questions:
@@ -31,7 +31,6 @@
     - How does fitting into a reference using OptiFit perform vs. VSEARCH-based open/closed clustering
     - How important is the composition of the reference database?
     - How sensitive is OptiFit to random variation?
-[ ] Run through [MiSeQ SOP](https://mothur.org/wiki/MiSeq_SOP)
 * Use SILVA database to generate full length database (like gg_97):
     - [x] Download "full lengthsilva v132 (https://www.mothur.org/wiki/Silva_reference_files)
     - [x] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
