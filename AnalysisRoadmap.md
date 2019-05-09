@@ -11,7 +11,7 @@
     - Ask Sarah to implement a sample.accnos parameter in OptiFit.
 - [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
     - Call the data processing workflows from the main Snakefile with the `include` statement.
-- [ ] Download the human sample dataset.
+    - [ ] Download the human sample dataset.
 
 
 # Analysis Roadmap
@@ -32,7 +32,7 @@
     - How important is the composition of the reference database?
     - How sensitive is OptiFit to random variation?
 * Use SILVA database to generate full length database (like gg_97):
-    - [x] Download "full lengthsilva v132 (https://www.mothur.org/wiki/Silva_reference_files)
+    - [x] Download full length silva v132 (https://www.mothur.org/wiki/Silva_reference_files)
     - [x] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
     - [x] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
     - [ ] Cluster the silva reference (OptiClust)
@@ -42,14 +42,14 @@
     - [x] Remove archaea and eukarya and select for bacteria
     - [x] Align to silva SEED reference alignment (i.e. align.seqs)
     - [x] Filter sequences for full length sequences
-    - [x] Cluster the silva reference (OptiClust)
+    - [x] Cluster the rdp reference (OptiClust)
     - [x] Find representative sequence from each OTU
 * Use greengenes database to generate full length database (like gg_97):
     - [x] Download greengenes (https://mothur.org/wiki/Greengenes-formatted_databases)
     - [x] Remove archaea and eukarya and select for bacteria
-    - [x] Relign to silva SEED reference alignment (original gg ref alignment is bad)
+    - [x] Realign to silva SEED reference alignment (original gg ref alignment is bad)
     - [x] Filter sequences for full length sequences
-    - [ ] Cluster the silva reference (OptiClust)
+    - [ ] Cluster the greengenes reference (OptiClust)
     - [ ] Find representative sequence from each OTU
 * Create reference databases and OTUs for V4 regions
     - [x] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
@@ -62,12 +62,12 @@
         - [x] De novo clustering on samples (OptiClust)
         - [ ] Open reference clustering against full length references (w/ VSEARCH)
         - [ ] Open reference clustering against V4 references (w/ VSEARCH)
-        - [ ] Closed reference clusering against full length reference (w/ VSEARCH)
-        - [ ] Closed reference clusering against V4 reference (w/ VSEARCH)
+        - [ ] Closed reference clustering against full length reference (w/ VSEARCH)
+        - [ ] Closed reference clustering against V4 reference (w/ VSEARCH)
         - [ ] Open reference clustering against full length references (w/ OptiFit)
         - [ ] Open reference clustering against V4 references (w/ OptiFit)
-        - [ ] Closed reference clusering against full length reference (w/ OptiFit)
-        - [ ] Closed reference clusering against V4 reference (w/ OptiFit)
+        - [ ] Closed reference clustering against full length reference (w/ OptiFit)
+        - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
 * Save this for later when we have the above worked out...
 * For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
     - [ ] De novo clustering on  samples
