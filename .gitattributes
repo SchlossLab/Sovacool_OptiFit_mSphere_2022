@@ -2,3 +2,4 @@
 *.smk linguist-language=Python
 Snakefile linguist-language=Python
 code/legacy/* linguist-vendored=True
+code/pbs_scripts/legacy/* linguist-vendored=True
