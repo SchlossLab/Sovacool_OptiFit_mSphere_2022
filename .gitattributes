@@ -1,4 +1,4 @@
 * text=auto # Auto detect text files and perform LF normalization
 *.smk linguist-language=Python
 Snakefile linguist-language=Python
-code/legacy linguist-vendored=True
+code/legacy/* linguist-vendored=True
