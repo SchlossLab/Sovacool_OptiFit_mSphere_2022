@@ -1,3 +1,4 @@
+# Generate plots from mothur sensspec files for comparing clustering algorithms.
 require(ggplot2)
 require(readr)
 require(dplyr)
