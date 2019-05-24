@@ -1,14 +1,13 @@
 ### To-Do
-- [ ] Incorporate mothur commands from pbs scripts in `data/reference` into the snakemake workflow.
+- [ ] Incorporate mothur commands from the pbs scripts in `data/reference` into the snakemake workflow.
     - [ ] Organize `data/reference/`.
 - [ ] Finish implementing support for using external databases as the reference for optifit.
-    - On branch `silva-ref-db`. Merge into `master` when complete.
 - [ ] What percent of sequences map to the reference?
     - Rule written, need to test.
     - Output in `results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv`.
 - [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
     - Need to fix the sample size and vary the reference size to answer this.
-    - Ask Sarah to implement a sample.accnos parameter in OptiFit.
+    - Ask Sarah to implement a `sample.accnos` parameter in OptiFit?
 - [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
     - [ ] Fix out-of-date commands in batch files.
     - [ ] Call the data processing workflows from the main Snakefile with the `include` statement.
@@ -61,16 +60,15 @@
     - [ ] Use OptiClust to cluster reference sequences
     - [ ] Find representative sequence from each OTU
 * Test clustering of small soil dataset (soil_1000) against references
-    - [x] Find soil_1000 (ask Pat/Brodie/Kelly)
-        - [x] De novo clustering on samples (OptiClust)
-        - [ ] Open reference clustering against full length references (w/ VSEARCH)
-        - [ ] Open reference clustering against V4 references (w/ VSEARCH)
-        - [ ] Closed reference clustering against full length reference (w/ VSEARCH)
-        - [ ] Closed reference clustering against V4 reference (w/ VSEARCH)
-        - [ ] Open reference clustering against full length references (w/ OptiFit)
-        - [ ] Open reference clustering against V4 references (w/ OptiFit)
-        - [ ] Closed reference clustering against full length reference (w/ OptiFit)
-        - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
+    - [x] De novo clustering on samples (OptiClust)
+    - [ ] Open reference clustering against full length references (w/ VSEARCH)
+    - [ ] Open reference clustering against V4 references (w/ VSEARCH)
+    - [ ] Closed reference clustering against full length reference (w/ VSEARCH)
+    - [ ] Closed reference clustering against V4 reference (w/ VSEARCH)
+    - [ ] Open reference clustering against full length references (w/ OptiFit)
+    - [ ] Open reference clustering against V4 references (w/ OptiFit)
+    - [ ] Closed reference clustering against full length reference (w/ OptiFit)
+    - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
 * Save this for later when we have the above worked out...
 * For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
     - [ ] De novo clustering on  samples
@@ -98,15 +96,15 @@
     - [x] With remaining 80%(?) of data
         - [x] OptiClust sequences, get MCC values
         - [x] OptiFit sequences
-             - [x] Capture MCC values for U sequences with and without R sequences included
+            - [x] Capture MCC values for U sequences with and without R sequences included
             - [x] % of sequences that map to references
             - [x] Run 10 times to see level of variation
 
 ## 3. Use dataset as its own reference
 * Questions:
     - How much of the dataset is needed to generate the reference?
-        - Need to fix the sample size and vary the reference size to answer this.
-    - How does OptiFit on fraction of dataset perform relative to entire dataset?
+        - [ ] Need to fix the sample size and vary the reference size to answer this.
+    - How does OptiFit perform on fraction of dataset relative to entire dataset?
     - How sensitive is OptiFit to random variation?
 * Perform de novo clustering on human, murine, marine, and soil samples (same as above)
     - [x] get MCC values
