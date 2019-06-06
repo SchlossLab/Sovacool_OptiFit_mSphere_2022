@@ -1,4 +1,4 @@
-" Download the reference database and process with mothur "
+" Download the reference databases and process with mothur "
 import os
 import subprocess
 
@@ -7,10 +7,9 @@ import subprocess
 output_dir = os.path.join(config['input_dir'], 'references')
 version = config['silva_db_version']
 
-rule ref_db_targets:
+rule silva_targets:
     input:
-        f"{output_dir}/silva/silva.v4.tax",
-        expand("{output_dir}/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}", output_dir=output_dir, ext={'tax', 'fasta'})
+        f"{output_dir}/silva/silva.v4.tax"
 
 rule download_silva_db:
     output:
@@ -27,7 +26,7 @@ rule unpack_silva_db:
     shell:
         "tar xvzf {input.tar} -C data/references/"
 
-rule get_prok_lineage:
+rule get_silva_prok_lineage:
     input:
         fasta=f"data/references/silva/silva.seed_{version}.align",
         tax=f"data/references/silva/silva.seed_{version}.tax"
@@ -42,7 +41,7 @@ rule get_prok_lineage:
         "mv data/references/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
         "mv data/references/silva/silva.nr_{params.version}.pick.tax {output.tax}"
 
-rule get_bact_lineage:
+rule get_silva_bact_lineage:
     input:
         fasta='data/references/silva/silva.bact_archaea.fasta',
         tax='data/references/silva/silva.bact_archaea.tax'
@@ -54,7 +53,7 @@ rule get_bact_lineage:
     shell:
         "{params.mothur} '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria)'"
 
-rule rename_bact:
+rule rename_silva_bact:
     input:
         "data/references/silva/silva.bact_archaea.pick.{ext}"
     output:
@@ -64,7 +63,7 @@ rule rename_bact:
     shell:
         "mv {input} {output}"
 
-rule pcr_seqs:
+rule pcr_seqs_silva:
     input:
         "data/references/silva/silva.bacteria.fasta"
     output:
@@ -75,7 +74,7 @@ rule pcr_seqs:
     shell:
         '{params.mothur} "#pcr.seqs(fasta={input}, start=13862, end=23445, keepdots=F);degap.seqs();unique.seqs()"'
 
-rule get_pcr_accession_numbers:
+rule get_pcr_accession_numbers_silva:
     input:
         "data/references/silva/silva.bacteria.pcr.ng.names"
     output:
@@ -83,7 +82,7 @@ rule get_pcr_accession_numbers:
     shell:
         'cut -f 1 {input} > {output}'
 
-rule get_fasta_seqs:
+rule get_fasta_seqs_silva:
     input:
         fasta="data/references/silva/silva.bacteria.pcr.fasta",
         accnos="data/references/silva/silva.bacteria.pcr.ng.accnos"
@@ -96,7 +95,7 @@ rule get_fasta_seqs:
         '{params.mothur} "#get.seqs(fasta={input.fasta}, accnos={input.accnos});screen.seqs(minlength=240, maxlength=275, maxambig=0, maxhomop=8); filter.seqs(vertical=T)"; '
         'mv {params.pick} {output}'
 
-rule get_filtered_accession_numbers:
+rule get_filtered_accession_numbers_silva:
     input:
         "data/references/silva/silva.fasta"
     output:
@@ -104,7 +103,7 @@ rule get_filtered_accession_numbers:
     shell:
         'grep "^>" {input} | cut -c 2- > {output}'
 
-rule get_taxon_seqs:
+rule get_taxon_seqs_silva:
     input:
         tax="data/references/silva/silva.bacteria.tax",
         accnos="data/references/silva/silva.accnos"
@@ -116,13 +115,3 @@ rule get_taxon_seqs:
     shell:
         '{params.mothur} "#get.seqs(taxonomy={input.tax}, accnos={input.accnos})"; '
         'mv {params.pick} {output.tax}'
-
-rule download_rdp_db:
-    output:
-        expand("data/references/rdp/trainset14_032015.pds/trainset14_032015.pds.{ext}",ext={'tax', 'fasta'})
-    params:
-        dir="data/references/rdp/",
-        tar="Trainset14_032015.pds.tgz"
-    shell:
-        "wget -N -P {params.dir} http://www.mothur.org/w/images/8/88/{params.tar} ; "
-        "tar xvzf {params.dir}{params.tar} -C {params.dir} ; "
