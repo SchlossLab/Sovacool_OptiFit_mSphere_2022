@@ -9,6 +9,7 @@ datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dat
 
 rule fit_all:
     input:
+        expand("results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc{suffix}.png", output_dir=output_dirs, dataset=datasets, suffix={'', '.full', '.iters'}),
         expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
         expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.optifit_mcc.sensspec', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs)
 
@@ -133,7 +134,7 @@ rule aggregate_sensspec:
         header_str = 'iter\tlabel\tcutoff\tnumotus\ttp\ttn\tfp\tfn\tsensitivity\tspecificity\tppv\tnpv\tfdr\taccuracy\tmcc\tf1score\treference_fraction\titer\trep\ttype\n'
         with open(output[0], 'w') as output_file:
             output_file.write(header_str)
-            for weight in params.weights:
+            for weight in params.weights:  # TODO: use regex instead of so many nested for loops
                 for reference_fraction in params.reference_fractions:
                     for iter in params.iters:
                         for rep in params.reps:
@@ -152,3 +153,37 @@ rule aggregate_sensspec:
                                             pass
                                         line = line.strip()
                                         output_file.write(f"{line}\t{reference_fraction}\t{iter}\t{rep}\tmethod-{method}_printref-{printref}\n")
+
+rule plot_sensspec:
+    input:
+        "results/{output_dir}/{dataset}/aggregate.sensspec"
+    output:
+        combo_mcc="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.png",
+        mcc_full="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.full.png",
+        iters="results/{output_dir}/{dataset}/figures/aggregate.sensspec.mcc.iters.png"
+    benchmark:
+        "benchmarks/{output_dir}/{dataset}/plot_sensspec.log"
+    script:
+        "plot_sensspec.R"
+
+rule fraction_mapped:
+    input:
+        mapped=sorted(expand("results/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.optifit_mcc.list", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps)),
+        original=sorted(expand("results/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-closed_printref-f/sample.count_table", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps))
+    output:
+        "results/{dataset}/{dataset}_fraction_mapped.tsv"
+    run:
+        if len(input.mapped) != len(input.count_table):
+            raise ValueError("Unequal number of optifit_mcc.list and count_table files")
+        with open(output[0], 'w') as output_file:
+            output_file.write('count_table_filename\tmapped_filename\tfraction_mapped\n')
+            for mapped_filename, count_table_filename in zip(input.mapped, input.count_table):
+                with open(count_table_filename, 'r') as input_file:
+                    line = next(input_file)  # first column of all lines except first line
+                    input_samples = set([line.split()[0] for line in input_file])
+                with open(mapped_filename, 'r') as mapped_file:
+                    line = next(mapped_file)
+                    line = next(mapped_file) # third column onward of second line, each seq in each OTU delimited by comma
+                    mapped_samples = set(seq for column in line.split()[2:] for seq in column.split(','))
+                fraction_mapped = len(input_samples.intersection(mapped_samples)) / len(input_samples)
+                output_file.write(f'{count_table_filename}\t{mapped_filename}\t{fraction_mapped}\n')

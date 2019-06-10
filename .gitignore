@@ -8,5 +8,6 @@ test/
 Rplots.pdf
 data/
 snakemake.pbs
-cluster.json
+config/cluster.json
+.idea/
 !results/workflows

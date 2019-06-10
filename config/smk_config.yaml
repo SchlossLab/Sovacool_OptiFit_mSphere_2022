@@ -1,12 +1,10 @@
 mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
-input_dir: data
 subsample_test: False
 subsample_size: 1000
-workflows:
-    dataset-as-reference: False
-    silva-as-reference: True
-silva_db_version: v132
-datasets:
+samples:
+- human
+- marine
+- mice
 - soil
 weights:
 - none
