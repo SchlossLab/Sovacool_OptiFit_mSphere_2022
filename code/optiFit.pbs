@@ -1,4 +1,4 @@
-#PBS -N optifit-test ## Name of the job for the scheduler
+#PBS -N optifit		## Name of the job for the scheduler
 #PBS -A pschloss_fluxod ## name of the allocation (who is paying for the compute time)
 #PBS -q fluxod            ## name of the queue to submit the job to. Will match the suffix on allocation name
 #PBS -l procs=1,pmem=2GB,walltime=24:00:00    ## resource reservation  max walltime = 672 hours
@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
-snakemake --profile pbs-torque --latency-wait 10 --configfile config/config_test.yaml
+snakemake --profile pbs-torque --latency-wait 20 --configfile config/smk_config.yaml
