@@ -2,52 +2,47 @@
 import os
 import subprocess
 
-# TODO: add greengenes download
-
-output_dir = os.path.join(config['input_dir'], 'references')
-version = config['silva_db_version']
-
 rule silva_targets:
     input:
-        f"{output_dir}/silva/silva.v4.tax"
+        "data/silva/silva.v4.tax"
 
 rule download_silva_db:
     output:
-        f"data/references/silva/Silva.seed_{version}.tgz"
+        "data/silva/Silva.seed_v132.tgz"
     shell:
-        f'wget -N -P data/references/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_{version}.tgz'
+        'wget -N -P data/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_v132.tgz'
 
 rule unpack_silva_db:
     input:
-        tar=f"data/references/silva/Silva.seed_{version}.tgz"
+        tar="data/silva/Silva.seed_v132.tgz"
     output:
-        f"data/references/silva/silva.seed_{version}.align",
-        f"data/references/silva/silva.seed_{version}.tax"
+        "data/silva/silva.seed_v132.align",
+        "data/silva/silva.seed_v132.tax"
     shell:
         "tar xvzf {input.tar} -C data/references/"
 
 rule get_silva_prok_lineage:
     input:
-        fasta=f"data/references/silva/silva.seed_{version}.align",
-        tax=f"data/references/silva/silva.seed_{version}.tax"
+        fasta="data/silva/silva.seed_v132.align",
+        tax="data/silva/silva.seed_v132.tax"
     output:
-        fasta="data/references/silva/silva.bact_archaea.fasta",
-        tax="data/references/silva/silva.bact_archaea.tax"
+        fasta="data/silva/silva.bact_archaea.fasta",
+        tax="data/silva/silva.bact_archaea.tax"
     params:
         mothur=mothur_bin,
         version=version
     shell:
         "{params.mothur} '#get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria-Archaea)' ; "
-        "mv data/references/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
-        "mv data/references/silva/silva.nr_{params.version}.pick.tax {output.tax}"
+        "mv data/silva/silva.nr_{params.version}.pick.align {output.fasta} ; "
+        "mv data/silva/silva.nr_{params.version}.pick.tax {output.tax}"
 
 rule get_silva_bact_lineage:
     input:
-        fasta='data/references/silva/silva.bact_archaea.fasta',
-        tax='data/references/silva/silva.bact_archaea.tax'
+        fasta='data/silva/silva.bact_archaea.fasta',
+        tax='data/silva/silva.bact_archaea.tax'
     output:
-        'data/references/silva/silva.bact_archaea.pick.fasta',
-        'data/references/silva/silva.bact_archaea.pick.tax'
+        'data/silva/silva.bact_archaea.pick.fasta',
+        'data/silva/silva.bact_archaea.pick.tax'
     params:
         mothur=mothur_bin,
     shell:
@@ -55,9 +50,9 @@ rule get_silva_bact_lineage:
 
 rule rename_silva_bact:
     input:
-        "data/references/silva/silva.bact_archaea.pick.{ext}"
+        "data/silva/silva.bact_archaea.pick.{ext}"
     output:
-        "data/references/silva/silva.bacteria.{ext}"
+        "data/silva/silva.bacteria.{ext}"
     wildcard_constraints:
         ext="fasta|tax"
     shell:
@@ -65,10 +60,10 @@ rule rename_silva_bact:
 
 rule pcr_seqs_silva:
     input:
-        "data/references/silva/silva.bacteria.fasta"
+        "data/silva/silva.bacteria.fasta"
     output:
-        "data/references/silva/silva.bacteria.pcr.ng.names",
-        "data/references/silva/silva.bacteria.pcr.fasta"
+        "data/silva/silva.bacteria.pcr.ng.names",
+        "data/silva/silva.bacteria.pcr.fasta"
     params:
         mothur=mothur_bin,
     shell:
@@ -76,42 +71,42 @@ rule pcr_seqs_silva:
 
 rule get_pcr_accession_numbers_silva:
     input:
-        "data/references/silva/silva.bacteria.pcr.ng.names"
+        "data/silva/silva.bacteria.pcr.ng.names"
     output:
-        "data/references/silva/silva.bacteria.pcr.ng.accnos"
+        "data/silva/silva.bacteria.pcr.ng.accnos"
     shell:
         'cut -f 1 {input} > {output}'
 
 rule get_fasta_seqs_silva:
     input:
-        fasta="data/references/silva/silva.bacteria.pcr.fasta",
-        accnos="data/references/silva/silva.bacteria.pcr.ng.accnos"
+        fasta="data/silva/silva.bacteria.pcr.fasta",
+        accnos="data/silva/silva.bacteria.pcr.ng.accnos"
     output:
-        "{output_dir}/silva/silva.v4.align"
+        "data/silva/silva.v4.align"
     params:
         mothur=mothur_bin,
-        pick="{output_dir}/silva/silva.bacteria.pcr.pick.good.filter.fasta"
+        pick="data/silva/silva.bacteria.pcr.pick.good.filter.fasta"
     shell:
         '{params.mothur} "#get.seqs(fasta={input.fasta}, accnos={input.accnos});screen.seqs(minlength=240, maxlength=275, maxambig=0, maxhomop=8); filter.seqs(vertical=T)"; '
         'mv {params.pick} {output}'
 
 rule get_filtered_accession_numbers_silva:
     input:
-        "data/references/silva/silva.fasta"
+        "data/silva/silva.fasta"
     output:
-        "data/references/silva/silva.accnos"
+        "data/silva/silva.accnos"
     shell:
         'grep "^>" {input} | cut -c 2- > {output}'
 
 rule get_taxon_seqs_silva:
     input:
-        tax="data/references/silva/silva.bacteria.tax",
-        accnos="data/references/silva/silva.accnos"
+        tax="data/silva/silva.bacteria.tax",
+        accnos="data/silva/silva.accnos"
     output:
-        tax="data/references/silva/silva.tax"
+        tax="data/silva/silva.tax"
     params:
         mothur=mothur_bin,
-        pick="data/references/silva/silva.bacteria.pick.tax"
+        pick="data/silva/silva.bacteria.pick.tax"
     shell:
         '{params.mothur} "#get.seqs(taxonomy={input.tax}, accnos={input.accnos})"; '
         'mv {params.pick} {output.tax}'
