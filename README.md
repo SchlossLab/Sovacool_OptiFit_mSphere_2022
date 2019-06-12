@@ -80,7 +80,7 @@ And update the simple version (`config/environment.simple.yaml`) with your favor
 
 
 Almost all dependencies are listed in `config/environment.export.yaml`, which will be installed by conda when you create the environment.
-The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
+The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel. (Only Linux machines can install `mothur` via conda.)
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
 Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
 [compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
