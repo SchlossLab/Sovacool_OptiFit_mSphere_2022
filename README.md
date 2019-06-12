@@ -40,6 +40,7 @@
 I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project.
 If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
 [Here's a link](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
+If you're experiencing slowness when solving conda environments, follow the suggestions [here](https://github.com/bioconda/bioconda-recipes/issues/13774).
 
 ### Create a conda environment
 
