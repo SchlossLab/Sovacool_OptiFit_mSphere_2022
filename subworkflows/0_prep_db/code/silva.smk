@@ -10,7 +10,7 @@ rule download_silva_db:
     output:
         temp("data/silva/Silva.seed_v132.tgz")
     shell:
-        'wget -N -P data/silva/ http://www.mothur.org/w/images/3/32/Silva.seed_v132.tgz'
+        'wget -N -P data/silva/ http://www.mothur.org/w/images/7/71/Silva.seed_v132.tgz'
 
 rule unpack_silva_db:
     input:
