@@ -2,8 +2,6 @@
 
 configfile: 'config/config.yaml'
 
-mothur_bin = config['mothur_bin']
-input_dir = config['input_dir']
 samples = [sample_name if not config['subsample_test'] else "{}_{}".format(sample_name, config['subsample_size']) for sample_name in config['samples']]
 weights = set(config['weights'])
 methods = set(config['methods'])
@@ -31,5 +29,5 @@ subworkflow prep_db:
 
 rule targets:
     input:
-		prep_db("data/silva/silva.bacteria.v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-		prep_db("data/silva/silva.bacteria.good.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
+        prep_db("data/silva/silva.bacteria.v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/silva/silva.bacteria.good.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
