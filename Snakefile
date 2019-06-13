@@ -20,12 +20,9 @@ wildcard_constraints:
     sampleref="sample|reference",
     reference="silva|greengenes"
 
-
 subworkflow prep_db:
     workdir:
         "subworkflows/0_prep_db/"
-    snakefile:
-        "subworkflows/0_prep_db/code/silva.smk"
 
 rule targets:
     input:
