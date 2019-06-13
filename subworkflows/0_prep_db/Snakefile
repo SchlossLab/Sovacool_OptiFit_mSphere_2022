@@ -1,0 +1,3 @@
+include: "code/silva.smk"
+include: "code/rdp.smk"
+include: "code/greengenes.smk"
