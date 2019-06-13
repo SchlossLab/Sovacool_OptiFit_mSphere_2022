@@ -75,8 +75,10 @@ rule make_contigs:
 		expand("data/{{dataset}}/human.contigs.{suffix2}", suffix2=("report", "groups"))
 	params:
 		dataset = "{dataset}"
+    resources:
+        procs=8
 	shell:
-		"mothur '#set.dir(input=data/{params.dataset}/, output=data/{params.dataset}/); make.contigs(file={input.files}, processors=12)'"
+		"mothur '#set.dir(input=data/{params.dataset}/, output=data/{params.dataset}/); make.contigs(file={input.files}, processors={resources.procs})'"
 
 rule screen_seqs_contigs:
 	input:
