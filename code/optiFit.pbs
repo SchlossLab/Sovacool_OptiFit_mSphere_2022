@@ -20,4 +20,5 @@ cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 
 #  Put your job commands after this line. Load all required modules before submitting this script.
+source activate optiFit
 snakemake --profile pbs-torque --latency-wait 20 --configfile config/config.yaml
