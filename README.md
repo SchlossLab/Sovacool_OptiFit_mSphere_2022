@@ -40,6 +40,7 @@
 I'm using the [conda](https://conda.io/docs/) package manager to manage dependencies for this project.
 If you don't already have it, I recommend installing the [Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
 [Here's a link](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf) to a helpful cheatsheet for using conda.
+If you're experiencing slowness when solving conda environments, follow the suggestions [here](https://github.com/bioconda/bioconda-recipes/issues/13774).
 
 ### Create a conda environment
 
@@ -80,7 +81,7 @@ And update the simple version (`config/environment.simple.yaml`) with your favor
 
 
 Almost all dependencies are listed in `config/environment.export.yaml`, which will be installed by conda when you create the environment.
-The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel.
+The exception to this is the `mothur` program -- we're using a different versoin than what's currently available in the bioconda channel. (Only Linux machines can install `mothur` via conda.)
 If you're a member of the Schloss Lab and you're running this analysis on Flux, you can use the mothur binary here: `/nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur`.
 Otherwise, [download the precompiled binary](https://github.com/mothur/mothur/releases) or
 [compile from source](https://github.com/mothur/mothur/blob/master/INSTALL.md).
