@@ -1,4 +1,4 @@
-
+mothur = "mothur '#set.dir(input=data/rdp/, output=data/rdp/); set.logfile(name={log}) "
 rule rdp_targets:
     input:
         expand("data/rdp/rdp.{ext}", ext={'tax', 'fasta'})
@@ -11,7 +11,7 @@ rule download_rdp:
 
 rule unpack_rdp_db:
     input:
-        "data/rdp/Trainset16_022016.rdp.tgz"
+        rules.download_rdp.output
     output:
         fasta="data/rdp/rdp.fasta",
         tax="data/rdp/rdp.tax"
@@ -25,8 +25,8 @@ rule unpack_rdp_db:
 
 rule get_rdp_bact:
     input:
-        fasta="data/rdp/rdp.fasta",
-        tax="data/rdp/rdp.tax"
+        fasta=rules.unpack_rdp_db.output.fasta,
+        tax=rules.unpack_rdp_db.output.fasta
     output:
         fasta="data/rdp/rdp.bacteria.fasta",
         tax="data/rdp/rdp.bacteria.tax"
@@ -34,8 +34,7 @@ rule get_rdp_bact:
         "logfiles/rdp/get_rdp_bact.log"
     shell:
         """
-        mothur '#set.dir(input=data/rdp/, output=data/rdp/);
-        set.logfile(name={log})
+        {mothur}
         get.lineage(fasta={input.fasta}, tax={input.tax}, taxon=Bacteria)'
         mv data/rdp/rdp.pick.fasta {output.fasta}
         mv data/rdp/rdp.pick.tax {output.tax}
@@ -43,8 +42,11 @@ rule get_rdp_bact:
 
 rule get_full_length_rdp:
     input:
-        tax="/data/rdp/rdp.bacteria.tax",
-        fasta="/data/rdp/rdp.bacteria.fasta"
+        fasta=rules.get_rdp_bact.output.fasta,
+        tax=rules.get_rdp_bact.output.tax
     output:
+        ""
     shell:
+        """
+        {mothur}
         """
