@@ -78,7 +78,7 @@ rule calc_dists_rdp_full:
 
 rule cluster_rdp_full:
     input:
-        dist=rules.calc_dists_rdp_full.output.fasta,
+        dist=rules.calc_dists_rdp_full.output.dist,
         names=rules.get_full_length_rdp.output.preclust_names
     output:
         list="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.list",
@@ -144,7 +144,7 @@ rule calc_dists_rdp_v4:
 
 rule cluster_rdp_v4:
     input:
-        dist=rules.calc_dists_rdp_v4.output.fasta,
+        dist=rules.calc_dists_rdp_v4.output.dist,
         names=rules.get_rdp_v4.output.preclust_names
     output:
         list="data/rdp/rdp.bact.v4.filter.unique.precluster.opti_mcc.list",
