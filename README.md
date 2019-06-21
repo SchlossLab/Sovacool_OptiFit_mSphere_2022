@@ -1,5 +1,7 @@
 # OptiFitAnalysis
 
+Benchmarking the optiFit algorithm in the mothur software package.
+
 ## Quickstart
 
 1. Install `mothur` version `1.42.0` and the dependencies listed in `config/environment.simple.yaml`.
