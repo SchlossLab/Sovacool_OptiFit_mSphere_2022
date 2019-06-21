@@ -1,9 +1,5 @@
 mothur = "mothur '#set.dir(input=data/silva/, output=data/silva/); set.logfile(name={log}); "
 
-rule silva_targets:
-    input:
-        expand("data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.0.03.{ext}", subset=("v4", "good"), ext=("cons.taxonomy", "cons.tax.summary", "rep.names"))
-
 rule download_silva_db:
     output:
         temp("data/silva/Silva.seed_v132.tgz")

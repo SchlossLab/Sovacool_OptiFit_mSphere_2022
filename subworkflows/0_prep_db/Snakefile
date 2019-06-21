@@ -4,3 +4,8 @@
 include: "code/silva.smk"
 include: "code/rdp.smk"
 include: "code/greengenes.smk"
+
+rule targets:
+    input:
+        expand("data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.0.03.{ext}", subset=("v4", "good"), ext=("cons.taxonomy", "cons.tax.summary", "rep.names")),
+        expand("data/rdp/rdp.{ext}", ext={'tax', 'fasta'})

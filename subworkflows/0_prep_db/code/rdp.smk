@@ -4,10 +4,6 @@ subworkflow silva:
 
 mothur = "mothur '#set.dir(input=data/rdp/, output=data/rdp/); set.logfile(name={log}) "
 
-rule rdp_targets:
-    input:
-        expand("data/rdp/rdp.{ext}", ext={'tax', 'fasta'})
-
 rule download_rdp:
     output:
         tar=temp("data/rdp/Trainset16_022016.rdp.tgz"),
