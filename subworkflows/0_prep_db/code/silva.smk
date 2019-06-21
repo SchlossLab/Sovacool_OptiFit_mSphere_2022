@@ -1,6 +1,7 @@
 " Download the reference databases and process with mothur "
 import os
 import subprocess
+mothur = "mothur '#set.dir(input=data/silva/, output=data/silva/); set.logfile(name={log}); "
 
 rule silva_targets:
     input:
@@ -14,17 +15,17 @@ rule download_silva_db:
 
 rule unpack_silva_db:
     input:
-        tar="data/silva/Silva.seed_v132.tgz"
+        tar=rules.download_silva_db.output
     output:
-        "data/silva/silva.seed_v132.align",
-        "data/silva/silva.seed_v132.tax"
+        fasta="data/silva/silva.seed_v132.align",
+        tax="data/silva/silva.seed_v132.tax"
     shell:
         "tar xvzf {input.tar} -C data/silva/"
 
 rule get_silva_prok_lineage:
     input:
-        fasta="data/silva/silva.seed_v132.align",
-        tax="data/silva/silva.seed_v132.tax"
+        fasta=rules.unpack_silva_db.output.fasta,
+        tax=rules.unpack_silva_db.output.tax
     output:
         fasta="data/silva/silva.bact_archaea.fasta",
         tax="data/silva/silva.bact_archaea.tax"
@@ -39,8 +40,8 @@ rule get_silva_prok_lineage:
 
 rule get_silva_bact_lineage:
     input:
-        fasta='data/silva/silva.bact_archaea.fasta',
-        tax='data/silva/silva.bact_archaea.tax'
+        fasta=rules.get_silva_prok_lineage.output.fasta,
+        tax=rules.get_silva_prok_lineage.output.tax
     output:
         fasta="data/silva/silva.bacteria.fasta",
         tax="data/silva/silva.bacteria.tax",
@@ -51,16 +52,17 @@ rule get_silva_bact_lineage:
     log:
         "logfiles/silva/bact_lineage.log"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria)'; "
-        "mv {params.pick_fasta} {output.fasta}; "
-        "mv {params.pick_tax} {output.tax}; "
-        "mothur '#summary.seqs(fasta={output.fasta})'"
+        """
+        {mothur}
+        get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria)'
+        mv {params.pick_fasta} {output.fasta}
+        mv {params.pick_tax} {output.tax}
+        mothur '#summary.seqs(fasta={output.fasta})'"
+        """
 
 rule get_full_length:
     input:
-        "data/silva/silva.bacteria.fasta"
+        rules.get_silva_bact_lineage.output.fasta
     output:
         fasta="data/silva/silva.bacteria.good.fasta",
         sum="data/silva/silva.bacteria.good.summary",
@@ -68,14 +70,15 @@ rule get_full_length:
     log:
         "logfiles/silva/get_full_length.log"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "screen.seqs(fasta={input}, start=1046, end=43116); "
-        "summary.seqs(fasta={output.fasta})'"
+        """"
+        {mothur}
+        screen.seqs(fasta={input}, start=1046, end=43116)
+        summary.seqs(fasta={output.fasta})'
+        """
 
 rule filter_full_length:
     input:
-        fasta="data/silva/silva.bacteria.good.fasta"
+        fasta=rules.get_full_length.output.fasta
     output:
         "data/silva/silva.bacteria.good.filter.unique.precluster.fasta",
         "data/silva/silva.bacteria.good.filter.unique.precluster.names",
@@ -87,15 +90,16 @@ rule filter_full_length:
         names="data/silva/silva.bacteria.good.filter.names",
         unique="data/silva/silva.bacteria.good.filter.unique.fasta"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "filter.seqs(fasta={input.fasta}, trump=., vertical=T); "
-        "unique.seqs(fasta={params.filter}); "
-        "pre.cluster(fasta={params.unique}, name={params.names}, diffs=10)'"
+        """
+        {mothur}
+        filter.seqs(fasta={input.fasta}, trump=., vertical=T)
+        unique.seqs(fasta={params.filter})
+        pre.cluster(fasta={params.unique}, name={params.names}, diffs=10)'
+        """
 
 rule trim_v4:
     input:
-        fasta="data/silva/silva.bacteria.fasta"
+        fasta=rules.get_silva_bact_lineage.output.fasta
     output:
         "data/silva/silva.bacteria.v4.fasta"
     log:
@@ -103,15 +107,16 @@ rule trim_v4:
     params:
         pcr="data/silva/silva.bacteria.pcr.fasta"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "pcr.seqs(fasta={input.fasta}, start=118994, end=25319, keepdots=F); "
-        "summary.seqs(fasta={output}); '"
-        "mv {params.pcr} {output}"
+        """
+        {mothur}
+        pcr.seqs(fasta={input.fasta}, start=118994, end=25319, keepdots=F)
+        summary.seqs(fasta={output}) '
+        mv {params.pcr} {output}
+        """
 
 rule filter_v4:
     input:
-        fasta="data/silva/silva.bacteria.v4.fasta"
+        fasta=rules.trim_v4.output
     output:
         "data/silva/silva.bacteria.v4.filter.unique.precluster.fasta",
         "data/silva/silva.bacteria.v4.filter.unique.precluster.names",
@@ -123,11 +128,12 @@ rule filter_v4:
         names="data/silva/silva.bacteria.v4.filter.names",
         unique="data/silva/silva.bacteria.v4.filter.unique.fasta"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "filter.seqs(fasta={input.fasta}, trump=., vertical=T); "
-        "unique.seqs(fasta={params.filter}); "
-        "pre.cluster(fasta={params.unique}, name={params.names}, diffs=2)'"
+        """
+        {mothur}
+        filter.seqs(fasta={input.fasta}, trump=., vertical=T)
+        unique.seqs(fasta={params.filter})
+        pre.cluster(fasta={params.unique}, name={params.names}, diffs=2)'
+        """
 
 rule calc_dists:
     input:
@@ -139,13 +145,14 @@ rule calc_dists:
     wildcard_constraints:
         subset="v4|good"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "dist.seqs(fasta={input}, cutoff=0.03)'"
+        """
+        {mothur}
+        dist.seqs(fasta={input}, cutoff=0.03)'
+        """
 
 rule cluster:
     input:
-        dist="data/silva/silva.bacteria.{subset}.filter.unique.precluster.dist",
+        dist=rules.calc_dists.output,
         names="data/silva/silva.bacteria.{subset}.filter.unique.precluster.names"
     output:
         list="data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.list",
@@ -154,13 +161,15 @@ rule cluster:
     log:
         "logfiles/silva/cluster.{subset}.log"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "'cluster(column={input.dist}, name={input.names}, cutoff=0.03)'"
+        """
+        {mothur}
+        cluster(column={input.dist}, name={input.names}, cutoff=0.03)'
+        """
 
 rule get_otu_reps:
     input:
-        tax="data/silva/silva.bacteria.tax",
-        list="data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.list",
+        tax=rules.get_silva_bact_lineage.output.tax,
+        list=rules.cluster.output.list,
         names="data/silva/silva.bacteria.{subset}.filter.unique.precluster.names"
     output:
         "data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
@@ -169,7 +178,8 @@ rule get_otu_reps:
     log:
         "logfiles/silva/otu_reps.{subset}.log"
     shell:
-        "mothur '#set.dir(input=data/silva/, output=data/silva/); "
-        "set.logfile(name={log}); "
-        "classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names}); "
-        "get.oturep(method=abundance, list={input.list}, name={input.names})'"
+        """
+        {mothur}
+        classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names})
+        get.oturep(method=abundance, list={input.list}, name={input.names})'
+        """
