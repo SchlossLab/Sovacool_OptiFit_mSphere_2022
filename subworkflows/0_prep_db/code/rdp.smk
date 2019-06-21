@@ -112,7 +112,7 @@ rule get_rdp_v4:
     input:
         fasta=rules.get_rdp_bact.output.fasta
     output:
-        fasta="data/rdp/rdp.bact.v4.fasta"
+        fasta="data/rdp/rdp.bact.v4.fasta",
         filter="data/rdp/rdp.bact.v4.filter.fasta",
         names="data/rdp/rdp.bact.v4.filter.names",
         unique="data/rdp/rdp.bact.v4.filter.unique.fasta",
