@@ -1,6 +1,3 @@
-" Download the reference databases and process with mothur "
-import os
-import subprocess
 mothur = "mothur '#set.dir(input=data/silva/, output=data/silva/); set.logfile(name={log}); "
 
 rule silva_targets:
