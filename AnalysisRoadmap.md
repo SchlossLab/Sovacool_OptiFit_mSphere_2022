@@ -1,6 +1,5 @@
 ### To-Do
-- [ ] Incorporate mothur commands from the pbs scripts in `data/reference` into the snakemake workflow.
-    - [ ] Organize `data/reference/`.
+- [x] Incorporate mothur commands from the pbs scripts in `data/reference` into the snakemake workflow.
 - [ ] Finish implementing support for using external databases as the reference for optifit.
 - [ ] What percent of sequences map to the reference?
     - Rule written, need to test.
