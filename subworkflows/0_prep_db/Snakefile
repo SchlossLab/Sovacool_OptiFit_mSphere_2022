@@ -60,7 +60,6 @@ rule align:
         {mothur}
         align.seqs(candidate={input.fasta}, template={input.silva_ref})
         '
-        mv data/{ref}/{ref}.bacteria.good.align data/{ref}/{ref}.bact_full.fasta
         """
 
 rule get_full_length:
@@ -73,6 +72,7 @@ rule get_full_length:
         {mothur}
         screen.seqs(fasta={output.align}, start=1046, end=43116)
         '
+        mv data/{ref}/{ref}.bacteria.good.align {output.fasta}
         """
 
 rule get_v4:
