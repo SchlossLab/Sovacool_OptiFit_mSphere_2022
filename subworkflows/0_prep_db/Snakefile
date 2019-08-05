@@ -42,12 +42,12 @@ rule get_bacteria:
     shell:
         """
         {mothur}
-        get.lineage(fasta={input.fasta}, tax={input.tax}, taxon=Bacteria)'
+        get.lineage(fasta={input.fasta}, tax={input.tax}, taxon=Bacteria) '
         mv data/{ref}/{ref}.pick.fasta {output.fasta}
         mv data/{ref}/{ref}.pick.tax {output.tax}
         """
 
-rule align:
+rule align_to_silva:
     input:
         fasta=rules.get_bacteria.output.fasta,
         silva_ref=silva("data/silva/silva.seed_v132.align")
@@ -58,11 +58,10 @@ rule align:
     shell:
         """
         {mothur}
-        align.seqs(candidate={input.fasta}, template={input.silva_ref})
-        '
+        align.seqs(candidate={input.fasta}, template={input.silva_ref}) '
         """
 
-rule get_full_length:
+rule get_full_length: 
     input:
         align="data/{ref}/{ref}.bacteria.align"
     output:
@@ -70,8 +69,7 @@ rule get_full_length:
     shell:
         """
         {mothur}
-        screen.seqs(fasta={output.align}, start=1046, end=43116)
-        '
+        screen.seqs(fasta={output.align}, start=1046, end=43116) '
         mv data/{ref}/{ref}.bacteria.good.align {output.fasta}
         """
 
@@ -95,8 +93,7 @@ rule filter_db:
         {mothur}
         filter.seqs(fasta={input.fasta}, trump=., vertical=T)
         unique.seqs(fasta={output.filter})
-        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2)
-        '
+        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2) '
         """
 
 rule calc_dists_rdp_full:
@@ -107,8 +104,7 @@ rule calc_dists_rdp_full:
     shell:
         """
         {mothur}
-        dist.seqs(fasta={input.fasta}, cutoff=0.03)
-        '
+        dist.seqs(fasta={input.fasta}, cutoff=0.03) '
         """
 
 rule cluster_rdp_full:
@@ -122,8 +118,7 @@ rule cluster_rdp_full:
     shell:
         """
         {mothur}
-        cluster(column={input.dist}, name={input.names}, cutoff=0.03)
-        '
+        cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
         """
 
 rule otu_reps_rdp_full:
@@ -139,8 +134,7 @@ rule otu_reps_rdp_full:
         """
         {mothur}
         classify.otu(taxonomy={input.tax}, list={input.list}, name={input.names})
-        get.oturep(method=abundance, list={input.list}, name={input.names})
-        '
+        get.oturep(method=abundance, list={input.list}, name={input.names}) '
         """
 
 
@@ -153,8 +147,7 @@ rule calc_dists_rdp_v4:
     shell:
         """
         {mothur}
-        dist.seqs(fasta={input.fasta}, cutoff=0.03)
-        '
+        dist.seqs(fasta={input.fasta}, cutoff=0.03) '
         """
 
 rule cluster_rdp_v4:
@@ -168,8 +161,7 @@ rule cluster_rdp_v4:
     shell:
         """
         {mothur}
-        cluster(column={input.dist}, name={input.names}, cutoff=0.03)
-        '
+        cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
         """
 
 rule otu_reps_rdp_v4:
@@ -185,6 +177,5 @@ rule otu_reps_rdp_v4:
         """
         {mothur}
         classify.otu(taxonomy={input.tax}, list={input.list}, name={input.names})
-        get.oturep(method=abundance, list={input.list}, name={input.names})
-        '
+        get.oturep(method=abundance, list={input.list}, name={input.names}) '
         """

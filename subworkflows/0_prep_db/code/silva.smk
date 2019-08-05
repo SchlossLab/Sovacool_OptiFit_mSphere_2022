@@ -102,7 +102,7 @@ rule trim_v4:
     shell:
         """
         {mothur}
-        pcr.seqs(fasta={input.fasta}, start=118994, end=25319, keepdots=F)
+        pcr.seqs(fasta={input.fasta}, start=11894, end=25319, keepdots=F)
         summary.seqs(fasta={output}) '
         mv {params.pcr} {output}
         """
