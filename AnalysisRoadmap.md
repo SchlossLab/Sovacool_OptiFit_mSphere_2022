@@ -1,6 +1,4 @@
-### To-Do
-- [x] Incorporate mothur commands from the pbs scripts in `data/reference` into the snakemake workflow.
-- [ ] Finish implementing support for using external databases as the reference for optifit.
+### Misc To-Do
 - [ ] What percent of sequences map to the reference?
     - Rule written, need to test.
     - Output in `results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv`.
@@ -36,8 +34,8 @@
     - [x] Download full length silva v132 (https://www.mothur.org/wiki/Silva_reference_files)
     - [x] Remove archaea and eukarya and select for bacteria (i.e. get.lineage(taxon=Bacteria))
     - [x] Filter sequences for full length sequences (i.e. summary.seqs, screen.seqs, filter.seqs)
-    - [ ] Cluster the silva reference (OptiClust)
-    - [ ] Find representative sequence from each OTU (i.e. get.oturep w/ method=abundance)
+    - [x] Cluster the silva reference (OptiClust)
+    - [x] Find representative sequence from each OTU (i.e. get.oturep w/ method=abundance)
 * Use RDP database to generate full length database (like gg_97):
     - [x] Download rdp (https://www.mothur.org/wiki/RDP_reference_files)
     - [x] Remove archaea and eukarya and select for bacteria
@@ -50,14 +48,14 @@
     - [x] Remove archaea and eukarya and select for bacteria
     - [x] Realign to silva SEED reference alignment (original gg ref alignment is bad)
     - [x] Filter sequences for full length sequences
-    - [ ] Cluster the greengenes reference (OptiClust)
-    - [ ] Find representative sequence from each OTU
+    - [x] Cluster the greengenes reference (OptiClust)
+    - [x] Find representative sequence from each OTU
 * Create reference databases and OTUs for V4 regions
     - [x] Trim SILVA to V4 region of 16S rRNA gene (i.w. pcr.seqs - ask Pat for start/stop coordinates)
     - [x] Trim RDP to V4 region of 16S rRNA gene
     - [x] Trim greengenes to V4 region of 16S rRNA gene
-    - [ ] Use OptiClust to cluster reference sequences
-    - [ ] Find representative sequence from each OTU
+    - [x] Use OptiClust to cluster reference sequences
+    - [x] Find representative sequence from each OTU
 * Test clustering of small soil dataset (soil_1000) against references
     - [x] De novo clustering on samples (OptiClust)
     - [ ] Open reference clustering against full length references (w/ VSEARCH)
@@ -68,7 +66,6 @@
     - [ ] Open reference clustering against V4 references (w/ OptiFit)
     - [ ] Closed reference clustering against full length reference (w/ OptiFit)
     - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
-* Save this for later when we have the above worked out...
 * For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
     - [ ] De novo clustering on  samples
     - [ ] Open reference clustering (OptiFit) against reference OTUs
