@@ -1,7 +1,7 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/rdp/, output=data/rdp/); set.logfile(name={log}) "
+mothur = "mothur '#set.dir(input=data/{ref}/, output=data/{ref}/); set.logfile(name={log}) "
 
 include: "code/silva.smk"
 include: "code/rdp.smk"
@@ -13,22 +13,7 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("data/silva/silva.bacteria.{subset}.filter.unique.precluster.opti_mcc.0.03.{ext}", subset=("v4", "good"), ext=("cons.taxonomy", "cons.tax.summary", "rep.names")),
-        expand("data/rdp/rdp.{ext}", ext={'tax', 'fasta'})
-
-rule download_rdp:
-    output:
-        tar=temp("data/rdp/Trainset16_022016.rdp.tgz"),
-        fasta="data/rdp/rdp.fasta",
-        tax="data/rdp/rdp.tax"
-    shell:
-        """
-        wget -N -P data/rdp/ https://www.mothur.org/w/images/d/dc/Trainset16_022016.rdp.tgz
-        tar xvzf {output.tar} -C data/rdp/
-        mv data/rdp/trainset16_022016.rdp/trainset16_022016.rdp.fasta {output.fasta}
-        mv data/rdp/trainset16_022016.rdp/trainset16_022016.rdp.tax {output.tax}
-        rm -rf data/rdp/trainset16_022016.rdp/
-        """
+        expand("data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.{ext}", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"), ext=("cons.taxonomy", "cons.tax.summary", "rep.names"))
 
 rule get_bacteria:
     input:
@@ -39,18 +24,21 @@ rule get_bacteria:
         tax="data/{ref}/{ref}.bacteria.tax"
     log:
         "logfiles/{ref}/get_bact.log"
+    params:
+        fasta="data/{ref}/{ref}.pick.fasta",
+        tax="data/{ref}/{ref}.pick.tax"
     shell:
         """
         {mothur}
         get.lineage(fasta={input.fasta}, tax={input.tax}, taxon=Bacteria) '
-        mv data/{ref}/{ref}.pick.fasta {output.fasta}
-        mv data/{ref}/{ref}.pick.tax {output.tax}
+        mv {params.fasta} {output.fasta}
+        mv {params.tax} {output.tax}
         """
 
 rule align_to_silva:
     input:
         fasta=rules.get_bacteria.output.fasta,
-        silva_ref=silva("data/silva/silva.seed_v132.align")
+        silva_ref=rules.download_silva.output.fasta
     output:
         align="data/{ref}/{ref}.bacteria.align"
     wildcard_constraints:
@@ -61,33 +49,33 @@ rule align_to_silva:
         align.seqs(candidate={input.fasta}, template={input.silva_ref}) '
         """
 
-rule get_full_length: 
+rule subset_regions:
     input:
         align="data/{ref}/{ref}.bacteria.align"
     output:
-        fasta="data/{ref}/{ref}.bact_full.fasta"
+        full_length="data/{ref}/{ref}.bact_full.fasta",
+        v4="data/{ref}/{ref}.bact_v4.fasta"
+    params:
+        screen="data/{ref}/{ref}.bacteria.good.align",
+        pcr="data/{ref}/{ref}.bacteria.pcr.fasta"
     shell:
         """
         {mothur}
-        screen.seqs(fasta={output.align}, start=1046, end=43116) '
-        mv data/{ref}/{ref}.bacteria.good.align {output.fasta}
+        screen.seqs(fasta={input.align}, start=1046, end=43116)
+        pcr.seqs(fasta={input.align}, start=11894, end=25319, keepdots=F) '
+        mv {params.screen} {output.full_length}
+        mv {params.pcr} {output.v4}
         """
 
-rule get_v4:
-    input:
-        fasta=rules.get_bacteria.output.fasta
-    output:
-        fasta="data/{ref}/{ref}.bact_v4.fasta"
-    shell:
-        """
-        {mothur}
-        pcr.seqs(fasta={input.fasta}, start=11894, end=25319, keepdots=F) '
-        mv data/{ref}/{ref}.bacteria.pcr.fasta {output.fasta}
-        """
-
-rule filter_db:
+rule filter:
     input:
         fasta="data/{ref}/{ref}.{subset}.fasta"
+    output:
+        filter="data/{ref}/{ref}.{subset}.filter.fasta",
+        names="data/{ref}/{ref}.{subset}.filter.names",
+        unique="data/{ref}/{ref}.{subset}.filter.unique.fasta",
+        preclust_fasta="data/{ref}/{ref}.{subset}.filter.unique.precluster.fasta",
+        preclust_names="data/{ref}/{ref}.{subset}.filter.unique.precluster.names"
     shell:
         """
         {mothur}
@@ -96,86 +84,49 @@ rule filter_db:
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2) '
         """
 
-rule calc_dists_rdp_full:
+rule calc_dists:
     input:
-        fasta=rules.get_full_length_rdp_gg.output.preclust_fasta
+        rules.filter.output.preclust_fasta
     output:
-        dist="data/rdp/rdp.bacteria.good.filter.unique.precluster.dist"
+        "data/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
+    log:
+        "logfiles/{ref}/calc_dists.{subset}.log"
     shell:
         """
         {mothur}
-        dist.seqs(fasta={input.fasta}, cutoff=0.03) '
+        dist.seqs(fasta={input}, cutoff=0.03) '
         """
 
-rule cluster_rdp_full:
+rule cluster:
     input:
-        dist=rules.calc_dists_rdp_full.output.dist,
-        names=rules.get_full_length_rdp.output.preclust_names
+        dist=rules.calc_dists.output,
+        names=rules.filter.output.preclust_names
     output:
-        list="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.list",
-        steps="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.steps",
-        sensspec="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.sensspec"
-    shell:
-        """
-        {mothur}
-        cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
-        """
-
-rule otu_reps_rdp_full:
-    input:
-        tax=rules.get_rdp_bact.output.tax,
-        list=rules.cluster_rdp_full.output.list,
-        names=rules.get_full_length_rdp.output.preclust_names
-    output:
-        tax="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        sum="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        names="data/rdp/rdp.bacteria.good.filter.unique.precluster.opti_mcc.0.03.rep.names"
-    shell:
-        """
-        {mothur}
-        classify.otu(taxonomy={input.tax}, list={input.list}, name={input.names})
-        get.oturep(method=abundance, list={input.list}, name={input.names}) '
-        """
-
-
-
-rule calc_dists_rdp_v4:
-    input:
-        fasta=rules.get_rdp_v4.output.preclust_fasta
-    output:
-        dist="data/rdp/rdp.bact_v4.filter.unique.precluster.dist"
-    shell:
-        """
-        {mothur}
-        dist.seqs(fasta={input.fasta}, cutoff=0.03) '
-        """
-
-rule cluster_rdp_v4:
-    input:
-        dist=rules.calc_dists_rdp_v4.output.dist,
-        names=rules.get_rdp_v4.output.preclust_names
-    output:
-        list="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list",
-        steps="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.steps",
-        sensspec="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.sensspec"
+        list="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
+        steps="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.sensspec"
+    log:
+        "logfiles/{ref}/cluster.{subset}.log"
     shell:
         """
         {mothur}
         cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
         """
 
-rule otu_reps_rdp_v4:
+rule get_otu_reps:
     input:
-        tax=rules.get_rdp_bact.output.tax,
-        list=rules.cluster_rdp_v4.output.list,
-        names=rules.get_rdp_v4.output.preclust_names
+        tax=rules.get_bacteria.output.tax,
+        list=rules.cluster.output.list,
+        names="data/{ref}/{ref}.{subset}.filter.unique.precluster.names"
     output:
-        tax="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        sum="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        names="data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.rep.names"
+        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
+        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
+        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
+    log:
+        "logfiles/{ref}/otu_reps.{subset}.log"
     shell:
         """
         {mothur}
-        classify.otu(taxonomy={input.tax}, list={input.list}, name={input.names})
+        classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names})
         get.oturep(method=abundance, list={input.list}, name={input.names}) '
         """
