@@ -13,7 +13,7 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.{ext}", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"), ext=("cons.taxonomy", "cons.tax.summary", "rep.names"))
+        expand("data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"))
 
 rule get_bacteria:
     input:
