@@ -16,3 +16,6 @@
 "calc_dists": {
     "procs": "{rule.resources.procs}"
 }
+"preprocess": {
+    "procs": "{rule.resources.procs}"
+}
