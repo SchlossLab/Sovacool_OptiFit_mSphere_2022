@@ -13,12 +13,11 @@ rule subset:
     output:
         expand("data/raw/{{sample}}_{{subsample_size}}/{{sample}}_{{subsample_size}}.{ext}", input_dir=input_dir, ext={'fasta', 'accnos', 'count_table'})
     params:
-        mothur=mothur_bin,
         sample = '{sample}',
         input_dir = 'data/raw/',
         output_dir = 'data/processed/{{sample}}_{{subsample_size}}/'
     shell:
-        '{params.mothur} "#set.dir(input={params.input_dir}{params.sample}, output={params.output_dir}); '
+        'mothur "#set.dir(input={params.input_dir}{params.sample}, output={params.output_dir}); '
         'sub.sample(fasta={params.sample}.fasta, size={subsample_size}); '
         'list.seqs(fasta=current); '
         'get.seqs(accnos=current, count={params.sample}.count_table); '
