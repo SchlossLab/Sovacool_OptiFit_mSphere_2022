@@ -1,4 +1,4 @@
-" Download references, download & process data, and run tests to benchmark the OptiFit algorithm "
+" Download references, download & process results, and run tests to benchmark the OptiFit algorithm "
 
 configfile: 'config/config.yaml'
 
@@ -26,9 +26,9 @@ subworkflow prep_db:
 
 rule targets:
     input:
-        prep_db("data/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("data/silva/silva.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("data/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("data/gg/gg.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("data/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
+        prep_db("results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("results/gg/gg.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
