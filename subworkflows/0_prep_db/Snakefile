@@ -1,7 +1,7 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/{ref}/, output=data/{ref}/); set.logfile(name={log}) "
+mothur = "mothur '#set.dir(input=data/{ref}/); set.logfile(name={log}) "
 
 include: "code/silva.smk"
 include: "code/rdp.smk"
@@ -13,7 +13,7 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"))
+        expand("results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"))
 
 rule get_bacteria:
     input:
@@ -88,12 +88,13 @@ rule calc_dists:
     input:
         rules.filter.output.preclust_fasta
     output:
-        "data/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
+        "results/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
     log:
         "logfiles/{ref}/calc_dists.{subset}.log"
     shell:
         """
         {mothur}
+        set.dir(output=results/{wildcards.ref})
         dist.seqs(fasta={input}, cutoff=0.03) '
         """
 
@@ -102,14 +103,15 @@ rule cluster:
         dist=rules.calc_dists.output,
         names=rules.filter.output.preclust_names
     output:
-        list="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
-        steps="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.steps",
-        sensspec="data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.sensspec"
+        list="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
+        steps="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.sensspec"
     log:
         "logfiles/{ref}/cluster.{subset}.log"
     shell:
         """
         {mothur}
+        set.dir(output=results/{wildcards.ref})
         cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
         """
 
@@ -117,16 +119,17 @@ rule get_otu_reps:
     input:
         tax=rules.get_bacteria.output.tax,
         list=rules.cluster.output.list,
-        names="data/{ref}/{ref}.{subset}.filter.unique.precluster.names"
+        names=rules.filter.output.preclust_names
     output:
-        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        "data/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
+        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
+        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
+        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
         "logfiles/{ref}/otu_reps.{subset}.log"
     shell:
         """
         {mothur}
+        set.dir(output=results/{wildcards.ref}/)
         classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names})
         get.oturep(method=abundance, list={input.list}, name={input.names}) '
         """
