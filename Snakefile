@@ -22,4 +22,13 @@ wildcard_constraints:
 
 subworkflow prep_db:
     workdir:
-        "subworkflows/0_prep_db/"
+        "subworkflows/0_prep_db"
+
+rule targets:
+    input:
+        prep_db("data/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/silva/silva.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/gg/gg.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_db("data/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
