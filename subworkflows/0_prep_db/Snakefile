@@ -1,7 +1,7 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}}) "
+mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}}); "
 
 include: "code/silva.smk"
 include: "code/rdp.smk"
