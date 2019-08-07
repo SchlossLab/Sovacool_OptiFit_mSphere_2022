@@ -58,11 +58,13 @@ rule subset_regions:
     params:
         screen="data/{ref}/{ref}.bacteria.good.align",
         pcr="data/{ref}/{ref}.bacteria.pcr.fasta"
+    resources:
+        procs=8
     shell:
         """
         {mothur}
-        screen.seqs(fasta={input.align}, start=1046, end=43116)
-        pcr.seqs(fasta={input.align}, start=11894, end=25319, keepdots=F) '
+        screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs})
+        pcr.seqs(fasta={input.align}, start=11894, end=25319, keepdots=F, processors={resources.procs}) '
         mv {params.screen} {output.full_length}
         mv {params.pcr} {output.v4}
         """
@@ -91,11 +93,13 @@ rule calc_dists:
         "results/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
     log:
         "logfiles/{ref}/calc_dists.{subset}.log"
+    resources:
+        procs=8
     shell:
         """
         {mothur}
         set.dir(output=results/{wildcards.ref})
-        dist.seqs(fasta={input}, cutoff=0.03) '
+        dist.seqs(fasta={input}, cutoff=0.03, processors={resources.procs}) '
         """
 
 rule cluster:
