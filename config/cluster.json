@@ -11,11 +11,11 @@
     "outdir": "logfiles/pbs/"
 }
 "subset_regions": {
-    "procs": "{rule.resources.procs}"
+    "procs": "{resources.procs}"
 }
 "calc_dists": {
-    "procs": "{rule.resources.procs}"
+    "procs": "{resources.procs}"
 }
 "preprocess": {
-    "procs": "{rule.resources.procs}"
+    "procs": "{resources.procs}"
 }
