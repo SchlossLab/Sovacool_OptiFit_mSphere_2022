@@ -1,8 +1,6 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}); "
-
 include: "code/silva.smk"
 include: "code/rdp.smk"
 include: "code/greengenes.smk"
@@ -29,7 +27,7 @@ rule get_bacteria:
         tax="data/{ref}/{ref}.pick.tax"
     shell:
         """
-        {mothur}
+        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria) '
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
@@ -47,7 +45,7 @@ rule align:
         ref="rdp|gg"
     shell:
         """
-        {mothur}
+        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
         align.seqs(candidate={input.fasta}, template={input.silva_ref}) '
         """
 
@@ -66,7 +64,7 @@ rule subset_regions:
         procs=8
     shell:
         """
-        {mothur}
+        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
         screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs})
         pcr.seqs(fasta={input.align}, start=11894, end=25319, keepdots=F, processors={resources.procs}) '
         mv {params.screen} {output.full_length}
@@ -86,7 +84,7 @@ rule filter:
         "logfiles/{ref}/filter.{subset}.log"
     shell:
         """
-        {mothur}
+        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
         filter.seqs(fasta={input.fasta}, trump=., vertical=T)
         unique.seqs(fasta={output.filter})
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2) '
@@ -103,8 +101,8 @@ rule calc_dists:
         procs=8
     shell:
         """
-        {mothur}
-        set.dir(output=results/{wildcards.ref})
+        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        set.logfile(name={log});
         dist.seqs(fasta={input}, cutoff=0.03, processors={resources.procs}) '
         """
 
@@ -120,8 +118,8 @@ rule cluster:
         "logfiles/{ref}/cluster.{subset}.log"
     shell:
         """
-        {mothur}
-        set.dir(output=results/{wildcards.ref})
+        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        set.logfile(name={log});
         cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
         """
 
@@ -138,8 +136,8 @@ rule get_otu_reps:
         "logfiles/{ref}/otu_reps.{subset}.log"
     shell:
         """
-        {mothur}
-        set.dir(output=results/{wildcards.ref}/)
+        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        set.logfile(name={log});
         classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names})
         get.oturep(method=abundance, list={input.list}, name={input.names}) '
         """
