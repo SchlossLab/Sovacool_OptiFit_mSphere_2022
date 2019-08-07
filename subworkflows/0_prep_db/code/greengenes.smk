@@ -1,9 +1,3 @@
-subworkflow silva:
-    snakefile:
-        "code/silva.smk"
-
-mothur = "mothur '#set.dir(input=data/gg/, output=data/gg/); set.logfile(name={log}); "
-
 rule download_gg:
     output:
         fasta="data/gg/gg.fasta",

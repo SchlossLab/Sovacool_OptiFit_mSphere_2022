@@ -1,7 +1,7 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/{ref}/); set.logfile(name={log}) "
+mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}}) "
 
 include: "code/silva.smk"
 include: "code/rdp.smk"
@@ -23,7 +23,7 @@ rule get_bacteria:
         fasta="data/{ref}/{ref}.bacteria.fasta",
         tax="data/{ref}/{ref}.bacteria.tax"
     log:
-        "logfiles/{ref}/get_bact.log"
+        "logfiles/{ref}/get_bacteria.log"
     params:
         fasta="data/{ref}/{ref}.pick.fasta",
         tax="data/{ref}/{ref}.pick.tax"
@@ -35,12 +35,14 @@ rule get_bacteria:
         mv {params.tax} {output.tax}
         """
 
-rule align_to_silva:
+rule align:
     input:
         fasta=rules.get_bacteria.output.fasta,
         silva_ref=rules.download_silva.output.fasta
     output:
         align="data/{ref}/{ref}.bacteria.align"
+    log:
+        "logfiles/{ref}/align.log"
     wildcard_constraints:
         ref="rdp|gg"
     shell:
@@ -55,6 +57,8 @@ rule subset_regions:
     output:
         full_length="data/{ref}/{ref}.bact_full.fasta",
         v4="data/{ref}/{ref}.bact_v4.fasta"
+    log:
+        "logfiles/{ref}/subset_regions.log"
     params:
         screen="data/{ref}/{ref}.bacteria.good.align",
         pcr="data/{ref}/{ref}.bacteria.pcr.fasta"
@@ -78,6 +82,8 @@ rule filter:
         unique="data/{ref}/{ref}.{subset}.filter.unique.fasta",
         preclust_fasta="data/{ref}/{ref}.{subset}.filter.unique.precluster.fasta",
         preclust_names="data/{ref}/{ref}.{subset}.filter.unique.precluster.names"
+    log:
+        "logfiles/{ref}/filter.{subset}.log"
     shell:
         """
         {mothur}

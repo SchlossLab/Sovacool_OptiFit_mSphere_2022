@@ -1,4 +1,4 @@
-mothur.*.logfile
+*logfile*
 test/
 *.o*
 .snakemake/
