@@ -4,7 +4,7 @@ rule download_gg:
         tax="data/gg/gg.tax"
     params:
         fasta="data/gg/gg_13_8_99.fasta",
-        tax="data/gg/gg_13_8_99.tax"
+        tax="data/gg/gg_13_8_99.gg.tax"
     shell:
         """
         wget -N -P data/gg/ http://www.mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz
