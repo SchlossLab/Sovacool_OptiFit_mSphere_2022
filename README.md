@@ -22,7 +22,7 @@ Benchmarking the optiFit algorithm in the mothur software package.
     ```
     Or on the cluster:
     ```
-    qsub code/pbs_scripts/optifit-analysis.pbs
+    qsub code/optiFit.pbs
     ```
 
 5. Take a look at the results.
@@ -32,7 +32,7 @@ Benchmarking the optiFit algorithm in the mothur software package.
 
 6. Visualize the workflow.
     ```
-    snakemake --dag | dot -Tsvg > results/workflows/dag.svg
+    snakemake --dag | dot -Tsvg > dag.svg
     ```
     You can open the svg file in your GUI web browser to view it.
 
@@ -161,7 +161,7 @@ Before committing changes or submitting jobs to the cluster, test your snakefile
 Edit the cluster config file `cluster.json` with your email for PBS to send job notifications.
 On the cluster, create a PBS script and append the following command:
 ```
-snakemake --profile pbs-torque
+snakemake --profile config/pbs-torque
 ```
 Then submit the PBS script to the cluster with `qsub`. See `code/pbs_scripts` for examples.
 
@@ -171,12 +171,12 @@ Profiles for other cluster systems are available in the [snakemake profiles GitH
 
 Snakemake creates an image representing the directed acyclic graph (DAG) for a workflow with the following command:
 ```
-snakemake --dag | dot -Tsvg > results/workflows/dag.svg
+snakemake --dag | dot -Tsvg > dag.svg
 ```
 
 Here's a small example DAG:
 
-![optifit-pipeline.config_test.dag.svg](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/results/workflows/optifit-pipeline.config_test.dag.svg)
+![prep_db](subworkflows/0_prep_db/results/dag.svg)
 
 ## Developer Notes
 
