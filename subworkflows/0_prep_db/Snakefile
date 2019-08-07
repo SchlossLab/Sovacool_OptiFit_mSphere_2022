@@ -1,7 +1,7 @@
 """ Download the reference databases and process with mothur
 """
 
-mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}}); "
+mothur = "mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log}); "
 
 include: "code/silva.smk"
 include: "code/rdp.smk"
@@ -30,7 +30,7 @@ rule get_bacteria:
     shell:
         """
         {mothur}
-        get.lineage(fasta={input.fasta}, tax={input.tax}, taxon=Bacteria) '
+        get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria) '
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
         """
