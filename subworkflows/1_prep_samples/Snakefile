@@ -1,48 +1,51 @@
-import requests
-
-configfile: "config.yaml"
+subworkflow prep_db:
+    workdir:
+        "../0_prep_db/"
 
 checkpoint download_human:
+    input:
+        "data/human/SRR_Acc_List.txt"
     output:
         dir=directory("data/human/raw")
     shell:
         """
-        wget -r -q -np -nd -k -P {output.dir} ftp://ftp-trace.ncbi.nih.gov/sra/sra-instant/reads/ByStudy/sra/SRP/SRP062/SRP062005/
-        for SRA in {output.dir}/*.sra
+        for SRA in $(cat {input})
         do
-        	fastq-dump --split-files $SRA -O {output.dir}
-        	R1=`echo $SRA | sed -e "s/.sra/_1.fastq/"`
-        	R2=`echo $SRA | sed -e "s/.sra/_2.fastq/"`
-        	gzip "$R1"
-        	gzip "$R2"
+        	fastq-dump --split-files $SRA -O {output.dir} --gzip
         done
         """
 
 rule names_file:
     input:
-        R="code/{dataset}.R"
+        R="code/{dataset}.R",
+        fastq="data/{dataset}/raw/{sra}.fastq.gz"
     output:
         file="data/{dataset}/{dataset}.files"
     script:
         "{input.R}"
 
-rule mothur:
+rule preprocess:
     input:
-        file=rules.names_file.output.file
-    shell
+        file=rules.names_file.output.file,
+        silva=prep_db("data/silva/silva.bact_v4.fasta"),
+        rdp_fasta=prep_db("data/rdp/rdp.fasta"),
+        rdp_tax=prep_db("data/rdp/rdp.tax")
+    resources:
+        procs=8
+    shell:
         """
         mothur "#set.dir(output=data/{wildcards.dataset}/processed);
-        	make.contigs(inputdir=data/{wildcards.dataset}, file={input.file}, processors=12);
+        	make.contigs(inputdir=data/{wildcards.dataset}, file={input.file}, processors={resources.procs});
         	screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
         	unique.seqs();
         	count.seqs(name=current, group=current);
-        	align.seqs(fasta=current, reference=data/references/silva.v4.align, processors=2);
+        	align.seqs(fasta=current, reference={input.silva}, processors={resources.procs});
         	screen.seqs(fasta=current, count=current, start=5, end=860);
         	filter.seqs(fasta=current, vertical=T, trump=.);
         	unique.seqs(fasta=current, count=current);
         	pre.cluster(fasta=current, count=current, diffs=2);
         	chimera.uchime(fasta=current, count=current, dereplicate=T);
         	remove.seqs(fasta=current, accnos=current);
-        	classify.seqs(fasta=current, count=current, reference=data/references/trainset14_032015.pds.fasta, taxonomy=data/references/trainset14_032015.pds.tax, cutoff=80);
+        	classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
         	remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);"
         """
