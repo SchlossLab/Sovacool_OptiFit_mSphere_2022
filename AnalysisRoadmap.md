@@ -128,7 +128,7 @@
             - [x] % of sequences that map to references
             - [x] Run 10 times to see level of variation
 
-## 4. Deploy
+## 4. Deploy (separate paper)
 * Questions:
     - Can we use OptiFit to fit new data to existing data and model to predict presence of lesion?
 * Use Baxter dataset
