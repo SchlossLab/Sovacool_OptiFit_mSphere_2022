@@ -12,5 +12,5 @@ rule download_rdp:
         tar xvzf {output.tar} -C data/rdp/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
-        rm -rf data/rdp/trainset16_022016.rdp/
+        rm -rf data/rdp/trainset16_022016.pds/
         """
