@@ -79,15 +79,17 @@ rule filter:
         names="data/{ref}/{ref}.{subset}.filter.names",
         unique="data/{ref}/{ref}.{subset}.filter.unique.fasta",
         preclust_fasta="data/{ref}/{ref}.{subset}.filter.unique.precluster.fasta",
-        preclust_names="data/{ref}/{ref}.{subset}.filter.unique.precluster.names"
+        preclust_count="data/{ref}/{ref}.{subset}.filter.unique.precluster.count_table"
     log:
         "logfiles/{ref}/filter.{subset}.log"
+    resources:
+        procs=2
     shell:
         """
         mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
-        filter.seqs(fasta={input.fasta}, trump=., vertical=T)
+        filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs})
         unique.seqs(fasta={output.filter})
-        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2) '
+        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs}) '
         """
 
 rule calc_dists:
@@ -109,7 +111,7 @@ rule calc_dists:
 rule cluster:
     input:
         dist=rules.calc_dists.output,
-        names=rules.filter.output.preclust_names
+        count=rules.filter.output.preclust_count
     output:
         list="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
         steps="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.steps",
@@ -120,14 +122,14 @@ rule cluster:
         """
         mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         set.logfile(name={log});
-        cluster(column={input.dist}, name={input.names}, cutoff=0.03) '
+        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
 rule get_otu_reps:
     input:
         tax=rules.get_bacteria.output.tax,
         list=rules.cluster.output.list,
-        names=rules.filter.output.preclust_names
+        count=rules.filter.output.preclust_count
     output:
         "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
         "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
@@ -138,6 +140,6 @@ rule get_otu_reps:
         """
         mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         set.logfile(name={log});
-        classify.otu(taxonomy={input.tax}, list={input.list}, names={input.names})
-        get.oturep(method=abundance, list={input.list}, name={input.names}) '
+        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count})
+        get.oturep(method=abundance, list={input.list}, count={input.count}) '
         """
