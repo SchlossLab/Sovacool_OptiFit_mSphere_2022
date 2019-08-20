@@ -13,6 +13,9 @@
 "subset_regions": {
     "procs": "{resources.procs}"
 }
+"filter": {
+    "procs": "{resources.procs}"
+}
 "calc_dists": {
     "procs": "{resources.procs}"
 }
