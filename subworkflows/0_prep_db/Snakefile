@@ -87,8 +87,8 @@ rule filter:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
-        filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs})
-        unique.seqs(fasta={output.filter})
+        filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs});
+        unique.seqs(fasta={output.filter});
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs}) '
         """
 
@@ -140,6 +140,6 @@ rule get_otu_reps:
         """
         mothur '#set.logfile(name={log});
         set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count})
+        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count});
         get.oturep(method=abundance, list={input.list}, count={input.count}) '
         """
