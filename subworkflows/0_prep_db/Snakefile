@@ -27,7 +27,7 @@ rule get_bacteria:
         tax="data/{ref}/{ref}.pick.tax"
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria) '
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
@@ -45,7 +45,7 @@ rule align:
         ref="rdp|gg"
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         align.seqs(candidate={input.fasta}, template={input.silva_ref}) '
         """
 
@@ -59,12 +59,12 @@ rule subset_regions:
         "logfiles/{ref}/subset_regions.log"
     params:
         screen="data/{ref}/{ref}.bacteria.good.align",
-        pcr="data/{ref}/{ref}.bacteria.pcr.fasta"
+        pcr="data/{ref}/{ref}.bacteria.pcr.align"
     resources:
         procs=8
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs});
         pcr.seqs(fasta={input.align}, start=11894, end=25319, processors={resources.procs}) '
         mv {params.screen} {output.full_length}
@@ -86,7 +86,7 @@ rule filter:
         procs=2
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/); set.logfile(name={log});
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs})
         unique.seqs(fasta={output.filter})
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs}) '
@@ -103,8 +103,8 @@ rule calc_dists:
         procs=8
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        set.logfile(name={log});
+        mothur '#set.logfile(name={log});
+        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         dist.seqs(fasta={input}, cutoff=0.03, processors={resources.procs}) '
         """
 
@@ -120,8 +120,8 @@ rule cluster:
         "logfiles/{ref}/cluster.{subset}.log"
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        set.logfile(name={log});
+        mothur '#set.logfile(name={log});
+        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
@@ -138,8 +138,8 @@ rule get_otu_reps:
         "logfiles/{ref}/otu_reps.{subset}.log"
     shell:
         """
-        mothur '#set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        set.logfile(name={log});
+        mothur '#set.logfile(name={log});
+        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count})
         get.oturep(method=abundance, list={input.list}, count={input.count}) '
         """
