@@ -1,6 +1,6 @@
 rule download_silva:
     output:
-        tar="data/silva/Silva.seed_v132.tgz",
+        tar=temp("data/silva/Silva.seed_v132.tgz"),
         fasta="data/silva/silva.fasta",
         tax="data/silva/silva.tax"
     params:
