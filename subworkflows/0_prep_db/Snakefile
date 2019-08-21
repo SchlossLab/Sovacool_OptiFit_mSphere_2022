@@ -100,11 +100,11 @@ rule calc_dists:
     log:
         "logfiles/{ref}/calc_dists.{subset}.log"
     resources:
-        procs=8
+        procs=12,
+        walltime="48:00:00"
     shell:
         """
-        mothur '#set.logfile(name={log});
-        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         dist.seqs(fasta={input}, cutoff=0.03, processors={resources.procs}) '
         """
 
@@ -120,8 +120,7 @@ rule cluster:
         "logfiles/{ref}/cluster.{subset}.log"
     shell:
         """
-        mothur '#set.logfile(name={log});
-        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
@@ -138,8 +137,7 @@ rule get_otu_reps:
         "logfiles/{ref}/otu_reps.{subset}.log"
     shell:
         """
-        mothur '#set.logfile(name={log});
-        set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
         classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count});
         get.oturep(method=abundance, list={input.list}, count={input.count}) '
         """
