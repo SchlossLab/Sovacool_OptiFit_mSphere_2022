@@ -101,7 +101,7 @@ rule calc_dists:
         "logfiles/{ref}/calc_dists.{subset}.log"
     resources:
         procs=12,
-        walltime="48:00:00"
+        walltime_hrs=48
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
