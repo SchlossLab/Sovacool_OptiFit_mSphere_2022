@@ -36,7 +36,7 @@ rule get_bacteria:
 rule align:
     input:
         fasta=rules.get_bacteria.output.fasta,
-        silva_ref=rules.download_silva.output.fasta
+        silva=rules.download_silva.output.fasta
     output:
         align="data/{ref}/{ref}.bacteria.align"
     log:
@@ -46,12 +46,12 @@ rule align:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
-        align.seqs(candidate={input.fasta}, template={input.silva_ref}) '
+        align.seqs(candidate={input.fasta}, template={input.silva}) '
         """
 
 rule subset_regions:
     input:
-        align="data/{ref}/{ref}.bacteria.align"
+        align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the ref
     output:
         full_length="data/{ref}/{ref}.bact_full.fasta",
         v4="data/{ref}/{ref}.bact_v4.fasta"
@@ -94,9 +94,9 @@ rule filter:
 
 rule calc_dists:
     input:
-        rules.filter.output.preclust_fasta
+        fasta=rules.filter.output.preclust_fasta
     output:
-        "results/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
+        dist="results/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
     log:
         "logfiles/{ref}/calc_dists.{subset}.log"
     resources:
@@ -105,12 +105,12 @@ rule calc_dists:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        dist.seqs(fasta={input}, cutoff=0.03, processors={resources.procs}) '
+        dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
 rule cluster:
     input:
-        dist=rules.calc_dists.output,
+        dist=rules.calc_dists.output.dist,
         count=rules.filter.output.preclust_count
     output:
         list="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
@@ -126,18 +126,23 @@ rule cluster:
 
 rule get_otu_reps:
     input:
-        tax=rules.get_bacteria.output.tax,
+        fasta=rules.filter.output.preclust_fasta,
+        count=rules.filter.output.preclust_count,
+        dist=rules.calc_dists.output.dist,
         list=rules.cluster.output.list,
-        count=rules.filter.output.preclust_count
-    output:
-        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        "results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
+        silva_fasta="data/silva/silva.bacteria.align",
+        silva_tax="data/silva/silva.bacteria.tax"
+    output:  # TODO: verify taxonomy output filename from classify.seqs
+        tax_seq="results/{ref}/{ref}.{subset}.filter.unique.precluster.silva.bacteria.tax",
+        tax_otu="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
+        names="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
-        "logfiles/{ref}/otu_reps.{subset}.log"
+        "logfiles/{ref}/get_otu_reps.{subset}.log"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count});
-        get.oturep(method=abundance, list={input.list}, count={input.count}) '
+        classify.seqs(fasta={input.fasta}, template={input.silva_fasta}, taxonomy={input.silva_tax});
+        classify.otu(taxonomy={output.tax_seq}, list={input.list}, count={input.count});
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}) '
         """
