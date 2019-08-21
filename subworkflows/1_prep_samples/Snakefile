@@ -24,17 +24,19 @@ rule names_file:
     script:
         "{input.R}"
 
-rule preprocess:
+rule preprocess:  # TODO: each for regions v4 and full?
     input:
         file=rules.names_file.output.file,
         silva=prep_db("data/silva/silva.bact_v4.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
+    log:
+        "logfiles/{ref}/preprocess.{region}.log"
     resources:
         procs=8
     shell:
         """
-        mothur "#set.dir(output=data/{wildcards.dataset}/processed);
+        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/processed);
         	make.contigs(inputdir=data/{wildcards.dataset}, file={input.file}, processors={resources.procs});
         	screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
         	unique.seqs();
@@ -47,5 +49,5 @@ rule preprocess:
         	chimera.uchime(fasta=current, count=current, dereplicate=T);
         	remove.seqs(fasta=current, accnos=current);
         	classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
-        	remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);"
+        	remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
         """
