@@ -11,7 +11,57 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"))
+        expand("results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), subset=("bact_v4", "bact_full"))
+
+rule download_silva:
+    output:
+        tar=temp("data/silva/Silva.seed_v132.tgz"),
+        fasta="data/silva/silva.fasta",
+        tax="data/silva/silva.tax"
+    params:
+        fasta="data/silva/silva.seed_v132.align",
+        tax="data/silva/silva.seed_v132.tax"
+    shell:
+        """
+        wget -N -P data/silva/ http://www.mothur.org/w/images/7/71/Silva.seed_v132.tgz
+        tar xzvf {output.tar} -C data/silva/
+        mv {params.fasta} {output.fasta}
+        mv {params.tax} {output.tax}
+        """
+
+rule download_rdp:
+    output:
+        tar=temp("data/rdp/Trainset16_022016.pds.tgz"),
+        fasta="data/rdp/rdp.fasta",
+        tax="data/rdp/rdp.tax"
+    params:
+        fasta="data/rdp/trainset16_022016.pds/trainset16_022016.pds.fasta",
+        tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax"
+    shell:
+        """
+        wget -N -P data/rdp/ https://mothur.org/w/images/c/c3/Trainset16_022016.pds.tgz
+        tar xvzf {output.tar} -C data/rdp/
+        mv {params.fasta} {output.fasta}
+        mv {params.tax} {output.tax}
+        rm -rf data/rdp/trainset16_022016.pds/
+        """
+
+rule download_gg:
+    output:
+        fasta="data/gg/gg.fasta",
+        tax="data/gg/gg.tax"
+    params:
+        fasta="data/gg/gg_13_8_99.fasta",
+        tax="data/gg/gg_13_8_99.gg.tax"
+    shell:
+        """
+        wget -N -P data/gg/ http://www.mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz
+        wget -N -P data/gg/ http://www.mothur.org/w/images/1/19/Gg_13_8_99.refalign.tgz
+        tar -xzvf data/gg/Gg_13_8_99.taxonomy.tgz -C data/gg/
+        tar -xzvf data/gg/Gg_13_8_99.refalign.tgz -C data/gg/
+        mv {params.fasta} {output.fasta}
+        mv {params.tax} {output.tax}
+        """
 
 rule get_bacteria:
     input:
@@ -49,9 +99,17 @@ rule align:
         align.seqs(candidate={input.fasta}, template={input.silva}) '
         """
 
+rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
+    input:
+        "data/silva/silva.bacteria.fasta"
+    output:
+        "data/silva/silva.bacteria.align"
+    shell:
+        "cp {input} {output}"
+
 rule subset_regions:
     input:
-        align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the ref
+        align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the template
     output:
         full_length="data/{ref}/{ref}.bact_full.fasta",
         v4="data/{ref}/{ref}.bact_v4.fasta"
@@ -73,15 +131,15 @@ rule subset_regions:
 
 rule filter:
     input:
-        fasta="data/{ref}/{ref}.{subset}.fasta"
+        fasta="data/{ref}/{ref}.{region}.fasta"
     output:
-        filter="data/{ref}/{ref}.{subset}.filter.fasta",
-        names="data/{ref}/{ref}.{subset}.filter.names",
-        unique="data/{ref}/{ref}.{subset}.filter.unique.fasta",
-        preclust_fasta="data/{ref}/{ref}.{subset}.filter.unique.precluster.fasta",
-        preclust_count="data/{ref}/{ref}.{subset}.filter.unique.precluster.count_table"
+        filter="data/{ref}/{ref}.{region}.filter.fasta",
+        names="data/{ref}/{ref}.{region}.filter.names",
+        unique="data/{ref}/{ref}.{region}.filter.unique.fasta",
+        preclust_fasta="data/{ref}/{ref}.{region}.filter.unique.precluster.fasta",
+        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table"
     log:
-        "logfiles/{ref}/filter.{subset}.log"
+        "logfiles/{ref}/filter.{region}.log"
     resources:
         procs=2
     shell:
@@ -96,9 +154,9 @@ rule calc_dists:
     input:
         fasta=rules.filter.output.preclust_fasta
     output:
-        dist="results/{ref}/{ref}.{subset}.filter.unique.precluster.dist"
+        dist="results/{ref}/{ref}.{region}.filter.unique.precluster.dist"
     log:
-        "logfiles/{ref}/calc_dists.{subset}.log"
+        "logfiles/{ref}/calc_dists.{region}.log"
     resources:
         procs=12,
         walltime_hrs=48
@@ -113,11 +171,11 @@ rule cluster:
         dist=rules.calc_dists.output.dist,
         count=rules.filter.output.preclust_count
     output:
-        list="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.list",
-        steps="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.steps",
-        sensspec="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.sensspec"
+        list="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
+        steps="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     log:
-        "logfiles/{ref}/cluster.{subset}.log"
+        "logfiles/{ref}/cluster.{region}.log"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
@@ -133,12 +191,12 @@ rule get_otu_reps:
         silva_fasta="data/silva/silva.bacteria.align",
         silva_tax="data/silva/silva.bacteria.tax"
     output:  # TODO: verify taxonomy output filename from classify.seqs
-        tax_seq="results/{ref}/{ref}.{subset}.filter.unique.precluster.silva.bacteria.tax",
-        tax_otu="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        names="results/{ref}/{ref}.{subset}.filter.unique.precluster.opti_mcc.0.03.rep.names"
+        tax_seq="results/{ref}/{ref}.{region}.filter.unique.precluster.silva.bacteria.tax",
+        tax_otu="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
+        names="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
-        "logfiles/{ref}/get_otu_reps.{subset}.log"
+        "logfiles/{ref}/get_otu_reps.{region}.log"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
