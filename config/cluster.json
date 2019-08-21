@@ -17,7 +17,8 @@
     "procs": "{resources.procs}"
 }
 "calc_dists": {
-    "procs": "{resources.procs}"
+    "procs": "{resources.procs}",
+    "walltime": "{resources.walltime}"
 }
 "preprocess": {
     "procs": "{resources.procs}"
