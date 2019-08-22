@@ -179,17 +179,27 @@ rule cluster:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
+rule get_tax:
+    input:
+        tax=rules.get_bacteria.output.tax,
+        fasta=rules.filter.output.preclust_fasta
+    output:
+        tax="results/{ref}/{ref}.{region}.filter.tax"
+    run:
+        with open(input.fasta, 'r') as file:
+            seq_ids = {line.strip('>').strip() for line in file if line.startswith('>')}
+        with open(input.tax, 'r') as infile, open(output.tax, 'w') as outfile:
+            outfile.writelines([line for line in infile if line.split()[0] in seq_ids])
+
 rule get_otu_reps:
     input:
+        list=rules.cluster.output.list,
         fasta=rules.filter.output.preclust_fasta,
         count=rules.filter.output.preclust_count,
-        dist=rules.calc_dists.output.dist,
-        list=rules.cluster.output.list,
-        silva_fasta="data/silva/silva.bacteria.align",
-        silva_tax="data/silva/silva.bacteria.tax"
-    output:  # TODO: verify taxonomy output filename from classify.seqs
-        tax_seq="results/{ref}/{ref}.{region}.filter.unique.precluster.silva.bacteria.tax",
-        tax_otu="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
+        tax=rules.get_tax.output.tax,
+        dist=rules.calc_dists.output.dist
+    output:
+        tax="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
         sum="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
         names="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
@@ -197,7 +207,6 @@ rule get_otu_reps:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        classify.seqs(fasta={input.fasta}, template={input.silva_fasta}, taxonomy={input.silva_tax});
-        classify.otu(taxonomy={output.tax_seq}, list={input.list}, count={input.count});
-        get.oturep(column={input.dist}, list={input.list}, count={input.count}) '
+        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count});
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
