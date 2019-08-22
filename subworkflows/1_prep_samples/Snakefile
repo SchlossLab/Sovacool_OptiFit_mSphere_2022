@@ -1,24 +1,27 @@
+import os
+
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
 
-checkpoint download_human:
+checkpoint download:
     input:
-        "data/human/SRR_Acc_List.txt"
+        list="data/{dataset}/SRR_Acc_List.txt",
+        sh="code/download.sh"
     output:
-        dir=directory("data/human/raw")
+        dir=directory("data/{dataset}/raw")
     shell:
-        """
-        for SRA in $(cat {input})
-        do
-        	fastq-dump --split-files $SRA -O {output.dir} --gzip
-        done
-        """
+        "{input.sh} {input.list} {output.dir}"
+
+def get_download_filenames(wildcards):
+    dir = checkpoints.download.get(dataset=wildcards.dataset).dir
+    filenames, = glob_wildcards(os.path.join(dir, "{filename}"))
+    return expand("{dir}/{filename}", dir=dir, filename=filenames)
 
 rule names_file:
     input:
         R="code/{dataset}.R",
-        fastq="data/{dataset}/raw/{sra}.fastq.gz"
+        files=get_download_filenames
     output:
         file="data/{dataset}/{dataset}.files"
     script:
@@ -31,7 +34,7 @@ rule preprocess:  # TODO: each for regions v4 and full?
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
     log:
-        "logfiles/{ref}/preprocess.{region}.log"
+        "logfiles/{dataset}/preprocess.log"
     resources:
         procs=8
     shell:
