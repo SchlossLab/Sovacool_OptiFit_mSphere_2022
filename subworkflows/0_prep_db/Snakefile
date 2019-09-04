@@ -16,6 +16,8 @@ rule download_silva:
     params:
         fasta="data/silva/silva.seed_v132.align",
         tax="data/silva/silva.seed_v132.tax"
+    benchmark:
+        "benchmarks/silva/download.txt"
     shell:
         """
         wget -N -P data/silva/ http://www.mothur.org/w/images/7/71/Silva.seed_v132.tgz
@@ -32,6 +34,8 @@ rule download_rdp:
     params:
         fasta="data/rdp/trainset16_022016.pds/trainset16_022016.pds.fasta",
         tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax"
+    benchmark:
+        "benchmarks/rdp/download.txt"
     shell:
         """
         wget -N -P data/rdp/ https://mothur.org/w/images/c/c3/Trainset16_022016.pds.tgz
@@ -50,6 +54,8 @@ rule download_gg:
     params:
         fasta="data/gg/gg_13_8_99.fasta",
         tax="data/gg/gg_13_8_99.gg.tax"
+    benchmark:
+        "benchmarks/gg/download.txt"
     shell:
         """
         wget -N -P data/gg/ http://www.mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz
@@ -67,11 +73,13 @@ rule get_bacteria:
     output:
         fasta="data/{ref}/{ref}.bacteria.fasta",
         tax="data/{ref}/{ref}.bacteria.tax"
-    log:
-        "logfiles/{ref}/get_bacteria.log"
     params:
         fasta="data/{ref}/{ref}.pick.fasta",
         tax="data/{ref}/{ref}.pick.tax"
+    log:
+        "logfiles/{ref}/get_bacteria.log"
+    benchmark:
+        "benchmarks/{ref}/get_bacteria.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -86,10 +94,12 @@ rule align:
         silva=rules.download_silva.output.fasta
     output:
         align="data/{ref}/{ref}.bacteria.align"
-    log:
-        "logfiles/{ref}/align.log"
     wildcard_constraints:
         ref="rdp|gg"
+    log:
+        "logfiles/{ref}/align.log"
+    benchmark:
+        "benchmarks/{ref}/align.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -110,13 +120,15 @@ rule subset_regions:
     output:
         full_length="data/{ref}/{ref}.bact_full.fasta",
         v4="data/{ref}/{ref}.bact_v4.fasta"
-    log:
-        "logfiles/{ref}/subset_regions.log"
     params:
         screen="data/{ref}/{ref}.bacteria.good.align",
         pcr="data/{ref}/{ref}.bacteria.pcr.align"
     resources:
         procs=8
+    log:
+        "logfiles/{ref}/subset_regions.log"
+    benchmark:
+        "benchmarks/{ref}/asubset_regions.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -137,11 +149,15 @@ rule filter:
         preclust_fasta="data/{ref}/{ref}.{region}.filter.unique.precluster.fasta",
         preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table",
         preclust_accnos="data/{ref}/{ref}.{region}.filter.unique.precluster.accnos",
-        preclust_tax="data/{ref}/{ref}.bacteria.pick.tax"
-    log:
-        "logfiles/{ref}/filter.{region}.log"
+        preclust_tax="data/{ref}/{ref}.bacteria.{region}.precluster.tax"
+    params:
+        tax="data/{ref}/{ref}.bacteria.pick.tax"
     resources:
         procs=2
+    log:
+        "logfiles/{ref}/filter.{region}.log"
+    benchmark:
+        "benchmarks/{ref}/filter.{region}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -150,6 +166,7 @@ rule filter:
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
         list.seqs(fasta={output.preclust_fasta});
         get.seqs(taxonomy={input.tax}, accnos=current) '
+        mv {params.tax} {output.preclust_tax}
         """
 
 rule calc_dists:
@@ -159,6 +176,8 @@ rule calc_dists:
         dist="results/{ref}/{ref}.{region}.filter.unique.precluster.dist"
     log:
         "logfiles/{ref}/calc_dists.{region}.log"
+    benchmark:
+        "benchmarks/{ref}/calc_dists.{region}.txt"
     resources:
         procs=12,
         walltime_hrs=48
@@ -178,6 +197,8 @@ rule cluster:
         sensspec="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     log:
         "logfiles/{ref}/cluster.{region}.log"
+    benchmark:
+        "benchmarks/{ref}/cluster.{region}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
@@ -197,6 +218,8 @@ rule get_otu_reps:
         names="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
         "logfiles/{ref}/get_otu_reps.{region}.log"
+    benchmark:
+        "benchmarks/{ref}/get_otu_reps.{region}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);

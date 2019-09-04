@@ -10,6 +10,8 @@ checkpoint download:
         sh="code/download.sh"
     output:
         dir=directory("data/{dataset}/raw")
+    benchmark:
+        "benchmarks/{dataset}/download.txt"
     shell:
         "{input.sh} {input.list} {output.dir}"
 
@@ -24,6 +26,8 @@ rule names_file:
         files=get_download_filenames
     output:
         file="data/{dataset}/{dataset}.files"
+    benchmark:
+        "benchmarks/{dataset}/names_file.txt"
     script:
         "{input.R}"
 
@@ -35,6 +39,8 @@ rule preprocess:  # TODO: each for regions v4 and full?
         rdp_tax=prep_db("data/rdp/rdp.tax")
     log:
         "logfiles/{dataset}/preprocess.log"
+    benchmark:
+        "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=8
     shell:
