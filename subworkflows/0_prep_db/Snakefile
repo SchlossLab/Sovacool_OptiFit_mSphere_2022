@@ -128,13 +128,16 @@ rule subset_regions:
 
 rule filter:
     input:
-        fasta="data/{ref}/{ref}.{region}.fasta"
+        fasta="data/{ref}/{ref}.{region}.fasta",
+        tax=rules.get_bacteria.output.tax
     output:
         filter="data/{ref}/{ref}.{region}.filter.fasta",
         names="data/{ref}/{ref}.{region}.filter.names",
         unique="data/{ref}/{ref}.{region}.filter.unique.fasta",
         preclust_fasta="data/{ref}/{ref}.{region}.filter.unique.precluster.fasta",
-        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table"
+        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table",
+        preclust_accnos="data/{ref}/{ref}.{region}.filter.unique.precluster.accnos",
+        preclust_tax="data/{ref}/{ref}.bacteria.pick.tax"
     log:
         "logfiles/{ref}/filter.{region}.log"
     resources:
@@ -144,7 +147,9 @@ rule filter:
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs});
         unique.seqs(fasta={output.filter});
-        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs}) '
+        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
+        list.seqs(fasta={output.preclust_fasta});
+        get.seqs(taxonomy={input.tax}, accnos=current) '
         """
 
 rule calc_dists:
@@ -179,24 +184,12 @@ rule cluster:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule get_tax:
-    input:
-        tax=rules.get_bacteria.output.tax,
-        fasta=rules.filter.output.preclust_fasta
-    output:
-        tax="results/{ref}/{ref}.{region}.filter.tax"
-    run:
-        with open(input.fasta, 'r') as file:
-            seq_ids = {line.strip('>').strip() for line in file if line.startswith('>')}
-        with open(input.tax, 'r') as infile, open(output.tax, 'w') as outfile:
-            outfile.writelines([line for line in infile if line.split()[0] in seq_ids])
-
 rule get_otu_reps:
     input:
         list=rules.cluster.output.list,
         fasta=rules.filter.output.preclust_fasta,
         count=rules.filter.output.preclust_count,
-        tax=rules.get_tax.output.tax,
+        tax=rules.filter.output.preclust_tax,
         dist=rules.calc_dists.output.dist
     output:
         tax="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
