@@ -176,7 +176,7 @@ snakemake --dag | dot -Tsvg > dag.svg
 
 Here's a small example DAG:
 
-![prep_db](subworkflows/0_prep_db/results/dag.svg)
+![prep_db](subworkflows/0_prep_db/results/figures/dag.svg)
 
 ## Developer Notes
 
