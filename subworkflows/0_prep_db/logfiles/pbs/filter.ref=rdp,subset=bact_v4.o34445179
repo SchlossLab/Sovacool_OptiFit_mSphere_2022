@@ -1,0 +1,144 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	filter
+	1
+
+[Tue Aug 20 14:58:26 2019]
+rule filter:
+    input: data/rdp/rdp.bact_v4.fasta
+    output: data/rdp/rdp.bact_v4.filter.fasta, data/rdp/rdp.bact_v4.filter.names, data/rdp/rdp.bact_v4.filter.unique.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.count_table
+    log: logfiles/rdp/filter.bact_v4.log
+    jobid: 0
+    wildcards: ref=rdp, subset=bact_v4
+    resources: procs=2
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/20/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/filter.bact_v4.log)
+
+mothur > set.dir(input=data/rdp/)
+Mothur's directories:
+inputDir=data/rdp/
+
+mothur > 
+        filter.seqs(fasta=data/rdp/rdp.bact_v4.fasta, trump=., vertical=T, processors=2)
+
+Using 2 processors.
+Creating Filter... 
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+5000
+5000
+6000
+6338
+6000
+6339
+It took 16 secs to create filter for 12677 sequences.
+
+
+Running Filter... 
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+5000
+5000
+6000
+6000
+6338
+6339
+It took 12 secs to filter 12677 sequences.
+
+
+
+Length of filtered alignment: 0
+Number of columns removed: 50000
+Length of the original alignment: 50000
+Number of sequences used to construct filter: 12677
+
+Output File Names: 
+data/rdp/rdp.filter
+data/rdp/rdp.bact_v4.filter.fasta
+
+
+mothur > 
+        unique.seqs(fasta=data/rdp/rdp.bact_v4.filter.fasta)
+1000	1
+2000	1
+3000	1
+4000	1
+5000	1
+6000	1
+7000	1
+8000	1
+9000	1
+10000	1
+11000	1
+12000	1
+12677	1
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.names
+data/rdp/rdp.bact_v4.filter.unique.fasta
+
+
+mothur > 
+        pre.cluster(fasta=data/rdp/rdp.bact_v4.filter.unique.fasta, name=data/rdp/rdp.bact_v4.filter.names, diffs=2, processors=2) 
+
+Using 2 processors.
+When using running without group information mothur can only use 1 processor, continuing.
+Error: diffs is set to 2 which is greater than your sequence length of 0.
+
+mothur > quit()
+Waiting at most 20 seconds for missing files.
+MissingOutputException in line 74 of /home/sovacool/optiFit/subworkflows/0_prep_db/Snakefile:
+Missing files after 20 seconds:
+data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
+data/rdp/rdp.bact_v4.filter.unique.precluster.count_table
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Removing output files of failed job filter since they might be corrupted:
+data/rdp/rdp.bact_v4.filter.fasta, data/rdp/rdp.bact_v4.filter.names, data/rdp/rdp.bact_v4.filter.unique.fasta
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message

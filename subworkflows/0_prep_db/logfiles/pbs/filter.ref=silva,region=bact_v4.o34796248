@@ -1,0 +1,235 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	filter
+	1
+
+[Wed Oct 23 10:04:12 2019]
+rule filter:
+    input: data/silva/silva.bact_v4.fasta, data/silva/silva.bacteria.tax
+    output: data/silva/silva.bact_v4.filter.fasta, data/silva/silva.bact_v4.filter.names, data/silva/silva.bact_v4.filter.unique.fasta, data/silva/silva.bact_v4.filter.unique.precluster.fasta, data/silva/silva.bact_v4.filter.unique.precluster.count_table, data/silva/silva.bact_v4.filter.unique.precluster.accnos, data/silva/silva.bacteria.bact_v4.precluster.tax
+    log: logfiles/silva/filter.bact_v4.log
+    jobid: 0
+    benchmark: benchmarks/silva/filter.bact_v4.txt
+    wildcards: ref=silva, region=bact_v4
+    resources: procs=2
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 10/23/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/silva/filter.bact_v4.log)
+
+mothur > set.dir(input=data/silva/)
+Mothur's directories:
+inputDir=data/silva/
+
+mothur > 
+        filter.seqs(fasta=data/silva/silva.bact_v4.fasta, trump=., vertical=T, processors=2)
+
+Using 2 processors.
+Creating Filter... 
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+4259
+4258
+It took 15 secs to create filter for 8517 sequences.
+
+
+Running Filter... 
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+4259
+4258
+It took 12 secs to filter 8517 sequences.
+
+
+
+Length of filtered alignment: 805
+Number of columns removed: 49195
+Length of the original alignment: 50000
+Number of sequences used to construct filter: 8517
+
+Output File Names: 
+data/silva/silva.filter
+data/silva/silva.bact_v4.filter.fasta
+
+
+mothur > 
+        unique.seqs(fasta=data/silva/silva.bact_v4.filter.fasta)
+1000	830
+2000	1588
+3000	2324
+4000	3099
+5000	3776
+6000	4491
+7000	5120
+8000	5844
+8517	6183
+
+Output File Names: 
+data/silva/silva.bact_v4.filter.names
+data/silva/silva.bact_v4.filter.unique.fasta
+
+
+mothur > 
+        pre.cluster(fasta=data/silva/silva.bact_v4.filter.unique.fasta, name=data/silva/silva.bact_v4.filter.names, diffs=2, processors=2)
+
+Using 2 processors.
+When using running without group information mothur can only use 1 processor, continuing.
+0	6168	15
+100	5721	462
+200	5558	625
+300	5372	811
+400	5280	903
+500	5225	958
+600	5159	1024
+700	5103	1080
+800	5067	1116
+900	5067	1116
+1000	5067	1116
+1100	5067	1116
+1200	5067	1116
+1300	5067	1116
+1400	5067	1116
+1500	5067	1116
+1600	5067	1116
+1700	5067	1116
+1800	5067	1116
+1900	5067	1116
+2000	5067	1116
+2100	5067	1116
+2200	5067	1116
+2300	5067	1116
+2400	5067	1116
+2500	5067	1116
+2600	5067	1116
+2700	5067	1116
+2800	5067	1116
+2900	5067	1116
+3000	5067	1116
+3100	5067	1116
+3200	5067	1116
+3300	5067	1116
+3400	5067	1116
+3500	5067	1116
+3600	5067	1116
+3700	5067	1116
+3800	5067	1116
+3900	5067	1116
+4000	5067	1116
+4100	5067	1116
+4200	5067	1116
+4300	5067	1116
+4400	5067	1116
+4500	5067	1116
+4600	5067	1116
+4700	5067	1116
+4800	5067	1116
+4900	5067	1116
+5000	5067	1116
+5100	5067	1116
+5200	5067	1116
+5300	5067	1116
+5400	5067	1116
+5500	5067	1116
+5600	5067	1116
+5700	5067	1116
+5800	5067	1116
+5900	5067	1116
+6000	5067	1116
+6100	5067	1116
+6183	5067	1116
+Total number of sequences before precluster was 6183.
+pre.cluster removed 1116 sequences.
+
+/******************************************/
+Running command: get.seqs(fasta=data/silva/silva.bact_v4.filter.unique.fasta, accnos=data/silva/silva.bact_v4.filter.unique.precluster.fasta.temp)
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/silva/silva.bact_v4.filter.names which seems to match data/silva/silva.bact_v4.filter.unique.fasta.
+Selected 5148 sequences from your fasta file.
+
+Output File Names: 
+data/silva/silva.bact_v4.filter.unique.pick.fasta
+
+/******************************************/
+Done.
+It took 1 secs to cluster 6183 sequences.
+
+Output File Names: 
+data/silva/silva.bact_v4.filter.count_table
+data/silva/silva.bact_v4.filter.unique.precluster.fasta
+data/silva/silva.bact_v4.filter.unique.precluster.count_table
+data/silva/silva.bact_v4.filter.unique.precluster.map
+
+
+mothur > 
+        list.seqs(fasta=data/silva/silva.bact_v4.filter.unique.precluster.fasta)
+
+Output File Names: 
+data/silva/silva.bact_v4.filter.unique.precluster.accnos
+
+
+mothur > 
+        get.seqs(taxonomy=data/silva/silva.bacteria.tax, accnos=current) 
+Using data/silva/silva.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/silva/silva.bact_v4.filter.names which seems to match data/silva/silva.bacteria.tax.
+Selected 5148 sequences from your taxonomy file.
+
+Output File Names: 
+data/silva/silva.bacteria.pick.tax
+
+
+mothur > quit()
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 2 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[Wed Oct 23 10:04:42 2019]
+Finished job 0.
+1 of 1 steps (100%) done

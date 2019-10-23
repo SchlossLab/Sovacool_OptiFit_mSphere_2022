@@ -1,0 +1,85 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	cluster
+	1
+
+[Tue Sep 10 13:20:47 2019]
+rule cluster:
+    input: results/silva/silva.bact_v4.filter.unique.precluster.dist, data/silva/silva.bact_v4.filter.unique.precluster.count_table
+    output: results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.steps, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.sensspec
+    log: logfiles/silva/cluster.bact_v4.log
+    jobid: 0
+    benchmark: benchmarks/silva/cluster.bact_v4.txt
+    wildcards: ref=silva, region=bact_v4
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 09/10/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/silva/cluster.bact_v4.log)
+
+mothur > set.dir(input=data/silva/, output=results/silva/)
+Mothur's directories:
+outputDir=results/silva/
+inputDir=data/silva/
+
+mothur > 
+        cluster(column=results/silva/silva.bact_v4.filter.unique.precluster.dist, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table, cutoff=0.03) 
+
+Using 16 processors.
+
+Clustering results/silva/silva.bact_v4.filter.unique.precluster.dist
+
+
+iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+
+0.03
+0	0	0.03	5148	0.03	0	13239799	0	8579	0	1	0	0.999352	1	0.999352	0	0	
+1	0	0.03	3072	0.03	5565	13239013	786	3014	0.648677	0.999941	0.87624	0.999772	0.87624	0.999713	0.753788	0.745479	
+2	0	0.03	3020	0.03	6038	13238881	918	2541	0.703812	0.999931	0.868028	0.999808	0.868028	0.999739	0.781494	0.777341	
+3	0	0.03	3018	0.03	6092	13238861	938	2487	0.710106	0.999929	0.866572	0.999812	0.866572	0.999741	0.784323	0.780575	
+4	0	0.03	3017	0.03	6091	13238865	934	2488	0.70999	0.999929	0.867046	0.999812	0.867046	0.999742	0.784474	0.780697	
+5	0	0.03	3017	0.03	6089	13238868	931	2490	0.709756	0.99993	0.867379	0.999812	0.867379	0.999742	0.784496	0.780691	
+
+
+It took 0 seconds to cluster
+
+Output File Names: 
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.steps
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.sensspec
+
+
+mothur > quit()
+[Tue Sep 10 13:20:48 2019]
+Finished job 0.
+1 of 1 steps (100%) done

@@ -1,0 +1,84 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	cluster
+	1
+
+[Wed Aug 21 11:51:26 2019]
+rule cluster:
+    input: results/rdp/rdp.bact_full.filter.unique.precluster.dist, data/rdp/rdp.bact_full.filter.unique.precluster.count_table
+    output: results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.list, results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.steps, results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.sensspec
+    log: logfiles/rdp/cluster.bact_full.log
+    jobid: 0
+    wildcards: ref=rdp, subset=bact_full
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/21/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/cluster.bact_full.log)
+
+mothur > set.dir(input=data/rdp/, output=results/rdp/)
+Mothur's directories:
+outputDir=results/rdp/
+inputDir=data/rdp/
+
+mothur > 
+        cluster(column=results/rdp/rdp.bact_full.filter.unique.precluster.dist, count=data/rdp/rdp.bact_full.filter.unique.precluster.count_table, cutoff=0.03) 
+
+Using 12 processors.
+
+Clustering results/rdp/rdp.bact_full.filter.unique.precluster.dist
+
+
+iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+
+0.03
+0	0	0.03	6818	0.03	0	23216596	0	22557	0	1	0	0.999029	1	0.999029	0	0	
+1	0	0.03	3970	0.03	17904	23214209	2387	4653	0.793723	0.999897	0.882362	0.9998	0.882362	0.999697	0.83672	0.835698	
+2	0	0.03	3928	0.03	19140	23213560	3036	3417	0.848517	0.999869	0.863095	0.999853	0.863095	0.999722	0.855636	0.855744	
+3	0	0.03	3925	0.03	19213	23213559	3037	3344	0.851753	0.999869	0.863506	0.999856	0.863506	0.999725	0.857472	0.857589	
+4	0	0.03	3921	0.03	19271	23213493	3103	3286	0.854325	0.999866	0.861312	0.999858	0.861312	0.999725	0.857674	0.857804	
+5	0	0.03	3922	0.03	19269	23213496	3100	3288	0.854236	0.999866	0.861415	0.999858	0.861415	0.999725	0.857681	0.857811	
+
+
+It took 1 seconds to cluster
+
+Output File Names: 
+results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.list
+results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.steps
+results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.sensspec
+
+
+mothur > quit()
+[Wed Aug 21 11:51:27 2019]
+Finished job 0.
+1 of 1 steps (100%) done

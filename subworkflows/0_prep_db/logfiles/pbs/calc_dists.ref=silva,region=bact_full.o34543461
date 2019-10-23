@@ -1,0 +1,159 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 3
+Rules claiming more threads will be scaled down.
+Unlimited resources: walltime_hrs, procs
+Job counts:
+	count	jobs
+	1	calc_dists
+	1
+
+[Tue Sep 10 13:18:57 2019]
+rule calc_dists:
+    input: data/silva/silva.bact_full.filter.unique.precluster.fasta
+    output: results/silva/silva.bact_full.filter.unique.precluster.dist
+    log: logfiles/silva/calc_dists.bact_full.log
+    jobid: 0
+    benchmark: benchmarks/silva/calc_dists.bact_full.txt
+    wildcards: ref=silva, region=bact_full
+    resources: procs=12, walltime_hrs=48
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 09/10/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/silva/calc_dists.bact_full.log)
+
+mothur > set.dir(input=data/silva/, output=results/silva/)
+Mothur's directories:
+outputDir=results/silva/
+inputDir=data/silva/
+
+mothur > 
+        dist.seqs(fasta=data/silva/silva.bact_full.filter.unique.precluster.fasta, cutoff=0.03, processors=12) 
+
+Using 12 processors.
+
+Sequence	Time	Num_Dists_Below_Cutoff
+0	0	0
+100	0	18
+200	3	80
+2500	7	250
+300	8	122
+7300	13	252
+400	13	186
+7700	16	81
+2600	19	681
+500	18	334
+600	20	532
+3500	24	457
+6900	23	293
+6000	25	898
+4900	28	311
+700	29	736
+4300	34	843
+2700	40	1168
+5500	41	1483
+800	39	925
+8100	44	691
+900	53	1136
+6500	57	729
+2800	62	1722
+3600	64	1023
+4400	68	1434
+1000	67	1348
+6100	74	2062
+2900	85	2204
+1100	84	1588
+7400	94	1276
+1200	97	1846
+4500	104	2032
+5000	106	1553
+3000	109	2504
+1300	109	2076
+3700	117	1462
+6600	118	1994
+7000	121	2123
+7800	121	2778
+1400	121	2302
+6200	125	2752
+5600	126	2535
+8200	129	1724
+3100	133	3252
+1500	132	2508
+4600	141	2830
+5100	147	2364
+1600	146	2902
+3200	154	3653
+4700	168	3558
+1700	165	3491
+3300	172	4146
+3800	178	2081
+6700	181	2900
+1800	184	3975
+3400	191	5027
+7500	193	2617
+6300	196	3384
+4800	197	4210
+5200	199	3195
+1900	200	4312
+8300	212	3287
+3900	216	2706
+5700	219	3216
+2000	221	4771
+4000	226	3268
+7100	230	3919
+2100	238	5346
+4100	245	3834
+7900	245	4126
+6400	253	4648
+2200	250	5966
+6800	262	3826
+2300	262	6701
+4200	269	4186
+5300	270	4155
+2400	276	7137
+7600	278	3864
+7200	280	5572
+8400	279	4378
+5800	290	4209
+5400	308	4975
+8000	310	5522
+5900	317	5826
+
+It took 326 secs to find distances for 8420 sequences. 66725 distances below cutoff 0.03.
+
+
+Output File Names: 
+results/silva/silva.bact_full.filter.unique.precluster.dist
+
+
+mothur > quit()
+[Tue Sep 10 13:24:26 2019]
+Finished job 0.
+1 of 1 steps (100%) done

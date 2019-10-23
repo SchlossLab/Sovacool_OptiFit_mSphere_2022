@@ -1,0 +1,86 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	cluster
+	1
+
+[Tue Aug 20 15:54:06 2019]
+rule cluster:
+    input: results/silva/silva.bact_full.filter.unique.precluster.dist, data/silva/silva.bact_full.filter.unique.precluster.count_table
+    output: results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.steps, results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.sensspec
+    log: logfiles/silva/cluster.bact_full.log
+    jobid: 0
+    wildcards: ref=silva, subset=bact_full
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/20/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/silva/cluster.bact_full.log)
+
+mothur > 
+        set.dir(input=data/silva/, output=results/silva/)
+Mothur's directories:
+outputDir=results/silva/
+inputDir=data/silva/
+
+mothur > 
+        cluster(column=results/silva/silva.bact_full.filter.unique.precluster.dist, count=data/silva/silva.bact_full.filter.unique.precluster.count_table, cutoff=0.03) 
+
+Using 16 processors.
+
+Clustering results/silva/silva.bact_full.filter.unique.precluster.dist
+
+
+iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+
+0.03
+0	0	0.03	8420	0.03	0	35377265	0	66725	0	1	0	0.998117	1	0.998117	0	0	
+1	1	0.03	4067	0.03	50771	35372489	4776	15954	0.760899	0.999865	0.914019	0.999549	0.914019	0.999415	0.833672	0.83046	
+2	0	0.03	4003	0.03	54794	35370469	6796	11931	0.821191	0.999808	0.889657	0.999663	0.889657	0.999472	0.854477	0.854054	
+3	0	0.03	3997	0.03	56870	35368500	8765	9855	0.852304	0.999752	0.866458	0.999721	0.866458	0.999475	0.859089	0.859323	
+4	0	0.03	3993	0.03	58377	35367013	10252	8348	0.874889	0.99971	0.850617	0.999764	0.850617	0.999475	0.862405	0.862583	
+5	0	0.03	3992	0.03	58696	35366670	10595	8029	0.87967	0.999701	0.847094	0.999773	0.847094	0.999475	0.862966	0.863075	
+6	0	0.03	3992	0.03	58696	35366670	10595	8029	0.87967	0.999701	0.847094	0.999773	0.847094	0.999475	0.862966	0.863075	
+
+
+It took 1 seconds to cluster
+
+Output File Names: 
+results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list
+results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.steps
+results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.sensspec
+
+
+mothur > quit()
+[Tue Aug 20 15:54:07 2019]
+Finished job 0.
+1 of 1 steps (100%) done

@@ -1,0 +1,486 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	subset_regions
+	1
+
+[Mon Aug 19 15:01:49 2019]
+rule subset_regions:
+    input: data/gg/gg.bacteria.align
+    output: data/gg/gg.bact_full.fasta, data/gg/gg.bact_v4.fasta
+    log: logfiles/gg/subset_regions.log
+    jobid: 0
+    wildcards: ref=gg
+    resources: procs=8
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/19/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/gg/subset_regions.log)
+
+mothur > set.dir(input=data/gg/)
+Mothur's directories:
+inputDir=data/gg/
+
+mothur > 
+        screen.seqs(fasta=data/gg/gg.bacteria.align, start=1046, end=43116, processors=8)
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+2000
+2000
+2000
+2000
+2000
+2000
+2000
+2000
+3000
+3000
+3000
+3000
+3000
+3000
+3000
+3000
+4000
+4000
+4000
+4000
+4000
+4000
+4000
+4000
+5000
+5000
+5000
+5000
+5000
+5000
+5000
+5000
+6000
+6000
+6000
+6000
+6000
+6000
+6000
+6000
+7000
+7000
+7000
+7000
+7000
+7000
+7000
+7000
+8000
+8000
+8000
+8000
+8000
+8000
+8000
+8000
+9000
+9000
+9000
+9000
+9000
+9000
+9000
+9000
+10000
+10000
+10000
+10000
+10000
+10000
+10000
+10000
+11000
+11000
+11000
+11000
+11000
+11000
+11000
+11000
+12000
+12000
+12000
+12000
+12000
+12000
+12000
+12000
+13000
+13000
+13000
+13000
+13000
+13000
+13000
+13000
+14000
+14000
+14000
+14000
+14000
+14000
+14000
+14000
+15000
+15000
+15000
+15000
+15000
+15000
+15000
+15000
+16000
+16000
+16000
+16000
+16000
+16000
+16000
+16000
+17000
+17000
+17000
+17000
+17000
+17000
+17000
+17000
+18000
+18000
+18000
+18000
+18000
+18000
+18000
+18000
+19000
+19000
+19000
+19000
+19000
+19000
+19000
+19000
+20000
+20000
+20000
+20000
+20000
+20000
+20000
+20000
+21000
+21000
+21000
+21000
+21000
+21000
+21000
+21000
+22000
+22000
+22000
+22000
+22000
+22000
+22000
+22000
+23000
+23000
+23000
+23000
+23000
+23000
+23000
+23000
+24000
+24000
+24000
+24000
+24000
+24000
+24000
+24814
+24000
+24814
+24814
+24813
+24814
+24814
+24814
+24813
+
+It took 277 secs to screen 198510 sequences, removed 121655.
+
+
+Output File Names:
+data/gg/gg.bacteria.good.align
+data/gg/gg.bacteria.bad.accnos
+
+
+It took 278 secs to screen 198510 sequences.
+
+mothur > 
+        pcr.seqs(fasta=data/gg/gg.bacteria.align, start=11894, end=25319, processors=8) 
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+2000
+2000
+2000
+2000
+2000
+2000
+2000
+2000
+3000
+3000
+3000
+3000
+3000
+3000
+3000
+3000
+4000
+4000
+4000
+4000
+4000
+4000
+4000
+4000
+5000
+5000
+5000
+5000
+5000
+5000
+5000
+5000
+6000
+6000
+6000
+6000
+6000
+6000
+6000
+6000
+7000
+7000
+7000
+7000
+7000
+7000
+7000
+7000
+8000
+8000
+8000
+8000
+8000
+8000
+8000
+8000
+9000
+9000
+9000
+9000
+9000
+9000
+9000
+9000
+10000
+10000
+10000
+10000
+10000
+10000
+10000
+10000
+11000
+11000
+11000
+11000
+11000
+11000
+11000
+11000
+12000
+12000
+12000
+12000
+12000
+12000
+12000
+12000
+13000
+13000
+13000
+13000
+13000
+13000
+13000
+13000
+14000
+14000
+14000
+14000
+14000
+14000
+14000
+14000
+15000
+15000
+15000
+15000
+15000
+15000
+15000
+15000
+16000
+16000
+16000
+16000
+16000
+16000
+16000
+16000
+17000
+17000
+17000
+17000
+17000
+17000
+17000
+17000
+18000
+18000
+18000
+18000
+18000
+18000
+18000
+18000
+19000
+19000
+19000
+19000
+19000
+19000
+19000
+19000
+20000
+20000
+20000
+20000
+20000
+20000
+20000
+20000
+21000
+21000
+21000
+21000
+21000
+21000
+21000
+21000
+22000
+22000
+22000
+22000
+22000
+22000
+22000
+22000
+23000
+23000
+23000
+23000
+23000
+23000
+23000
+23000
+24000
+24000
+24000
+24000
+24000
+24000
+24000
+24000
+24814
+24814
+24814
+24813
+24814
+24814
+24813
+24814
+It took 329 secs to screen 198510 sequences.
+
+Output File Names: 
+data/gg/gg.bacteria.pcr.align
+data/gg/gg.bacteria.bad.accnos
+data/gg/gg.bacteria.scrap.pcr.align
+
+
+
+mothur > quit()
+[Mon Aug 19 15:11:57 2019]
+Finished job 0.
+1 of 1 steps (100%) done

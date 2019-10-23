@@ -1,0 +1,67 @@
+Linux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 10/23/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/align.log)
+
+mothur > set.dir(input=data/rdp/)
+Mothur's directories:
+inputDir=data/rdp/
+
+mothur > 
+        align.seqs(candidate=data/rdp/rdp.bacteria.fasta, template=data/silva/silva.fasta) 
+
+Using 16 processors.
+
+Reading in the data/silva/silva.fasta template sequences...	DONE.
+It took 24 to read  11180 sequences.
+
+Aligning sequences from data/rdp/rdp.bacteria.fasta ...
+It took 246 secs to align 12800 sequences.
+
+[WARNING]: 1 of your sequences generated alignments that eliminated too many bases, a list is provided in data/rdp/rdp.bacteria.flip.accnos.
+[NOTE]: 1 of your sequences were reversed to produce a better alignment.
+
+It took 246 seconds to align 12800 sequences.
+
+Output File Names: 
+data/rdp/rdp.bacteria.align
+data/rdp/rdp.bacteria.align.report
+data/rdp/rdp.bacteria.flip.accnos
+
+
+mothur > quit()
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 1 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

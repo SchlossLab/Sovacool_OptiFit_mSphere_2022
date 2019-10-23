@@ -1,0 +1,119 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	subset_regions
+	1
+
+[Wed Oct 23 10:01:39 2019]
+rule subset_regions:
+    input: data/rdp/rdp.bacteria.align
+    output: data/rdp/rdp.bact_full.fasta, data/rdp/rdp.bact_v4.fasta
+    log: logfiles/rdp/subset_regions.log
+    jobid: 0
+    benchmark: benchmarks/rdp/subset_regions.txt
+    wildcards: ref=rdp
+    resources: procs=8
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 10/23/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/subset_regions.log)
+
+mothur > set.dir(input=data/rdp/)
+Mothur's directories:
+inputDir=data/rdp/
+
+mothur > 
+        screen.seqs(fasta=data/rdp/rdp.bacteria.align, start=1046, end=43116, processors=8)
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1600
+1600
+1600
+1600
+1600
+1600
+1600
+1600
+
+It took 19 secs to screen 12800 sequences, removed 5759.
+
+
+Output File Names:
+data/rdp/rdp.bacteria.good.align
+data/rdp/rdp.bacteria.bad.accnos
+
+
+It took 20 secs to screen 12800 sequences.
+
+mothur > 
+        pcr.seqs(fasta=data/rdp/rdp.bacteria.align, start=11894, end=25319, processors=8) 
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1600
+1600
+1600
+1600
+1600
+1600
+1600
+1600
+It took 24 secs to screen 12800 sequences.
+
+Output File Names: 
+data/rdp/rdp.bacteria.pcr.align
+data/rdp/rdp.bacteria.bad.accnos
+data/rdp/rdp.bacteria.scrap.pcr.align
+
+
+
+mothur > quit()
+[Wed Oct 23 10:02:24 2019]
+Finished job 0.
+1 of 1 steps (100%) done

@@ -1,0 +1,74 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	get_otu_reps
+	1
+
+[Wed Aug 21 11:51:27 2019]
+rule get_otu_reps:
+    input: data/silva/silva.bacteria.tax, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, data/silva/silva.bact_v4.filter.unique.precluster.count_table
+    output: results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.rep.names
+    log: logfiles/silva/otu_reps.bact_v4.log
+    jobid: 0
+    wildcards: ref=silva, subset=bact_v4
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/21/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/silva/otu_reps.bact_v4.log)
+
+mothur > set.dir(input=data/silva/, output=results/silva/)
+Mothur's directories:
+outputDir=results/silva/
+inputDir=data/silva/
+
+mothur > 
+        classify.otu(taxonomy=data/silva/silva.bacteria.tax, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table)
+0.03	3020
+[Wed Aug 21 11:51:27 2019]
+Error in rule get_otu_reps:
+    jobid: 0
+    output: results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.rep.names
+    log: logfiles/silva/otu_reps.bact_v4.log
+
+RuleException:
+CalledProcessError in line 139 of /home/sovacool/optiFit/subworkflows/0_prep_db/Snakefile:
+Command ' set -euo pipefail;  
+        mothur '#set.logfile(name=logfiles/silva/otu_reps.bact_v4.log); set.dir(input=data/silva/, output=results/silva/);
+        classify.otu(taxonomy=data/silva/silva.bacteria.tax, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table);
+        get.oturep(method=abundance, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table) ' ' died with <Signals.SIGSEGV: 11>.
+  File "/home/sovacool/optiFit/subworkflows/0_prep_db/Snakefile", line 139, in __rule_get_otu_reps
+  File "/home/sovacool/bin/anaconda3/envs/optiFit/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+Removing output files of failed job get_otu_reps since they might be corrupted:
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy, results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message

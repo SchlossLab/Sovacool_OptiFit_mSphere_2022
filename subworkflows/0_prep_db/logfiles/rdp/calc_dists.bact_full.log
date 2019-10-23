@@ -1,0 +1,52 @@
+Linux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/20/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/calc_dists.bact_full.log)
+
+mothur > 
+        set.dir(input=data/rdp/, output=results/rdp/)
+Mothur's directories:
+outputDir=results/rdp/
+inputDir=data/rdp/
+
+mothur > 
+        dist.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta, cutoff=0.03, processors=8) 
+
+Using 8 processors.
+
+Sequence	Time	Num_Dists_Below_Cutoff
+
+It took 528 secs to find distances for 6818 sequences. 22557 distances below cutoff 0.03.
+
+
+Output File Names: 
+results/rdp/rdp.bact_full.filter.unique.precluster.dist
+
+
+mothur > quit()
