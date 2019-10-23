@@ -103,7 +103,8 @@ rule align:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
-        align.seqs(candidate={input.fasta}, template={input.silva}) '
+        align.seqs(candidate={input.fasta}, template={input.silva});
+        summary.seqs(fasta={output.align}) '
         """
 
 rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
@@ -133,9 +134,11 @@ rule subset_regions:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs});
-        pcr.seqs(fasta={input.align}, start=11894, end=25319, processors={resources.procs}) '
-        mv {params.screen} {output.full_length}
-        mv {params.pcr} {output.v4}
+        rename.file(input={params.screen}, new={output.full_length});
+        summary.seqs(fasta={output.full_length});
+        pcr.seqs(fasta={input.align}, start=11894, end=25319, processors={resources.procs});
+        rename.file(input={params.pcr}, new={output.v4});
+        summary.seqs(fasta={output.v4}) '
         """
 
 rule filter:
@@ -165,7 +168,7 @@ rule filter:
         unique.seqs(fasta={output.filter});
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
         list.seqs(fasta={output.preclust_fasta});
-        get.seqs(taxonomy={input.tax}, accnos=current) '
+        get.seqs(taxonomy={input.tax}, accnos=current, name=current) '
         mv {params.tax} {output.preclust_tax}
         """
 
