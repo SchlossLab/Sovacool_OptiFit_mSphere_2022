@@ -1,0 +1,136 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	subset_regions
+	1
+
+[Mon Aug 19 14:25:33 2019]
+rule subset_regions:
+    input: data/silva/silva.bacteria.align
+    output: data/silva/silva.bact_full.fasta, data/silva/silva.bact_v4.fasta
+    log: logfiles/silva/subset_regions.log
+    jobid: 0
+    wildcards: ref=silva
+    resources: procs=8
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/19/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.dir(input=data/silva/)
+Mothur's directories:
+inputDir=data/silva/
+
+mothur > set.logfile(name=logfiles/silva/subset_regions.log)
+
+mothur > 
+        screen.seqs(fasta=data/silva/silva.bacteria.align, start=1046, end=43116, processors=8)
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1064
+1065
+1064
+1064
+1065
+1065
+1065
+1065
+
+It took 29 secs to screen 8517 sequences, removed 97.
+
+
+Output File Names:
+data/silva/silva.bacteria.good.align
+data/silva/silva.bacteria.bad.accnos
+
+
+It took 30 secs to screen 8517 sequences.
+
+mothur > 
+        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=11894, end=25319, processors=8) 
+
+Using 8 processors.
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1000
+1065
+1064
+1064
+1064
+1065
+1065
+1065
+1065
+[NOTE]: no sequences were bad, removing data/silva/silva.bacteria.bad.accnos
+
+It took 37 secs to screen 8517 sequences.
+
+Output File Names: 
+data/silva/silva.bacteria.pcr.align
+
+
+
+mothur > quit()
+mv: cannot stat ‘data/silva/silva.bacteria.pcr.fasta’: No such file or directory
+[Mon Aug 19 14:26:41 2019]
+Error in rule subset_regions:
+    jobid: 0
+    output: data/silva/silva.bact_full.fasta, data/silva/silva.bact_v4.fasta
+    log: logfiles/silva/subset_regions.log
+
+RuleException:
+CalledProcessError in line 66 of /home/sovacool/optiFit/subworkflows/0_prep_db/Snakefile:
+Command ' set -euo pipefail;  
+        mothur '#set.dir(input=data/silva/); set.logfile(name=logfiles/silva/subset_regions.log);
+        screen.seqs(fasta=data/silva/silva.bacteria.align, start=1046, end=43116, processors=8);
+        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=11894, end=25319, processors=8) '
+        mv data/silva/silva.bacteria.good.align data/silva/silva.bact_full.fasta
+        mv data/silva/silva.bacteria.pcr.fasta data/silva/silva.bact_v4.fasta ' returned non-zero exit status 1.
+  File "/home/sovacool/optiFit/subworkflows/0_prep_db/Snakefile", line 66, in __rule_subset_regions
+  File "/home/sovacool/bin/anaconda3/envs/optiFit/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+Removing output files of failed job subset_regions since they might be corrupted:
+data/silva/silva.bact_full.fasta
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message

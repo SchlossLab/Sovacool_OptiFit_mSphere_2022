@@ -1,6 +1,4 @@
-*logfile*
 test/
-*.o*
 .snakemake/
 .DS_Store
 .Rproj.user

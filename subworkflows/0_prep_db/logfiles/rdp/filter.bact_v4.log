@@ -1,0 +1,72 @@
+Linux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 08/21/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=logfiles/rdp/filter.bact_v4.log)
+
+mothur > set.dir(input=data/rdp/)
+Mothur's directories:
+inputDir=data/rdp/
+
+mothur > 
+        filter.seqs(fasta=data/rdp/rdp.bact_v4.fasta, trump=., vertical=T, processors=2)
+
+Using 2 processors.
+Creating Filter... 
+It took 30 secs to create filter for 12677 sequences.
+
+
+Running Filter... 
+It took 23 secs to filter 12677 sequences.
+
+
+
+Length of filtered alignment: 0
+Number of columns removed: 50000
+Length of the original alignment: 50000
+Number of sequences used to construct filter: 12677
+
+Output File Names: 
+data/rdp/rdp.filter
+data/rdp/rdp.bact_v4.filter.fasta
+
+12677	1
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.names
+data/rdp/rdp.bact_v4.filter.unique.fasta
+
+
+mothur > 
+        pre.cluster(fasta=data/rdp/rdp.bact_v4.filter.unique.fasta, name=data/rdp/rdp.bact_v4.filter.names, diffs=2, processors=2) 
+
+Using 2 processors.
+When using running without group information mothur can only use 1 processor, continuing.
+Error: diffs is set to 2 which is greater than your sequence length of 0.
+
+mothur > quit()
