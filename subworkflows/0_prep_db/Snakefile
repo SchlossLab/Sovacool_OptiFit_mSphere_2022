@@ -128,7 +128,7 @@ rule subset_regions:
     log:
         "logfiles/{ref}/subset_regions.log"
     benchmark:
-        "benchmarks/{ref}/asubset_regions.txt"
+        "benchmarks/{ref}/subset_regions.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
