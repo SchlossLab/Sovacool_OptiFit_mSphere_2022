@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 09/10/2019
+Last updated: 10/23/2019
 by
 Patrick D. Schloss
 
@@ -36,4 +36,4 @@ inputDir=data/silva/
 
 mothur > 
         classify.otu(taxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table)
-0.03	3017
+0.03	3022

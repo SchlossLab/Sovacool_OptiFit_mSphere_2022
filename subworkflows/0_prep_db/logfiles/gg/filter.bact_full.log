@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 09/10/2019
+Last updated: 10/23/2019
 by
 Patrick D. Schloss
 
@@ -38,11 +38,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 71 secs to create filter for 76855 sequences.
+It took 138 secs to create filter for 76855 sequences.
 
 
 Running Filter... 
-It took 56 secs to filter 76855 sequences.
+It took 109 secs to filter 76855 sequences.
 
 
 
@@ -98,12 +98,14 @@ data/gg/gg.bact_full.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current) 
+        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current, name=current) 
 Using data/gg/gg.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
-[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/gg/gg.bact_full.filter.names which seems to match data/gg/gg.bacteria.tax.
-Selected 76840 sequences from your taxonomy file.
+Using data/gg/gg.bact_full.filter.names as input file for the name parameter.
+Selected 76855 sequences from your name file.
+Selected 76855 sequences from your taxonomy file.
 
 Output File Names: 
+data/gg/gg.bact_full.filter.pick.names
 data/gg/gg.bacteria.pick.tax
 
 
@@ -113,7 +115,7 @@ mothur > quit()
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 2 [WARNING] messages, please review.
+Detected 1 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
