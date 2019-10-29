@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 09/10/2019
+Last updated: 10/23/2019
 by
 Patrick D. Schloss
 
@@ -38,11 +38,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 239 secs to create filter for 198493 sequences.
+It took 346 secs to create filter for 198493 sequences.
 
 
 Running Filter... 
-It took 187 secs to filter 198493 sequences.
+It took 275 secs to filter 198493 sequences.
 
 
 
@@ -55,7 +55,7 @@ Output File Names:
 data/gg/gg.filter
 data/gg/gg.bact_v4.filter.fasta
 
-198493	154548
+198493	154549
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.names
@@ -67,21 +67,21 @@ mothur >
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-154548	121931	32617
-Total number of sequences before precluster was 154548.
-pre.cluster removed 32617 sequences.
+154549	121934	32615
+Total number of sequences before precluster was 154549.
+pre.cluster removed 32615 sequences.
 
 /******************************************/
 Running command: get.seqs(fasta=data/gg/gg.bact_v4.filter.unique.fasta, accnos=data/gg/gg.bact_v4.filter.unique.precluster.fasta.temp)
 [WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/gg/gg.bact_v4.filter.names which seems to match data/gg/gg.bact_v4.filter.unique.fasta.
-Selected 123806 sequences from your fasta file.
+Selected 123808 sequences from your fasta file.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 931 secs to cluster 154548 sequences.
+It took 750 secs to cluster 154549 sequences.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.count_table
@@ -98,12 +98,14 @@ data/gg/gg.bact_v4.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current) 
+        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current, name=current) 
 Using data/gg/gg.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
-[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/gg/gg.bact_v4.filter.names which seems to match data/gg/gg.bacteria.tax.
-Selected 123806 sequences from your taxonomy file.
+Using data/gg/gg.bact_v4.filter.names as input file for the name parameter.
+Selected 158712 sequences from your name file.
+Selected 158712 sequences from your taxonomy file.
 
 Output File Names: 
+data/gg/gg.bact_v4.filter.pick.names
 data/gg/gg.bacteria.pick.tax
 
 
@@ -113,7 +115,7 @@ mothur > quit()
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 2 [WARNING] messages, please review.
+Detected 1 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -1,4 +1,22 @@
-Linux version
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	cluster
+	1
+
+[Wed Oct 23 16:00:39 2019]
+rule cluster:
+    input: results/silva/silva.bact_full.filter.unique.precluster.dist, data/silva/silva.bact_full.filter.unique.precluster.count_table
+    output: results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.steps, results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.sensspec
+    log: logfiles/silva/cluster.bact_full.log
+    jobid: 0
+    benchmark: benchmarks/silva/cluster.bact_full.txt
+    wildcards: ref=silva, region=bact_full
+
+[3J[H[2JLinux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
@@ -63,3 +81,6 @@ results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.sensspec
 
 
 mothur > quit()
+[Wed Oct 23 16:00:41 2019]
+Finished job 0.
+1 of 1 steps (100%) done

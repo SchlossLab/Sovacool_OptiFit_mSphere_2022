@@ -27,38 +27,13 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/gg/subset_regions.log)
+mothur > set.logfile(name=logfiles/silva/get_otu_reps.bact_full.log)
 
-mothur > set.dir(input=data/gg/)
+mothur > set.dir(input=data/silva/, output=results/silva/)
 Mothur's directories:
-inputDir=data/gg/
+outputDir=results/silva/
+inputDir=data/silva/
 
 mothur > 
-        screen.seqs(fasta=data/gg/gg.bacteria.align, start=1046, end=43116, processors=8)
-
-Using 8 processors.
-
-It took 305 secs to screen 198510 sequences, removed 121655.
-
-
-Output File Names:
-data/gg/gg.bacteria.good.align
-data/gg/gg.bacteria.bad.accnos
-
-
-It took 305 secs to screen 198510 sequences.
-
-mothur > 
-        pcr.seqs(fasta=data/gg/gg.bacteria.align, start=11894, end=25319, processors=8) 
-
-Using 8 processors.
-It took 389 secs to screen 198510 sequences.
-
-Output File Names: 
-data/gg/gg.bacteria.pcr.align
-data/gg/gg.bacteria.bad.accnos
-data/gg/gg.bacteria.scrap.pcr.align
-
-
-
-mothur > quit()
+        classify.otu(taxonomy=data/silva/silva.bacteria.bact_full.precluster.tax, list=results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_full.filter.unique.precluster.count_table)
+0.03	3992

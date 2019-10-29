@@ -1,4 +1,24 @@
-Linux version
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	filter
+	1
+
+[Wed Oct 23 15:10:16 2019]
+rule filter:
+    input: data/rdp/rdp.bact_v4.fasta, data/rdp/rdp.bacteria.tax
+    output: data/rdp/rdp.bact_v4.filter.fasta, data/rdp/rdp.bact_v4.filter.names, data/rdp/rdp.bact_v4.filter.unique.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.count_table, data/rdp/rdp.bact_v4.filter.unique.precluster.accnos, data/rdp/rdp.bacteria.bact_v4.precluster.tax
+    log: logfiles/rdp/filter.bact_v4.log
+    jobid: 0
+    benchmark: benchmarks/rdp/filter.bact_v4.txt
+    wildcards: ref=rdp, region=bact_v4
+    resources: procs=2
+
+[3J[H[2JLinux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
@@ -38,11 +58,39 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 23 secs to create filter for 12795 sequences.
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+5000
+5000
+6000
+6000
+6397
+6398
+It took 12 secs to create filter for 12795 sequences.
 
 
 Running Filter... 
-It took 17 secs to filter 12795 sequences.
+1000
+1000
+2000
+2000
+3000
+3000
+4000
+4000
+5000
+5000
+6000
+6000
+6398
+6397
+It took 9 secs to filter 12795 sequences.
 
 
 
@@ -55,6 +103,21 @@ Output File Names:
 data/rdp/rdp.filter
 data/rdp/rdp.bact_v4.filter.fasta
 
+
+mothur > 
+        unique.seqs(fasta=data/rdp/rdp.bact_v4.filter.fasta)
+1000	1
+2000	1
+3000	1
+4000	1
+5000	1
+6000	1
+7000	1
+8000	1
+9000	1
+10000	1
+11000	1
+12000	1
 12795	1
 
 Output File Names: 
@@ -79,10 +142,10 @@ Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
 [ERROR]: did not complete list.seqs.
 
 mothur > 
-        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current) 
+        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current) 
 [WARNING]: no file was saved for accnos parameter.
-Using data/rdp/rdp.bact_v4.filter.names as input file for the name parameter.
 You have no valid accnos file and accnos is required.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_v4.filter.names which seems to match data/rdp/rdp.bacteria.tax.
 [ERROR]: did not complete get.seqs.
 
 mothur > quit()
@@ -100,7 +163,28 @@ Detected 2 [ERROR] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 1 [WARNING] messages, please review.
+Detected 2 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[Wed Oct 23 15:10:38 2019]
+Error in rule filter:
+    jobid: 0
+    output: data/rdp/rdp.bact_v4.filter.fasta, data/rdp/rdp.bact_v4.filter.names, data/rdp/rdp.bact_v4.filter.unique.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.fasta, data/rdp/rdp.bact_v4.filter.unique.precluster.count_table, data/rdp/rdp.bact_v4.filter.unique.precluster.accnos, data/rdp/rdp.bacteria.bact_v4.precluster.tax
+    log: logfiles/rdp/filter.bact_v4.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=logfiles/rdp/filter.bact_v4.log); set.dir(input=data/rdp/);
+        filter.seqs(fasta=data/rdp/rdp.bact_v4.fasta, trump=., vertical=T, processors=2);
+        unique.seqs(fasta=data/rdp/rdp.bact_v4.filter.fasta);
+        pre.cluster(fasta=data/rdp/rdp.bact_v4.filter.unique.fasta, name=data/rdp/rdp.bact_v4.filter.names, diffs=2, processors=2);
+        list.seqs(fasta=data/rdp/rdp.bact_v4.filter.unique.precluster.fasta);
+        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current) '
+        mv data/rdp/rdp.bacteria.pick.tax data/rdp/rdp.bacteria.bact_v4.precluster.tax
+        
+        (exited with non-zero exit code)
+
+Removing output files of failed job filter since they might be corrupted:
+data/rdp/rdp.bact_v4.filter.fasta, data/rdp/rdp.bact_v4.filter.names, data/rdp/rdp.bact_v4.filter.unique.fasta
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
