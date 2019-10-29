@@ -1,4 +1,22 @@
-Linux version
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	get_bacteria
+	1
+
+[Tue Oct 29 14:10:35 2019]
+rule get_bacteria:
+    input: data/gg/gg.fasta, data/gg/gg.tax
+    output: data/gg/gg.bacteria.fasta, data/gg/gg.bacteria.tax
+    log: logfiles/gg/get_bacteria.log
+    jobid: 0
+    benchmark: benchmarks/gg/get_bacteria.txt
+    wildcards: ref=gg
+
+[3J[H[2JLinux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
@@ -72,3 +90,20 @@ Detected 1 [ERROR] messages, please review.
 ************************************************************
 ************************************************************
 ************************************************************
+[Tue Oct 29 14:10:51 2019]
+Error in rule get_bacteria:
+    jobid: 0
+    output: data/gg/gg.bacteria.fasta, data/gg/gg.bacteria.tax
+    log: logfiles/gg/get_bacteria.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=logfiles/gg/get_bacteria.log); set.dir(input=data/gg/);
+        get.lineage(fasta=data/gg/gg.fasta, taxonomy=data/gg/gg.tax, taxon=Bacteria);
+        summary.seqs(fasta=data/gg/gg.bacteria.fasta) '
+        mv data/gg/gg.pick.fasta data/gg/gg.bacteria.fasta
+        mv data/gg/gg.pick.tax data/gg/gg.bacteria.tax
+        
+        (exited with non-zero exit code)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
