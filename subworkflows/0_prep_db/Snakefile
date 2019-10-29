@@ -83,7 +83,8 @@ rule get_bacteria:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
-        get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria) '
+        get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
+        summary.seqs(fasta={output.fasta}) '
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
         """
@@ -119,8 +120,8 @@ rule subset_regions:
     input:
         align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the template
     output:
-        full_length="data/{ref}/{ref}.bact_full.fasta",
-        v4="data/{ref}/{ref}.bact_v4.fasta"
+        fasta_full="data/{ref}/{ref}.bact_full.fasta",
+        fasta_v4="data/{ref}/{ref}.bact_v4.fasta"
     params:
         screen="data/{ref}/{ref}.bacteria.good.align",
         pcr="data/{ref}/{ref}.bacteria.pcr.align"
@@ -134,11 +135,11 @@ rule subset_regions:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs});
-        rename.file(input={params.screen}, new={output.full_length});
-        summary.seqs(fasta={output.full_length});
+        rename.file(input={params.screen}, new={output.fasta_full});
+        summary.seqs(fasta={output.fasta_full});
         pcr.seqs(fasta={input.align}, start=11894, end=25319, processors={resources.procs});
-        rename.file(input={params.pcr}, new={output.v4});
-        summary.seqs(fasta={output.v4}) '
+        rename.file(input={params.pcr}, new={output.fasta_v4});
+        summary.seqs(fasta={output.fasta_v4}) '
         """
 
 rule filter:
@@ -168,7 +169,8 @@ rule filter:
         unique.seqs(fasta={output.filter});
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
         list.seqs(fasta={output.preclust_fasta});
-        get.seqs(taxonomy={input.tax}, accnos=current, name=current) '
+        get.seqs(taxonomy={input.tax}, accnos=current, name=current);
+        summary.seqs(fasta=current, count=current) '
         mv {params.tax} {output.preclust_tax}
         """
 
