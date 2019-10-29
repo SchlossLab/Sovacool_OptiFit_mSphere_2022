@@ -77,16 +77,16 @@ rule get_bacteria:
         fasta="data/{ref}/{ref}.pick.fasta",
         tax="data/{ref}/{ref}.pick.tax"
     log:
-        "logfiles/{ref}/get_bacteria.log"
+        "log/{ref}/get_bacteria.log"
     benchmark:
         "benchmarks/{ref}/get_bacteria.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
+        rename.file(input={params.fasta}, new={output.fasta});
+        rename.file(input={params.tax}, new={output.tax});
         summary.seqs(fasta={output.fasta}) '
-        mv {params.fasta} {output.fasta}
-        mv {params.tax} {output.tax}
         """
 
 rule align:
@@ -98,7 +98,7 @@ rule align:
     wildcard_constraints:
         ref="rdp|gg"
     log:
-        "logfiles/{ref}/align.log"
+        "log/{ref}/align.log"
     benchmark:
         "benchmarks/{ref}/align.txt"
     shell:
@@ -128,7 +128,7 @@ rule subset_regions:
     resources:
         procs=8
     log:
-        "logfiles/{ref}/subset_regions.log"
+        "log/{ref}/subset_regions.log"
     benchmark:
         "benchmarks/{ref}/subset_regions.txt"
     shell:
@@ -159,7 +159,7 @@ rule filter:
     resources:
         procs=2
     log:
-        "logfiles/{ref}/filter.{region}.log"
+        "log/{ref}/filter.{region}.log"
     benchmark:
         "benchmarks/{ref}/filter.{region}.txt"
     shell:
@@ -180,7 +180,7 @@ rule calc_dists:
     output:
         dist="results/{ref}/{ref}.{region}.filter.unique.precluster.dist"
     log:
-        "logfiles/{ref}/calc_dists.{region}.log"
+        "log/{ref}/calc_dists.{region}.log"
     benchmark:
         "benchmarks/{ref}/calc_dists.{region}.txt"
     resources:
@@ -201,7 +201,7 @@ rule cluster:
         steps="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
         sensspec="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     log:
-        "logfiles/{ref}/cluster.{region}.log"
+        "log/{ref}/cluster.{region}.log"
     benchmark:
         "benchmarks/{ref}/cluster.{region}.txt"
     shell:
@@ -222,7 +222,7 @@ rule get_otu_reps:
         sum="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
         names="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.names"
     log:
-        "logfiles/{ref}/get_otu_reps.{region}.log"
+        "log/{ref}/get_otu_reps.{region}.log"
     benchmark:
         "benchmarks/{ref}/get_otu_reps.{region}.txt"
     shell:
