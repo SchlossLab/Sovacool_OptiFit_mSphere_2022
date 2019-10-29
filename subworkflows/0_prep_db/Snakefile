@@ -83,10 +83,12 @@ rule get_bacteria:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
+
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
         summary.seqs();
+
         rename.file(input={params.fasta}, new={output.fasta});
-        rename.file(input={params.tax}, new={output.tax}); '
+        rename.file(input={params.tax}, new={output.tax}) '
         """
 
 rule align:
@@ -105,7 +107,7 @@ rule align:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         align.seqs(candidate={input.fasta}, template={input.silva});
-        summary.seqs(fasta={output.align}) '
+        summary.seqs() '
         """
 
 rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
@@ -133,6 +135,7 @@ rule subset_regions:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
+
         pcr.seqs(fasta={input.align}, start=1046, end=43116, keepdots=F, processors={resources.procs});
         summary.seqs();
         screen.seqs(fasta=current, start=1046, end=43116);
@@ -169,13 +172,15 @@ rule filter:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
+
         filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs});
         unique.seqs(fasta={output.filter});
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
         list.seqs(fasta={output.preclust_fasta});
         get.seqs(taxonomy={input.tax}, accnos=current, name=current);
-        summary.seqs(fasta=current, count=current) '
-        mv {params.tax} {output.preclust_tax}
+
+        summary.seqs(fasta=current, count=current);
+        rename.file(input={params.tax}, new={output.preclust_tax}) '
         """
 
 rule calc_dists:
