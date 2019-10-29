@@ -1,4 +1,22 @@
-Linux version
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	get_bacteria
+	1
+
+[Tue Oct 29 14:10:35 2019]
+rule get_bacteria:
+    input: data/silva/silva.fasta, data/silva/silva.tax
+    output: data/silva/silva.bacteria.fasta, data/silva/silva.bacteria.tax
+    log: logfiles/silva/get_bacteria.log
+    jobid: 0
+    benchmark: benchmarks/silva/get_bacteria.txt
+    wildcards: ref=silva
+
+[3J[H[2JLinux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
@@ -72,3 +90,20 @@ Detected 1 [ERROR] messages, please review.
 ************************************************************
 ************************************************************
 ************************************************************
+[Tue Oct 29 14:11:02 2019]
+Error in rule get_bacteria:
+    jobid: 0
+    output: data/silva/silva.bacteria.fasta, data/silva/silva.bacteria.tax
+    log: logfiles/silva/get_bacteria.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=logfiles/silva/get_bacteria.log); set.dir(input=data/silva/);
+        get.lineage(fasta=data/silva/silva.fasta, taxonomy=data/silva/silva.tax, taxon=Bacteria);
+        summary.seqs(fasta=data/silva/silva.bacteria.fasta) '
+        mv data/silva/silva.pick.fasta data/silva/silva.bacteria.fasta
+        mv data/silva/silva.pick.tax data/silva/silva.bacteria.tax
+        
+        (exited with non-zero exit code)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
