@@ -84,9 +84,9 @@ rule get_bacteria:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
+        summary.seqs();
         rename.file(input={params.fasta}, new={output.fasta});
-        rename.file(input={params.tax}, new={output.tax});
-        summary.seqs(fasta={output.fasta}) '
+        rename.file(input={params.tax}, new={output.tax}); '
         """
 
 rule align:
@@ -123,8 +123,7 @@ rule subset_regions:
         fasta_full="data/{ref}/{ref}.bact_full.fasta",
         fasta_v4="data/{ref}/{ref}.bact_v4.fasta"
     params:
-        screen="data/{ref}/{ref}.bacteria.good.align",
-        pcr="data/{ref}/{ref}.bacteria.pcr.align"
+        screen="data/{ref}/{ref}.bacteria.pcr.good.align"
     resources:
         procs=8
     log:
@@ -134,12 +133,17 @@ rule subset_regions:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
-        screen.seqs(fasta={input.align}, start=1046, end=43116, processors={resources.procs});
+        pcr.seqs(fasta={input.align}, start=1046, end=43116, keepdots=F, processors={resources.procs});
+        summary.seqs();
+        screen.seqs(fasta=current, start=1046, end=43116);
+        summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_full});
-        summary.seqs(fasta={output.fasta_full});
-        pcr.seqs(fasta={input.align}, start=11894, end=25319, processors={resources.procs});
-        rename.file(input={params.pcr}, new={output.fasta_v4});
-        summary.seqs(fasta={output.fasta_v4}) '
+
+        pcr.seqs(fasta={input.align}, start=11894, end=25319);
+        summary.seqs();
+        screen.seqs(fasta={input.align}, start=11894, end=25319);
+        summary.seqs();
+        rename.file(input={params.screen}, new={output.fasta_v4}) '
         """
 
 rule filter:
