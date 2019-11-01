@@ -1,0 +1,231 @@
+nyx5563
+/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db
+Building DAG of jobs...
+Checking status of 0 jobs.
+Using shell: /usr/bin/bash
+Provided cluster nodes: 5000
+Unlimited resources: procs, walltime_hrs
+Job counts:
+	count	jobs
+	6	calc_dists
+	6	cluster
+	6	filter
+	6	get_otu_reps
+	3	subset_regions
+	1	targets
+	28
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 5000}
+Ready jobs (3):
+	subset_regions
+	subset_regions
+	subset_regions
+Selected jobs (3):
+	subset_regions
+	subset_regions
+	subset_regions
+Resources after job selection: {'_cores': 9223372036854775804, '_nodes': 4997}
+
+[Fri Nov  1 14:08:59 2019]
+rule subset_regions:
+    input: data/rdp/rdp.bacteria.align
+    output: data/rdp/rdp.bact_full.fasta, data/rdp/rdp.bact_v4.fasta
+    log: log/rdp/subset_regions.log
+    jobid: 29
+    benchmark: benchmarks/rdp/subset_regions.txt
+    wildcards: ref=rdp
+    resources: procs=8
+
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "subset_regions", "local": false, "input": ["data/rdp/rdp.bacteria.align"], "output": ["data/rdp/rdp.bact_full.fasta", "data/rdp/rdp.bact_v4.fasta"], "wildcards": {"ref": "rdp"}, "params": {"screen": "data/rdp/rdp.bacteria.pcr.good.align"}, "log": ["log/rdp/subset_regions.log"], "threads": 1, "resources": {"procs": 8}, "jobid": 29, "cluster": {"account": "pschloss_fluxod", "queue": "fluxod", "jobname": "subset_regions.ref=rdp", "procs": "8", "pmem": "6GB", "walltime": "12:00:00", "email": "sovacool@umich.edu", "mailon": "a", "jobout": "oe", "outdir": "logfiles/pbs/"}}
+cd /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db && \
+/home/sovacool/bin/anaconda3/envs/optiFit/bin/python3.6 \
+-m snakemake data/rdp/rdp.bact_v4.fasta --snakefile /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/Snakefile \
+--force -j --keep-target-files --keep-remote \
+--wait-for-files /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3 data/rdp/rdp.bacteria.align --latency-wait 20 \
+ --attempt 1 --force-use-threads \
+--wrapper-prefix https://bitbucket.org/snakemake/snakemake-wrappers/raw/ \
+   --allowed-rules subset_regions --nocolor --notemp --no-hooks --nolock \
+--mode 2  && touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/29.jobfinished" || (touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/29.jobfailed"; exit 1)
+
+Submitted job 29 with external jobid '34844795.nyx.arc-ts.umich.edu'.
+
+[Fri Nov  1 14:08:59 2019]
+rule subset_regions:
+    input: data/silva/silva.bacteria.align
+    output: data/silva/silva.bact_full.fasta, data/silva/silva.bact_v4.fasta
+    log: log/silva/subset_regions.log
+    jobid: 25
+    benchmark: benchmarks/silva/subset_regions.txt
+    wildcards: ref=silva
+    resources: procs=8
+
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "subset_regions", "local": false, "input": ["data/silva/silva.bacteria.align"], "output": ["data/silva/silva.bact_full.fasta", "data/silva/silva.bact_v4.fasta"], "wildcards": {"ref": "silva"}, "params": {"screen": "data/silva/silva.bacteria.pcr.good.align"}, "log": ["log/silva/subset_regions.log"], "threads": 1, "resources": {"procs": 8}, "jobid": 25, "cluster": {"account": "pschloss_fluxod", "queue": "fluxod", "jobname": "subset_regions.ref=silva", "procs": "8", "pmem": "6GB", "walltime": "12:00:00", "email": "sovacool@umich.edu", "mailon": "a", "jobout": "oe", "outdir": "logfiles/pbs/"}}
+cd /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db && \
+/home/sovacool/bin/anaconda3/envs/optiFit/bin/python3.6 \
+-m snakemake data/silva/silva.bact_v4.fasta --snakefile /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/Snakefile \
+--force -j --keep-target-files --keep-remote \
+--wait-for-files /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3 data/silva/silva.bacteria.align --latency-wait 20 \
+ --attempt 1 --force-use-threads \
+--wrapper-prefix https://bitbucket.org/snakemake/snakemake-wrappers/raw/ \
+   --allowed-rules subset_regions --nocolor --notemp --no-hooks --nolock \
+--mode 2  && touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/25.jobfinished" || (touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/25.jobfailed"; exit 1)
+
+Submitted job 25 with external jobid '34844796.nyx.arc-ts.umich.edu'.
+
+[Fri Nov  1 14:08:59 2019]
+rule subset_regions:
+    input: data/gg/gg.bacteria.align
+    output: data/gg/gg.bact_full.fasta, data/gg/gg.bact_v4.fasta
+    log: log/gg/subset_regions.log
+    jobid: 27
+    benchmark: benchmarks/gg/subset_regions.txt
+    wildcards: ref=gg
+    resources: procs=8
+
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "subset_regions", "local": false, "input": ["data/gg/gg.bacteria.align"], "output": ["data/gg/gg.bact_full.fasta", "data/gg/gg.bact_v4.fasta"], "wildcards": {"ref": "gg"}, "params": {"screen": "data/gg/gg.bacteria.pcr.good.align"}, "log": ["log/gg/subset_regions.log"], "threads": 1, "resources": {"procs": 8}, "jobid": 27, "cluster": {"account": "pschloss_fluxod", "queue": "fluxod", "jobname": "subset_regions.ref=gg", "procs": "8", "pmem": "6GB", "walltime": "12:00:00", "email": "sovacool@umich.edu", "mailon": "a", "jobout": "oe", "outdir": "logfiles/pbs/"}}
+cd /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db && \
+/home/sovacool/bin/anaconda3/envs/optiFit/bin/python3.6 \
+-m snakemake data/gg/gg.bact_v4.fasta --snakefile /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/Snakefile \
+--force -j --keep-target-files --keep-remote \
+--wait-for-files /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3 data/gg/gg.bacteria.align --latency-wait 20 \
+ --attempt 1 --force-use-threads \
+--wrapper-prefix https://bitbucket.org/snakemake/snakemake-wrappers/raw/ \
+   --allowed-rules subset_regions --nocolor --notemp --no-hooks --nolock \
+--mode 2  && touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/27.jobfinished" || (touch "/nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/27.jobfailed"; exit 1)
+
+Submitted job 27 with external jobid '34844797.nyx.arc-ts.umich.edu'.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+Checking status of 3 jobs.
+[Fri Nov  1 14:10:49 2019]
+Error in rule subset_regions:
+    jobid: 29
+    output: data/rdp/rdp.bact_full.fasta, data/rdp/rdp.bact_v4.fasta
+    log: log/rdp/subset_regions.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=log/rdp/subset_regions.log); set.dir(input=data/rdp/);
+
+        pcr.seqs(fasta=data/rdp/rdp.bacteria.align, start=1044, end=43116, keepdots=F, processors=8);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=1044, end=43116, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/rdp/rdp.bacteria.pcr.good.align, new=data/rdp/rdp.bact_full.fasta);
+
+        pcr.seqs(fasta=data/rdp/rdp.bacteria.align, start=11894, end=25319, keepdots=F);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=11894, end=25319, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/rdp/rdp.bacteria.pcr.good.align, new=data/rdp/rdp.bact_v4.fasta) '
+        
+        (exited with non-zero exit code)
+    cluster_jobid: 34844795.nyx.arc-ts.umich.edu
+
+Error executing rule subset_regions on cluster (jobid: 29, external: 34844795.nyx.arc-ts.umich.edu, jobscript: /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/snakejob.subset_regions.29.sh). For detailed error see the cluster log.
+Cleanup job metadata.
+[Fri Nov  1 14:10:49 2019]
+Error in rule subset_regions:
+    jobid: 25
+    output: data/silva/silva.bact_full.fasta, data/silva/silva.bact_v4.fasta
+    log: log/silva/subset_regions.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=log/silva/subset_regions.log); set.dir(input=data/silva/);
+
+        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=1044, end=43116, keepdots=F, processors=8);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=1044, end=43116, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/silva/silva.bacteria.pcr.good.align, new=data/silva/silva.bact_full.fasta);
+
+        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=11894, end=25319, keepdots=F);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=11894, end=25319, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/silva/silva.bacteria.pcr.good.align, new=data/silva/silva.bact_v4.fasta) '
+        
+        (exited with non-zero exit code)
+    cluster_jobid: 34844796.nyx.arc-ts.umich.edu
+
+Error executing rule subset_regions on cluster (jobid: 25, external: 34844796.nyx.arc-ts.umich.edu, jobscript: /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/snakejob.subset_regions.25.sh). For detailed error see the cluster log.
+Cleanup job metadata.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+Checking status of 1 jobs.
+[Fri Nov  1 14:16:30 2019]
+Error in rule subset_regions:
+    jobid: 27
+    output: data/gg/gg.bact_full.fasta, data/gg/gg.bact_v4.fasta
+    log: log/gg/subset_regions.log (check log file(s) for error message)
+    shell:
+        
+        mothur '#set.logfile(name=log/gg/subset_regions.log); set.dir(input=data/gg/);
+
+        pcr.seqs(fasta=data/gg/gg.bacteria.align, start=1044, end=43116, keepdots=F, processors=8);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=1044, end=43116, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/gg/gg.bacteria.pcr.good.align, new=data/gg/gg.bact_full.fasta);
+
+        pcr.seqs(fasta=data/gg/gg.bacteria.align, start=11894, end=25319, keepdots=F);
+        summary.seqs();
+        screen.seqs(fasta=current, summary=current, start=11894, end=25319, maxambig=5, maxhomop=8);
+        summary.seqs();
+        rename.file(input=data/gg/gg.bacteria.pcr.good.align, new=data/gg/gg.bact_v4.fasta) '
+        
+        (exited with non-zero exit code)
+    cluster_jobid: 34844797.nyx.arc-ts.umich.edu
+
+Error executing rule subset_regions on cluster (jobid: 27, external: 34844797.nyx.arc-ts.umich.edu, jobscript: /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/tmp.e0nah6g3/snakejob.subset_regions.27.sh). For detailed error see the cluster log.
+Cleanup job metadata.
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /nfs/turbo/schloss-lab/sovacool/optiFit/subworkflows/0_prep_db/.snakemake/log/2019-11-01T140859.114539.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks
