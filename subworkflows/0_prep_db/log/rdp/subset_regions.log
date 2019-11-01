@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 10/29/2019
 by
 Patrick D. Schloss
 
@@ -27,38 +27,78 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/subset_regions.log)
+mothur > set.logfile(name=log/rdp/subset_regions.log)
 
 mothur > set.dir(input=data/rdp/)
 Mothur's directories:
 inputDir=data/rdp/
 
 mothur > 
-        screen.seqs(fasta=data/rdp/rdp.bacteria.align, start=1046, end=43116, processors=8)
+
+        pcr.seqs(fasta=data/rdp/rdp.bacteria.align, start=1046, end=43116, keepdots=F, processors=8)
 
 Using 8 processors.
+[NOTE]: no sequences were bad, removing data/rdp/rdp.bacteria.bad.accnos
 
-It took 19 secs to screen 12800 sequences, removed 5759.
-
-
-Output File Names:
-data/rdp/rdp.bacteria.good.align
-data/rdp/rdp.bacteria.bad.accnos
-
-
-It took 20 secs to screen 12800 sequences.
-
-mothur > 
-        pcr.seqs(fasta=data/rdp/rdp.bacteria.align, start=11894, end=25319, processors=8) 
-
-Using 8 processors.
-It took 24 secs to screen 12800 sequences.
+It took 14 secs to screen 12800 sequences.
 
 Output File Names: 
 data/rdp/rdp.bacteria.pcr.align
-data/rdp/rdp.bacteria.bad.accnos
-data/rdp/rdp.bacteria.scrap.pcr.align
 
 
 
-mothur > quit()
+mothur > 
+        summary.seqs()
+Using data/rdp/rdp.bacteria.pcr.align as input file for the fasta parameter.
+
+Using 8 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	7554	25	0	4	1
+2.5%-tile:	2	40469	1272	0	5	321
+25%-tile:	2	42054	1408	0	5	3201
+Median: 	2	42070	1439	0	5	6401
+75%-tile:	16	42070	1455	0	6	9601
+97.5%-tile:	424	42070	1487	9	7	12481
+Maximum:	41975	42070	1919	129	68	12800
+Mean:	52	41627	1418	0	5
+# of Seqs:	12800
+
+It took 11 secs to summarize 12800 sequences.
+
+Output File Names:
+data/rdp/rdp.bacteria.pcr.summary
+
+
+mothur > 
+        screen.seqs(fasta=current, start=1046, end=43116)
+Using data/rdp/rdp.bacteria.pcr.align as input file for the fasta parameter.
+
+Using 8 processors.
+
+It took 12 secs to screen 12800 sequences, removed 12800.
+
+
+Output File Names:
+data/rdp/rdp.bacteria.pcr.good.align
+data/rdp/rdp.bacteria.pcr.bad.accnos
+
+
+It took 12 secs to screen 12800 sequences.
+
+mothur > 
+        summary.seqs()
+Using data/rdp/rdp.bacteria.pcr.good.align as input file for the fasta parameter.
+
+Using 8 processors.
+[ERROR]: data/rdp/rdp.bacteria.pcr.good.align is blank. Please correct.
+Error in reading your fastafile, at position -1. Blank name.
+
+
+************************************************************
+************************************************************
+************************************************************
+Detected 1 [ERROR] messages, please review.
+************************************************************
+************************************************************
+************************************************************
