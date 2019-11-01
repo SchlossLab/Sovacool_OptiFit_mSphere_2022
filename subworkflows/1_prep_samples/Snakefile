@@ -47,7 +47,7 @@ rule preprocess:  # TODO: each for regions v4 and full?
         """
         mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/processed);
         	make.contigs(inputdir=data/{wildcards.dataset}, file={input.file}, processors={resources.procs});
-        	screen.seqs(fasta=current, group=current, maxambig=0, maxhomop=8);
+        	screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
         	unique.seqs();
         	count.seqs(name=current, group=current);
         	align.seqs(fasta=current, reference={input.silva}, processors={resources.procs});
