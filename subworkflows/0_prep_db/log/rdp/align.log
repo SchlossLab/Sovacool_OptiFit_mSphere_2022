@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 10/29/2019
 by
 Patrick D. Schloss
 
@@ -27,32 +27,56 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/align.log)
+mothur > set.logfile(name=log/rdp/align.log)
 
 mothur > set.dir(input=data/rdp/)
 Mothur's directories:
 inputDir=data/rdp/
 
 mothur > 
-        align.seqs(candidate=data/rdp/rdp.bacteria.fasta, template=data/silva/silva.fasta) 
+
+        align.seqs(candidate=data/rdp/rdp.bacteria.fasta, template=data/silva/silva.fasta)
 
 Using 16 processors.
 
 Reading in the data/silva/silva.fasta template sequences...	DONE.
-It took 24 to read  11180 sequences.
+It took 18 to read  11180 sequences.
 
 Aligning sequences from data/rdp/rdp.bacteria.fasta ...
-It took 246 secs to align 12800 sequences.
+It took 256 secs to align 12800 sequences.
 
 [WARNING]: 1 of your sequences generated alignments that eliminated too many bases, a list is provided in data/rdp/rdp.bacteria.flip.accnos.
 [NOTE]: 1 of your sequences were reversed to produce a better alignment.
 
-It took 246 seconds to align 12800 sequences.
+It took 256 seconds to align 12800 sequences.
 
 Output File Names: 
 data/rdp/rdp.bacteria.align
 data/rdp/rdp.bacteria.align.report
 data/rdp/rdp.bacteria.flip.accnos
+
+
+mothur > 
+        summary.seqs() 
+Using data/rdp/rdp.bacteria.align as input file for the fasta parameter.
+
+Using 16 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1045	8600	25	0	4	1
+2.5%-tile:	1046	41515	1272	0	5	321
+25%-tile:	1046	43100	1409	0	5	3201
+Median: 	1046	43116	1439	0	5	6401
+75%-tile:	1062	43116	1456	0	6	9601
+97.5%-tile:	1470	43116	1488	9	7	12481
+Maximum:	43021	43116	1920	129	68	12800
+Mean:	1097	42673	1419	0	5
+# of Seqs:	12800
+
+It took 18 secs to summarize 12800 sequences.
+
+Output File Names:
+data/rdp/rdp.bacteria.summary
 
 
 mothur > quit()
