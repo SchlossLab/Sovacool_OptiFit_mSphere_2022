@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 10/29/2019
 by
 Patrick D. Schloss
 
@@ -27,38 +27,78 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/silva/subset_regions.log)
+mothur > set.logfile(name=log/silva/subset_regions.log)
 
 mothur > set.dir(input=data/silva/)
 Mothur's directories:
 inputDir=data/silva/
 
 mothur > 
-        screen.seqs(fasta=data/silva/silva.bacteria.align, start=1046, end=43116, processors=8)
 
-Using 8 processors.
-
-It took 14 secs to screen 8517 sequences, removed 97.
-
-
-Output File Names:
-data/silva/silva.bacteria.good.align
-data/silva/silva.bacteria.bad.accnos
-
-
-It took 14 secs to screen 8517 sequences.
-
-mothur > 
-        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=11894, end=25319, processors=8) 
+        pcr.seqs(fasta=data/silva/silva.bacteria.align, start=1046, end=43116, keepdots=F, processors=8)
 
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/silva/silva.bacteria.bad.accnos
 
-It took 17 secs to screen 8517 sequences.
+It took 11 secs to screen 8517 sequences.
 
 Output File Names: 
 data/silva/silva.bacteria.pcr.align
 
 
 
-mothur > quit()
+mothur > 
+        summary.seqs()
+Using data/silva/silva.bacteria.pcr.align as input file for the fasta parameter.
+
+Using 8 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	41757	1357	0	4	1
+2.5%-tile:	2	42070	1392	0	5	213
+25%-tile:	2	42070	1438	0	5	2130
+Median: 	2	42070	1454	0	5	4259
+75%-tile:	2	42070	1465	0	6	6388
+97.5%-tile:	2	42070	1489	4	7	8305
+Maximum:	57	42070	1889	5	9	8517
+Mean:	2	42069	1449	0	5
+# of Seqs:	8517
+
+It took 10 secs to summarize 8517 sequences.
+
+Output File Names:
+data/silva/silva.bacteria.pcr.summary
+
+
+mothur > 
+        screen.seqs(fasta=current, start=1046, end=43116)
+Using data/silva/silva.bacteria.pcr.align as input file for the fasta parameter.
+
+Using 8 processors.
+
+It took 9 secs to screen 8517 sequences, removed 8517.
+
+
+Output File Names:
+data/silva/silva.bacteria.pcr.good.align
+data/silva/silva.bacteria.pcr.bad.accnos
+
+
+It took 9 secs to screen 8517 sequences.
+
+mothur > 
+        summary.seqs()
+Using data/silva/silva.bacteria.pcr.good.align as input file for the fasta parameter.
+
+Using 8 processors.
+[ERROR]: data/silva/silva.bacteria.pcr.good.align is blank. Please correct.
+Error in reading your fastafile, at position -1. Blank name.
+
+
+************************************************************
+************************************************************
+************************************************************
+Detected 1 [ERROR] messages, please review.
+************************************************************
+************************************************************
+************************************************************

@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/get_bacteria.log)
+mothur > set.logfile(name=log/rdp/get_bacteria.log)
 
 mothur > set.dir(input=data/rdp/)
 Mothur's directories:
@@ -52,23 +52,46 @@ data/rdp/rdp.pick.fasta
 
 
 mothur > 
-        summary.seqs(fasta=data/rdp/rdp.bacteria.fasta) 
-Unable to open data/rdp/rdp.bacteria.fasta. Trying input directory data/rdp/rdp.bacteria.fasta.
-Unable to open data/rdp/rdp.bacteria.fasta. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.fasta. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.fasta.
-Unable to open data/rdp/rdp.bacteria.fasta
+        summary.seqs()
+Using data/rdp/rdp.pick.fasta as input file for the fasta parameter.
 
 Using 16 processors.
-[ERROR]: did not complete summary.seqs.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	320	320	0	4	1
+2.5%-tile:	1	1276	1276	0	5	321
+25%-tile:	1	1425	1425	0	5	3201
+Median: 	1	1466	1466	0	5	6401
+75%-tile:	1	1496	1496	0	6	9601
+97.5%-tile:	1	1554	1554	9	7	12481
+Maximum:	1	2146	2146	130	68	12800
+Mean:	1	1448	1448	0	5
+# of Seqs:	12800
+
+It took 1 secs to summarize 12800 sequences.
+
+Output File Names:
+data/rdp/rdp.pick.summary
+
+
+mothur > 
+        rename.file(input=data/rdp/rdp.pick.fasta, new=data/rdp/rdp.bacteria.fasta)
+
+Current files saved by mothur:
+accnos=data/rdp/rdp.pick.tax.accnos
+fasta=data/rdp/rdp.pick.fasta
+taxonomy=data/rdp/rdp.pick.tax
+processors=16
+summary=data/rdp/rdp.pick.summary
+
+mothur > 
+        rename.file(input=data/rdp/rdp.pick.tax, new=data/rdp/rdp.bacteria.tax)
+
+Current files saved by mothur:
+accnos=data/rdp/rdp.pick.tax.accnos
+fasta=data/rdp/rdp.pick.fasta
+taxonomy=data/rdp/rdp.pick.tax
+processors=16
+summary=data/rdp/rdp.pick.summary
 
 mothur > quit()
-
-
-************************************************************
-************************************************************
-************************************************************
-Detected 1 [ERROR] messages, please review.
-************************************************************
-************************************************************
-************************************************************
