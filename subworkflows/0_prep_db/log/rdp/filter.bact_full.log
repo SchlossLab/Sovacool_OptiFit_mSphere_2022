@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 11/01/2019
 by
 Patrick D. Schloss
 
@@ -27,35 +27,36 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/filter.bact_full.log)
+mothur > set.logfile(name=log/rdp/filter.bact_full.log)
 
 mothur > set.dir(input=data/rdp/)
 Mothur's directories:
 inputDir=data/rdp/
 
 mothur > 
+
         filter.seqs(fasta=data/rdp/rdp.bact_full.fasta, trump=., vertical=T, processors=2)
 
 Using 2 processors.
 Creating Filter... 
-It took 18 secs to create filter for 7041 sequences.
+It took 23 secs to create filter for 10159 sequences.
 
 
 Running Filter... 
-It took 13 secs to filter 7041 sequences.
+It took 18 secs to filter 10159 sequences.
 
 
 
-Length of filtered alignment: 4567
-Number of columns removed: 45433
-Length of the original alignment: 50000
-Number of sequences used to construct filter: 7041
+Length of filtered alignment: 0
+Number of columns removed: 42072
+Length of the original alignment: 42072
+Number of sequences used to construct filter: 10159
 
 Output File Names: 
 data/rdp/rdp.filter
 data/rdp/rdp.bact_full.filter.fasta
 
-7041	6933
+10159	1
 
 Output File Names: 
 data/rdp/rdp.bact_full.filter.names
@@ -67,53 +68,83 @@ mothur >
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-6933	6887	46
-Total number of sequences before precluster was 6933.
-pre.cluster removed 46 sequences.
-
-/******************************************/
-Running command: get.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.fasta, accnos=data/rdp/rdp.bact_full.filter.unique.precluster.fasta.temp)
-[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_full.filter.names which seems to match data/rdp/rdp.bact_full.filter.unique.fasta.
-Selected 6890 sequences from your fasta file.
-
-Output File Names: 
-data/rdp/rdp.bact_full.filter.unique.pick.fasta
-
-/******************************************/
-Done.
-It took 5 secs to cluster 6933 sequences.
-
-Output File Names: 
-data/rdp/rdp.bact_full.filter.count_table
-data/rdp/rdp.bact_full.filter.unique.precluster.fasta
-data/rdp/rdp.bact_full.filter.unique.precluster.count_table
-data/rdp/rdp.bact_full.filter.unique.precluster.map
-
+Error: diffs is set to 2 which is greater than your sequence length of 0.
 
 mothur > 
         list.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta)
+Unable to open data/rdp/rdp.bact_full.filter.unique.precluster.fasta. Trying input directory data/rdp/rdp.bact_full.filter.unique.precluster.fasta.
+Unable to open data/rdp/rdp.bact_full.filter.unique.precluster.fasta. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_full.filter.unique.precluster.fasta.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_full.filter.unique.precluster.fasta. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_full.filter.unique.precluster.fasta.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_full.filter.unique.precluster.fasta.
+Unable to open data/rdp/rdp.bact_full.filter.unique.precluster.fasta
+[ERROR]: did not complete list.seqs.
 
-Output File Names: 
-data/rdp/rdp.bact_full.filter.unique.precluster.accnos
+mothur > 
+        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current)
+[WARNING]: no file was saved for accnos parameter.
+Using data/rdp/rdp.bact_full.filter.names as input file for the name parameter.
+You have no valid accnos file and accnos is required.
+[ERROR]: did not complete get.seqs.
+
+mothur > 
+
+        summary.seqs(fasta=current, count=current)
+Using data/rdp/rdp.bact_full.filter.count_table as input file for the count parameter.
+Using data/rdp/rdp.bact_full.filter.unique.fasta as input file for the fasta parameter.
+
+Using 2 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	0	0	0	1	1
+2.5%-tile:	1	0	0	0	1	254
+25%-tile:	1	0	0	0	1	2540
+Median: 	1	0	0	0	1	5080
+75%-tile:	1	0	0	0	1	7620
+97.5%-tile:	1	0	0	0	1	9906
+Maximum:	1	0	0	0	1	10159
+Mean:	1	0	0	0	1
+# of unique seqs:	1
+total # of seqs:	10159
+
+It took 0 secs to summarize 10159 sequences.
+
+Output File Names:
+data/rdp/rdp.bact_full.filter.unique.summary
 
 
 mothur > 
-        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current) 
-Using data/rdp/rdp.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
-[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_full.filter.names which seems to match data/rdp/rdp.bacteria.tax.
-Selected 6890 sequences from your taxonomy file.
+        rename.file(input=data/rdp/rdp.bacteria.pick.tax, new=data/rdp/rdp.bacteria.bact_full.precluster.tax) 
+Unable to open data/rdp/rdp.bacteria.pick.tax. Trying input directory data/rdp/rdp.bacteria.pick.tax.
+Unable to open data/rdp/rdp.bacteria.pick.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open data/rdp/rdp.bacteria.pick.tax
+Ignoring: data/rdp/rdp.bacteria.pick.tax
 
-Output File Names: 
-data/rdp/rdp.bacteria.pick.tax
-
+Current files saved by mothur:
+fasta=data/rdp/rdp.bact_full.filter.unique.fasta
+name=data/rdp/rdp.bact_full.filter.names
+taxonomy=data/rdp/rdp.bacteria.tax
+count=data/rdp/rdp.bact_full.filter.count_table
+processors=2
+summary=data/rdp/rdp.bact_full.filter.unique.summary
 
 mothur > quit()
 
 
+************************************************************
+************************************************************
+************************************************************
+Detected 2 [ERROR] messages, please review.
+************************************************************
+************************************************************
+************************************************************
+
+
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 2 [WARNING] messages, please review.
+Detected 1 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

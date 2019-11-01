@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 11/01/2019
 by
 Patrick D. Schloss
 
@@ -27,35 +27,36 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/filter.bact_v4.log)
+mothur > set.logfile(name=log/rdp/filter.bact_v4.log)
 
 mothur > set.dir(input=data/rdp/)
 Mothur's directories:
 inputDir=data/rdp/
 
 mothur > 
+
         filter.seqs(fasta=data/rdp/rdp.bact_v4.fasta, trump=., vertical=T, processors=2)
 
 Using 2 processors.
 Creating Filter... 
-It took 23 secs to create filter for 12795 sequences.
+It took 6 secs to create filter for 12079 sequences.
 
 
 Running Filter... 
-It took 17 secs to filter 12795 sequences.
+It took 5 secs to filter 12079 sequences.
 
 
 
 Length of filtered alignment: 0
-Number of columns removed: 50000
-Length of the original alignment: 50000
-Number of sequences used to construct filter: 12795
+Number of columns removed: 13425
+Length of the original alignment: 13425
+Number of sequences used to construct filter: 12079
 
 Output File Names: 
 data/rdp/rdp.filter
 data/rdp/rdp.bact_v4.filter.fasta
 
-12795	1
+12079	1
 
 Output File Names: 
 data/rdp/rdp.bact_v4.filter.names
@@ -79,11 +80,54 @@ Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
 [ERROR]: did not complete list.seqs.
 
 mothur > 
-        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current) 
+        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current)
 [WARNING]: no file was saved for accnos parameter.
 Using data/rdp/rdp.bact_v4.filter.names as input file for the name parameter.
 You have no valid accnos file and accnos is required.
 [ERROR]: did not complete get.seqs.
+
+mothur > 
+
+        summary.seqs(fasta=current, count=current)
+Using data/rdp/rdp.bact_v4.filter.count_table as input file for the count parameter.
+Using data/rdp/rdp.bact_v4.filter.unique.fasta as input file for the fasta parameter.
+
+Using 2 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	0	0	0	1	1
+2.5%-tile:	1	0	0	0	1	302
+25%-tile:	1	0	0	0	1	3020
+Median: 	1	0	0	0	1	6040
+75%-tile:	1	0	0	0	1	9060
+97.5%-tile:	1	0	0	0	1	11778
+Maximum:	1	0	0	0	1	12079
+Mean:	1	0	0	0	1
+# of unique seqs:	1
+total # of seqs:	12079
+
+It took 0 secs to summarize 12079 sequences.
+
+Output File Names:
+data/rdp/rdp.bact_v4.filter.unique.summary
+
+
+mothur > 
+        rename.file(input=data/rdp/rdp.bacteria.pick.tax, new=data/rdp/rdp.bacteria.bact_v4.precluster.tax) 
+Unable to open data/rdp/rdp.bacteria.pick.tax. Trying input directory data/rdp/rdp.bacteria.pick.tax.
+Unable to open data/rdp/rdp.bacteria.pick.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
+Unable to open data/rdp/rdp.bacteria.pick.tax
+Ignoring: data/rdp/rdp.bacteria.pick.tax
+
+Current files saved by mothur:
+fasta=data/rdp/rdp.bact_v4.filter.unique.fasta
+name=data/rdp/rdp.bact_v4.filter.names
+taxonomy=data/rdp/rdp.bacteria.tax
+count=data/rdp/rdp.bact_v4.filter.count_table
+processors=2
+summary=data/rdp/rdp.bact_v4.filter.unique.summary
 
 mothur > quit()
 
