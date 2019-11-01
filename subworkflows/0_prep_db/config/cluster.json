@@ -10,6 +10,9 @@
     "jobout": "oe",
     "outdir": "logfiles/pbs/"
 }
+"align": {
+    "procs": "{resources.procs}"
+}
 "subset_regions": {
     "procs": "{resources.procs}"
 }
