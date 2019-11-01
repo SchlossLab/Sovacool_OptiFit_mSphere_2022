@@ -138,13 +138,13 @@ rule subset_regions:
 
         pcr.seqs(fasta={input.align}, start=1044, end=43116, keepdots=F, processors={resources.procs});
         summary.seqs();
-        screen.seqs(fasta=current, summary=current, maxambig=5, maxhomop=8);
+        screen.seqs(fasta=current, summary=current, maxambig=0, maxhomop=8);
         summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_full});
 
         pcr.seqs(fasta={input.align}, start=11894, end=25319, keepdots=F);
         summary.seqs();
-        screen.seqs(fasta=current, summary=current, maxambig=5, maxhomop=8);
+        screen.seqs(fasta=current, summary=current, maxambig=0, maxhomop=8);
         summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_v4}) '
         """
