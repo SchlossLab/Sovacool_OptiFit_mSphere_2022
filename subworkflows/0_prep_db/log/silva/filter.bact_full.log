@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 11/01/2019
 by
 Patrick D. Schloss
 
@@ -27,35 +27,36 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/silva/filter.bact_full.log)
+mothur > set.logfile(name=log/silva/filter.bact_full.log)
 
 mothur > set.dir(input=data/silva/)
 Mothur's directories:
 inputDir=data/silva/
 
 mothur > 
+
         filter.seqs(fasta=data/silva/silva.bact_full.fasta, trump=., vertical=T, processors=2)
 
 Using 2 processors.
 Creating Filter... 
-It took 16 secs to create filter for 8420 sequences.
+It took 6 secs to create filter for 6696 sequences.
 
 
 Running Filter... 
-It took 12 secs to filter 8420 sequences.
+It took 4 secs to filter 6696 sequences.
 
 
 
-Length of filtered alignment: 5717
-Number of columns removed: 44283
-Length of the original alignment: 50000
-Number of sequences used to construct filter: 8420
+Length of filtered alignment: 5421
+Number of columns removed: 36651
+Length of the original alignment: 42072
+Number of sequences used to construct filter: 6696
 
 Output File Names: 
 data/silva/silva.filter
 data/silva/silva.bact_full.filter.fasta
 
-8420	8420
+6696	6675
 
 Output File Names: 
 data/silva/silva.bact_full.filter.names
@@ -67,21 +68,21 @@ mothur >
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-8420	8420	0
-Total number of sequences before precluster was 8420.
-pre.cluster removed 0 sequences.
+6675	6614	61
+Total number of sequences before precluster was 6675.
+pre.cluster removed 61 sequences.
 
 /******************************************/
 Running command: get.seqs(fasta=data/silva/silva.bact_full.filter.unique.fasta, accnos=data/silva/silva.bact_full.filter.unique.precluster.fasta.temp)
 [WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/silva/silva.bact_full.filter.names which seems to match data/silva/silva.bact_full.filter.unique.fasta.
-Selected 8420 sequences from your fasta file.
+Selected 6614 sequences from your fasta file.
 
 Output File Names: 
 data/silva/silva.bact_full.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 4 secs to cluster 8420 sequences.
+It took 4 secs to cluster 6675 sequences.
 
 Output File Names: 
 data/silva/silva.bact_full.filter.count_table
@@ -98,14 +99,54 @@ data/silva/silva.bact_full.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/silva/silva.bacteria.tax, accnos=current) 
+        get.seqs(taxonomy=data/silva/silva.bacteria.tax, accnos=current, name=current)
 Using data/silva/silva.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
-[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/silva/silva.bact_full.filter.names which seems to match data/silva/silva.bacteria.tax.
-Selected 8420 sequences from your taxonomy file.
+Using data/silva/silva.bact_full.filter.names as input file for the name parameter.
+Selected 6635 sequences from your name file.
+Selected 6635 sequences from your taxonomy file.
 
 Output File Names: 
+data/silva/silva.bact_full.filter.pick.names
 data/silva/silva.bacteria.pick.tax
 
+
+mothur > 
+
+        summary.seqs(fasta=current, count=current)
+Using data/silva/silva.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/silva/silva.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
+
+Using 2 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	5190	1338	0	4	1
+2.5%-tile:	1	5421	1370	0	5	168
+25%-tile:	1	5421	1418	0	5	1675
+Median: 	1	5421	1434	0	5	3349
+75%-tile:	1	5421	1445	0	6	5023
+97.5%-tile:	1	5421	1471	0	7	6529
+Maximum:	561	5421	1870	0	8	6696
+Mean:	1	5420	1430	0	5
+# of unique seqs:	6614
+total # of seqs:	6696
+
+It took 1 secs to summarize 6696 sequences.
+
+Output File Names:
+data/silva/silva.bact_full.filter.unique.precluster.summary
+
+
+mothur > 
+        rename.file(input=data/silva/silva.bacteria.pick.tax, new=data/silva/silva.bacteria.bact_full.precluster.tax) 
+
+Current files saved by mothur:
+accnos=data/silva/silva.bact_full.filter.unique.precluster.accnos
+fasta=data/silva/silva.bact_full.filter.unique.precluster.fasta
+name=data/silva/silva.bact_full.filter.pick.names
+taxonomy=data/silva/silva.bacteria.pick.tax
+count=data/silva/silva.bact_full.filter.unique.precluster.count_table
+processors=2
+summary=data/silva/silva.bact_full.filter.unique.precluster.summary
 
 mothur > quit()
 
@@ -113,7 +154,7 @@ mothur > quit()
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 2 [WARNING] messages, please review.
+Detected 1 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
