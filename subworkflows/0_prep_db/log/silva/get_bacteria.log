@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/silva/get_bacteria.log)
+mothur > set.logfile(name=log/silva/get_bacteria.log)
 
 mothur > set.dir(input=data/silva/)
 Mothur's directories:
@@ -52,23 +52,46 @@ data/silva/silva.pick.fasta
 
 
 mothur > 
-        summary.seqs(fasta=data/silva/silva.bacteria.fasta) 
-Unable to open data/silva/silva.bacteria.fasta. Trying input directory data/silva/silva.bacteria.fasta.
-Unable to open data/silva/silva.bacteria.fasta. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.fasta. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.fasta.
-Unable to open data/silva/silva.bacteria.fasta
+        summary.seqs()
+Using data/silva/silva.pick.fasta as input file for the fasta parameter.
 
 Using 16 processors.
-[ERROR]: did not complete summary.seqs.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1045	42803	1358	0	4	1
+2.5%-tile:	1046	43116	1393	0	5	213
+25%-tile:	1046	43116	1439	0	5	2130
+Median: 	1046	43116	1455	0	5	4259
+75%-tile:	1046	43116	1466	0	6	6388
+97.5%-tile:	1046	43116	1490	4	7	8305
+Maximum:	1103	43116	1890	5	9	8517
+Mean:	1046	43115	1450	0	5
+# of Seqs:	8517
+
+It took 13 secs to summarize 8517 sequences.
+
+Output File Names:
+data/silva/silva.pick.summary
+
+
+mothur > 
+        rename.file(input=data/silva/silva.pick.fasta, new=data/silva/silva.bacteria.fasta)
+
+Current files saved by mothur:
+accnos=data/silva/silva.pick.tax.accnos
+fasta=data/silva/silva.pick.fasta
+taxonomy=data/silva/silva.pick.tax
+processors=16
+summary=data/silva/silva.pick.summary
+
+mothur > 
+        rename.file(input=data/silva/silva.pick.tax, new=data/silva/silva.bacteria.tax)
+
+Current files saved by mothur:
+accnos=data/silva/silva.pick.tax.accnos
+fasta=data/silva/silva.pick.fasta
+taxonomy=data/silva/silva.pick.tax
+processors=16
+summary=data/silva/silva.pick.summary
 
 mothur > quit()
-
-
-************************************************************
-************************************************************
-************************************************************
-Detected 1 [ERROR] messages, please review.
-************************************************************
-************************************************************
-************************************************************
