@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/01/2019
+Last updated: 11/02/2019
 by
 Patrick D. Schloss
 
@@ -39,24 +39,24 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 6 secs to create filter for 12079 sequences.
+It took 4 secs to create filter for 9971 sequences.
 
 
 Running Filter... 
-It took 5 secs to filter 12079 sequences.
+It took 2 secs to filter 9971 sequences.
 
 
 
-Length of filtered alignment: 0
-Number of columns removed: 13425
+Length of filtered alignment: 628
+Number of columns removed: 12797
 Length of the original alignment: 13425
-Number of sequences used to construct filter: 12079
+Number of sequences used to construct filter: 9971
 
 Output File Names: 
 data/rdp/rdp.filter
 data/rdp/rdp.bact_v4.filter.fasta
 
-12079	1
+9971	7404
 
 Output File Names: 
 data/rdp/rdp.bact_v4.filter.names
@@ -68,77 +68,87 @@ mothur >
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-Error: diffs is set to 2 which is greater than your sequence length of 0.
+7404	6183	1221
+Total number of sequences before precluster was 7404.
+pre.cluster removed 1221 sequences.
+
+/******************************************/
+Running command: get.seqs(fasta=data/rdp/rdp.bact_v4.filter.unique.fasta, accnos=data/rdp/rdp.bact_v4.filter.unique.precluster.fasta.temp)
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_v4.filter.names which seems to match data/rdp/rdp.bact_v4.filter.unique.fasta.
+Selected 6280 sequences from your fasta file.
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.unique.pick.fasta
+
+/******************************************/
+Done.
+It took 2 secs to cluster 7404 sequences.
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.count_table
+data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
+data/rdp/rdp.bact_v4.filter.unique.precluster.count_table
+data/rdp/rdp.bact_v4.filter.unique.precluster.map
+
 
 mothur > 
         list.seqs(fasta=data/rdp/rdp.bact_v4.filter.unique.precluster.fasta)
-Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.fasta. Trying input directory data/rdp/rdp.bact_v4.filter.unique.precluster.fasta.
-Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.fasta. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_v4.filter.unique.precluster.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_v4.filter.unique.precluster.fasta. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_v4.filter.unique.precluster.fasta.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bact_v4.filter.unique.precluster.fasta.
-Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
-[ERROR]: did not complete list.seqs.
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.unique.precluster.accnos
+
 
 mothur > 
         get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current)
-[WARNING]: no file was saved for accnos parameter.
+Using data/rdp/rdp.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
 Using data/rdp/rdp.bact_v4.filter.names as input file for the name parameter.
-You have no valid accnos file and accnos is required.
-[ERROR]: did not complete get.seqs.
+Selected 8330 sequences from your name file.
+Selected 8330 sequences from your taxonomy file.
+
+Output File Names: 
+data/rdp/rdp.bact_v4.filter.pick.names
+data/rdp/rdp.bacteria.pick.tax
+
 
 mothur > 
 
         summary.seqs(fasta=current, count=current)
-Using data/rdp/rdp.bact_v4.filter.count_table as input file for the count parameter.
-Using data/rdp/rdp.bact_v4.filter.unique.fasta as input file for the fasta parameter.
+Using data/rdp/rdp.bact_v4.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/rdp/rdp.bact_v4.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Using 2 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1	0	0	0	1	1
-2.5%-tile:	1	0	0	0	1	302
-25%-tile:	1	0	0	0	1	3020
-Median: 	1	0	0	0	1	6040
-75%-tile:	1	0	0	0	1	9060
-97.5%-tile:	1	0	0	0	1	11778
-Maximum:	1	0	0	0	1	12079
-Mean:	1	0	0	0	1
-# of unique seqs:	1
-total # of seqs:	12079
+Minimum:	1	627	258	0	3	1
+2.5%-tile:	1	628	291	0	3	250
+25%-tile:	1	628	292	0	4	2493
+Median: 	1	628	292	0	4	4986
+75%-tile:	1	628	292	0	5	7479
+97.5%-tile:	1	628	293	0	6	9722
+Maximum:	3	628	335	0	8	9971
+Mean:	1	627	291	0	4
+# of unique seqs:	6280
+total # of seqs:	9971
 
-It took 0 secs to summarize 12079 sequences.
+It took 0 secs to summarize 9971 sequences.
 
 Output File Names:
-data/rdp/rdp.bact_v4.filter.unique.summary
+data/rdp/rdp.bact_v4.filter.unique.precluster.summary
 
 
 mothur > 
         rename.file(input=data/rdp/rdp.bacteria.pick.tax, new=data/rdp/rdp.bacteria.bact_v4.precluster.tax) 
-Unable to open data/rdp/rdp.bacteria.pick.tax. Trying input directory data/rdp/rdp.bacteria.pick.tax.
-Unable to open data/rdp/rdp.bacteria.pick.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.pick.tax.
-Unable to open data/rdp/rdp.bacteria.pick.tax
-Ignoring: data/rdp/rdp.bacteria.pick.tax
 
 Current files saved by mothur:
-fasta=data/rdp/rdp.bact_v4.filter.unique.fasta
-name=data/rdp/rdp.bact_v4.filter.names
-taxonomy=data/rdp/rdp.bacteria.tax
-count=data/rdp/rdp.bact_v4.filter.count_table
+accnos=data/rdp/rdp.bact_v4.filter.unique.precluster.accnos
+fasta=data/rdp/rdp.bact_v4.filter.unique.precluster.fasta
+name=data/rdp/rdp.bact_v4.filter.pick.names
+taxonomy=data/rdp/rdp.bacteria.pick.tax
+count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_table
 processors=2
-summary=data/rdp/rdp.bact_v4.filter.unique.summary
+summary=data/rdp/rdp.bact_v4.filter.unique.precluster.summary
 
 mothur > quit()
-
-
-************************************************************
-************************************************************
-************************************************************
-Detected 2 [ERROR] messages, please review.
-************************************************************
-************************************************************
-************************************************************
 
 
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
