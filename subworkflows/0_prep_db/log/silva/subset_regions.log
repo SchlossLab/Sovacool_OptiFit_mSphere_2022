@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/02/2019
+Last updated: 11/04/2019
 by
 Patrick D. Schloss
 
@@ -49,7 +49,7 @@ Maximum:	1103	43116	1890	5	9	8517
 Mean:	1046	43115	1450	0	5
 # of Seqs:	8517
 
-It took 6 secs to summarize 8517 sequences.
+It took 24 secs to summarize 8517 sequences.
 
 Output File Names:
 data/silva/silva.bacteria.summary
@@ -61,7 +61,7 @@ mothur >
 
 Using 8 processors.
 
-It took 4 secs to screen 8517 sequences, removed 1821.
+It took 12 secs to screen 8517 sequences, removed 1821.
 
 
 Output File Names:
@@ -69,7 +69,7 @@ data/silva/silva.bacteria.good.align
 data/silva/silva.bacteria.bad.accnos
 
 
-It took 4 secs to screen 8517 sequences.
+It took 14 secs to screen 8517 sequences.
 
 mothur > 
         summary.seqs()
@@ -88,7 +88,7 @@ Maximum:	1103	43116	1890	0	8	6696
 Mean:	1046	43115	1450	0	5
 # of Seqs:	6696
 
-It took 4 secs to summarize 6696 sequences.
+It took 10 secs to summarize 6696 sequences.
 
 Output File Names:
 data/silva/silva.bacteria.good.summary
@@ -101,7 +101,7 @@ Using data/silva/silva.bacteria.good.align as input file for the fasta parameter
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/silva/silva.bacteria.good.bad.accnos
 
-It took 3 secs to screen 6696 sequences.
+It took 10 secs to screen 6696 sequences.
 
 Output File Names: 
 data/silva/silva.bacteria.good.pcr.align
@@ -125,7 +125,7 @@ Maximum:	3	13425	351	0	8	6696
 Mean:	1	13424	292	0	4
 # of Seqs:	6696
 
-It took 1 secs to summarize 6696 sequences.
+It took 3 secs to summarize 6696 sequences.
 
 Output File Names:
 data/silva/silva.bacteria.good.pcr.summary
@@ -146,7 +146,7 @@ mothur >
 
 Using 8 processors.
 
-It took 4 secs to screen 8517 sequences, removed 1821.
+It took 12 secs to screen 8517 sequences, removed 1821.
 
 
 Output File Names:
@@ -154,7 +154,7 @@ data/silva/silva.bacteria.good.align
 data/silva/silva.bacteria.bad.accnos
 
 
-It took 4 secs to screen 8517 sequences.
+It took 13 secs to screen 8517 sequences.
 
 mothur > 
         summary.seqs()
@@ -173,20 +173,20 @@ Maximum:	1103	43116	1890	0	8	6696
 Mean:	1046	43115	1450	0	5
 # of Seqs:	6696
 
-It took 4 secs to summarize 6696 sequences.
+It took 10 secs to summarize 6696 sequences.
 
 Output File Names:
 data/silva/silva.bacteria.good.summary
 
 
 mothur > 
-        pcr.seqs(fasta=current, start=1044, end=43116, keepdots=F)
+        pcr.seqs(fasta=current, start=1046, end=43116, keepdots=F)
 Using data/silva/silva.bacteria.good.align as input file for the fasta parameter.
 
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/silva/silva.bacteria.good.bad.accnos
 
-It took 4 secs to screen 6696 sequences.
+It took 12 secs to screen 6696 sequences.
 
 Output File Names: 
 data/silva/silva.bacteria.good.pcr.align
@@ -200,17 +200,17 @@ Using data/silva/silva.bacteria.good.pcr.align as input file for the fasta param
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1	41759	1358	0	4	1
-2.5%-tile:	2	42072	1390	0	5	168
-25%-tile:	2	42072	1438	0	5	1675
-Median: 	2	42072	1454	0	5	3349
-75%-tile:	2	42072	1465	0	6	5023
-97.5%-tile:	2	42072	1491	0	7	6529
-Maximum:	59	42072	1890	0	8	6696
-Mean:	2	42071	1450	0	5
+Minimum:	1	41757	1357	0	4	1
+2.5%-tile:	2	42070	1389	0	5	168
+25%-tile:	2	42070	1437	0	5	1675
+Median: 	2	42070	1453	0	5	3349
+75%-tile:	2	42070	1464	0	6	5023
+97.5%-tile:	2	42070	1490	0	7	6529
+Maximum:	57	42070	1889	0	8	6696
+Mean:	2	42069	1449	0	5
 # of Seqs:	6696
 
-It took 3 secs to summarize 6696 sequences.
+It took 8 secs to summarize 6696 sequences.
 
 Output File Names:
 data/silva/silva.bacteria.good.pcr.summary
