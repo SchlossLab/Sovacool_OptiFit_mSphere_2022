@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/02/2019
+Last updated: 11/04/2019
 by
 Patrick D. Schloss
 
@@ -49,7 +49,7 @@ Maximum:	43021	43116	1920	129	68	12800
 Mean:	1097	42673	1419	0	5
 # of Seqs:	12800
 
-It took 6 secs to summarize 12800 sequences.
+It took 12 secs to summarize 12800 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.summary
@@ -69,7 +69,7 @@ data/rdp/rdp.bacteria.good.align
 data/rdp/rdp.bacteria.bad.accnos
 
 
-It took 3 secs to screen 12800 sequences.
+It took 4 secs to screen 12800 sequences.
 
 mothur > 
         summary.seqs()
@@ -88,7 +88,7 @@ Maximum:	6462	43116	1890	0	8	9971
 Mean:	1082	43017	1431	0	5
 # of Seqs:	9971
 
-It took 2 secs to summarize 9971 sequences.
+It took 3 secs to summarize 9971 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.good.summary
@@ -101,7 +101,7 @@ Using data/rdp/rdp.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/rdp/rdp.bacteria.good.bad.accnos
 
-It took 3 secs to screen 9971 sequences.
+It took 2 secs to screen 9971 sequences.
 
 Output File Names: 
 data/rdp/rdp.bacteria.good.pcr.align
@@ -125,7 +125,7 @@ Maximum:	3	13425	336	0	8	9971
 Mean:	1	13424	292	0	4
 # of Seqs:	9971
 
-It took 0 secs to summarize 9971 sequences.
+It took 1 secs to summarize 9971 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.good.pcr.summary
@@ -146,7 +146,7 @@ mothur >
 
 Using 8 processors.
 
-It took 3 secs to screen 12800 sequences, removed 2641.
+It took 2 secs to screen 12800 sequences, removed 2641.
 
 
 Output File Names:
@@ -180,7 +180,7 @@ data/rdp/rdp.bacteria.good.summary
 
 
 mothur > 
-        pcr.seqs(fasta=current, start=1044, end=43116, keepdots=F)
+        pcr.seqs(fasta=current, start=1046, end=43116, keepdots=F)
 Using data/rdp/rdp.bacteria.good.align as input file for the fasta parameter.
 
 Using 8 processors.
@@ -200,14 +200,14 @@ Using data/rdp/rdp.bacteria.good.pcr.align as input file for the fasta parameter
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1	7556	25	0	4	1
-2.5%-tile:	2	40463	1267	0	5	254
-25%-tile:	2	42059	1408	0	5	2540
-Median: 	2	42072	1439	0	5	5080
-75%-tile:	16	42072	1455	0	6	7620
-97.5%-tile:	415	42072	1489	0	7	9906
-Maximum:	41977	42072	1890	0	8	10159
-Mean:	49	41615	1418	0	5
+Minimum:	1	7554	25	0	4	1
+2.5%-tile:	2	40461	1267	0	5	254
+25%-tile:	2	42057	1408	0	5	2540
+Median: 	2	42070	1438	0	5	5080
+75%-tile:	14	42070	1454	0	6	7620
+97.5%-tile:	413	42070	1488	0	7	9906
+Maximum:	41975	42070	1889	0	8	10159
+Mean:	48	41613	1418	0	5
 # of Seqs:	10159
 
 It took 2 secs to summarize 10159 sequences.

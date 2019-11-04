@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/02/2019
+Last updated: 11/04/2019
 by
 Patrick D. Schloss
 
@@ -39,7 +39,7 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 8 secs to create filter for 10159 sequences.
+It took 9 secs to create filter for 10159 sequences.
 
 
 Running Filter... 
@@ -48,8 +48,8 @@ It took 6 secs to filter 10159 sequences.
 
 
 Length of filtered alignment: 0
-Number of columns removed: 42072
-Length of the original alignment: 42072
+Number of columns removed: 42070
+Length of the original alignment: 42070
 Number of sequences used to construct filter: 10159
 
 Output File Names: 
