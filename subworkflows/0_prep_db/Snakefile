@@ -145,7 +145,7 @@ rule subset_regions:
         summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_v4});
 
-        screen.seqs(fasta={input.align}, maxambig=0, maxhomop=8);
+        screen.seqs(fasta={input.align}, maxambig=0, maxhomop=8, start=1046, end=43116);
         summary.seqs();
         pcr.seqs(fasta=current, start=1046, end=43116, keepdots=F);
         summary.seqs();
