@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/02/2019
+Last updated: 11/04/2019
 by
 Patrick D. Schloss
 
@@ -41,7 +41,7 @@ Using 12 processors.
 
 Sequence	Time	Num_Dists_Below_Cutoff
 
-It took 61 secs to find distances for 6280 sequences. 16773 distances below cutoff 0.03.
+It took 13 secs to find distances for 6280 sequences. 16773 distances below cutoff 0.03.
 
 
 Output File Names: 

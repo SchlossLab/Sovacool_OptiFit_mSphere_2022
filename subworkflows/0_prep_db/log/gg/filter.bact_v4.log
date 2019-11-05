@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 11/04/2019
 by
 Patrick D. Schloss
 
@@ -27,35 +27,36 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/gg/filter.bact_v4.log)
+mothur > set.logfile(name=log/gg/filter.bact_v4.log)
 
 mothur > set.dir(input=data/gg/)
 Mothur's directories:
 inputDir=data/gg/
 
 mothur > 
+
         filter.seqs(fasta=data/gg/gg.bact_v4.fasta, trump=., vertical=T, processors=2)
 
 Using 2 processors.
 Creating Filter... 
-It took 346 secs to create filter for 198493 sequences.
+It took 80 secs to create filter for 174979 sequences.
 
 
 Running Filter... 
-It took 275 secs to filter 198493 sequences.
+It took 66 secs to filter 174979 sequences.
 
 
 
-Length of filtered alignment: 1377
-Number of columns removed: 48623
-Length of the original alignment: 50000
-Number of sequences used to construct filter: 198493
+Length of filtered alignment: 1282
+Number of columns removed: 12143
+Length of the original alignment: 13425
+Number of sequences used to construct filter: 174979
 
 Output File Names: 
 data/gg/gg.filter
 data/gg/gg.bact_v4.filter.fasta
 
-198493	154549
+174979	135640
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.names
@@ -67,21 +68,21 @@ mothur >
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-154549	121934	32615
-Total number of sequences before precluster was 154549.
-pre.cluster removed 32615 sequences.
+135640	106698	28942
+Total number of sequences before precluster was 135640.
+pre.cluster removed 28942 sequences.
 
 /******************************************/
 Running command: get.seqs(fasta=data/gg/gg.bact_v4.filter.unique.fasta, accnos=data/gg/gg.bact_v4.filter.unique.precluster.fasta.temp)
 [WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/gg/gg.bact_v4.filter.names which seems to match data/gg/gg.bact_v4.filter.unique.fasta.
-Selected 123808 sequences from your fasta file.
+Selected 108499 sequences from your fasta file.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 750 secs to cluster 154549 sequences.
+It took 670 secs to cluster 135640 sequences.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.count_table
@@ -98,16 +99,54 @@ data/gg/gg.bact_v4.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current, name=current) 
+        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current, name=current)
 Using data/gg/gg.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
 Using data/gg/gg.bact_v4.filter.names as input file for the name parameter.
-Selected 158712 sequences from your name file.
-Selected 158712 sequences from your taxonomy file.
+Selected 140109 sequences from your name file.
+Selected 140109 sequences from your taxonomy file.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.pick.names
 data/gg/gg.bacteria.pick.tax
 
+
+mothur > 
+
+        summary.seqs(fasta=current, count=current)
+Using data/gg/gg.bact_v4.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/gg/gg.bact_v4.filter.unique.precluster.fasta as input file for the fasta parameter.
+
+Using 2 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	1257	203	0	3	1
+2.5%-tile:	1	1282	287	0	3	4375
+25%-tile:	1	1282	288	0	4	43745
+Median: 	1	1282	288	0	4	87490
+75%-tile:	1	1282	288	0	5	131235
+97.5%-tile:	1	1282	291	0	6	170605
+Maximum:	56	1282	464	0	8	174979
+Mean:	1	1281	288	0	4
+# of unique seqs:	108499
+total # of seqs:	174979
+
+It took 7 secs to summarize 174979 sequences.
+
+Output File Names:
+data/gg/gg.bact_v4.filter.unique.precluster.summary
+
+
+mothur > 
+        rename.file(input=data/gg/gg.bacteria.pick.tax, new=data/gg/gg.bacteria.bact_v4.precluster.tax) 
+
+Current files saved by mothur:
+accnos=data/gg/gg.bact_v4.filter.unique.precluster.accnos
+fasta=data/gg/gg.bact_v4.filter.unique.precluster.fasta
+name=data/gg/gg.bact_v4.filter.pick.names
+taxonomy=data/gg/gg.bacteria.pick.tax
+count=data/gg/gg.bact_v4.filter.unique.precluster.count_table
+processors=2
+summary=data/gg/gg.bact_v4.filter.unique.precluster.summary
 
 mothur > quit()
 

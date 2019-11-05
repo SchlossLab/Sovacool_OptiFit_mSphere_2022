@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 9 secs to create filter for 10159 sequences.
+It took 16 secs to create filter for 10159 sequences.
 
 
 Running Filter... 
-It took 6 secs to filter 10159 sequences.
+It took 12 secs to filter 10159 sequences.
 
 
 
