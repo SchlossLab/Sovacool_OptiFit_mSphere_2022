@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/04/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -49,7 +49,7 @@ Maximum:	43097	43116	1891	213	213	198510
 Mean:	1098	42822	1410	0	5
 # of Seqs:	198510
 
-It took 93 secs to summarize 198510 sequences.
+It took 295 secs to summarize 198510 sequences.
 
 Output File Names:
 data/gg/gg.bacteria.summary
@@ -61,7 +61,7 @@ mothur >
 
 Using 8 processors.
 
-It took 52 secs to screen 198510 sequences, removed 23531.
+It took 310 secs to screen 198510 sequences, removed 23531.
 
 
 Output File Names:
@@ -69,7 +69,7 @@ data/gg/gg.bacteria.good.align
 data/gg/gg.bacteria.bad.accnos
 
 
-It took 55 secs to screen 198510 sequences.
+It took 310 secs to screen 198510 sequences.
 
 mothur > 
         summary.seqs()
@@ -88,7 +88,7 @@ Maximum:	5255	43116	1891	0	8	174979
 Mean:	1093	42816	1410	0	5
 # of Seqs:	174979
 
-It took 36 secs to summarize 174979 sequences.
+It took 258 secs to summarize 174979 sequences.
 
 Output File Names:
 data/gg/gg.bacteria.good.summary
@@ -101,7 +101,7 @@ Using data/gg/gg.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/gg/gg.bacteria.good.bad.accnos
 
-It took 42 secs to screen 174979 sequences.
+It took 284 secs to screen 174979 sequences.
 
 Output File Names: 
 data/gg/gg.bacteria.good.pcr.align
@@ -125,7 +125,7 @@ Maximum:	1236	13425	469	0	8	174979
 Mean:	1	13424	293	0	4
 # of Seqs:	174979
 
-It took 9 secs to summarize 174979 sequences.
+It took 69 secs to summarize 174979 sequences.
 
 Output File Names:
 data/gg/gg.bacteria.good.pcr.summary
@@ -142,11 +142,11 @@ summary=data/gg/gg.bacteria.good.pcr.summary
 
 mothur > 
 
-        screen.seqs(fasta=data/gg/gg.bacteria.align, maxambig=0, maxhomop=8)
+        screen.seqs(fasta=data/gg/gg.bacteria.align, maxambig=0, maxhomop=8, start=1046, end=43116)
 
 Using 8 processors.
 
-It took 51 secs to screen 198510 sequences, removed 23517.
+It took 300 secs to screen 198510 sequences, removed 130590.
 
 
 Output File Names:
@@ -154,7 +154,7 @@ data/gg/gg.bacteria.good.align
 data/gg/gg.bacteria.bad.accnos
 
 
-It took 53 secs to screen 198510 sequences.
+It took 300 secs to screen 198510 sequences.
 
 mothur > 
         summary.seqs()
@@ -163,17 +163,17 @@ Using data/gg/gg.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1045	1069	10	0	2	1
-2.5%-tile:	1046	41788	1326	0	5	4375
-25%-tile:	1046	42554	1370	0	5	43749
-Median: 	1046	43113	1412	0	5	87497
-75%-tile:	1048	43116	1451	0	6	131245
-97.5%-tile:	1776	43116	1484	0	7	170619
-Maximum:	43097	43116	1891	0	8	174993
-Mean:	1095	42815	1410	0	5
-# of Seqs:	174993
+Minimum:	1045	43116	1334	0	4	1
+2.5%-tile:	1046	43116	1388	0	5	1699
+25%-tile:	1046	43116	1435	0	5	16981
+Median: 	1046	43116	1451	0	5	33961
+75%-tile:	1046	43116	1464	0	6	50941
+97.5%-tile:	1046	43116	1489	0	7	66223
+Maximum:	1046	43116	1891	0	8	67920
+Mean:	1045	43116	1447	0	5
+# of Seqs:	67920
 
-It took 36 secs to summarize 174993 sequences.
+It took 97 secs to summarize 67920 sequences.
 
 Output File Names:
 data/gg/gg.bacteria.good.summary
@@ -186,7 +186,7 @@ Using data/gg/gg.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/gg/gg.bacteria.good.bad.accnos
 
-It took 49 secs to screen 174993 sequences.
+It took 126 secs to screen 67920 sequences.
 
 Output File Names: 
 data/gg/gg.bacteria.good.pcr.align
@@ -200,17 +200,17 @@ Using data/gg/gg.bacteria.good.pcr.align as input file for the fasta parameter.
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1	23	9	0	2	1
-2.5%-tile:	2	40742	1325	0	5	4375
-25%-tile:	2	41508	1369	0	5	43749
-Median: 	2	42067	1412	0	5	87497
-75%-tile:	2	42070	1450	0	6	131245
-97.5%-tile:	730	42070	1483	0	7	170619
-Maximum:	42051	42070	1890	0	8	174993
-Mean:	51	41769	1409	0	5
-# of Seqs:	174993
+Minimum:	1	42070	1333	0	4	1
+2.5%-tile:	2	42070	1387	0	5	1699
+25%-tile:	2	42070	1434	0	5	16981
+Median: 	2	42070	1450	0	5	33961
+75%-tile:	2	42070	1463	0	6	50941
+97.5%-tile:	2	42070	1488	0	7	66223
+Maximum:	5	42070	1890	0	8	67920
+Mean:	2	42070	1446	0	5
+# of Seqs:	67920
 
-It took 32 secs to summarize 174993 sequences.
+It took 85 secs to summarize 67920 sequences.
 
 Output File Names:
 data/gg/gg.bacteria.good.pcr.summary

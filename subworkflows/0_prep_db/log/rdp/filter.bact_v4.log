@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/04/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 2 secs to create filter for 9971 sequences.
+It took 3 secs to create filter for 9971 sequences.
 
 
 Running Filter... 
-It took 2 secs to filter 9971 sequences.
+It took 3 secs to filter 9971 sequences.
 
 
 
@@ -82,7 +82,7 @@ data/rdp/rdp.bact_v4.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 2 secs to cluster 7404 sequences.
+It took 3 secs to cluster 7404 sequences.
 
 Output File Names: 
 data/rdp/rdp.bact_v4.filter.count_table
@@ -130,7 +130,7 @@ Mean:	1	627	291	0	4
 # of unique seqs:	6280
 total # of seqs:	9971
 
-It took 0 secs to summarize 9971 sequences.
+It took 1 secs to summarize 9971 sequences.
 
 Output File Names:
 data/rdp/rdp.bact_v4.filter.unique.precluster.summary

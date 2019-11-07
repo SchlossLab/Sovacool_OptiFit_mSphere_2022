@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=log/rdp/calc_dists.bact_v4.log)
+mothur > set.logfile(name=log/rdp/get_otu_reps.bact_v4.log)
 
 mothur > set.dir(input=data/rdp/, output=results/rdp/)
 Mothur's directories:
@@ -35,17 +35,5 @@ outputDir=results/rdp/
 inputDir=data/rdp/
 
 mothur > 
-        dist.seqs(fasta=data/rdp/rdp.bact_v4.filter.unique.precluster.fasta, cutoff=0.03, processors=12) 
-
-Using 12 processors.
-
-Sequence	Time	Num_Dists_Below_Cutoff
-
-It took 12 secs to find distances for 6280 sequences. 16773 distances below cutoff 0.03.
-
-
-Output File Names: 
-results/rdp/rdp.bact_v4.filter.unique.precluster.dist
-
-
-mothur > quit()
+        classify.otu(taxonomy=data/rdp/rdp.bacteria.bact_v4.precluster.tax, list=results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_table)
+0.03	3075

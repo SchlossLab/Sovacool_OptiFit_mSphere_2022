@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 10/23/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/silva/get_otu_reps.bact_v4.log)
+mothur > set.logfile(name=log/silva/get_otu_reps.bact_v4.log)
 
 mothur > set.dir(input=data/silva/, output=results/silva/)
 Mothur's directories:
@@ -36,4 +36,4 @@ inputDir=data/silva/
 
 mothur > 
         classify.otu(taxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table)
-0.03	3022
+0.03	2574
