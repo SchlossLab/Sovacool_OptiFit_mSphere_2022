@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/04/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 3 secs to create filter for 6696 sequences.
+It took 2 secs to create filter for 6696 sequences.
 
 
 Running Filter... 
-It took 2 secs to filter 6696 sequences.
+It took 1 secs to filter 6696 sequences.
 
 
 
