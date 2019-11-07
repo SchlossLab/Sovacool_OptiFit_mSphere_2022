@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 08/21/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/rdp/cluster.bact_full.log)
+mothur > set.logfile(name=log/rdp/cluster.bact_full.log)
 
 mothur > set.dir(input=data/rdp/, output=results/rdp/)
 Mothur's directories:
@@ -37,7 +37,7 @@ inputDir=data/rdp/
 mothur > 
         cluster(column=results/rdp/rdp.bact_full.filter.unique.precluster.dist, count=data/rdp/rdp.bact_full.filter.unique.precluster.count_table, cutoff=0.03) 
 
-Using 12 processors.
+Using 16 processors.
 
 Clustering results/rdp/rdp.bact_full.filter.unique.precluster.dist
 
@@ -45,15 +45,14 @@ Clustering results/rdp/rdp.bact_full.filter.unique.precluster.dist
 iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
 
 0.03
-0	0	0.03	6818	0.03	0	23216596	0	22557	0	1	0	0.999029	1	0.999029	0	0	
-1	0	0.03	3970	0.03	17904	23214209	2387	4653	0.793723	0.999897	0.882362	0.9998	0.882362	0.999697	0.83672	0.835698	
-2	0	0.03	3928	0.03	19140	23213560	3036	3417	0.848517	0.999869	0.863095	0.999853	0.863095	0.999722	0.855636	0.855744	
-3	0	0.03	3925	0.03	19213	23213559	3037	3344	0.851753	0.999869	0.863506	0.999856	0.863506	0.999725	0.857472	0.857589	
-4	0	0.03	3921	0.03	19271	23213493	3103	3286	0.854325	0.999866	0.861312	0.999858	0.861312	0.999725	0.857674	0.857804	
-5	0	0.03	3922	0.03	19269	23213496	3100	3288	0.854236	0.999866	0.861415	0.999858	0.861415	0.999725	0.857681	0.857811	
+0	0	0.03	5705	0.03	0	16252573	0	18087	0	1	0	0.998888	1	0.998888	0	0	
+1	0	0.03	3405	0.03	14079	16250709	1864	4008	0.778404	0.999885	0.883083	0.999753	0.883083	0.999639	0.828917	0.827446	
+2	0	0.03	3371	0.03	15436	16250226	2347	2651	0.853431	0.999856	0.86802	0.999837	0.86802	0.999693	0.860541	0.860664	
+3	0	0.03	3370	0.03	15500	16250175	2398	2587	0.856969	0.999852	0.866019	0.999841	0.866019	0.999694	0.861329	0.86147	
+4	0	0.03	3370	0.03	15535	16250133	2440	2552	0.858904	0.99985	0.864256	0.999843	0.864256	0.999693	0.861422	0.861572	
 
 
-It took 1 seconds to cluster
+It took 0 seconds to cluster
 
 Output File Names: 
 results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.list

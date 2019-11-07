@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/04/2019
+Last updated: 11/05/2019
 by
 Patrick D. Schloss
 
@@ -49,7 +49,7 @@ Maximum:	43021	43116	1920	129	68	12800
 Mean:	1097	42673	1419	0	5
 # of Seqs:	12800
 
-It took 12 secs to summarize 12800 sequences.
+It took 9 secs to summarize 12800 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.summary
@@ -61,7 +61,7 @@ mothur >
 
 Using 8 processors.
 
-It took 3 secs to screen 12800 sequences, removed 2829.
+It took 2 secs to screen 12800 sequences, removed 2829.
 
 
 Output File Names:
@@ -69,7 +69,7 @@ data/rdp/rdp.bacteria.good.align
 data/rdp/rdp.bacteria.bad.accnos
 
 
-It took 4 secs to screen 12800 sequences.
+It took 3 secs to screen 12800 sequences.
 
 mothur > 
         summary.seqs()
@@ -142,11 +142,11 @@ summary=data/rdp/rdp.bacteria.good.pcr.summary
 
 mothur > 
 
-        screen.seqs(fasta=data/rdp/rdp.bacteria.align, maxambig=0, maxhomop=8)
+        screen.seqs(fasta=data/rdp/rdp.bacteria.align, maxambig=0, maxhomop=8, start=1046, end=43116)
 
 Using 8 processors.
 
-It took 2 secs to screen 12800 sequences, removed 2641.
+It took 3 secs to screen 12800 sequences, removed 6953.
 
 
 Output File Names:
@@ -163,17 +163,17 @@ Using data/rdp/rdp.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1045	8600	25	0	4	1
-2.5%-tile:	1046	41507	1267	0	5	254
-25%-tile:	1046	43103	1408	0	5	2540
-Median: 	1046	43116	1439	0	5	5080
-75%-tile:	1060	43116	1455	0	6	7620
-97.5%-tile:	1459	43116	1489	0	7	9906
-Maximum:	43021	43116	1890	0	8	10159
-Mean:	1093	42659	1418	0	5
-# of Seqs:	10159
+Minimum:	1046	43116	1358	0	4	1
+2.5%-tile:	1046	43116	1386	0	5	147
+25%-tile:	1046	43116	1437	0	5	1462
+Median: 	1046	43116	1447	0	5	2924
+75%-tile:	1046	43116	1461	0	6	4386
+97.5%-tile:	1046	43116	1491	0	7	5701
+Maximum:	1046	43116	1890	0	8	5847
+Mean:	1046	43116	1447	0	5
+# of Seqs:	5847
 
-It took 2 secs to summarize 10159 sequences.
+It took 1 secs to summarize 5847 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.good.summary
@@ -186,7 +186,7 @@ Using data/rdp/rdp.bacteria.good.align as input file for the fasta parameter.
 Using 8 processors.
 [NOTE]: no sequences were bad, removing data/rdp/rdp.bacteria.good.bad.accnos
 
-It took 3 secs to screen 10159 sequences.
+It took 3 secs to screen 5847 sequences.
 
 Output File Names: 
 data/rdp/rdp.bacteria.good.pcr.align
@@ -200,17 +200,17 @@ Using data/rdp/rdp.bacteria.good.pcr.align as input file for the fasta parameter
 Using 8 processors.
 
 		Start	End	NBases	Ambigs	Polymer	NumSeqs
-Minimum:	1	7554	25	0	4	1
-2.5%-tile:	2	40461	1267	0	5	254
-25%-tile:	2	42057	1408	0	5	2540
-Median: 	2	42070	1438	0	5	5080
-75%-tile:	14	42070	1454	0	6	7620
-97.5%-tile:	413	42070	1488	0	7	9906
-Maximum:	41975	42070	1889	0	8	10159
-Mean:	48	41613	1418	0	5
-# of Seqs:	10159
+Minimum:	1	42070	1357	0	4	1
+2.5%-tile:	2	42070	1385	0	5	147
+25%-tile:	2	42070	1436	0	5	1462
+Median: 	2	42070	1446	0	5	2924
+75%-tile:	2	42070	1460	0	6	4386
+97.5%-tile:	2	42070	1490	0	7	5701
+Maximum:	5	42070	1889	0	8	5847
+Mean:	2	42070	1446	0	5
+# of Seqs:	5847
 
-It took 2 secs to summarize 10159 sequences.
+It took 1 secs to summarize 5847 sequences.
 
 Output File Names:
 data/rdp/rdp.bacteria.good.pcr.summary
