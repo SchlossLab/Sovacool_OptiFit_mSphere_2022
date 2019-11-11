@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 11/04/2019
+Last updated: 11/11/2019
 by
 Patrick D. Schloss
 
@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 80 secs to create filter for 174979 sequences.
+It took 41 secs to create filter for 174979 sequences.
 
 
 Running Filter... 
-It took 66 secs to filter 174979 sequences.
+It took 34 secs to filter 174979 sequences.
 
 
 
@@ -82,7 +82,7 @@ data/gg/gg.bact_v4.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 670 secs to cluster 135640 sequences.
+It took 607 secs to cluster 135640 sequences.
 
 Output File Names: 
 data/gg/gg.bact_v4.filter.count_table
@@ -130,7 +130,7 @@ Mean:	1	1281	288	0	4
 # of unique seqs:	108499
 total # of seqs:	174979
 
-It took 7 secs to summarize 174979 sequences.
+It took 4 secs to summarize 174979 sequences.
 
 Output File Names:
 data/gg/gg.bact_v4.filter.unique.precluster.summary
