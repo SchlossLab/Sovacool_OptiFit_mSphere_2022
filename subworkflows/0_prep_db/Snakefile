@@ -225,7 +225,6 @@ rule cluster:
 rule get_otu_reps:
     input:
         list=rules.cluster.output.list,
-        fasta=rules.filter.output.preclust_fasta,
         count=rules.filter.output.preclust_count,
         tax=rules.filter.output.preclust_tax,
         dist=rules.calc_dists.output.dist
@@ -239,7 +238,8 @@ rule get_otu_reps:
         "benchmarks/{ref}/get_otu_reps.{region}.txt"
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        classify.otu(taxonomy={input.tax}, list={input.list}, count={input.count});
+        mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
+        make.shared(list={input.list}, count={input.count}, label=0.03)
+        classify.otu(list={input.list}, count={input.count}taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
