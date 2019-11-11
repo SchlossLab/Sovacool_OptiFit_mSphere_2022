@@ -29,11 +29,21 @@ Script Mode
 
 mothur > set.logfile(name=log/rdp/get_otu_reps.bact_v4.log)
 
-mothur > set.dir(input=data/rdp/, output=results/rdp/)
+mothur > set.dir(output=results/rdp/)
 Mothur's directories:
 outputDir=results/rdp/
-inputDir=data/rdp/
 
 mothur > 
-        classify.otu(taxonomy=data/rdp/rdp.bacteria.bact_v4.precluster.tax, list=results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_table)
-0.03	3075
+        make.shared(list=results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_table, label=0.03)
+        classify.otu(list=results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/rdp/rdp.bacteria.bact_v4.precluster.tax, label=0.03)
+Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/rdp/rdp.bacteria.bact_v4.precluster.tax. Trying output directory results/rdp/rdp.bacteria.bact_v4.precluster.tax.
+Unable to open results/rdp/rdp.bacteria.bact_v4.precluster.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.bact_v4.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.bact_v4.precluster.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.bact_v4.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/rdp.bacteria.bact_v4.precluster.tax.
+Unable to open data/rdp/rdp.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/rdp/rdp.bacteria.bact_v4.precluster.tax
+[ERROR]: You need to provide a groupfile or countfile if you are going to use the list format.
+[ERROR]: did not complete make.shared.
+
+mothur > 
+        get.oturep(column=results/rdp/rdp.bact_v4.filter.unique.precluster.dist, list=results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/rdp/rdp.bact_v4.filter.unique.precluster.count_table, method=abundance) 
+[WARNING]: A phylip or column file is not needed to use the abundance method, ignoring.
