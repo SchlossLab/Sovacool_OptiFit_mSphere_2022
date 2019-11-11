@@ -2,7 +2,7 @@ Linux version
 
 Using ReadLine,Boost,HDF5
 mothur v.1.42.3
-Last updated: 08/21/2019
+Last updated: 11/11/2019
 by
 Patrick D. Schloss
 
@@ -27,7 +27,7 @@ Type 'quit()' to exit program
 Script Mode
 
 
-mothur > set.logfile(name=logfiles/gg/calc_dists.bact_v4.log)
+mothur > set.logfile(name=log/gg/calc_dists.bact_v4.log)
 
 mothur > set.dir(input=data/gg/, output=results/gg/)
 Mothur's directories:
@@ -41,7 +41,7 @@ Using 12 processors.
 
 Sequence	Time	Num_Dists_Below_Cutoff
 
-It took 55196 secs to find distances for 123806 sequences. 689222 distances below cutoff 0.03.
+It took 23676 secs to find distances for 108499 sequences. 554003 distances below cutoff 0.03.
 
 
 Output File Names: 

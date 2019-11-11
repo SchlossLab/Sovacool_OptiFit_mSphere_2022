@@ -1,0 +1,49 @@
+Linux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 11/11/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=log/gg/get_otu_reps.bact_v4.log)
+
+mothur > set.dir(output=results/gg/)
+Mothur's directories:
+outputDir=results/gg/
+
+mothur > 
+        make.shared(list=results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/gg/gg.bact_v4.filter.unique.precluster.count_table, label=0.03)
+        classify.otu(list=results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/gg/gg.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/gg/gg.bacteria.bact_v4.precluster.tax, label=0.03)
+Unable to open data/gg/gg.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/gg/gg.bacteria.bact_v4.precluster.tax. Trying output directory results/gg/gg.bacteria.bact_v4.precluster.tax.
+Unable to open results/gg/gg.bacteria.bact_v4.precluster.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/gg.bacteria.bact_v4.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/gg.bacteria.bact_v4.precluster.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/gg.bacteria.bact_v4.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/gg.bacteria.bact_v4.precluster.tax.
+Unable to open data/gg/gg.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/gg/gg.bacteria.bact_v4.precluster.tax
+[ERROR]: You need to provide a groupfile or countfile if you are going to use the list format.
+[ERROR]: did not complete make.shared.
+
+mothur > 
+        get.oturep(column=results/gg/gg.bact_v4.filter.unique.precluster.dist, list=results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/gg/gg.bact_v4.filter.unique.precluster.count_table, method=abundance) 
+[WARNING]: A phylip or column file is not needed to use the abundance method, ignoring.

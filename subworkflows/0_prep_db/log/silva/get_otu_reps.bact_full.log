@@ -29,11 +29,21 @@ Script Mode
 
 mothur > set.logfile(name=log/silva/get_otu_reps.bact_full.log)
 
-mothur > set.dir(input=data/silva/, output=results/silva/)
+mothur > set.dir(output=results/silva/)
 Mothur's directories:
 outputDir=results/silva/
-inputDir=data/silva/
 
 mothur > 
-        classify.otu(taxonomy=data/silva/silva.bacteria.bact_full.precluster.tax, list=results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_full.filter.unique.precluster.count_table)
-0.03	3379
+        make.shared(list=results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_full.filter.unique.precluster.count_table, label=0.03)
+        classify.otu(list=results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_full.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_full.precluster.tax, label=0.03)
+Unable to open data/silva/silva.bact_full.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_full.precluster.tax. Trying output directory results/silva/silva.bacteria.bact_full.precluster.tax.
+Unable to open results/silva/silva.bacteria.bact_full.precluster.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_full.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_full.precluster.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_full.precluster.tax.
+Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_full.precluster.tax.
+Unable to open data/silva/silva.bact_full.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_full.precluster.tax
+[ERROR]: You need to provide a groupfile or countfile if you are going to use the list format.
+[ERROR]: did not complete make.shared.
+
+mothur > 
+        get.oturep(column=results/silva/silva.bact_full.filter.unique.precluster.dist, list=results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_full.filter.unique.precluster.count_table, method=abundance) 
+[WARNING]: A phylip or column file is not needed to use the abundance method, ignoring.

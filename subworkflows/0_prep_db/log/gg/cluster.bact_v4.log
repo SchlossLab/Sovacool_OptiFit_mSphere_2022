@@ -1,0 +1,65 @@
+Linux version
+
+Using ReadLine,Boost,HDF5
+mothur v.1.42.3
+Last updated: 11/11/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=log/gg/cluster.bact_v4.log)
+
+mothur > set.dir(input=data/gg/, output=results/gg/)
+Mothur's directories:
+outputDir=results/gg/
+inputDir=data/gg/
+
+mothur > 
+        cluster(column=results/gg/gg.bact_v4.filter.unique.precluster.dist, count=data/gg/gg.bact_v4.filter.unique.precluster.count_table, cutoff=0.03) 
+
+Using 16 processors.
+
+Clustering results/gg/gg.bact_v4.filter.unique.precluster.dist
+
+
+iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+
+0.03
+0	0	0.03	108499	0.03	0	5885408248	0	554003	0	1	0	0.999906	1	0.999906	0	0	
+1	1	0.03	57208	0.03	316082	5885343613	64635	237921	0.570542	0.999989	0.830228	0.99996	0.830228	0.999949	0.688221	0.676314	
+2	0	0.03	56126	0.03	351212	5885326297	81951	202791	0.633953	0.999986	0.810808	0.999966	0.810808	0.999952	0.716925	0.711556	
+3	1	0.03	56094	0.03	355198	5885324226	84022	198805	0.641148	0.999986	0.808702	0.999966	0.808702	0.999952	0.720045	0.715243	
+4	0	0.03	56084	0.03	356000	5885323912	84336	198003	0.642596	0.999986	0.808474	0.999966	0.808474	0.999952	0.720755	0.716054	
+5	1	0.03	56077	0.03	356534	5885323514	84734	197469	0.64356	0.999986	0.807976	0.999966	0.807976	0.999952	0.721074	0.716456	
+6	1	0.03	56071	0.03	356518	5885323619	84629	197485	0.643531	0.999986	0.808161	0.999966	0.808161	0.999952	0.72114	0.716511	
+
+
+It took 8 seconds to cluster
+
+Output File Names: 
+results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.list
+results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.steps
+results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.sensspec
+
+
+mothur > quit()
