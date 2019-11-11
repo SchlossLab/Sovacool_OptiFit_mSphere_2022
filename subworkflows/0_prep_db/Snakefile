@@ -85,7 +85,7 @@ rule get_bacteria:
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
 
         get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
-        summary.seqs();
+        summary.seqs(fasta=current);
 
         rename.file(input={params.fasta}, new={output.fasta});
         rename.file(input={params.tax}, new={output.tax}) '
