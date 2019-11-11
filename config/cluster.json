@@ -1,14 +1,19 @@
 "__default__": {
-    "account": "pschloss_fluxod",
+    "account_pbs": "pschloss_fluxod",
+    "account_slurm": "pschloss",
     "queue": "fluxod",
+    "qos":"flux",
+    "partition": "standard",
     "jobname": "{rule}.{wildcards}",
+    "nodes": 1,
     "procs": 1,
-    "pmem": "6GB",
-    "walltime": "12:00:00",
+    "pmem": "1000MB",
+    "walltime": "1:00:00",
     "email": "sovacool@umich.edu",
     "mailon": "a",
+    "mail_type": "FAIL",
     "jobout": "oe",
-    "outdir": "logfiles/pbs/"
+    "outdir": "logfiles/hpc/"
 }
 "subset_regions": {
     "procs": "{resources.procs}"

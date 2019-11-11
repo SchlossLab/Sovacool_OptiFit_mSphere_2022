@@ -1,6 +1,6 @@
 cluster-config: "config/cluster.json"
-cluster: "qsub -N {cluster.jobname} -A {cluster.account} -q {cluster.queue} -l qos=flux,procs={cluster.procs},pmem={cluster.pmem},walltime={cluster.walltime} -M {cluster.email} -m {cluster.mailon} -j {cluster.jobout} -V -o {cluster.outdir} "
-jobs: 5000
+cluster: "qsub -N {cluster.jobname} -A {cluster.account_pbs} -q {cluster.queue} -l qos={cluster.qos},procs={cluster.procs},pmem={cluster.pmem},walltime={cluster.walltime} -M {cluster.email} -m {cluster.mailon} -j {cluster.jobout} -V -o {cluster.outdir} "
+jobs: 4999
 verbose: true
 notemp: true
 immediate-submit: False
