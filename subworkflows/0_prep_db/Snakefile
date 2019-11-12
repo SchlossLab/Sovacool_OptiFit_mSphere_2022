@@ -177,9 +177,9 @@ rule filter:
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
 
         filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs});
-        unique.seqs(fasta={output.filter});
-        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
-        list.seqs(fasta={output.preclust_fasta});
+        unique.seqs(fasta=current);
+        pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
+        list.seqs(fasta=current);
         get.seqs(taxonomy={input.tax}, accnos=current, count=current);
 
         summary.seqs(fasta=current, count=current);
@@ -241,4 +241,4 @@ rule get_otu_reps:
         mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
-        """
+        """ # for get.oturep use count table output from get.seqs in filter rule
