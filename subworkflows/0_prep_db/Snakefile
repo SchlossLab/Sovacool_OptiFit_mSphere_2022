@@ -239,7 +239,6 @@ rule get_otu_reps:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
-        make.shared(list={input.list}, count={input.count}, label=0.03)
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
