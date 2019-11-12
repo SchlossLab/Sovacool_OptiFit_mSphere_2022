@@ -180,7 +180,7 @@ rule filter:
         unique.seqs(fasta={output.filter});
         pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
         list.seqs(fasta={output.preclust_fasta});
-        get.seqs(taxonomy={input.tax}, accnos=current, name=current);
+        get.seqs(taxonomy={input.tax}, accnos=current, count=current);
 
         summary.seqs(fasta=current, count=current);
         rename.file(input={params.tax}, new={output.preclust_tax}) '
