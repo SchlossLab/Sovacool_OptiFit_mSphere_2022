@@ -232,7 +232,7 @@ rule get_otu_reps:
     output:
         tax="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
         sum="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        names="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.names"
+        count="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.count_table"
     log:
         "log/{ref}/get_otu_reps.{region}.log"
     benchmark:
@@ -241,5 +241,5 @@ rule get_otu_reps:
         """
         mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
-        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance, label=0.03) '
         """
