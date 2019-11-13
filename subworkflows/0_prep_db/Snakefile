@@ -161,7 +161,7 @@ rule filter:
         names="data/{ref}/{ref}.{region}.filter.names",
         unique="data/{ref}/{ref}.{region}.filter.unique.fasta",
         preclust_fasta="data/{ref}/{ref}.{region}.filter.unique.precluster.fasta",
-        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table",
+        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.pick.count_table",
         preclust_accnos="data/{ref}/{ref}.{region}.filter.unique.precluster.accnos",
         preclust_tax="data/{ref}/{ref}.bacteria.{region}.precluster.tax"
     params:
@@ -180,7 +180,8 @@ rule filter:
         unique.seqs(fasta=current);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
         list.seqs(fasta=current);
-        get.seqs(taxonomy={input.tax}, accnos=current, count=current);
+        get.seqs(accnos=current, taxonomy={input.tax});
+        get.seqs(accnos=current, count=current);
 
         summary.seqs(fasta=current, count=current);
         rename.file(input={params.tax}, new={output.preclust_tax}) '
@@ -241,4 +242,4 @@ rule get_otu_reps:
         mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
-        """ # for get.oturep use count table output from get.seqs in filter rule
+        """
