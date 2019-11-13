@@ -13,7 +13,7 @@
     "mailon": "a",
     "mail_type": "FAIL",
     "jobout": "oe",
-    "outdir": "logfiles/hpc/"
+    "outdir": "log/hpc/"
 }
 "subset_regions": {
     "procs": "{resources.procs}"
