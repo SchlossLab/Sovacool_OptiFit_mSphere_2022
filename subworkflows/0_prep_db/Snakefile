@@ -161,7 +161,7 @@ rule filter:
         names="data/{ref}/{ref}.{region}.filter.names",
         unique="data/{ref}/{ref}.{region}.filter.unique.fasta",
         preclust_fasta="data/{ref}/{ref}.{region}.filter.unique.precluster.fasta",
-        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.count_table",
+        preclust_count="data/{ref}/{ref}.{region}.filter.unique.precluster.pick.count_table",
         preclust_accnos="data/{ref}/{ref}.{region}.filter.unique.precluster.accnos",
         preclust_tax="data/{ref}/{ref}.bacteria.{region}.precluster.tax"
     params:
@@ -177,10 +177,11 @@ rule filter:
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
 
         filter.seqs(fasta={input.fasta}, trump=., vertical=T, processors={resources.procs});
-        unique.seqs(fasta={output.filter});
-        pre.cluster(fasta={output.unique}, name={output.names}, diffs=2, processors={resources.procs});
-        list.seqs(fasta={output.preclust_fasta});
-        get.seqs(taxonomy={input.tax}, accnos=current, count=current);
+        unique.seqs(fasta=current);
+        pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
+        list.seqs(fasta=current);
+        get.seqs(accnos=current, taxonomy={input.tax});
+        get.seqs(accnos=current, count=current);
 
         summary.seqs(fasta=current, count=current);
         rename.file(input={params.tax}, new={output.preclust_tax}) '
