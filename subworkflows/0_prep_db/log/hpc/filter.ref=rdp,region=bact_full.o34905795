@@ -1,0 +1,277 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Unlimited resources: procs
+Job counts:
+	count	jobs
+	1	filter
+	1
+
+[Wed Nov 13 16:31:42 2019]
+rule filter:
+    input: data/rdp/rdp.bact_full.fasta, data/rdp/rdp.bacteria.tax
+    output: data/rdp/rdp.bact_full.filter.fasta, data/rdp/rdp.bact_full.filter.names, data/rdp/rdp.bact_full.filter.unique.fasta, data/rdp/rdp.bact_full.filter.unique.precluster.fasta, data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table, data/rdp/rdp.bact_full.filter.unique.precluster.accnos, data/rdp/rdp.bacteria.bact_full.precluster.tax
+    log: log/rdp/filter.bact_full.log
+    jobid: 0
+    benchmark: benchmarks/rdp/filter.bact_full.txt
+    wildcards: ref=rdp, region=bact_full
+    resources: procs=2
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=log/rdp/filter.bact_full.log)
+
+mothur > set.dir(input=data/rdp/)
+Mothur's directories:
+inputDir=data/rdp/
+
+mothur > 
+
+        filter.seqs(fasta=data/rdp/rdp.bact_full.fasta, trump=., vertical=T, processors=2)
+
+Using 2 processors.
+Creating Filter... 
+1000
+1000
+2000
+2000
+2924
+2923
+It took 14 secs to create filter for 5847 sequences.
+
+
+Running Filter... 
+1000
+1000
+2000
+2000
+2924
+2923
+It took 11 secs to filter 5847 sequences.
+
+
+
+Length of filtered alignment: 4336
+Number of columns removed: 37734
+Length of the original alignment: 42070
+Number of sequences used to construct filter: 5847
+
+Output File Names: 
+data/rdp/rdp.filter
+data/rdp/rdp.bact_full.filter.fasta
+
+
+mothur > 
+        unique.seqs(fasta=current)
+Using data/rdp/rdp.bact_full.filter.fasta as input file for the fasta parameter.
+1000	997
+2000	1990
+3000	2970
+4000	3948
+5000	4927
+5847	5743
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.names
+data/rdp/rdp.bact_full.filter.unique.fasta
+
+
+mothur > 
+        pre.cluster(fasta=current, name=current, diffs=2, processors=2)
+Using data/rdp/rdp.bact_full.filter.unique.fasta as input file for the fasta parameter.
+Using data/rdp/rdp.bact_full.filter.names as input file for the name parameter.
+
+Using 2 processors.
+When using running without group information mothur can only use 1 processor, continuing.
+0	5743	0
+100	5705	38
+200	5705	38
+300	5705	38
+400	5705	38
+500	5705	38
+600	5705	38
+700	5705	38
+800	5705	38
+900	5705	38
+1000	5705	38
+1100	5705	38
+1200	5705	38
+1300	5705	38
+1400	5705	38
+1500	5705	38
+1600	5705	38
+1700	5705	38
+1800	5705	38
+1900	5705	38
+2000	5705	38
+2100	5705	38
+2200	5705	38
+2300	5705	38
+2400	5705	38
+2500	5705	38
+2600	5705	38
+2700	5705	38
+2800	5705	38
+2900	5705	38
+3000	5705	38
+3100	5705	38
+3200	5705	38
+3300	5705	38
+3400	5705	38
+3500	5705	38
+3600	5705	38
+3700	5705	38
+3800	5705	38
+3900	5705	38
+4000	5705	38
+4100	5705	38
+4200	5705	38
+4300	5705	38
+4400	5705	38
+4500	5705	38
+4600	5705	38
+4700	5705	38
+4800	5705	38
+4900	5705	38
+5000	5705	38
+5100	5705	38
+5200	5705	38
+5300	5705	38
+5400	5705	38
+5500	5705	38
+5600	5705	38
+5700	5705	38
+5743	5705	38
+Total number of sequences before precluster was 5743.
+pre.cluster removed 38 sequences.
+
+/******************************************/
+Running command: get.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.fasta, accnos=data/rdp/rdp.bact_full.filter.unique.precluster.fasta.temp)
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_full.filter.names which seems to match data/rdp/rdp.bact_full.filter.unique.fasta.
+Selected 5705 sequences from your fasta file.
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.unique.pick.fasta
+
+/******************************************/
+Done.
+It took 3 secs to cluster 5743 sequences.
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.count_table
+data/rdp/rdp.bact_full.filter.unique.precluster.fasta
+data/rdp/rdp.bact_full.filter.unique.precluster.count_table
+data/rdp/rdp.bact_full.filter.unique.precluster.map
+
+
+mothur > 
+        list.seqs(fasta=current)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.unique.precluster.accnos
+
+
+mothur > 
+        get.seqs(accnos=current, taxonomy=data/rdp/rdp.bacteria.tax)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_full.filter.names which seems to match data/rdp/rdp.bacteria.tax.
+Selected 5705 sequences from your taxonomy file.
+
+Output File Names: 
+data/rdp/rdp.bacteria.pick.tax
+
+
+mothur > 
+        get.seqs(accnos=current, count=current)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
+Using data/rdp/rdp.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Selected 5847 sequences from your count file.
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table
+
+
+mothur > 
+
+        summary.seqs(fasta=current, count=current)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table as input file for the count parameter.
+Using data/rdp/rdp.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
+
+Using 2 processors.
+
+		Start	End	NBases	Ambigs	Polymer	NumSeqs
+Minimum:	1	4336	1356	0	4	1
+2.5%-tile:	1	4336	1384	0	5	147
+25%-tile:	1	4336	1435	0	5	1462
+Median: 	1	4336	1445	0	5	2924
+75%-tile:	1	4336	1459	0	6	4386
+97.5%-tile:	1	4336	1489	0	7	5701
+Maximum:	3	4336	1888	0	8	5847
+Mean:	1	4336	1445	0	5
+# of unique seqs:	5705
+total # of seqs:	5847
+
+It took 1 secs to summarize 5847 sequences.
+
+Output File Names:
+data/rdp/rdp.bact_full.filter.unique.precluster.summary
+
+
+mothur > 
+        rename.file(input=data/rdp/rdp.bacteria.pick.tax, new=data/rdp/rdp.bacteria.bact_full.precluster.tax) 
+
+Current files saved by mothur:
+accnos=data/rdp/rdp.bact_full.filter.unique.precluster.accnos
+fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta
+name=data/rdp/rdp.bact_full.filter.names
+taxonomy=data/rdp/rdp.bacteria.pick.tax
+count=data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table
+processors=2
+summary=data/rdp/rdp.bact_full.filter.unique.precluster.summary
+
+mothur > quit()
+
+
+It took 35 seconds to run 11 commands from your script.
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 2 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[Wed Nov 13 16:32:19 2019]
+Finished job 0.
+1 of 1 steps (100%) done

@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/05/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
 by
 Patrick D. Schloss
 
@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 8 secs to create filter for 5847 sequences.
+It took 14 secs to create filter for 5847 sequences.
 
 
 Running Filter... 
-It took 6 secs to filter 5847 sequences.
+It took 11 secs to filter 5847 sequences.
 
 
 
@@ -56,6 +56,10 @@ Output File Names:
 data/rdp/rdp.filter
 data/rdp/rdp.bact_full.filter.fasta
 
+
+mothur > 
+        unique.seqs(fasta=current)
+Using data/rdp/rdp.bact_full.filter.fasta as input file for the fasta parameter.
 5847	5743
 
 Output File Names: 
@@ -64,13 +68,15 @@ data/rdp/rdp.bact_full.filter.unique.fasta
 
 
 mothur > 
-        pre.cluster(fasta=data/rdp/rdp.bact_full.filter.unique.fasta, name=data/rdp/rdp.bact_full.filter.names, diffs=2, processors=2)
+        pre.cluster(fasta=current, name=current, diffs=2, processors=2)
+Using data/rdp/rdp.bact_full.filter.unique.fasta as input file for the fasta parameter.
+Using data/rdp/rdp.bact_full.filter.names as input file for the name parameter.
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-5743	5702	41
+5743	5705	38
 Total number of sequences before precluster was 5743.
-pre.cluster removed 41 sequences.
+pre.cluster removed 38 sequences.
 
 /******************************************/
 Running command: get.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.fasta, accnos=data/rdp/rdp.bact_full.filter.unique.precluster.fasta.temp)
@@ -92,28 +98,37 @@ data/rdp/rdp.bact_full.filter.unique.precluster.map
 
 
 mothur > 
-        list.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta)
+        list.seqs(fasta=current)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Output File Names: 
 data/rdp/rdp.bact_full.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/rdp/rdp.bacteria.tax, accnos=current, name=current)
+        get.seqs(accnos=current, taxonomy=data/rdp/rdp.bacteria.tax)
 Using data/rdp/rdp.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
-Using data/rdp/rdp.bact_full.filter.names as input file for the name parameter.
-Selected 5806 sequences from your name file.
-Selected 5806 sequences from your taxonomy file.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/rdp/rdp.bact_full.filter.names which seems to match data/rdp/rdp.bacteria.tax.
+Selected 5705 sequences from your taxonomy file.
 
 Output File Names: 
-data/rdp/rdp.bact_full.filter.pick.names
 data/rdp/rdp.bacteria.pick.tax
+
+
+mothur > 
+        get.seqs(accnos=current, count=current)
+Using data/rdp/rdp.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
+Using data/rdp/rdp.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Selected 5847 sequences from your count file.
+
+Output File Names: 
+data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table
 
 
 mothur > 
 
         summary.seqs(fasta=current, count=current)
-Using data/rdp/rdp.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table as input file for the count parameter.
 Using data/rdp/rdp.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Using 2 processors.
@@ -142,19 +157,23 @@ mothur >
 Current files saved by mothur:
 accnos=data/rdp/rdp.bact_full.filter.unique.precluster.accnos
 fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta
-name=data/rdp/rdp.bact_full.filter.pick.names
+name=data/rdp/rdp.bact_full.filter.names
 taxonomy=data/rdp/rdp.bacteria.pick.tax
-count=data/rdp/rdp.bact_full.filter.unique.precluster.count_table
+count=data/rdp/rdp.bact_full.filter.unique.precluster.pick.count_table
 processors=2
 summary=data/rdp/rdp.bact_full.filter.unique.precluster.summary
 
 mothur > quit()
 
 
+It took 35 seconds to run 11 commands from your script.
+
+
+
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 1 [WARNING] messages, please review.
+Detected 2 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

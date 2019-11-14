@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/11/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
 by
 Patrick D. Schloss
 
@@ -39,11 +39,11 @@ mothur >
 
 Using 2 processors.
 Creating Filter... 
-It took 60 secs to create filter for 67920 sequences.
+It took 152 secs to create filter for 67920 sequences.
 
 
 Running Filter... 
-It took 42 secs to filter 67920 sequences.
+It took 130 secs to filter 67920 sequences.
 
 
 
@@ -56,6 +56,10 @@ Output File Names:
 data/gg/gg.filter
 data/gg/gg.bact_full.filter.fasta
 
+
+mothur > 
+        unique.seqs(fasta=current)
+Using data/gg/gg.bact_full.filter.fasta as input file for the fasta parameter.
 67920	67905
 
 Output File Names: 
@@ -64,7 +68,9 @@ data/gg/gg.bact_full.filter.unique.fasta
 
 
 mothur > 
-        pre.cluster(fasta=data/gg/gg.bact_full.filter.unique.fasta, name=data/gg/gg.bact_full.filter.names, diffs=2, processors=2)
+        pre.cluster(fasta=current, name=current, diffs=2, processors=2)
+Using data/gg/gg.bact_full.filter.unique.fasta as input file for the fasta parameter.
+Using data/gg/gg.bact_full.filter.names as input file for the name parameter.
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
@@ -82,7 +88,7 @@ data/gg/gg.bact_full.filter.unique.pick.fasta
 
 /******************************************/
 Done.
-It took 48 secs to cluster 67905 sequences.
+It took 84 secs to cluster 67905 sequences.
 
 Output File Names: 
 data/gg/gg.bact_full.filter.count_table
@@ -92,28 +98,37 @@ data/gg/gg.bact_full.filter.unique.precluster.map
 
 
 mothur > 
-        list.seqs(fasta=data/gg/gg.bact_full.filter.unique.precluster.fasta)
+        list.seqs(fasta=current)
+Using data/gg/gg.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Output File Names: 
 data/gg/gg.bact_full.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/gg/gg.bacteria.tax, accnos=current, name=current)
+        get.seqs(accnos=current, taxonomy=data/gg/gg.bacteria.tax)
 Using data/gg/gg.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
-Using data/gg/gg.bact_full.filter.names as input file for the name parameter.
-Selected 67920 sequences from your name file.
-Selected 67920 sequences from your taxonomy file.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/gg/gg.bact_full.filter.names which seems to match data/gg/gg.bacteria.tax.
+Selected 67905 sequences from your taxonomy file.
 
 Output File Names: 
-data/gg/gg.bact_full.filter.pick.names
 data/gg/gg.bacteria.pick.tax
+
+
+mothur > 
+        get.seqs(accnos=current, count=current)
+Using data/gg/gg.bact_full.filter.unique.precluster.accnos as input file for the accnos parameter.
+Using data/gg/gg.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Selected 67920 sequences from your count file.
+
+Output File Names: 
+data/gg/gg.bact_full.filter.unique.precluster.pick.count_table
 
 
 mothur > 
 
         summary.seqs(fasta=current, count=current)
-Using data/gg/gg.bact_full.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/gg/gg.bact_full.filter.unique.precluster.pick.count_table as input file for the count parameter.
 Using data/gg/gg.bact_full.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Using 2 processors.
@@ -130,7 +145,7 @@ Mean:	1	6630	1445	0	5
 # of unique seqs:	67905
 total # of seqs:	67920
 
-It took 9 secs to summarize 67920 sequences.
+It took 25 secs to summarize 67920 sequences.
 
 Output File Names:
 data/gg/gg.bact_full.filter.unique.precluster.summary
@@ -142,19 +157,23 @@ mothur >
 Current files saved by mothur:
 accnos=data/gg/gg.bact_full.filter.unique.precluster.accnos
 fasta=data/gg/gg.bact_full.filter.unique.precluster.fasta
-name=data/gg/gg.bact_full.filter.pick.names
+name=data/gg/gg.bact_full.filter.names
 taxonomy=data/gg/gg.bacteria.pick.tax
-count=data/gg/gg.bact_full.filter.unique.precluster.count_table
+count=data/gg/gg.bact_full.filter.unique.precluster.pick.count_table
 processors=2
 summary=data/gg/gg.bact_full.filter.unique.precluster.summary
 
 mothur > quit()
 
 
+It took 469 seconds to run 11 commands from your script.
+
+
+
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 1 [WARNING] messages, please review.
+Detected 2 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

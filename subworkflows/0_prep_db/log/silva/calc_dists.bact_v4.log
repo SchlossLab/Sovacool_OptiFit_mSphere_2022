@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/05/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
 by
 Patrick D. Schloss
 
@@ -41,7 +41,7 @@ Using 12 processors.
 
 Sequence	Time	Num_Dists_Below_Cutoff
 
-It took 10 secs to find distances for 4276 sequences. 6496 distances below cutoff 0.03.
+It took 16 secs to find distances for 4276 sequences. 6496 distances below cutoff 0.03.
 
 
 Output File Names: 
@@ -49,3 +49,7 @@ results/silva/silva.bact_v4.filter.unique.precluster.dist
 
 
 mothur > quit()
+
+
+It took 16 seconds to run 4 commands from your script.
+

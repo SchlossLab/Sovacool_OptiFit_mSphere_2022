@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/05/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
 by
 Patrick D. Schloss
 
@@ -56,6 +56,10 @@ Output File Names:
 data/silva/silva.filter
 data/silva/silva.bact_v4.filter.fasta
 
+
+mothur > 
+        unique.seqs(fasta=current)
+Using data/silva/silva.bact_v4.filter.fasta as input file for the fasta parameter.
 6696	5066
 
 Output File Names: 
@@ -64,13 +68,15 @@ data/silva/silva.bact_v4.filter.unique.fasta
 
 
 mothur > 
-        pre.cluster(fasta=data/silva/silva.bact_v4.filter.unique.fasta, name=data/silva/silva.bact_v4.filter.names, diffs=2, processors=2)
+        pre.cluster(fasta=current, name=current, diffs=2, processors=2)
+Using data/silva/silva.bact_v4.filter.unique.fasta as input file for the fasta parameter.
+Using data/silva/silva.bact_v4.filter.names as input file for the name parameter.
 
 Using 2 processors.
 When using running without group information mothur can only use 1 processor, continuing.
-5066	4204	862
+5066	4276	790
 Total number of sequences before precluster was 5066.
-pre.cluster removed 862 sequences.
+pre.cluster removed 790 sequences.
 
 /******************************************/
 Running command: get.seqs(fasta=data/silva/silva.bact_v4.filter.unique.fasta, accnos=data/silva/silva.bact_v4.filter.unique.precluster.fasta.temp)
@@ -92,28 +98,37 @@ data/silva/silva.bact_v4.filter.unique.precluster.map
 
 
 mothur > 
-        list.seqs(fasta=data/silva/silva.bact_v4.filter.unique.precluster.fasta)
+        list.seqs(fasta=current)
+Using data/silva/silva.bact_v4.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Output File Names: 
 data/silva/silva.bact_v4.filter.unique.precluster.accnos
 
 
 mothur > 
-        get.seqs(taxonomy=data/silva/silva.bacteria.tax, accnos=current, name=current)
+        get.seqs(accnos=current, taxonomy=data/silva/silva.bacteria.tax)
 Using data/silva/silva.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
-Using data/silva/silva.bact_v4.filter.names as input file for the name parameter.
-Selected 5651 sequences from your name file.
-Selected 5651 sequences from your taxonomy file.
+[WARNING]: This command can take a namefile and you did not provide one. The current namefile is data/silva/silva.bact_v4.filter.names which seems to match data/silva/silva.bacteria.tax.
+Selected 4276 sequences from your taxonomy file.
 
 Output File Names: 
-data/silva/silva.bact_v4.filter.pick.names
 data/silva/silva.bacteria.pick.tax
+
+
+mothur > 
+        get.seqs(accnos=current, count=current)
+Using data/silva/silva.bact_v4.filter.unique.precluster.accnos as input file for the accnos parameter.
+Using data/silva/silva.bact_v4.filter.unique.precluster.count_table as input file for the count parameter.
+Selected 6696 sequences from your count file.
+
+Output File Names: 
+data/silva/silva.bact_v4.filter.unique.precluster.pick.count_table
 
 
 mothur > 
 
         summary.seqs(fasta=current, count=current)
-Using data/silva/silva.bact_v4.filter.unique.precluster.count_table as input file for the count parameter.
+Using data/silva/silva.bact_v4.filter.unique.precluster.pick.count_table as input file for the count parameter.
 Using data/silva/silva.bact_v4.filter.unique.precluster.fasta as input file for the fasta parameter.
 
 Using 2 processors.
@@ -142,19 +157,23 @@ mothur >
 Current files saved by mothur:
 accnos=data/silva/silva.bact_v4.filter.unique.precluster.accnos
 fasta=data/silva/silva.bact_v4.filter.unique.precluster.fasta
-name=data/silva/silva.bact_v4.filter.pick.names
+name=data/silva/silva.bact_v4.filter.names
 taxonomy=data/silva/silva.bacteria.pick.tax
-count=data/silva/silva.bact_v4.filter.unique.precluster.count_table
+count=data/silva/silva.bact_v4.filter.unique.precluster.pick.count_table
 processors=2
 summary=data/silva/silva.bact_v4.filter.unique.precluster.summary
 
 mothur > quit()
 
 
+It took 5 seconds to run 11 commands from your script.
+
+
+
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Detected 1 [WARNING] messages, please review.
+Detected 2 [WARNING] messages, please review.
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
