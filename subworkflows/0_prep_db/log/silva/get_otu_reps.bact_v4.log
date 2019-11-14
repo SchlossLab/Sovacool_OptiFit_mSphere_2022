@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/11/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/14/2019
 by
 Patrick D. Schloss
 
@@ -34,16 +34,35 @@ Mothur's directories:
 outputDir=results/silva/
 
 mothur > 
-        make.shared(list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table, label=0.03)
-        classify.otu(list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax, label=0.03)
-Unable to open data/silva/silva.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax. Trying output directory results/silva/silva.bacteria.bact_v4.precluster.tax.
-Unable to open results/silva/silva.bacteria.bact_v4.precluster.tax. Trying default /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_v4.precluster.tax.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_v4.precluster.tax. Trying mothur's executable location /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_v4.precluster.tax.
-Unable to open /home/sovacool/bin/anaconda3/envs/optiFit/bin/silva.bacteria.bact_v4.precluster.tax.
-Unable to open data/silva/silva.bact_v4.filter.unique.precluster.count_tabletaxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax
-[ERROR]: You need to provide a groupfile or countfile if you are going to use the list format.
-[ERROR]: did not complete make.shared.
+        classify.otu(list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.pick.count_table, taxonomy=data/silva/silva.bacteria.bact_v4.precluster.tax, label=0.03)
+0.03	2574
+
+Output File Names: 
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary
+
 
 mothur > 
-        get.oturep(column=results/silva/silva.bact_v4.filter.unique.precluster.dist, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.count_table, method=abundance) 
+        get.oturep(column=results/silva/silva.bact_v4.filter.unique.precluster.dist, list=results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.list, count=data/silva/silva.bact_v4.filter.unique.precluster.pick.count_table, method=abundance) 
 [WARNING]: A phylip or column file is not needed to use the abundance method, ignoring.
+You did not provide a label, using 0.03.
+0.03	2574
+
+Output File Names: 
+results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.rep.count_table
+
+
+mothur > quit()
+
+
+It took 1 seconds to run 5 commands from your script.
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 1 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
