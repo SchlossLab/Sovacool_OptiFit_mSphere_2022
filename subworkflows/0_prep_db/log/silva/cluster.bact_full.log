@@ -1,8 +1,8 @@
 Linux version
 
-Using ReadLine,Boost,HDF5
-mothur v.1.42.3
-Last updated: 11/05/2019
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
 by
 Patrick D. Schloss
 
@@ -35,7 +35,7 @@ outputDir=results/silva/
 inputDir=data/silva/
 
 mothur > 
-        cluster(column=results/silva/silva.bact_full.filter.unique.precluster.dist, count=data/silva/silva.bact_full.filter.unique.precluster.count_table, cutoff=0.03) 
+        cluster(column=results/silva/silva.bact_full.filter.unique.precluster.dist, count=data/silva/silva.bact_full.filter.unique.precluster.pick.count_table, cutoff=0.03) 
 
 Using 16 processors.
 
@@ -45,14 +45,14 @@ Clustering results/silva/silva.bact_full.filter.unique.precluster.dist
 iter	time	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
 
 0.03
-0	0	0.03	6600	0.03	0	21738334	0	38366	0	1	0	0.998238	1	0.998238	0	0	
-1	0	0.03	3432	0.03	31842	21734017	4317	6524	0.829954	0.999801	0.880611	0.9997	0.880611	0.999502	0.854659	0.854532	
-2	0	0.03	3379	0.03	33270	21733132	5202	5096	0.867174	0.999761	0.864785	0.999766	0.864785	0.999527	0.865742	0.865978	
-3	0	0.03	3380	0.03	33286	21733129	5205	5080	0.867591	0.999761	0.864774	0.999766	0.864774	0.999528	0.865945	0.86618	
-4	0	0.03	3379	0.03	33288	21733131	5203	5078	0.867643	0.999761	0.864826	0.999766	0.864826	0.999528	0.865997	0.866232	
+0	0	0.03	6600	0.03	0	2.17383e+07	0	38366	0	1	0	0.998238	1	0.998238	0	0	
+1	0	0.03	3434	0.03	31958	2.17339e+07	4463	6408	0.832977	0.999795	0.877461	0.999705	0.877461	0.999501	0.854681	0.854641	
+2	0	0.03	3384	0.03	33327	2.17331e+07	5270	5039	0.86866	0.999758	0.863461	0.999768	0.863461	0.999527	0.865819	0.866053	
+3	0	0.03	3379	0.03	33391	2.1733e+07	5329	4975	0.870328	0.999755	0.862371	0.999771	0.862371	0.999527	0.866103	0.866331	
+4	0	0.03	3379	0.03	33387	2.1733e+07	5320	4979	0.870224	0.999755	0.862557	0.999771	0.862557	0.999527	0.866145	0.866373	
 
 
-It took 1 seconds to cluster
+It took 0 seconds to cluster
 
 Output File Names: 
 results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.list
@@ -61,3 +61,7 @@ results/silva/silva.bact_full.filter.unique.precluster.opti_mcc.sensspec
 
 
 mothur > quit()
+
+
+It took 0 seconds to run 4 commands from your script.
+

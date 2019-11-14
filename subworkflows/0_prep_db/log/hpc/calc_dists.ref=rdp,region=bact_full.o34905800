@@ -1,0 +1,148 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Unlimited resources: walltime_hrs, procs
+Job counts:
+	count	jobs
+	1	calc_dists
+	1
+
+[Wed Nov 13 16:33:14 2019]
+rule calc_dists:
+    input: data/rdp/rdp.bact_full.filter.unique.precluster.fasta
+    output: results/rdp/rdp.bact_full.filter.unique.precluster.dist
+    log: log/rdp/calc_dists.bact_full.log
+    jobid: 0
+    benchmark: benchmarks/rdp/calc_dists.bact_full.txt
+    wildcards: ref=rdp, region=bact_full
+    resources: procs=12, walltime_hrs=48
+
+[3J[H[2JLinux version
+
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.43.0
+Last updated: 11/13/2019
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > set.logfile(name=log/rdp/calc_dists.bact_full.log)
+
+mothur > set.dir(input=data/rdp/, output=results/rdp/)
+Mothur's directories:
+outputDir=results/rdp/
+inputDir=data/rdp/
+
+mothur > 
+        dist.seqs(fasta=data/rdp/rdp.bact_full.filter.unique.precluster.fasta, cutoff=0.03, processors=12) 
+
+Using 12 processors.
+
+Sequence	Time	Num_Dists_Below_Cutoff
+3300	1	66
+0	0	0
+100	1	3
+200	1	19
+1700	3	110
+3700	2	71
+300	2	41
+400	4	71
+2900	5	107
+500	5	109
+2400	6	121
+4400	7	222
+600	8	176
+4700	8	327
+5500	9	332
+1800	10	299
+4100	10	266
+700	10	287
+5000	11	357
+2500	14	441
+800	13	401
+3400	14	270
+3000	17	431
+900	16	497
+1900	19	503
+3800	19	493
+1000	20	605
+2600	23	755
+5300	22	522
+1100	24	719
+2000	26	656
+4800	26	695
+4200	26	775
+3500	28	780
+4500	27	975
+3100	28	834
+5100	29	1022
+1200	29	847
+5600	30	895
+2700	33	1166
+2100	34	873
+1300	34	1006
+3900	34	1027
+1400	39	1126
+3200	40	1257
+3600	41	1174
+2200	42	1145
+5400	42	1067
+4300	42	1276
+2800	44	1492
+4600	44	1228
+1500	45	1347
+4900	45	1127
+2851	49	1651
+5200	48	1544
+4000	49	1486
+5206	49	1561
+2300	51	1486
+3292	51	1688
+1600	51	1525
+4356	51	1420
+4033	51	1589
+3681	52	1522
+5700	51	1418
+2328	53	1582
+4939	52	1376
+5704	52	1425
+1645	52	1640
+4657	53	1415
+5461	53	1218
+
+It took 54 secs to find distances for 5705 sequences. 18087 distances below cutoff 0.03.
+
+
+Output File Names: 
+results/rdp/rdp.bact_full.filter.unique.precluster.dist
+
+
+mothur > quit()
+
+
+It took 55 seconds to run 4 commands from your script.
+
+[Wed Nov 13 16:34:09 2019]
+Finished job 0.
+1 of 1 steps (100%) done
