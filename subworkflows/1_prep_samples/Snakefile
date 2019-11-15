@@ -31,7 +31,7 @@ rule names_file:
     script:
         "{input.R}"
 
-rule preprocess:  # TODO: each for regions v4 and full?
+rule preprocess:
     input:
         file=rules.names_file.output.file,
         silva=prep_db("data/silva/silva.bact_v4.fasta"),
@@ -43,10 +43,10 @@ rule preprocess:  # TODO: each for regions v4 and full?
         "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=8
-    shell:
+    shell:  # TODO: double-check filepaths
         """
         mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/processed);
-        	make.contigs(inputdir=data/{wildcards.dataset}, file={input.file}, processors={resources.procs});
+        	make.contigs(inputdir=data/{wildcards.dataset}/, file={input.file}, processors={resources.procs});
         	screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
         	unique.seqs();
         	count.seqs(name=current, group=current);
