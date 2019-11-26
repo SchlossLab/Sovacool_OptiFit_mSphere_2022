@@ -1,6 +1,8 @@
 """ Benchmarking the OptiFit algorithm using an external reference database """
 import shutil
 
+# TODO: take a V4 data set and try it against a FL and V4 reference
+
 rule fit_to_external_ref_db:
     input:
         expand('results/{{reference}}-as-reference/{{dataset}}/i-{iter}/{prefix}.opti_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),

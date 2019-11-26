@@ -1,6 +1,6 @@
 list_file=$1
 outdir=$2
-if [[ $outdir == *"mice"* ]]; then
+if [[ $outdir == *"mouse"* ]]; then
     wget -N -P $outdir http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar
     tar -xvf $outdir/StabilityNoMetaG.tar -C $outdir/
     rm $outdir/StabilityNoMetaG.tar
