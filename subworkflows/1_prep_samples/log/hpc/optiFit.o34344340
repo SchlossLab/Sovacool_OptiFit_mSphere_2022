@@ -1,3 +1,0 @@
-nyx5563
-/home/sovacool/optiFit/subworkflows/1_prep_samples
-Error: profile given but no config.yaml found. Profile has to be given as either absolute path, relative path or name of a directory available in either /etc/xdg/snakemake or /home/sovacool/.config/snakemake.
