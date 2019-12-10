@@ -1,0 +1,1 @@
+No SRAs, get the dataset here: http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar
