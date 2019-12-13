@@ -8,13 +8,16 @@
     "nodes": 1,
     "procs": 1,
     "pmem": "4GB",
-    "walltime": "12:00:00",
+    "walltime": "24:00:00",
     "email": "sovacool@umich.edu",
     "mailon": "a",
     "mail_type": "FAIL",
     "jobout": "oe",
     "outdir": "log/hpc/",
     "outfile": "log/hpc/slurm-%j.out"
+},
+"download": {
+    "walltime": "96:00:00"
 },
 "subset_regions": {
     "procs": "{resources.procs}"
