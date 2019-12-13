@@ -5,7 +5,7 @@
 #Adapted from: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/master/code/human.batch
 #Requires R installed in path
 #Requires sra-tools for fastq-dump https://github.com/ncbi/sra-tools/wiki/Building-and-Installing-from-Source
-#Requires mothur (I used dev version 1.41.0) installed in path
+#Requires mothur installed in path
 
 
 

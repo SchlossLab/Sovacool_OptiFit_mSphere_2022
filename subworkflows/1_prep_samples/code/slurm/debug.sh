@@ -17,7 +17,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=1GB
-#SBATCH --time=24:00:00
+#SBATCH --time=96:00:00
 
 #SBATCH --output=log/hpc/slurm-%j.out
 
@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-snakemake --profile config/slurm --latency-wait 30 data/human/human.files data/marine/marine.files
+snakemake --profile config/slurm --latency-wait 30 data/human/human.files data/marine/marine.files data/mouse/mouse.files data/marine/marine.files

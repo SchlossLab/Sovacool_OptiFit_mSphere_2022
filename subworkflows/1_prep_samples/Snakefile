@@ -16,7 +16,7 @@ checkpoint download:
         "{input.sh} {input.list} {output.dir}"
 
 def get_download_filenames(wildcards):
-    dir = checkpoints.download.get(dataset=wildcards.dataset).dir
+    dir = checkpoints.download.get(dataset=wildcards.dataset).output.dir
     filenames, = glob_wildcards(os.path.join(dir, "{filename}"))
     return expand("{dir}/{filename}", dir=dir, filename=filenames)
 
