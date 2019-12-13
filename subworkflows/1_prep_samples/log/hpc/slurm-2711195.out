@@ -1,0 +1,26 @@
+Building DAG of jobs...
+Subworkflow prep_db: Nothing to be done.
+Executing main workflow.
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	download
+	1
+
+[Thu Dec 12 21:07:20 2019]
+checkpoint download:
+    input: data/soil/SRR_Acc_List.txt, code/download.sh
+    output: data/soil/raw
+    jobid: 0
+    benchmark: benchmarks/soil/download.txt
+    wildcards: dataset=soil
+Downstream jobs will be updated after completion.
+
+spots read      : 82,937
+reads read      : 165,874
+reads written   : 165,874
+spots read      : 83,361
+reads read      : 166,722
+reads written   : 166,722

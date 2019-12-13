@@ -1,0 +1,65 @@
+Building DAG of jobs...
+Subworkflow prep_db: Nothing to be done.
+Executing main workflow.
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	download
+	1
+
+[Tue Dec 10 13:10:54 2019]
+checkpoint download:
+    input: data/marine/SRR_Acc_List.txt, code/download.sh
+    output: data/marine/raw
+    jobid: 0
+    benchmark: benchmarks/marine/download.txt
+    wildcards: dataset=marine
+Downstream jobs will be updated after completion.
+
+spots read      : 116,126
+reads read      : 232,252
+reads written   : 232,252
+spots read      : 249,762
+reads read      : 499,524
+reads written   : 499,524
+spots read      : 220,844
+reads read      : 441,688
+reads written   : 441,688
+spots read      : 164,447
+reads read      : 328,894
+reads written   : 328,894
+spots read      : 302,495
+reads read      : 604,990
+reads written   : 604,990
+spots read      : 142,064
+reads read      : 284,128
+reads written   : 284,128
+spots read      : 157,631
+reads read      : 315,262
+reads written   : 315,262
+spots read      : 122,892
+reads read      : 245,784
+reads written   : 245,784
+spots read      : 199,813
+reads read      : 399,626
+reads written   : 399,626
+spots read      : 130,603
+reads read      : 261,206
+reads written   : 261,206
+spots read      : 187,885
+reads read      : 375,770
+reads written   : 375,770
+spots read      : 81,969
+reads read      : 163,938
+reads written   : 163,938
+spots read      : 132,987
+reads read      : 265,974
+reads written   : 265,974
+spots read      : 160,732
+reads read      : 321,464
+reads written   : 321,464
+[Tue Dec 10 14:40:00 2019]
+Finished job 0.
+1 of 1 steps (100%) done
