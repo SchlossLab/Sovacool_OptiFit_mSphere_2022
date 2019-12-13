@@ -8,7 +8,6 @@ if [[ $outdir == *"mouse"* ]]; then
 else
     for SRA in $(cat $list_file)
     do
-        prefetch $SRA
         fasterq-dump --split-files $SRA -O $outdir
     done
     gzip ${outdir}/*
