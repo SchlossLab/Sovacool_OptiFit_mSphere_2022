@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-snakemake --profile config/slurm --latency-wait 30 data/human/human.files data/soil/soil.files --forcerun download
+snakemake --profile config/slurm --latency-wait 30 data/human/human.files data/marine/marine.files data/mouse/mouse.files data/marine/marine.files
