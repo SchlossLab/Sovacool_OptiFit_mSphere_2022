@@ -24,6 +24,10 @@ subworkflow prep_db:
     workdir:
         "subworkflows/0_prep_db"
 
+subworkflow prep_samples:
+    workdir:
+        "subworkflows/1_prep_samples"
+
 rule targets:
     input:
         prep_db("results/silva/silva.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
@@ -31,4 +35,8 @@ rule targets:
         prep_db("results/gg/gg.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
         prep_db("results/gg/gg.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
         prep_db("results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_db("results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy")
+        prep_db("results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
+        prep_samples("data/human/human.files"),
+        prep_samples("data/marine/marine.files"),
+        prep_samples("data/mouse/mouse.files"),
+        prep_samples("data/marine/marine.files")
