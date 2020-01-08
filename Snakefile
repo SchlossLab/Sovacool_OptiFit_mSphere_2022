@@ -39,4 +39,4 @@ rule targets:
         prep_samples("data/human/human.files"),
         prep_samples("data/marine/marine.files"),
         prep_samples("data/mouse/mouse.files"),
-        prep_samples("data/marine/marine.files")
+        prep_samples("data/soil/soil.files")
