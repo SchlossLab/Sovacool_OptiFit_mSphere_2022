@@ -1,6 +1,6 @@
 {"__default__": {
     "account_pbs": "pschloss_fluxod",
-    "account_slurm": "pschloss",
+    "account_slurm": "pschloss1",
     "queue": "fluxod",
     "qos": "flux",
     "partition": "standard",

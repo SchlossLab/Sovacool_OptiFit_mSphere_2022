@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss
+#SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
