@@ -4,7 +4,7 @@ subsample_size: 1000
 samples:
 - human
 - marine
-- mice
+- mouse
 - soil
 weights:
 - none
