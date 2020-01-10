@@ -1,0 +1,33 @@
+{"__default__": {
+    "account_pbs": "pschloss_fluxod",
+    "account_slurm": "pschloss1",
+    "queue": "fluxod",
+    "qos": "flux",
+    "partition": "standard",
+    "jobname": "{rule}.{wildcards}",
+    "nodes": 1,
+    "procs": 1,
+    "pmem": "4GB",
+    "walltime": "24:00:00",
+    "email": "sovacool@umich.edu",
+    "mailon": "a",
+    "mail_type": "FAIL",
+    "jobout": "oe",
+    "outdir": "log/hpc/",
+    "outfile": "log/hpc/slurm-%j.out"
+},
+"subset_regions": {
+    "procs": "{resources.procs}"
+},
+"filter": {
+    "procs": "{resources.procs}"
+},
+"calc_dists": {
+    "procs": "{resources.procs}",
+    "walltime": "{resources.walltime_hrs}:00:00",
+    "pmem": "8GB"
+},
+"preprocess": {
+    "procs": "{resources.procs}"
+}
+}

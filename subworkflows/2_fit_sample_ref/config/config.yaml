@@ -1,0 +1,18 @@
+mothur_bin: /nfs/turbo/schloss-lab/bin/mothur
+subsample_test: False
+subsample_size: 1000
+samples:
+- marine
+weights:
+- none
+methods:
+- open
+- closed
+printrefs:
+- t
+reference_fractions:
+    start: 10
+    stop: 100
+    step: 10
+iterations: 10
+replicates: 10
