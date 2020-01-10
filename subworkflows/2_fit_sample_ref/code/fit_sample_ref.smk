@@ -5,7 +5,30 @@ import os
 import re
 import shutil
 
-datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
+input_dir = "datacopy_Brodie"
+datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['samples']]
+output_dirs=("dataset-as-reference")
+weights = set(config['weights'])
+methods = set(config['methods'])
+printrefs = set(config['printrefs'])
+start = int(config['reference_fractions']['start'])
+stop = int(config['reference_fractions']['stop'])
+step = int(config['reference_fractions']['step'])
+reference_fractions = [i/100 for i in range(start, stop, step)]
+iters = range(config['iterations'])
+reps = range(config['replicates'])
+mothur_bin = config['mothur_bin']
+
+wildcard_constraints:
+    sample="\w+",
+    iter="\d+",
+    rep="\d+",
+    sampleref="sample|reference",
+    reference="silva|greengenes"
+
+rule temp_target:
+    input:
+        "results/dataset-as-reference/marine/aggregate.sensspec"
 
 rule fit_all:
     input:
@@ -13,12 +36,30 @@ rule fit_all:
         expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
         expand('results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/sample.optifit_mcc.sensspec', dataset=datasets, weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs)
 
+rule get_accnos:
+    input:
+        fasta=f"{input_dir}/{{dataset}}/{{dataset}}.fasta"
+    benchmark:
+        "benchmarks/dataset-as-reference/{dataset}/get_accnos.log"
+    log:
+        "logfiles/dataset-as-reference/{dataset}/get_accnos.log"
+    output:
+        accnos=f"{input_dir}/{{dataset}}/{{dataset}}.accnos"
+    params:
+        output_dir=f"{input_dir}/{{dataset}}/"
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.output_dir});
+        list.seqs(fasta={input.fasta})
+        "
+        """
+
 rule split_weighted_subsample:  # TODO: use mothur refweight option instead of this rule
     input:
         count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
         dist=f"{input_dir}/{{dataset}}/{{dataset}}.dist"
     output:
-        "results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.accnos"
+        accnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.accnos"
     params:
         dataset="{dataset}",
         reference_fraction="{reference_fraction}",
@@ -33,7 +74,7 @@ rule prep_weighted_subsample:
         fasta=f"{input_dir}/{{dataset}}/{{dataset}}.fasta",
         count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
         dist=f"{input_dir}/{{dataset}}/{{dataset}}.dist",
-        accnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample.accnos"
+        accnos=rules.split_weighted_subsample.output.accnos
     output:
         "results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.fasta",
         "results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/sample/sample.count_table",
@@ -93,8 +134,8 @@ rule fit_to_self:
     input:
         count=f"{input_dir}/{{dataset}}/{{dataset}}.count_table",
         column=f"{input_dir}/{{dataset}}/{{dataset}}.dist",
-	accnos=f"{input_dir}/{{dataset}}/{{dataset}}.accnos",
-	refaccnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference/reference.accnos"
+        accnos=f"{input_dir}/{{dataset}}/{{dataset}}.accnos",
+        refaccnos="results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/reference/reference.accnos"
     output:
         temp("results/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{dataset}.dist"),
         expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{{weight}}_reference-fraction-{{reference_fraction}}_i-{{iter}}/r-{{rep}}/method-{{method}}_printref-{{printref}}/{{dataset}}.optifit_mcc.{ext}', ext={'list', 'sensspec'})
@@ -104,7 +145,7 @@ rule fit_to_self:
         rep="{rep}",
         method="{method}",
         printref='{printref}',
-	dataset="{dataset}"
+        dataset="{dataset}"
     benchmark:
         "benchmarks/dataset-as-reference/{dataset}/{dataset}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/fit.log"
     log:
@@ -114,7 +155,7 @@ rule fit_to_self:
 
 rule aggregate_sensspec:
     input:
-        expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{{dataset}}.dist", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs),
+        dist=expand("results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{{dataset}}.dist", weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs),
         opticlust=expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/{prefix}.opti_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, prefix=['sample', 'reference']),
         optifit=expand('results/dataset-as-reference/{{dataset}}/{{dataset}}_weight-{weight}_reference-fraction-{reference_fraction}_i-{iter}/r-{rep}/method-{method}_printref-{printref}/{{dataset}}.optifit_mcc.sensspec', weight=weights, reference_fraction=reference_fractions, iter=iters, rep=reps, method=methods, printref=printrefs)
     output:
