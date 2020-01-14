@@ -12,7 +12,7 @@ make_files_file <- function(){
   sample_map <- metadata$Sample_Name_s
   names(sample_map) <- metadata$Run_s
 
-  R1 <- list.files(path="data/human", pattern="*_1.fastq")
+  R1 <- list.files(path="data/human/raw", pattern="*_1.fastq")
   R2 <- gsub("1.fastq", "2.fastq", R1)
 
   file_stubs <- gsub("_1.fastq.gz", "", R1)

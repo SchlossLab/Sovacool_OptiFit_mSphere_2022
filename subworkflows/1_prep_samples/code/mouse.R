@@ -17,4 +17,4 @@ get_contigsfile <- function(p){
   write.table(file=p.files.file, cbind(r1.group, r1, r2), sep="\t", quote=F, row.names=F, col.names=F)
 }
 
-get_contigsfile("data/mouse")
+get_contigsfile("data/mouse/raw")
