@@ -36,7 +36,7 @@ rule targets:
         prep_db("results/gg/gg.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
         prep_db("results/rdp/rdp.bact_v4.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
         prep_db("results/rdp/rdp.bact_full.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy"),
-        prep_samples("data/human/human.files"),
-        prep_samples("data/marine/marine.files"),
-        prep_samples("data/mouse/mouse.files"),
-        prep_samples("data/soil/soil.files")
+        prep_samples("data/human/processed/human.fasta"),
+        prep_samples("data/marine/processed/marine.fasta"),
+        prep_samples("data/mouse/processed/mouse.fasta"),
+        prep_samples("data/soil/processed/soil.fasta")
