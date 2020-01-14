@@ -30,4 +30,7 @@
 "preprocess": {
     "procs": "{resources.procs}"
 }
+"download_human": {
+    "walltime": "120:00:00"
+}
 }
