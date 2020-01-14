@@ -1,10 +1,11 @@
 test/
+data*
+log
 .snakemake/
 .DS_Store
 .Rproj.user
 .Rhistory
 Rplots.pdf
-data*
 .idea/
 core.*
 .nfs*
