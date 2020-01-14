@@ -4,49 +4,42 @@ subworkflow prep_db:
     workdir:
         "../0_prep_db/"
 
-checkpoint download:
-    input:
-        list="data/{dataset}/SRR_Acc_List.txt",
-        sh="code/download.sh"
-    output:
-        dir=directory("data/{dataset}/raw")
-    benchmark:
-        "benchmarks/{dataset}/download.txt"
-    shell:
-        "{input.sh} {input.list} {output.dir}"
+wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
-def get_download_filenames(wildcards):
-    dir = checkpoints.download.get(dataset=wildcards.dataset).output.dir
-    filenames, = glob_wildcards(os.path.join(dir, "{filename}"))
-    return expand("{dir}/{filename}", dir=dir, filename=filenames)
+def get_fastq_filenames(dataset):
+    with open(f"data/{dataset}/SRR_Acc_List.txt", 'r') as file:
+        filenames = [f"data/{dataset}/raw/{line.strip()}_{i}.fastq.gz" for line in file for i in (1,2)]
+    return filenames
 
-rule names_file:
-    input:
-        R="code/{dataset}.R",
-        files=get_download_filenames
-    output:
-        file="data/{dataset}/{dataset}.files"
-    benchmark:
-        "benchmarks/{dataset}/names_file.txt"
-    script:
-        "{input.R}"
+fastq_filenames = {dataset: get_fastq_filenames(dataset) for dataset in ("human", "marine", "soil")}
+
+for dataset in wildcards.dataset:
+    include: f"code/{dataset}.smk"
 
 rule preprocess:
     input:
-        file=rules.names_file.output.file,
+        file="data/{dataset}/{dataset}.files",
         silva=prep_db("data/silva/silva.bact_v4.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
+    output:
+        count="data/{dataset}/processed/{dataset}.count_table",
+        tax="data/{dataset}/processed/{dataset}.tax",
+        fasta="data/{dataset}/processed/{dataset}.fasta"
+    params:
+        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.count_table",
+        tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
+        fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta"
     log:
         "logfiles/{dataset}/preprocess.log"
     benchmark:
         "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=8
-    shell:  # TODO: double-check filepaths
+    shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/processed);
-        	make.contigs(inputdir=data/{wildcards.dataset}/, file={input.file}, processors={resources.procs});
+        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/temp);
+        	make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs});
         	screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
         	unique.seqs();
         	count.seqs(name=current, group=current);
@@ -59,4 +52,7 @@ rule preprocess:
         	remove.seqs(fasta=current, accnos=current);
         	classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
         	remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
+        cp {params.count} {output.count}
+        cp {params.tax} {output.tax}
+        cp {params.fasta} {output.fasta}
         """
