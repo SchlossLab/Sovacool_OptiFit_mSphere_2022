@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-snakemake --profile config/slurm --latency-wait 30 --configfile config/config.yaml -s code/fit_sample_ref.smk
+snakemake --profile config/slurm --latency-wait 30 --configfile config/config.yaml -s code/fit_sample_subset.smk
