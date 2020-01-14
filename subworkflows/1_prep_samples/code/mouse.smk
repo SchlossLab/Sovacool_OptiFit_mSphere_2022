@@ -4,7 +4,7 @@ checkpoint download_mouse:
         list="data/mouse/SRR_Acc_List.txt",
         sh="code/download.sh"
     output:
-        dir=dir("data/mouse/raw")
+        dir=directory("data/mouse/raw")
     params:
         tar="data/mouse/raw/StabilityNoMetaG.tar",
         url="http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar"
@@ -16,7 +16,7 @@ checkpoint download_mouse:
         tar -xvf {params.tar} -C {output.dir}
         rm {params.tar}
         """
-        
+
 def get_mouse_fastq(wildcards):
     dir = checkpoints.download_mouse.get().output.dir
     filenames, = glob_wildcards(os.path.join(dir, "{filename}"))
