@@ -1,4 +1,5 @@
-get_contigsfile <- function(p){
+get_contigsfile <- function(){
+  p <- "data/mouse/raw/"
   p <- gsub("\\/$", "", p)
   f <- list.files(path=p, pattern="*.fastq.gz")
   f <- f[!grepl("Mock", f)] #let's ignore the mock community data
@@ -13,8 +14,8 @@ get_contigsfile <- function(p){
 
   files.file <- paste0(gsub(".*\\/(.*)", "\\1", p), ".files")
   p.files.file <- paste0(p, "/", files.file)
-
-  write.table(file=p.files.file, cbind(r1.group, r1, r2), sep="\t", quote=F, row.names=F, col.names=F)
+  output_table <- cbind(r1.group, r1, r2)
+  write.table(file="data/mouse/mouse.files", output_table, sep="\t", quote=F, row.names=F, col.names=F)
 }
 
-get_contigsfile("data/mouse/raw")
+get_contigsfile()
