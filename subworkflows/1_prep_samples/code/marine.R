@@ -17,7 +17,7 @@ make_files_file <- function(){
 									"SRR3085700" = "ARD",
 									"SRR3085701" = "FWC")
 
-	read_1 <- list.files(path="data/marine/", pattern="*1.fastq")
+	read_1 <- list.files(path="data/marine/raw/", pattern="*1.fastq")
 	read_2 <- gsub("_1", "_2", read_1)
 
 	stub <- gsub("_1.*", "", read_1)
