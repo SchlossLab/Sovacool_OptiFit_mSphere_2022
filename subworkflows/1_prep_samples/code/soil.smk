@@ -18,4 +18,4 @@ rule names_file_soil:
     benchmark:
         "benchmarks/soil/names_file.txt"
     script:
-        "{input.R}"
+        "soil.R"

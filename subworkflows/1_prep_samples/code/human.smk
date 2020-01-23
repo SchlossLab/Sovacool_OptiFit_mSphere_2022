@@ -18,4 +18,4 @@ rule names_file_human:
     benchmark:
         "benchmarks/human/names_file.txt"
     script:
-        "{input.R}"
+        "human.R"
