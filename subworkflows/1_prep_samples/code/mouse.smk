@@ -22,11 +22,24 @@ rule download_mouse:
 
 rule names_file_mouse:
     input:
-        R="code/mouse.R",
         files=rules.download_mouse.output.files
     output:
         file="data/mouse/mouse.files"
     benchmark:
         "benchmarks/mouse/names_file.txt"
-    script:
-        "{input.R}"
+    run:
+        input_files = snakemake.input['files']
+        output_file = snakemake.output['file']
+
+        print("Mapping names to files")
+        names = collections.defaultdict(list)
+        for file in sorted(input_files):
+            name = file.split('/')[-1].split('_')[0]
+            if "mock" not in name.lower():
+                names[name].append(file)
+
+        print(f"Writing {output_file}")
+        with open(output_file, 'w') as file:
+            for name, files in names.items():
+                file_list = '\t'.join(files)
+                file.write(f"{name}\t{file_list}\n")

@@ -18,4 +18,4 @@ get_contigsfile <- function(dir, names_file){
   write.table(file=names_file, output_table, sep="\t", quote=F, row.names=F, col.names=F)
 }
 
-get_contigsfile("data/mouse/raw/", snakemake@output[["file"]])
+get_contigsfile("data/mouse/raw/", "data/mouse/mouse.files")
