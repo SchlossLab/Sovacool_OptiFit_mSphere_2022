@@ -18,4 +18,4 @@ rule names_file_marine:
     benchmark:
         "benchmarks/marine/names_file.txt"
     script:
-        "{input.R}"
+        "marine.R"
