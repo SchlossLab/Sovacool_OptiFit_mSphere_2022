@@ -1,31 +1,29 @@
 
-checkpoint download_mouse:
+with open("data/mouse/SRR_Acc_List.txt", 'r') as file:
+    mouse_filenames = [f"data/mouse/raw/{line.strip()}" for line in file]
+
+rule download_mouse:
     input:
-        list="data/mouse/SRR_Acc_List.txt",
+        #list="data/mouse/SRR_Acc_List.txt",
         sh="code/download.sh"
     output:
-        dir=directory("data/mouse/raw")
+        files=mouse_filenames
     params:
-        tar="data/mouse/raw/StabilityNoMetaG.tar",
+        tar="data/mouse/StabilityNoMetaG.tar",
         url="http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar"
     benchmark:
         "benchmarks/mouse/download.txt"
     shell:
         """
-        wget -N -P {output.dir} {params.url}
-        tar -xvf {params.tar} -C {output.dir}
+        wget -N -P data/mouse/ {params.url}
+        tar -xvf {params.tar} -C data/mouse/raw/
         rm {params.tar}
         """
-
-def get_mouse_fastq(wildcards):
-    dir = checkpoints.download_mouse.get().output.dir
-    filenames, = glob_wildcards(os.path.join(dir, "{filename}"))
-    return expand("{dir}/{filename}", dir=dir, filename=filenames)
 
 rule names_file_mouse:
     input:
         R="code/mouse.R",
-        files=get_mouse_fastq
+        files=rules.download_mouse.output.files
     output:
         file="data/mouse/mouse.files"
     benchmark:
