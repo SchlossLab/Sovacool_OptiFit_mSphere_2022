@@ -30,5 +30,5 @@ rule names_file_mouse:
         dir="data/mouse/raw"
     benchmark:
         "benchmarks/mouse/names_file.txt"
-    script:
-        "code/mouse.py"
+    shell:
+        "python {input.script}"

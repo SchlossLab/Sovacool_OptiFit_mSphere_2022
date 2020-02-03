@@ -6,5 +6,5 @@ rule names_file_soil:
         file="data/soil/soil.files"
     benchmark:
         "benchmarks/soil/names_file.txt"
-    script:
-        "code/soil.R"
+    shell:
+        "Rscript {input.R}"

@@ -6,5 +6,5 @@ rule names_file_human:
         file="data/human/human.files"
     benchmark:
         "benchmarks/human/names_file.txt"
-    script:
-        "code/human.R"
+    shell:
+        "Rscript {input.R}"
