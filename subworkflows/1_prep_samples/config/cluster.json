@@ -14,8 +14,8 @@
   "mailon": "a",
   "mail_type": "FAIL",
   "jobout": "oe",
-  "outdir": "log/hpc/",
-  "outfile": "log/hpc/{rule}.{wildcards}.out"
+  "outdir": "log/hpc/jobs/",
+  "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },
  "subset_regions": {
   "procs": "{resources.procs}"
