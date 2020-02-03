@@ -31,7 +31,8 @@
  "preprocess": {
   "procs": "{resources.procs}"
  },
- "download_human": {
-  "walltime": "120:00:00"
+ "download_most": {
+  "pmem": "1GB",
+  "walltime": "1:00:00"
  }
 }

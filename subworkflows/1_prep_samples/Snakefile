@@ -6,15 +6,38 @@ subworkflow prep_db:
 
 wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
-def get_fastq_filenames(dataset):
+def get_sra_list(dataset):
     with open(f"data/{dataset}/SRR_Acc_List.txt", 'r') as file:
-        filenames = [f"data/{dataset}/raw/{line.strip()}_{i}.fastq.gz" for line in file for i in (1,2)]
-    return filenames
+        sra = [line.strip() for line in file]
+    return sra
 
-fastq_filenames = {dataset: get_fastq_filenames(dataset) for dataset in ("human", "marine", "soil")}
+sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "soil")}
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
+
+rule preprocess_targets:
+    input:
+        expand("data/{dataset}/processed/{dataset}.{ext}", dataset=wildcards.dataset, ext=('fasta', 'tax', 'count_table')),
+        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("human", "marine", "soil") for sra in sra_list[dataset] for i in (1,2)]
+
+rule download_most:
+    input:
+        list="data/{dataset}/SRR_Acc_List.txt",
+        sh="code/download.sh"
+    output:
+        fastq=expand("data/{{dataset}}/raw/{{SRA}}_{i}.fastq.gz", i=(1,2))
+    benchmark:
+        "benchmarks/{dataset}/download_{SRA}.txt"
+    params:
+        sra="{SRA}",
+        outdir="data/{dataset}/raw"
+    wildcard_constraints:
+        dataset="human|marine|soil"
+    shell:
+        """
+        bash {input.sh}
+        """
 
 rule preprocess:
     input:
