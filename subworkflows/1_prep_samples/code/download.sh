@@ -4,4 +4,4 @@ outdir=$2
 
 prefetch $sra
 fasterq-dump --split-files $sra -O $outdir
-gzip ${outdir}/*.fastq
+gzip ${outdir}/${sra}_*.fastq
