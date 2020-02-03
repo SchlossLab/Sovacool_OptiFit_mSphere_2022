@@ -36,7 +36,7 @@ rule download_most:
         dataset="human|marine|soil"
     shell:
         """
-        bash {input.sh}
+        bash {input.sh} {params.sra} {params.outdir}
         """
 
 rule preprocess:
