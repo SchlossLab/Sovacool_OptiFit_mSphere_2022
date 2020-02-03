@@ -14,8 +14,8 @@
   "mailon": "a",
   "mail_type": "FAIL",
   "jobout": "oe",
-  "outdir": "log/hpc/",
-  "outfile": "log/hpc/{rule}.{wildcards}.out"
+  "outdir": "log/hpc/jobs/",
+  "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },
  "subset_regions": {
   "procs": "{resources.procs}"
@@ -31,8 +31,8 @@
  "preprocess": {
   "procs": "{resources.procs}"
  },
-  "download_most": {
-   "pmem": "1GB",
-   "walltime": "1:00:00"
-  }
+ "download_most": {
+  "pmem": "1GB",
+  "walltime": "1:00:00"
+ }
 }
