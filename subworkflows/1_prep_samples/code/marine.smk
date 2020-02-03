@@ -6,5 +6,5 @@ rule names_file_marine:
         file="data/marine/marine.files"
     benchmark:
         "benchmarks/marine/names_file.txt"
-    script:
-        "code/marine.R"
+    shell:
+        "Rscript {input.R}"
