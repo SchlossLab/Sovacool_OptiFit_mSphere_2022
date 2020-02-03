@@ -54,7 +54,7 @@ rule preprocess:
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
         fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta"
     log:
-        "logfiles/{dataset}/preprocess.log"
+        "log/{dataset}/preprocess.log"
     benchmark:
         "benchmarks/{dataset}/preprocess.txt"
     resources:
