@@ -19,7 +19,7 @@
 #SBATCH --mem-per-cpu=2GB
 #SBATCH --time=96:00:00
 
-#SBATCH --output=log/hpc/slurm-%j.out
+#SBATCH --output=log/hpc/slurm-%j_%x.out
 
 ####  Slurm account and partition specification here
 ####    These will change if you work on multiple projects, or need

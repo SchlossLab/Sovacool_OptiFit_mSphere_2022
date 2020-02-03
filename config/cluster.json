@@ -15,7 +15,7 @@
   "mail_type": "FAIL",
   "jobout": "oe",
   "outdir": "log/hpc/",
-  "outfile": "log/hpc/slurm-%j.out"
+  "outfile": "log/hpc/{rule}.{wildcards}.out"
  },
  "subset_regions": {
   "procs": "{resources.procs}"
