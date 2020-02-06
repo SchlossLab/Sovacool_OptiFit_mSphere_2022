@@ -1,22 +1,12 @@
 # Adapted from: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/master/code/soil.batch
+library(tidyverse)
 
-make_files_file <- function() {
-  mimarks <- read.table(
-    file = "data/soil/soil.metadata", header = T,
-    stringsAsFactors = FALSE, sep = "\t"
-  )
-
-  sample_map <- mimarks$Sample_Name_s
-  names(sample_map) <- mimarks$Run_s
-
-  read_1 <- list.files(path = "data/soil/raw", pattern = "*1.fastq")
-  read_2 <- gsub("_1", "_2", read_1)
-
-  stub <- gsub("_1.*", "", read_1)
-  sample <- sample_map[stub]
-
-  files <- data.frame(sample, read_1, read_2)
-  write.table(files, "data/soil/soil.files", row.names = F, col.names = F, quote = F, sep = "\t")
+make_files_file <- function(metadata_filename, output_filename){
+  samples <- read_tsv(metadata_filename) %>%
+    select(Run_s) %>%
+    mutate(read_1 = paste0(Run_s, '_1.fastq.gz'),
+           read_2 = paste0(Run_s, '_1.fastq.gz'))
+  write_tsv(samples, output_filename, col_names = FALSE)
 }
 
-make_files_file()
+make_files_file("data/soil/soil.metadata", "data/soil/soil.files")
