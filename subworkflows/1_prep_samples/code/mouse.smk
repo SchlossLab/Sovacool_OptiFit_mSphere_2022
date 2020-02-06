@@ -4,7 +4,7 @@ with open("data/mouse/SRR_Acc_List.txt", 'r') as file:
 
 rule download_mouse:
     input:
-        #list="data/mouse/SRR_Acc_List.txt",
+        list="data/mouse/SRR_Acc_List.txt",
         sh="code/download.sh"
     output:
         files=mouse_filenames
@@ -30,5 +30,5 @@ rule names_file_mouse:
         dir="data/mouse/raw"
     benchmark:
         "benchmarks/mouse/names_file.txt"
-    script:
-        "mouse.py"
+    shell:
+        "python {input.script}"
