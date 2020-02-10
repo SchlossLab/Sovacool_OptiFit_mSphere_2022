@@ -1,7 +1,7 @@
 mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
 subsample_test: False
 subsample_size: 1000
-samples:
+datasets:
 - human
 - marine
 - mouse
@@ -21,5 +21,4 @@ reference_fractions:
     start: 10
     stop: 100
     step: 10
-iterations: 10
-replicates: 10
+seeds: 10
