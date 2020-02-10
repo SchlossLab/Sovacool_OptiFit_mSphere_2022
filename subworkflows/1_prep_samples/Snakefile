@@ -12,13 +12,14 @@ def get_sra_list(dataset):
     return sra
 
 sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "soil")}
+seeds = range(10)
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
 
 rule preprocess_targets:
     input:
-        expand("data/{dataset}/processed/{dataset}.{ext}", dataset=wildcards.dataset, ext=('fasta', 'tax', 'count_table')),
+        expand("results/{dataset}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=wildcards.dataset, seed=seeds, ext=('list', 'steps', 'sensspec')),
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("human", "marine", "soil") for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
@@ -78,4 +79,74 @@ rule preprocess:
         cp {params.count} {output.count}
         cp {params.tax} {output.tax}
         cp {params.fasta} {output.fasta}
+        """
+
+rule calc_dists_samples:
+    input:
+        fasta=rules.preprocess.output.fasta,
+    output:
+        dist="results/{dataset}/{dataset}.dist"
+    log:
+        "log/{dataset}/calc_dists.log"
+    benchmark:
+        "benchmarks/{dataset}/calc_dists.txt"
+    resources:
+        procs=12,
+        walltime_hrs=48
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.dataset}/processed/, output=results/{wildcards.dataset}/);
+        dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
+        """
+
+rule cluster_samples:
+    input:
+        dist=rules.calc_dists_samples.output.dist,
+        count=rules.preprocess.output.count
+    output:
+        list="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.list",
+        steps="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.steps",
+        sensspec="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.sensspec",
+        workdir=directory("results/tmp/{dataset}/seed_{seed}/")
+    params:
+        dist="results/tmp/{dataset}/seed_{seed}/{dataset}.dist",
+        count="results/tmp/{dataset}/seed_{seed}/{dataset}.count_table",
+        list="results/tmp/{dataset}/seed_{seed}/{dataset}.opti_mcc.list",
+        steps="results/tmp/{dataset}/seed_{seed}/{dataset}.opti_mcc.steps",
+        sensspec="results/tmp/{dataset}/seed_{seed}/{dataset}.opti_mcc.sensspec"
+    log:
+        "log/{dataset}/cluster.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{dataset}/cluster.seed_{seed}.txt"
+    shell:
+        """
+        cp {input.dist} {params.dist}
+        cp {input.count} {params.count}
+        mothur '#set.logfile(name={log}); set.dir(input={output.workdir}, output={output.workdir});
+        set.seed(seed={wildcards.seed});
+        cluster(column={params.dist}, count={params.count}, cutoff=0.03) '
+        mv {params.list} {output.list}
+        mv {params.steps} {output.steps}
+        mv {params.sensspec} {output.sensspec}
+        """
+
+rule get_otu_reps_samples:
+    input:
+        list=rules.cluster_samples.output.list,
+        count=rules.preprocess.output.count,
+        tax=rules.preprocess.output.tax,
+        dist=rules.calc_dists_samples.output.dist
+    output:
+        tax="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+    log:
+        "log/{dataset}/get_otu_reps.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{dataset}/get_otu_reps.seed_{seed}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.dataset}/);
+        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
