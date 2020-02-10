@@ -188,7 +188,7 @@ rule filter:
         rename.file(input={params.tax}, new={output.preclust_tax}) '
         """
 
-rule calc_dists:
+rule calc_dists_db:
     input:
         fasta=rules.filter.output.preclust_fasta
     output:
@@ -208,14 +208,14 @@ rule calc_dists:
 
 rule cluster_db:
     input:
-        dist=rules.calc_dists.output.dist,
+        dist=rules.calc_dists_db.output.dist,
         count=rules.filter.output.preclust_count
     output:
         list="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.list",
         steps="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.steps",
-        sensspec="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.sensspec"
+        sensspec="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.sensspec",
+        workdir=directory("results/tmp/{ref}/{region}/seed_{seed}/")
     params:
-        workdir="results/tmp/{ref}/{region}/seed_{seed}/",
         dist="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.dist",
         count="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.pick.count_table",
         list="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
@@ -229,7 +229,7 @@ rule cluster_db:
         """
         cp {input.dist} {params.dist}
         cp {input.count} {params.count}
-        mothur '#set.logfile(name={log}); set.dir(input={params.workdir}, output={params.workdir});
+        mothur '#set.logfile(name={log}); set.dir(input={output.workdir}, output={output.workdir});
         set.seed(seed={wildcards.seed});
         cluster(column={params.dist}, count={params.count}, cutoff=0.03) '
         mv {params.list} {output.list}
@@ -237,12 +237,12 @@ rule cluster_db:
         mv {params.sensspec} {output.sensspec}
         """
 
-rule get_otu_reps:
+rule get_otu_reps_db:
     input:
         list=rules.cluster_db.output.list,
         count=rules.filter.output.preclust_count,
         tax=rules.filter.output.preclust_tax,
-        dist=rules.calc_dists.output.dist
+        dist=rules.calc_dists_db.output.dist
     output:
         tax="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
         sum="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
