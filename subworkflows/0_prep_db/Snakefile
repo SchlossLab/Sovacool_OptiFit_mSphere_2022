@@ -205,7 +205,7 @@ rule calc_dists:
         dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-rule cluster:
+rule cluster_db:
     input:
         dist=rules.calc_dists.output.dist,
         count=rules.filter.output.preclust_count
@@ -225,7 +225,7 @@ rule cluster:
 
 rule get_otu_reps:
     input:
-        list=rules.cluster.output.list,
+        list=rules.cluster_db.output.list,
         count=rules.filter.output.preclust_count,
         tax=rules.filter.output.preclust_tax,
         dist=rules.calc_dists.output.dist
