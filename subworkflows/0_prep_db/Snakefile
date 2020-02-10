@@ -1,4 +1,5 @@
 """ Download the reference databases and process with mothur """
+seeds = range(10)
 
 wildcard_constraints:
     subset="bact_v4|bact_full",
@@ -6,7 +7,7 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"))
+        expand("results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"), seed=seeds)
 
 rule download_silva:
     output:
@@ -210,17 +211,30 @@ rule cluster_db:
         dist=rules.calc_dists.output.dist,
         count=rules.filter.output.preclust_count
     output:
-        list="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
-        steps="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
-        sensspec="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
+        list="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.list",
+        steps="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.steps",
+        sensspec="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.sensspec"
+    params:
+        workdir="results/tmp/{ref}/{region}/seed_{seed}/",
+        dist="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.dist",
+        count="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.pick.count_table",
+        list="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
+        steps="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/tmp/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     log:
-        "log/{ref}/cluster.{region}.log"
+        "log/{ref}/cluster.{region}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{ref}/cluster.{region}.txt"
+        "benchmarks/{ref}/cluster.{region}.seed_{seed}.txt"
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/, output=results/{wildcards.ref}/);
-        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        cp {input.dist} {params.dist}
+        cp {input.count} {params.count}
+        mothur '#set.logfile(name={log}); set.dir(input={params.workdir}, output={params.workdir});
+        set.seed(seed={wildcards.seed});
+        cluster(column={params.dist}, count={params.count}, cutoff=0.03) '
+        mv {params.list} {output.list}
+        mv {params.steps} {output.steps}
+        mv {params.sensspec} {output.sensspec}
         """
 
 rule get_otu_reps:
@@ -230,13 +244,13 @@ rule get_otu_reps:
         tax=rules.filter.output.preclust_tax,
         dist=rules.calc_dists.output.dist
     output:
-        tax="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.cons.tax.summary",
-        count="results/{ref}/{ref}.{region}.filter.unique.precluster.opti_mcc.0.03.rep.count_table"
+        tax="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
     log:
-        "log/{ref}/get_otu_reps.{region}.log"
+        "log/{ref}/get_otu_reps.{region}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{ref}/get_otu_reps.{region}.txt"
+        "benchmarks/{ref}/get_otu_reps.{region}.seed_{seed}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.ref}/);
