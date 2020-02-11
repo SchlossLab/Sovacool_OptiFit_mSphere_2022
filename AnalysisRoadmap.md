@@ -55,16 +55,17 @@
     - [x] Use OptiClust to cluster reference sequences
     - [x] Find representative sequence from each OTU
 * For each dataset (human, murine, marine, and soil) and region (V4, full length), with 10 replicates, perform & compare MCCs:
-    - [x] De novo clustering on samples (OptiClust)
-    - [ ] Open reference clustering (OptiFit) against reference OTUs
-    - [ ] Closed reference clustering (OptiFit) against reference OTUs
-        - [ ] % of sequences that map to references
-    - [ ] Open reference clustering (VSEARCH) against representative sequences from each OTU
-    - [ ] Closed reference clustering (VSEARCH) against representative sequences from each OTU
-        - [ ] % of sequences that map to references
-    - [ ] Open reference clustering (VSEARCH) against core_gg_97 collection
-    - [ ] Closed reference clustering (VSEARCH) against core_gg_97 collection
-        - [ ] % of sequences that map to references
+    - [x] OptiClust: De novo clustering on samples
+    - [ ] OptiFit
+        - [ ] Open reference clustering
+        - [ ] Closed reference clustering
+    - [ ] VSEARCH / QIIME2 against representative sequences from each OTU
+        - [ ] Open
+        - [ ] Closed
+    - [ ] VSEARCH / QIIME2 against core_gg_97 collection
+        - [ ] Open
+        - [ ] Closed   
+    - [ ] Find % of sequences that map to references for all closed methods.
 
 ## 2. Importance of database
 * Questions:
@@ -87,34 +88,29 @@
 ## 3. Use dataset as its own reference
 * Questions:
     - How much of the dataset is needed to generate the reference?
-        - [ ] Need to fix the sample size and vary the reference size to answer this.
+        - Need to fix the sample size and vary the reference size to answer this.
     - How does OptiFit perform on fraction of dataset relative to entire dataset?
     - How sensitive is OptiFit to random variation?
-* Perform de novo clustering on human, murine, marine, and soil samples (same as above)
-    - [x] get MCC values
-    - [x] 10 reps
-    - datasets:
-        - [ ] human
-        - [x] murine
-        - [x] marine
-        - [x] soil
-* Repeat the following N times...
-    - [x] Use of 10, 20, 30, 40, 50, 60, 70, 80, 90% of data to create reference databases (R)
-        - [x] Cluster reference sequences using OptiClust
-        - [x] Get MCC
-        - [x] Run 10 times to get the seed that gives the best clustering for each set of references
-    - [x] On remaining fraction of data (U)
-        - [x] OptiClust on its own
-            - [x] get MCC values
-            - [x] 10 random seeds
-        - [x] Use OptiFit/open to fit U sequences into R OTUs
-            - [x] Capture MCC values for U sequences with and without R sequences included
-            - [x] % of sequences that map to references
-            - [x] Run 10 times to see level of variation
-        - [x] Use OptiFit/closed to fit U sequences into R OTUs
-            - [x] Capture MCC values for U sequences with and without R sequences included
-            - [x] % of sequences that map to references
-            - [x] Run 10 times to see level of variation
+* For each dataset (human, marine, mouse, soil):
+    - [ ] Use of 10, 20, 30... 90% of data to create reference databases (R)
+        - [ ] Subset with different weighted methods:
+            - none
+            - ref-abundance
+            - sample-abundance
+            - sample-dists
+        - [ ] Cluster reference sequences using OptiClust
+        - [ ] Get MCC
+        - [ ] Run 10 times to get the seed that gives the best clustering for each set of references
+    - [ ] On remaining fraction of data (U)
+        - [ ] OptiClust on its own
+        - [ ] Use OptiFit/open to fit U sequences into R OTUs
+            - [ ] Capture MCC values for U sequences with and without R sequences included
+            - [ ] % of sequences that map to references
+            - [ ] Run 10 times to see level of variation
+        - [ ] Use OptiFit/closed to fit U sequences into R OTUs
+            - [ ] Capture MCC values for U sequences with and without R sequences included
+            - [ ] % of sequences that map to references
+            - [ ] Run 10 times to see level of variation
 
 ## 4. Deploy (separate paper)
 * Questions:
