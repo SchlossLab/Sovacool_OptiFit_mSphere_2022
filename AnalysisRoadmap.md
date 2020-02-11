@@ -5,12 +5,10 @@
 - [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
     - Need to fix the sample size and vary the reference size to answer this.
     - Ask Sarah to implement a `sample.accnos` parameter in OptiFit?
-- [ ] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
-    - [ ] Fix out-of-date commands in batch files.
-    - [ ] Call the data processing workflows from the main Snakefile with the `include` statement.
-    - [ ] Download the human sample dataset.
-- [ ] Add function or rule to test that the config file is formatted properly.
-    - Is there something like json schema for yaml?
+- [x] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
+    - [x] Fix out-of-date commands in batch files.
+    - [x] Call the data processing workflows from the main Snakefile with the `include` statement.
+    - [x] Download the human sample dataset.
 
 
 # Analysis Roadmap
@@ -56,18 +54,8 @@
     - [x] Trim greengenes to V4 region of 16S rRNA gene
     - [x] Use OptiClust to cluster reference sequences
     - [x] Find representative sequence from each OTU
-* Test clustering of small soil dataset (soil_1000) against references
+* For each dataset (human, murine, marine, and soil) and region (V4, full length), with 10 replicates, perform & compare MCCs:
     - [x] De novo clustering on samples (OptiClust)
-    - [ ] Open reference clustering against full length references (w/ VSEARCH)
-    - [ ] Open reference clustering against V4 references (w/ VSEARCH)
-    - [ ] Closed reference clustering against full length reference (w/ VSEARCH)
-    - [ ] Closed reference clustering against V4 reference (w/ VSEARCH)
-    - [ ] Open reference clustering against full length references (w/ OptiFit)
-    - [ ] Open reference clustering against V4 references (w/ OptiFit)
-    - [ ] Closed reference clustering against full length reference (w/ OptiFit)
-    - [ ] Closed reference clustering against V4 reference (w/ OptiFit)
-* For each dataset (human, murine, marine, and soil), with 10 replicates, perform & compare MCCs:
-    - [ ] De novo clustering on  samples
     - [ ] Open reference clustering (OptiFit) against reference OTUs
     - [ ] Closed reference clustering (OptiFit) against reference OTUs
         - [ ] % of sequences that map to references
