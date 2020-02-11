@@ -139,7 +139,7 @@ rule get_otu_reps_samples:
     output:
         tax="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
         sum="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+        count="results/{dataset}/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
     log:
         "log/{dataset}/get_otu_reps.seed_{seed}.log"
     benchmark:
