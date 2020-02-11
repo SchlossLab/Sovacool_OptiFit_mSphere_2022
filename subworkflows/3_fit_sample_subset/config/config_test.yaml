@@ -1,0 +1,17 @@
+mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
+subsample_test: True
+subsample_size: 1000
+datasets:
+- soil
+weights:
+- sample-dists
+methods:
+- open
+- closed
+printrefs:
+- f
+reference_fractions:
+    start: 50
+    stop: 60
+    step: 10
+seeds: 2
