@@ -10,11 +10,11 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
-rule fit_to_external_ref_db:
+rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"), method=("open", "closed"), printref=("t", "f"), seed=range(10))
+        expand('results/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
-rule fit_to_ref:
+rule fit_to_ref_db:
     input:
         reflist=prep_db('results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.list'),
         refcolumn=prep_db("results/{ref}/{ref}.{region}.filter.unique.precluster.dist"),
