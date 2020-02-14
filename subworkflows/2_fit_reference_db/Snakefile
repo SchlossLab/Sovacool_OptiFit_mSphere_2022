@@ -12,27 +12,28 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule fit_to_ref_db:
     input:
         reflist=prep_db('results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.list'),
         refcolumn=prep_db("results/{ref}/{ref}.{region}.filter.unique.precluster.dist"),
         reffasta=prep_db("data/{ref}/{ref}.{region}.filter.unique.precluster.fasta"),
+        refcount=prep_db("data/{ref}/{ref}.{region}.filter.unique.precluster.pick.count_table"),
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         column=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        'results/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec'
+        'results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec'
     params:
-        output_dir="results/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/"
+        output_dir="results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
-        "benchmarks/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/fit.txt"
+        "benchmarks/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
     log:
-        "log/{dataset}/{ref}_{region}/method-{method}/printref-{printref}/seed-{seed}/fit.log"
+        "log/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
     shell:
         """
         mothur "#set.logfile(name={log});
         set.dir(output={params.output_dir});
-        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
+        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta='{input.reffasta}',refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """
