@@ -51,9 +51,9 @@ rule preprocess:
         tax="data/{dataset}/processed/{dataset}.tax",
         fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
-        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.count_table",
+        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
-        fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta"
+        fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta"
     log:
         "log/{dataset}/preprocess.log"
     benchmark:
