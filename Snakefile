@@ -20,7 +20,12 @@ subworkflow prep_samples:
     workdir:
         "subworkflows/1_prep_samples"
 
+subworkflow fit_ref_db:
+    workdir:
+        "subworkflows/2_fit_reference_db"
+
 rule targets:
     input:
         [prep_db(f"results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy"), for ref in ("silva", "gg", "rdp") for region in ("bact_v4", "bact_full") for seed in seeds],
-        [prep_samples(f"results/{dataset}/{dataset}.seed_{seed}.opti_mcc.sensspec") for dataset in datasets for seed in seeds]
+        [prep_samples(f"results/{dataset}/{dataset}.seed_{seed}.opti_mcc.sensspec") for dataset in datasets for seed in seeds],
+        [fit_ref_db('results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec') for dataset in ("soil",) for ref in ("silva",) for region in ("bact_v4",) for method in ("open",) for  printref in ("f",) for seed in range(1)]
