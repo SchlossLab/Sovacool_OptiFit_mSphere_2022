@@ -12,28 +12,109 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+
+
+rule preclust_db:
+    input:
+        fasta=prep_db("data/{ref}/{ref}.{region}.fasta"),
+        tax=prep_db("data/{ref}/{ref}.bacteria.tax"),
+        hard_filter=prep_samples("data/{dataset}/processed/{dataset}.filter")
+    output:
+        fasta="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.fasta",
+        count="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.pick.count_table",
+        tax="data/{ref}/{dataset}/{ref}.bacteria.{region}.precluster.tax",
+        dist="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.dist"
+    params:
+        tax="data/{ref}/{dataset}/{ref}.bacteria.pick.tax"
+    resources:
+        procs=12,
+        walltime_hrs=48
+    log:
+        "log/{ref}/{dataset}/preclust_db.{region}.log"
+    benchmark:
+        "benchmarks/{ref}/{dataset}/preclust_db.{region}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.ref}/{wildcards.dataset}/);
+
+        filter.seqs(fasta={input.fasta}, hard={input.hard_filter}, processors={resources.procs});
+        unique.seqs(fasta=current);
+        pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
+        dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs});
+
+        list.seqs(fasta=current);
+        get.seqs(accnos=current, taxonomy={input.tax});
+        get.seqs(accnos=current, count=current);
+        summary.seqs(fasta=current, count=current);
+        rename.file(input={params.tax}, new={output.tax}) '
+        """
+
+rule cluster_db:
+    input:
+        dist=rules.preclust_db.output.dist,
+        count=rules.preclust_db.output.count
+    output:
+        list="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
+        steps="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec",
+    params:
+        outdir="results/{ref}/{dataset}/{region}/seed_{seed}/"
+    log:
+        "log/{ref}/{dataset}/cluster.{region}.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{ref}/{dataset}/cluster.{region}.seed_{seed}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
+        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        """
+
+rule get_otu_reps_db:
+    input:
+        list=rules.cluster_db.output.list,
+        count=rules.preclust_db.output.count,
+        tax=rules.preclust_db.output.tax,
+        dist=rules.preclust_db.output.dist
+    output:
+        tax="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+    params:
+        outdir="results/{ref}/{dataset}/"
+    log:
+        "log/{ref}/{dataset}/get_otu_reps.{region}.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{ref}/{dataset}/get_otu_reps.{region}.seed_{seed}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
+        """
+
 
 rule fit_to_ref_db:
     input:
-        reflist=prep_db('results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.list'),
-        refcolumn=prep_db("results/{ref}/{ref}.{region}.filter.unique.precluster.dist"),
-        reffasta=prep_db("data/{ref}/{ref}.{region}.filter.unique.precluster.fasta"),
-        refcount=prep_db("data/{ref}/{ref}.{region}.filter.unique.precluster.pick.count_table"),
+        reflist=rules.cluster_db.output.list,
+        refcolumn=rules.preclust_db.output.dist,
+        reffasta=rules.preclust_db.output.fasta,
+        refcount=rules.preclust_db.output.count,
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         column=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        'results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_vs_{ref}.optifit_mcc.sensspec'
+        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
     params:
-        output_dir="results/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/"
+        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
-        "benchmarks/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
+        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
     log:
-        "log/{dataset}/{ref}_{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
+        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
     shell:
         """
         mothur "#set.logfile(name={log});
-        set.dir(output={params.output_dir});
-        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta='{input.reffasta}',refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
+        set.dir(output={params.outdir});
+        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """

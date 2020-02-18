@@ -47,10 +47,12 @@ rule preprocess:
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
     output:
+        filter="data/{dataset}/processed/{dataset}.filter",
         count="data/{dataset}/processed/{dataset}.count_table",
         tax="data/{dataset}/processed/{dataset}.tax",
         fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
+        filter="data/{dataset}/temp/{dataset}.filter",
         count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
         fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta"
