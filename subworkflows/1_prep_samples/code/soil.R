@@ -5,7 +5,9 @@ make_files_file <- function() {
     stringsAsFactors = FALSE, sep = "\t"
   )
 
-  sample_map <- mimarks %>% mutate(sample_name = gsub(".*_", "", Sample_Name_s)) %>% pull(sample_name)
+  sample_map <- mimarks %>%
+    mutate(sample_name = gsub(".*_", "", Sample_Name_s)) %>%
+    pull(sample_name)
   names(sample_map) <- mimarks$Run_s
 
   read_1 <- list.files(path = "data/soil/raw/", pattern = "*1.fastq.gz")
