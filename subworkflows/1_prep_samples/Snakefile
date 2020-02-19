@@ -78,6 +78,7 @@ rule preprocess:
             remove.seqs(fasta=current, accnos=current);
             classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
+        cp {params.filter} {output.filter}
         cp {params.count} {output.count}
         cp {params.tax} {output.tax}
         cp {params.fasta} {output.fasta}
