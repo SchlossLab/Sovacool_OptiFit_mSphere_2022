@@ -16,3 +16,4 @@ make_files_file <- function(){
 	write.table(files, "data/soil/soil.files", row.names=F, col.names=F, quote=F, sep='\t')
 
 }
+make_files_file()
