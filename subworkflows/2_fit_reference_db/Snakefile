@@ -12,7 +12,7 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 
 rule preclust_db:
@@ -23,8 +23,10 @@ rule preclust_db:
     output:
         fasta="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.fasta",
         count="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.pick.count_table",
-        tax="data/{ref}/{dataset}/{ref}.bacteria.{region}.precluster.tax",
-        dist="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.dist"
+        tax="data/{ref}/{dataset}/{ref}.{region}.pick.tax",
+        dist="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.dist",
+        cp_fasta="data/{ref}/{ref}.{region}.fasta", # because filter.seqs doesn't like hyphens in filepaths
+        cp_hard_filter="data/{dataset}/processed/{dataset}.filter"
     params:
         tax="data/{ref}/{dataset}/{ref}.bacteria.pick.tax"
     resources:
@@ -36,9 +38,12 @@ rule preclust_db:
         "benchmarks/{ref}/{dataset}/preclust_db.{region}.txt"
     shell:
         """
+        cp {input.fasta} {output.cp_fasta}
+        cp {input.hard_filter} {output.cp_hard_filter}
+
         mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.ref}/{wildcards.dataset}/);
 
-        filter.seqs(fasta={input.fasta}, hard={input.hard_filter}, processors={resources.procs});
+        filter.seqs(fasta={output.cp_fasta}, hard={output.cp_hard_filter}, processors={resources.procs});
         unique.seqs(fasta=current);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
         dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs});
