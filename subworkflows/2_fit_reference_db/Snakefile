@@ -12,7 +12,7 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("soil",), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("human", "marine", "mouse", "soil"), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule copy_preclust_db:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -28,7 +28,7 @@ rule copy_preclust_filter:  # because filter.seqs doesn't like hyphens in filepa
     input:
         filter=prep_samples("data/{dataset}/processed/{dataset}.filter")
     output:
-        filter="data/{dataset}/processed/{dataset}.filter"
+        filter="data/{dataset}/{dataset}.filter"
     shell:
         """
         cp {input.filter} {output.filter}
