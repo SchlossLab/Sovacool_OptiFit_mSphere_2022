@@ -31,11 +31,16 @@ Benchmarking the optiFit algorithm in the mothur software package.
         * Results figures are in `{dataset}/figures/`.
 
 6. Visualize the workflow.
-    ```
-    snakemake --dag | dot -Tsvg > dag.svg
-    ```
-    You can open the svg file in your GUI web browser to view it.
 
+    per-file:
+    ```bash
+    snakemake --dag | dot -T png > figures/dag.png
+    ```
+
+    per-rule:
+    ```bash
+    smk --rulegraph | dot -T png > figures/rulegraph.png
+    ```
 
 ## Managing software dependencies
 
