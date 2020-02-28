@@ -2,6 +2,8 @@
 import shutil
 
 # TODO: take a V4 data set and try it against a FL and V4 reference
+wildcard_constraints:
+    region="bact_v4|bact_full"
 
 subworkflow prep_db:
     workdir:
@@ -12,13 +14,13 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("human", "marine", "mouse", "soil"), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule copy_preclust_db:  # because filter.seqs doesn't like hyphens in filepaths
     input:
         fasta=prep_db("data/{ref}/{ref}.{region}.fasta")
     output:
-        fasta="data/{ref}/{ref}.{region}.fasta"
+        fasta="data/{ref}/{dataset}/{ref}.{region}.fasta"  # in case they're overwritten
     shell:
         """
         cp {input.fasta} {output.fasta}
@@ -34,6 +36,7 @@ rule copy_preclust_filter:  # because filter.seqs doesn't like hyphens in filepa
         cp {input.filter} {output.filter}
         """
 
+# TODO: double-check that ref v4 files are not being / were not overwritten
 rule preclust_db:
     input:
         fasta=rules.copy_preclust_db.output.fasta,
