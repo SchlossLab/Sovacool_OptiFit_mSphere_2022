@@ -14,7 +14,7 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse", "soil"), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule copy_preclust_db:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -36,7 +36,7 @@ rule copy_preclust_filter:  # because filter.seqs doesn't like hyphens in filepa
         cp {input.filter} {output.filter}
         """
 
-# TODO: double-check that ref v4 files are not being / were not overwritten
+# TODO: make sure ref v4 files are not being / were not overwritten
 rule preclust_db:
     input:
         fasta=rules.copy_preclust_db.output.fasta,
@@ -50,7 +50,7 @@ rule preclust_db:
     params:
         tax="data/{ref}/{dataset}/{ref}.bacteria.pick.tax"
     resources:
-        procs=12,
+        procs=8,
         walltime_hrs=48
     log:
         "log/{ref}/{dataset}/preclust_db.{region}.log"
