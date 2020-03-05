@@ -39,7 +39,7 @@
  "download_most": {
   "pmem": "1GB",
   "walltime": "1:00:00"
- }
+ },
  "preclust_db": {
      "procs": "{resources.procs}",
      "walltime": "{resources.walltime_hrs}:00:00"
