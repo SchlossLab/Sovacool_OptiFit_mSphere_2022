@@ -16,39 +16,46 @@ rule targets_fit_ref_db:
     input:
         expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
-rule copy_preclust_db:  # because filter.seqs doesn't like hyphens in filepaths
+rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
-        fasta=prep_db("data/{ref}/{ref}.{region}.fasta")
+        filter=prep_samples("data/{dataset}/processed/{dataset}.filter"),
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        column=prep_samples("results/{dataset}/{dataset}.dist"),
+        fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
+        tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
-        fasta="data/{ref}/{dataset}/{ref}.{region}.fasta"  # in case they're overwritten
-    shell:
-        """
-        cp {input.fasta} {output.fasta}
-        """
-
-rule copy_preclust_filter:  # because filter.seqs doesn't like hyphens in filepaths
-    input:
-        filter=prep_samples("data/{dataset}/processed/{dataset}.filter")
-    output:
-        filter="data/{dataset}/{dataset}.filter"
+        filter="data/{dataset}/{ref}/{region}/{dataset}.filter",
+        fasta="data/{dataset}/{ref}/{region}/{dataset}.fasta",
+        count="data/{dataset}/{ref}/{region}/{dataset}.count_table",
+        column="data/{dataset}/{ref}/{region}/{dataset}.dist",
+        fasta_db="data/{dataset}/{ref}/{region}/{ref}.{region}.fasta",
+        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.tax"
+    params:
+        outdir="data/{dataset}/{ref}/{region}/"
     shell:
         """
         cp {input.filter} {output.filter}
+        cp {input.fasta} {output.fasta}
+        cp {input.count} {output.count}
+        cp {input.column} {output.column}
+        cp {input.fasta_db} {output.fasta_db}
+        cp {input.tax} {output.tax}
         """
 
-# TODO: make sure ref v4 files are not being / were not overwritten
 rule preclust_db:
     input:
-        fasta=rules.copy_preclust_db.output.fasta,
+        fasta_db=rules.copy_preclust_inputs.output.fasta_db,
+        fasta_sample=rules.copy_preclust_inputs.output.fasta,
         tax=prep_db("data/{ref}/{ref}.bacteria.tax"),
-        hard_filter=rules.copy_preclust_filter.output.filter
+        hard_filter=rules.copy_preclust_inputs.output.filter
     output:
-        fasta="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.fasta",
-        count="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.pick.count_table",
-        tax="data/{ref}/{dataset}/{ref}.{region}.pick.tax",
-        dist="data/{ref}/{dataset}/{ref}.{region}.filter.unique.precluster.dist"
+        fasta="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.fasta",
+        count="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.pick.count_table",
+        tax="data/{dataset}/{ref}/{region}/{ref}.{region}.pick.tax",
+        dist="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.dist"
     params:
-        tax="data/{ref}/{dataset}/{ref}.bacteria.pick.tax"
+        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.pick.tax"
     resources:
         procs=8,
         walltime_hrs=48
@@ -60,10 +67,10 @@ rule preclust_db:
         """
         mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.ref}/{wildcards.dataset}/);
 
-        filter.seqs(fasta={input.fasta}, hard={input.hard_filter}, processors={resources.procs});
+        filter.seqs(fasta={input.fasta_db}-{input.fasta_sample}, processors={resources.procs});
         unique.seqs(fasta=current);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
-        dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs});
+        dist.seqs(fasta=current, cutoff=0.03, processors={resources.procs});
 
         list.seqs(fasta=current);
         get.seqs(accnos=current, taxonomy={input.tax});
@@ -77,15 +84,15 @@ rule cluster_db:
         dist=rules.preclust_db.output.dist,
         count=rules.preclust_db.output.count
     output:
-        list="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
-        steps="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
-        sensspec="results/{ref}/{dataset}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec",
+        list="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
+        steps="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec",
     params:
-        outdir="results/{ref}/{dataset}/{region}/seed_{seed}/"
+        outdir="data/{dataset}/{ref}/{region}/seed_{seed}/"
     log:
-        "log/{ref}/{dataset}/cluster.{region}.seed_{seed}.log"
+        "log/{dataset}/{ref}/{region}/cluster.{region}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{ref}/{dataset}/cluster.{region}.seed_{seed}.txt"
+        "benchmarks/{dataset}/{ref}/{region}/cluster.{region}.seed_{seed}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -100,15 +107,15 @@ rule get_otu_reps_db:
         tax=rules.preclust_db.output.tax,
         dist=rules.preclust_db.output.dist
     output:
-        tax="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{ref}/{dataset}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+        tax="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
     params:
-        outdir="results/{ref}/{dataset}/"
+        outdir="results/{dataset}/{ref}/{region}/"
     log:
-        "log/{ref}/{dataset}/get_otu_reps.{region}.seed_{seed}.log"
+        "log/{dataset}/{ref}/{region}/get_otu_reps.{region}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{ref}/{dataset}/get_otu_reps.{region}.seed_{seed}.txt"
+        "benchmarks/{dataset}/{ref}/{region}/get_otu_reps.{region}.seed_{seed}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -123,9 +130,9 @@ rule fit_to_ref_db:
         refcolumn=rules.preclust_db.output.dist,
         reffasta=rules.preclust_db.output.fasta,
         refcount=rules.preclust_db.output.count,
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        column=prep_samples("results/{dataset}/{dataset}.dist")
+        fasta=rules.copy_preclust_inputs.output.fasta,
+        count=rules.copy_preclust_inputs.output.count,
+        column=rules.copy_preclust_inputs.output.column
     output:
         sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
     params:
