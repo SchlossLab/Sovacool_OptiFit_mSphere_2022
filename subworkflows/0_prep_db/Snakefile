@@ -21,7 +21,7 @@ rule download_silva:
         "benchmarks/silva/download.txt"
     shell:
         """
-        wget -N -P data/silva/ http://www.mothur.org/w/images/7/71/Silva.seed_v132.tgz
+        wget -N -P data/silva/ https://mothur.org/w/images/3/38/Silva.nr_v138.tgz
         tar xzvf {output.tar} -C data/silva/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
