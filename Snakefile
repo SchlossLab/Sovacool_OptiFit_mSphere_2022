@@ -27,5 +27,5 @@ subworkflow fit_ref_db:
 rule targets:
     input:
         [prep_db(f"data/{ref}/{ref}.{region}.fasta") for ref in ("silva", "gg", "rdp") for region in ("bact_v4", "bact_full")],
-        [prep_samples(f"results/{dataset}/{dataset}.seed_{seed}.opti_mcc.sensspec") for dataset in datasets for seed in range(1)],
+        [prep_samples(f"results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.sensspec") for dataset in datasets for seed in range(1) for ref in ("silva",)],
         [fit_ref_db(f'results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec') for dataset in ("mouse",) for ref in ("silva",) for region in ("bact_v4",) for method in ("open",) for  printref in ("f",) for seed in range(1)]
