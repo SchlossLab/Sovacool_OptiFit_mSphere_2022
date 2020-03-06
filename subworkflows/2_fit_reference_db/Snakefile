@@ -18,10 +18,10 @@ rule targets_fit_ref_db:
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
-        filter=prep_samples("data/{dataset}/processed/{dataset}.filter"),
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        column=prep_samples("results/{dataset}/{dataset}.dist"),
+        filter=prep_samples("data/{dataset}/{ref}/processed/{dataset}.filter"),
+        fasta=prep_samples("data/{dataset}/{ref}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
+        column=prep_samples("results/{dataset}/{ref}/{dataset}.dist"),
         fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
@@ -47,7 +47,7 @@ rule preclust_db:
     input:
         fasta_db=rules.copy_preclust_inputs.output.fasta_db,
         fasta_sample=rules.copy_preclust_inputs.output.fasta,
-        tax=prep_db("data/{ref}/{ref}.bacteria.tax"),
+        tax=rules.copy_preclust_inputs.output.tax,
         hard_filter=rules.copy_preclust_inputs.output.filter
     output:
         fasta="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.fasta",
@@ -55,7 +55,8 @@ rule preclust_db:
         tax="data/{dataset}/{ref}/{region}/{ref}.{region}.pick.tax",
         dist="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.dist"
     params:
-        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.pick.tax"
+        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.pick.tax",
+        outdir="data/{dataset}/{ref}/{region}/"
     resources:
         procs=8,
         walltime_hrs=48
@@ -65,7 +66,7 @@ rule preclust_db:
         "benchmarks/{ref}/{dataset}/preclust_db.{region}.txt"
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.ref}/{wildcards.dataset}/);
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
 
         filter.seqs(fasta={input.fasta_db}-{input.fasta_sample}, processors={resources.procs});
         unique.seqs(fasta=current);
@@ -143,7 +144,6 @@ rule fit_to_ref_db:
         "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
     shell:
         """
-        mothur "#set.logfile(name={log});
-        set.dir(output={params.outdir});
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """
