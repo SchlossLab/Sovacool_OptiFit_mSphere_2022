@@ -61,9 +61,9 @@ rule preclust_db:
         procs=8,
         walltime_hrs=48
     log:
-        "log/{ref}/{dataset}/preclust_db.{region}.log"
+        "log/{dataset}/{ref}/preclust_db.{region}.log"
     benchmark:
-        "benchmarks/{ref}/{dataset}/preclust_db.{region}.txt"
+        "benchmarks/{dataset}/{ref}/preclust_db.{region}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
