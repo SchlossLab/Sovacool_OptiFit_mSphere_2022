@@ -7,7 +7,7 @@ wildcard_constraints:
 
 rule targets:
     input:
-        expand("results/{ref}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy", ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"), seed=seeds)
+        expand("data/{ref}/{ref}.{region}.fasta", ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"))
 
 rule download_silva:
     output:
