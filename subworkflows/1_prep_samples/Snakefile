@@ -52,6 +52,7 @@ rule preprocess:
         tax="data/{dataset}/{ref}/processed/{dataset}.tax",
         fasta="data/{dataset}/{ref}/processed/{dataset}.fasta"
     params:
+        workdir="data/{dataset}/{ref}/temp/",
         filter="data/{dataset}/{ref}/temp/{dataset}.filter",
         count="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
@@ -64,7 +65,7 @@ rule preprocess:
         procs=8
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output=data/{wildcards.dataset}/temp);
+        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
             make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs});
             screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
             unique.seqs();
@@ -89,6 +90,8 @@ rule calc_dists_samples:
         fasta=rules.preprocess.output.fasta,
     output:
         dist="results/{dataset}/{ref}/{dataset}.dist"
+    params:
+        workdir='results/{dataset}/{ref}/'
     log:
         "log/{dataset}/{ref}/calc_dists.log"
     benchmark:
@@ -98,7 +101,7 @@ rule calc_dists_samples:
         walltime_hrs=48
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.dataset}/processed/, output=results/{wildcards.dataset}/);
+        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
         dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
@@ -143,13 +146,15 @@ rule get_otu_reps_samples:
         tax="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
         sum="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
         count="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+    params:
+        workdir="results/{dataset}/{ref}/"
     log:
         "log/{dataset}/{ref}/get_otu_reps.seed_{seed}.log"
     benchmark:
         "benchmarks/{dataset}/{ref}/get_otu_reps.seed_{seed}.txt"
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output=results/{wildcards.dataset}/);
+        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
