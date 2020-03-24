@@ -16,7 +16,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=2GB
+#SBATCH --mem-per-cpu=1GB
 #SBATCH --time=48:00:00
 
 #SBATCH --output=log/hpc/slurm-%j_%x.out
@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 30
+time snakemake --profile config/slurm --latency-wait 90 results/mouse/silva/mouse.dist
