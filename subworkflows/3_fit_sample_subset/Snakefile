@@ -5,8 +5,10 @@ import os
 import re
 import shutil
 
+configfile: 'config/config_test.yaml'
+
 input_dir = "datacopy_Brodie"
-datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['samples']]
+datasets = [dataset_name if not config['subsample_test'] else "{}_{}".format(dataset_name, config['subsample_size']) for dataset_name in config['datasets']]
 output_dirs=("dataset-as-reference")
 weights = set(config['weights'])
 methods = set(config['methods'])
@@ -15,8 +17,8 @@ start = int(config['reference_fractions']['start'])
 stop = int(config['reference_fractions']['stop'])
 step = int(config['reference_fractions']['step'])
 reference_fractions = [i/100 for i in range(start, stop, step)]
-iters = range(config['iterations'])
-reps = range(config['replicates'])
+iters = range(config['seeds'])
+reps = range(config['seeds'])
 mothur_bin = config['mothur_bin']
 
 wildcard_constraints:
