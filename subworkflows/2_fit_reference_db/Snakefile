@@ -68,7 +68,7 @@ rule preclust_db:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
 
-        filter.seqs(fasta={input.fasta_db}-{input.fasta_sample}, processors={resources.procs});
+        filter.seqs(fasta={input.fasta_db}, hard={input.hard_filter}, processors={resources.procs});
         unique.seqs(fasta=current);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
         dist.seqs(fasta=current, cutoff=0.03, processors={resources.procs});
