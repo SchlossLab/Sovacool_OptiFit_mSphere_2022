@@ -172,16 +172,26 @@ Then submit the PBS script to the cluster with `qsub`. See `code/pbs_scripts` fo
 
 Profiles for other cluster systems are available in the [snakemake profiles GitHub](https://github.com/snakemake-profiles/doc) such as [Slurm](https://github.com/Snakemake-Profiles/slurm). You may need to edit `cluster.json` for use with a different cluster system profile.
 
-### Visualizing the DAG
+### Visualizing the workflow
 
 Snakemake creates an image representing the directed acyclic graph (DAG) for a workflow with the following command:
 ```
-snakemake --dag | dot -Tsvg > dag.svg
+snakemake --dag | dot -T png > dag.png
 ```
 
 Here's a small example DAG:
 
-![prep_db](subworkflows/0_prep_db/results/figures/dag.svg)
+![prep_db_dag](subworkflows/0_prep_db/figures/dag.svg)
+
+DAGs have nodes for every file, while rule graphs have nodes for every rule.
+Rule graphs are recommended for large workflows with many files.
+```
+snakemake --rulegraph | dot -T png > rule_graph.png
+```
+
+Here's a rule graph that corresponds to the example DAG above:
+
+![prep_db_rulegraph](subworkflows/0_prep_db/figures/rule_graph.svg)
 
 ## Developer Notes
 
