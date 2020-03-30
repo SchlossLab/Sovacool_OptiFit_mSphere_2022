@@ -11,17 +11,17 @@ rule targets:
 
 rule download_silva:
     output:
-        tar=temp("data/silva/Silva.seed_v132.tgz"),
+        tar=temp("data/silva/silva.nr_v138.tgz"),
         fasta="data/silva/silva.fasta",
         tax="data/silva/silva.tax"
     params:
-        fasta="data/silva/silva.seed_v132.align",  # TODO: change to nr 138 (expect 100k+ seqs)
-        tax="data/silva/silva.seed_v132.tax"
+        fasta="data/silva/silva.nr_v138.align",  # TODO: change to nr 138 (expect 100k+ seqs)
+        tax="data/silva/silva.nr_v138.tax"
     benchmark:
         "benchmarks/silva/download.txt"
     shell:
         """
-        wget -N -P data/silva/ https://mothur.org/w/images/3/38/Silva.nr_v138.tgz
+        wget -N -P data/silva/ https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138.tgz
         tar xzvf {output.tar} -C data/silva/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
@@ -39,7 +39,7 @@ rule download_rdp:
         "benchmarks/rdp/download.txt"
     shell:
         """
-        wget -N -P data/rdp/ https://mothur.org/w/images/c/c3/Trainset16_022016.pds.tgz
+        wget -N -P data/rdp/ https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
         tar xvzf {output.tar} -C data/rdp/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
@@ -59,8 +59,8 @@ rule download_gg:
         "benchmarks/gg/download.txt"
     shell:
         """
-        wget -N -P data/gg/ http://www.mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz
-        wget -N -P data/gg/ http://www.mothur.org/w/images/1/19/Gg_13_8_99.refalign.tgz
+        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/Gg_13_8_99.taxonomy.tgz
+        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/Gg_13_8_99.refalign.tgz
         tar -xzvf {output.tar_tax} -C data/gg/
         tar -xzvf {output.tar_ref} -C data/gg/
         mv {params.fasta} {output.fasta}
