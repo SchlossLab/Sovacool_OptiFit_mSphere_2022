@@ -17,22 +17,7 @@
   "outdir": "log/hpc/jobs/",
   "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },
- "subset_regions": {
+ "align": {
   "procs": "{resources.procs}"
- },
- "filter": {
-  "procs": "{resources.procs}"
- },
- "calc_dists": {
-  "procs": "{resources.procs}",
-  "walltime": "{resources.walltime_hrs}:00:00",
-  "pmem": "8GB"
- },
- "preprocess": {
-  "procs": "{resources.procs}"
- },
- "download_most": {
-  "pmem": "1GB",
-  "walltime": "1:00:00"
  }
 }
