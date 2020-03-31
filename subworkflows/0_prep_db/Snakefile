@@ -21,6 +21,7 @@ rule download_silva:
         "benchmarks/silva/download.txt"
     shell:
         """
+        source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
         wget -N -P data/silva/ https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138.tgz
         tar xzvf {output.tar} -C data/silva/
         mv {params.fasta} {output.fasta}
@@ -29,7 +30,7 @@ rule download_silva:
 
 rule download_rdp:
     output:
-        tar=temp("data/rdp/Trainset16_022016.pds.tgz"),
+        tar=temp("data/rdp/trainset16_022016.pds.tgz"),
         fasta="data/rdp/rdp.fasta",
         tax="data/rdp/rdp.tax"
     params:
@@ -39,6 +40,7 @@ rule download_rdp:
         "benchmarks/rdp/download.txt"
     shell:
         """
+        source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
         wget -N -P data/rdp/ https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
         tar xvzf {output.tar} -C data/rdp/
         mv {params.fasta} {output.fasta}
@@ -50,8 +52,8 @@ rule download_gg:
     output:
         fasta="data/gg/gg.fasta",
         tax="data/gg/gg.tax",
-        tar_tax=temp("data/gg/Gg_13_8_99.taxonomy.tgz"),
-        tar_ref=temp("data/gg/Gg_13_8_99.refalign.tgz")
+        tar_tax=temp("data/gg/gg_13_8_99.taxonomy.tgz"),
+        tar_ref=temp("data/gg/gg_13_8_99.refalign.tgz")
     params:
         fasta="data/gg/gg_13_8_99.fasta",
         tax="data/gg/gg_13_8_99.gg.tax"
@@ -59,8 +61,9 @@ rule download_gg:
         "benchmarks/gg/download.txt"
     shell:
         """
-        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/Gg_13_8_99.taxonomy.tgz
-        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/Gg_13_8_99.refalign.tgz
+        source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
+        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/gg_13_8_99.taxonomy.tgz
+        wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/gg_13_8_99.refalign.tgz
         tar -xzvf {output.tar_tax} -C data/gg/
         tar -xzvf {output.tar_ref} -C data/gg/
         mv {params.fasta} {output.fasta}
