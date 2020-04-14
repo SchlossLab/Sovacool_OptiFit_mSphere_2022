@@ -19,7 +19,7 @@ for dataset in wildcards.dataset:
 
 rule preprocess_targets:
     input:
-        expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=wildcards.dataset, ref=("silva"), seed=seeds, ext=('list', 'steps', 'sensspec')),
+        expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=('mouse'), ref=("silva"), seed=seeds, ext=('list', 'steps', 'sensspec')),
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("human", "marine", "soil") for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
@@ -56,18 +56,24 @@ rule preprocess:
         filter="data/{dataset}/{ref}/temp/{dataset}.filter",
         count="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
-        fasta="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta"
+        fasta="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        trim_contigs='data/{dataset}/{ref}/temp/{dataset}.trim.contigs.fasta',
+        contigs_groups='data/{dataset}/{ref}/temp/{dataset}.contigs.groups'
     log:
         "log/{dataset}/{ref}/preprocess.log"
     benchmark:
         "benchmarks/{dataset}/{ref}/preprocess.txt"
     resources:
-        procs=8
+        procs=12
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
-            make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs});
-            screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8);
+        mothur '#set.logfile(name=log/{wildcards.dataset}/{wildcards.ref}/make_contigs.log);
+            set.dir(input=data/{wildcards.dataset}/raw, output={params.workdir});
+            make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs}); '
+        mv data/{wildcards.dataset}/*.contigs* {params.workdir}
+        mothur '#set.logfile(name={log});
+            set.dir(input=data/{wildcards.dataset}/raw, output={params.workdir});
+            screen.seqs(fasta={params.trim_contigs}, group={params.contigs_groups}, maxambig=0, maxlength=275, maxhomop=8);
             unique.seqs();
             count.seqs(name=current, group=current);
             align.seqs(fasta=current, reference={input.align_db}, processors={resources.procs});
