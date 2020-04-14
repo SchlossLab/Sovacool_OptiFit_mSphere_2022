@@ -34,7 +34,8 @@
   "pmem": "8GB"
  },
  "preprocess": {
-  "procs": "{resources.procs}"
+  "procs": "{resources.procs}",
+  "pmem": "{resources.pmem}"
  },
  "download_most": {
   "pmem": "1GB",
