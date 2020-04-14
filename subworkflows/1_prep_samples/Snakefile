@@ -65,7 +65,7 @@ rule preprocess:
         "benchmarks/{dataset}/{ref}/preprocess.txt"
     resources:
         procs=12,
-        pmem="8GB"
+        pmem=8
     shell:
         """
         mothur '#set.logfile(name=log/{wildcards.dataset}/{wildcards.ref}/make_contigs.log);
