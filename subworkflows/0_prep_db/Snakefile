@@ -64,10 +64,10 @@ rule download_gg:
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
         wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/gg_13_8_99.taxonomy.tgz
         wget -N -P data/gg/ https://mothur.s3.us-east-2.amazonaws.com/wiki/gg_13_8_99.refalign.tgz
-        tar -xzvf {output.tar_tax} -C data/gg/
-        tar -xzvf {output.tar_ref} -C data/gg/
-        mv {params.fasta} {output.fasta}
-        mv {params.tax} {output.tax}
+        tar -xzvPf {output.tar_tax} -C data/gg/
+        tar -xzvPf {output.tar_ref} -C data/gg/
+        cp {params.fasta} {output.fasta}
+        Rscript code/gg_tax.R
         """
 
 rule get_bacteria:
