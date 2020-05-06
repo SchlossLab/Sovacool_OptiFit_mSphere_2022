@@ -19,8 +19,8 @@ for dataset in wildcards.dataset:
 
 rule preprocess_targets:
     input:
-        expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=('mouse'), ref=("silva"), seed=seeds, ext=('list', 'steps', 'sensspec')),
-        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("human", "marine", "soil") for sra in sra_list[dataset] for i in (1,2)]
+        expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=('soil',), ref=("silva",), seed=seeds, ext=('list', 'steps', 'sensspec')),
+        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("soil",) for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
     input:
@@ -68,11 +68,9 @@ rule preprocess:
         pmem=8
     shell:
         """
-        mothur '#set.logfile(name=log/{wildcards.dataset}/{wildcards.ref}/make_contigs.log);
-            set.dir(input=data/{wildcards.dataset}/raw, output={params.workdir});
-            make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs}); '
-        mv data/{wildcards.dataset}/*.contigs* {params.workdir}
         mothur '#set.logfile(name={log});
+            set.dir(input=data/{wildcards.dataset}/raw, output={params.workdir});
+            make.contigs(inputdir=data/{wildcards.dataset}/raw, file={input.file}, processors={resources.procs});
             set.dir(input=data/{wildcards.dataset}/raw, output={params.workdir});
             screen.seqs(fasta={params.trim_contigs}, group={params.contigs_groups}, maxambig=0, maxlength=275, maxhomop=8);
             unique.seqs();

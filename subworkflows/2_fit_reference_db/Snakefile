@@ -14,7 +14,7 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("mouse", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("soil", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
