@@ -61,9 +61,9 @@ rule preclust_db:
         procs=8,
         walltime_hrs=48
     log:
-        "log/{dataset}/{ref}/preclust_db.{region}.log"
+        "log/{dataset}/{ref}/{region}/preclust_db.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/preclust_db.{region}.txt"
+        "benchmarks/{dataset}/{ref}/{region}/preclust_db.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -89,7 +89,7 @@ rule cluster_db:
         steps="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
         sensspec="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec",
     params:
-        outdir="data/{dataset}/{ref}/{region}/seed_{seed}/"
+        outdir="results/{dataset}/{ref}/{region}/seed_{seed}/"
     log:
         "log/{dataset}/{ref}/{region}/cluster.{region}.seed_{seed}.log"
     benchmark:
