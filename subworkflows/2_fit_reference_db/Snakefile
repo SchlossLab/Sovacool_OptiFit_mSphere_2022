@@ -58,7 +58,7 @@ rule preclust_db:
         tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.pick.tax",
         outdir="data/{dataset}/{ref}/{region}/"
     resources:
-        procs=8,
+        procs=12,
         walltime_hrs=48
     log:
         "log/{dataset}/{ref}/{region}/preclust_db.log"
@@ -123,6 +123,32 @@ rule get_otu_reps_db:
         classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
+
+rule combine_seqs:
+    input:
+        fasta_sample=rules.copy_preclust_inputs.output.fasta,
+        fasta_db=rules.copy_preclust_inputs.output.fasta_db
+    output:
+        fasta_combined="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.combined.fasta"
+    params:
+        outdir="results/{dataset}/{ref}/{region}/"
+    log:
+        "log/{dataset}/{ref}/{region}/combine_seqs.{region}.log"
+    benchmark:
+        "benchmarks/{dataset}/{ref}/{region}/combine_seqs.{region}.txt"
+    resources:
+        procs=12
+    shell:
+        """
+        cat {input} > {output.fasta_combined}
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+        list.seqs(fasta={input.fasta_sample})
+        list.seqs(fasta={input.fasta_db})
+        unique.seqs(fasta={output.fasta_combined}, output=count)
+        dist.seqs(fasta=current, cutoff=0.03)
+        '
+        """
+# TODO: combine ref dbs & samples to one fasta, run dist.seqs, feed into cluster.fit
 
 
 rule fit_to_ref_db:
