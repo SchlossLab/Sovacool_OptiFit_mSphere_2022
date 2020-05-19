@@ -156,6 +156,8 @@ rule calc_dists_combined:
         column="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.dist"
     params:
         outdir="data/{dataset}/{ref}/{region}/"
+    log:
+        "log/{dataset}/{ref}/{region}/calc_dists_combined.{region}.log"
     resources:
         procs=12
     shell:
