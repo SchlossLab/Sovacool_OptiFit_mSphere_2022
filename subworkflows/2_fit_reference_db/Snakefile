@@ -132,7 +132,7 @@ rule combine_seqs:
         fasta_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.fasta",
         fasta_unique="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.fasta",
         count_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.count_table",
-        accnos_refs="data/{dataset}/{ref}/{region}/{ref}.{region}.accnos"
+        accnos_refs="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.accnos"
     params:
         outdir="data/{dataset}/{ref}/{region}/"
     log:
@@ -157,7 +157,7 @@ rule calc_dists_combined:
     params:
         outdir="data/{dataset}/{ref}/{region}/"
     resources:
-        procs=8
+        procs=12
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -170,7 +170,7 @@ rule fit_to_ref_db: # this version is based on Sarah W's email
     input:
         fasta=rules.combine_seqs.output.fasta_unique,
         count=rules.combine_seqs.output.count_all,
-        #column=rules.calc_dists_combined.output.column,
+        column=rules.calc_dists_combined.output.column,
         accnos=rules.combine_seqs.output.accnos_refs
     output:
         sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
