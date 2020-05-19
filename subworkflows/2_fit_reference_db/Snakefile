@@ -127,31 +127,90 @@ rule get_otu_reps_db:
 rule combine_seqs:
     input:
         fasta_sample=rules.copy_preclust_inputs.output.fasta,
-        fasta_db=rules.copy_preclust_inputs.output.fasta_db
+        fasta_db=rules.preclust_db.output.fasta
     output:
-        fasta_combined="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.combined.fasta"
+        fasta_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.fasta",
+        fasta_unique="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.fasta",
+        count_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.count_table",
+        accnos_refs="data/{dataset}/{ref}/{region}/{ref}.{region}.accnos"
     params:
-        outdir="results/{dataset}/{ref}/{region}/"
+        outdir="data/{dataset}/{ref}/{region}/"
     log:
         "log/{dataset}/{ref}/{region}/combine_seqs.{region}.log"
     benchmark:
         "benchmarks/{dataset}/{ref}/{region}/combine_seqs.{region}.txt"
-    resources:
-        procs=12
     shell:
         """
-        cat {input} > {output.fasta_combined}
+        cat {input} > {output.fasta_all}
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(fasta={input.fasta_sample})
-        list.seqs(fasta={input.fasta_db})
-        unique.seqs(fasta={output.fasta_combined}, output=count)
-        dist.seqs(fasta=current, cutoff=0.03)
+            list.seqs(fasta={input.fasta_sample});
+            list.seqs(fasta={input.fasta_db});
+            unique.seqs(fasta={output.fasta_all}, format=count)
         '
         """
+
+rule calc_dists_combined:
+    input:
+        fasta=rules.combine_seqs.output.fasta_unique
+    output:
+        column="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.dist"
+    params:
+        outdir="data/{dataset}/{ref}/{region}/"
+    resources:
+        procs=8
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs});
+        '
+        """
+
 # TODO: combine ref dbs & samples to one fasta, run dist.seqs, feed into cluster.fit
+rule fit_to_ref_db: # this version is based on Sarah W's email
+    input:
+        fasta=rules.combine_seqs.output.fasta_unique,
+        count=rules.combine_seqs.output.count_all,
+        #column=rules.calc_dists_combined.output.column,
+        accnos=rules.combine_seqs.output.accnos_refs
+    output:
+        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
+    params:
+        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
+    benchmark:
+        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
+    log:
+        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
+        """
+'''
+rule fit_to_ref_db2:
+    input:
+        fasta_all=rules.combine_seqs.output.fasta_all,
+        reflist=rules.cluster_db.output.list,
+        refcolumn=rules.preclust_db.output.dist,
+        reffasta=rules.preclust_db.output.fasta,
+        refcount=rules.preclust_db.output.count,
+        fasta=rules.copy_preclust_inputs.output.fasta,
+        count=rules.copy_preclust_inputs.output.count,
+        column=rules.copy_preclust_inputs.output.column
+    output:
+        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
+    params:
+        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
+    benchmark:
+        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
+    log:
+        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
+        """
 
-
-rule fit_to_ref_db:
+rule fit_to_ref_db_OLD:
     input:
         reflist=rules.cluster_db.output.list,
         refcolumn=rules.preclust_db.output.dist,
@@ -173,3 +232,4 @@ rule fit_to_ref_db:
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """
+'''
