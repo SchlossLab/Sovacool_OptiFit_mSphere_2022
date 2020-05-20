@@ -26,12 +26,12 @@
  "calc_dists_db": {
   "procs": "{resources.procs}",
   "walltime": "{resources.walltime_hrs}:00:00",
-  "pmem": "8GB"
+  "pmem": "2GB"
  },
  "calc_dists_samples": {
   "procs": "{resources.procs}",
   "walltime": "{resources.walltime_hrs}:00:00",
-  "pmem": "8GB"
+  "pmem": "2GB"
  },
  "preprocess": {
   "procs": "{resources.procs}"
@@ -47,6 +47,6 @@
  "calc_dists_combined": {
   "procs": "{resources.procs}",
   "walltime": "48:00:00",
-  "pmem": "8GB"
+  "pmem": "2GB"
  },
 }
