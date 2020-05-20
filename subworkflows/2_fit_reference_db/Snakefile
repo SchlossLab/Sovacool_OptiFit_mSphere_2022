@@ -14,7 +14,7 @@ subworkflow prep_samples:
 
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec', dataset=("soil", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec', dataset=("soil", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -159,12 +159,11 @@ rule calc_dists_combined:
     log:
         "log/{dataset}/{ref}/{region}/calc_dists_combined.{region}.log"
     resources:
-        procs=12
+        procs=16
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs});
-        '
+            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
 # TODO: combine ref dbs & samples to one fasta, run dist.seqs, feed into cluster.fit
@@ -173,18 +172,22 @@ rule fit_to_ref_db: # this version is based on Sarah W's email
         fasta=rules.combine_seqs.output.fasta_unique,
         count=rules.combine_seqs.output.count_all,
         column=rules.calc_dists_combined.output.column,
-        accnos=rules.combine_seqs.output.accnos_refs
+        accnos=rules.combine_seqs.output.accnos_refs,
+        reflist=rules.cluster_db.output.list
     output:
-        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
+        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec'
     params:
         outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
         "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
     log:
         "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
+    resources:
+        procs=1
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.current(processors={resources.procs});
         cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """
 '''
