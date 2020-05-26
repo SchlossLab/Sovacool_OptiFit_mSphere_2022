@@ -18,7 +18,7 @@ refs=["silva"]
 regions=['bact_v4']
 methods=["open"]
 printrefs=['f']
-seeds=range(1)
+seeds=range(5)
 
 rule targets_fit_ref_db:
     input:
@@ -208,30 +208,6 @@ rule fit_to_ref_db: # this version is based on Sarah W's email
         set.current(processors={resources.procs});
         cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
-'''
-rule fit_to_ref_db_OLD:
-    input:
-        reflist=rules.cluster_db.output.list,
-        refcolumn=rules.preclust_db.output.dist,
-        reffasta=rules.preclust_db.output.fasta,
-        refcount=rules.preclust_db.output.count,
-        fasta=rules.copy_preclust_inputs.output.fasta,
-        count=rules.copy_preclust_inputs.output.count,
-        column=rules.copy_preclust_inputs.output.column
-    output:
-        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
-    params:
-        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
-    benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
-    log:
-        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
-    shell:
-        """
-        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
-        """
-'''
 
 rule cluster_combined:
     input:
