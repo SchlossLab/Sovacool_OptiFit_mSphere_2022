@@ -12,9 +12,21 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
+leaf_jobs=['optifit', 'cluster_combined']
+datasets=["soil"]
+refs=["silva"]
+regions=['bact_v4']
+methods=["open"]
+printrefs=['f']
+seeds=range(1)
+
 rule targets_fit_ref_db:
     input:
-        expand('results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec', dataset=("soil", ), ref=("silva",), region=("bact_v4",), method=("open",), printref=("f",), seed=range(1))
+        [target for dataset in datasets for ref in refs for region in regions for method in methods for printref in printrefs for seed in seeds for target in
+            [f'results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
+             f'results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec'
+            ]
+        ]
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -25,14 +37,14 @@ rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepa
         fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
-        filter="data/{dataset}/{ref}/{region}/{dataset}.filter",
-        fasta="data/{dataset}/{ref}/{region}/{dataset}.fasta",
-        count="data/{dataset}/{ref}/{region}/{dataset}.count_table",
-        column="data/{dataset}/{ref}/{region}/{dataset}.dist",
-        fasta_db="data/{dataset}/{ref}/{region}/{ref}.{region}.fasta",
-        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.tax"
+        filter="data/{dataset}_{ref}_{region}/inputs/{dataset}.filter",
+        fasta="data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta",
+        count="data/{dataset}_{ref}_{region}/inputs/{dataset}.count_table",
+        column="data/{dataset}_{ref}_{region}/inputs/{dataset}.dist",
+        fasta_db="data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta",
+        tax="data/{dataset}_{ref}_{region}/inputs/{ref}.bacteria.tax"
     params:
-        outdir="data/{dataset}/{ref}/{region}/"
+        outdir="data/{dataset}_{ref}_{region}/inputs/"
     shell:
         """
         cp {input.filter} {output.filter}
@@ -50,20 +62,20 @@ rule preclust_db:
         tax=rules.copy_preclust_inputs.output.tax,
         hard_filter=rules.copy_preclust_inputs.output.filter
     output:
-        fasta="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.fasta",
-        count="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.pick.count_table",
-        tax="data/{dataset}/{ref}/{region}/{ref}.{region}.pick.tax",
-        dist="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.dist"
+        fasta="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta",
+        count="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.count_table",
+        tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.pick.tax",
+        dist="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.dist"
     params:
-        tax="data/{dataset}/{ref}/{region}/{ref}.bacteria.pick.tax",
-        outdir="data/{dataset}/{ref}/{region}/"
+        tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.bacteria.pick.tax",
+        outdir="data/{dataset}_{ref}_{region}/preclust_db/"
     resources:
         procs=12,
         walltime_hrs=48
     log:
-        "log/{dataset}/{ref}/{region}/preclust_db.log"
+        "log/{dataset}_{ref}_{region}/preclust_db.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/preclust_db.txt"
+        "benchmarks/{dataset}_{ref}_{region}/preclust_db.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -85,15 +97,15 @@ rule cluster_db:
         dist=rules.preclust_db.output.dist,
         count=rules.preclust_db.output.count
     output:
-        list="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
-        steps="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
-        sensspec="results/{dataset}/{ref}/{region}/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec",
+        list="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
+        steps="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
+        sensspec="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     params:
-        outdir="results/{dataset}/{ref}/{region}/seed_{seed}/"
+        outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
     log:
-        "log/{dataset}/{ref}/{region}/cluster.{region}.seed_{seed}.log"
+        "log/{dataset}_{ref}_{region}/cluster_db.seed_{seed}.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/cluster.{region}.seed_{seed}.txt"
+        "benchmarks/{dataset}_{ref}_{region}/cluster_db.seed_{seed}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -108,15 +120,15 @@ rule get_otu_reps_db:
         tax=rules.preclust_db.output.tax,
         dist=rules.preclust_db.output.dist
     output:
-        tax="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{dataset}/{ref}/{region}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+        tax="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
     params:
-        outdir="results/{dataset}/{ref}/{region}/"
+        outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
     log:
-        "log/{dataset}/{ref}/{region}/get_otu_reps.{region}.seed_{seed}.log"
+        "log/get_otu_reps.{dataset}_{ref}_{region}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/get_otu_reps.{region}.seed_{seed}.txt"
+        "benchmarks/get_otu_reps.{dataset}_{ref}_{region}.seed_{seed}.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -129,16 +141,16 @@ rule combine_seqs:
         fasta_sample=rules.copy_preclust_inputs.output.fasta,
         fasta_db=rules.preclust_db.output.fasta
     output:
-        fasta_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.fasta",
-        fasta_unique="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.fasta",
-        count_all="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.count_table",
-        accnos_refs="data/{dataset}/{ref}/{region}/{ref}.{region}.filter.unique.precluster.accnos"
+        fasta_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.fasta",
+        fasta_unique="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.unique.fasta",
+        count_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.count_table",
+        accnos_refs="data/{dataset}_{ref}_{region}/combined_seqs/{ref}.{region}.filter.unique.precluster.accnos"
     params:
-        outdir="data/{dataset}/{ref}/{region}/"
+        outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
-        "log/{dataset}/{ref}/{region}/combine_seqs.{region}.log"
+        "log/{dataset}_{ref}_{region}/combine_seqs.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/combine_seqs.{region}.txt"
+        "benchmarks/{dataset}_{ref}_{region}/combine_seqs.txt"
     shell:
         """
         cat {input} > {output.fasta_all}
@@ -153,11 +165,13 @@ rule calc_dists_combined:
     input:
         fasta=rules.combine_seqs.output.fasta_unique
     output:
-        column="data/{dataset}/{ref}/{region}/{dataset}_{ref}.{region}.all.unique.dist"
+        column="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.unique.dist"
     params:
-        outdir="data/{dataset}/{ref}/{region}/"
+        outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
-        "log/{dataset}/{ref}/{region}/calc_dists_combined.{region}.log"
+        "log/{dataset}_{ref}_{region}/calc_dists_combined.log"
+    benchmark:
+        "benchmarks/{dataset}_{ref}_{region}/calc_dists_combined.txt"
     resources:
         procs=16
     shell:
@@ -166,55 +180,35 @@ rule calc_dists_combined:
             dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-# TODO: combine ref dbs & samples to one fasta, run dist.seqs, feed into cluster.fit
+# TODO: get cluster.fit to NOT run cluster on ref seqs
 rule fit_to_ref_db: # this version is based on Sarah W's email
     input:
         fasta=rules.combine_seqs.output.fasta_unique,
         count=rules.combine_seqs.output.count_all,
         column=rules.calc_dists_combined.output.column,
         accnos=rules.combine_seqs.output.accnos_refs,
-        reflist=rules.cluster_db.output.list
+        reflist=rules.cluster_db.output.list,
+        refcolumn=rules.preclust_db.output.dist,
+        reffasta=rules.preclust_db.output.fasta,
+        refcount=rules.preclust_db.output.count
     output:
-        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec'
+        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec'
     params:
-        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
+        outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
+        "benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.txt"
     log:
-        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
+        "log/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.log"
     resources:
         procs=1
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, reflist={input.reflist}, printref={wildcards.printref}, method={wildcards.method}) "
+        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta}, refcount={input.refcount}, printref={wildcards.printref}, method={wildcards.method}) "
         """
 '''
-rule fit_to_ref_db2:
-    input:
-        fasta_all=rules.combine_seqs.output.fasta_all,
-        reflist=rules.cluster_db.output.list,
-        refcolumn=rules.preclust_db.output.dist,
-        reffasta=rules.preclust_db.output.fasta,
-        refcount=rules.preclust_db.output.count,
-        fasta=rules.copy_preclust_inputs.output.fasta,
-        count=rules.copy_preclust_inputs.output.count,
-        column=rules.copy_preclust_inputs.output.column
-    output:
-        sensspec='results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/{dataset}.optifit_mcc.sensspec'
-    params:
-        outdir="results/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/"
-    benchmark:
-        "benchmarks/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.txt"
-    log:
-        "log/{dataset}/{ref}/{region}/method_{method}/printref_{printref}/seed_{seed}/fit.log"
-    shell:
-        """
-        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
-        """
-
 rule fit_to_ref_db_OLD:
     input:
         reflist=rules.cluster_db.output.list,
@@ -238,3 +232,25 @@ rule fit_to_ref_db_OLD:
         cluster.fit(reflist={input.reflist}, refcolumn={input.refcolumn}, reffasta={input.reffasta},refcount={input.refcount}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
         """
 '''
+
+rule cluster_combined:
+    input:
+        dist=rules.calc_dists_combined.output.column,
+        count=rules.combine_seqs.output.count_all
+    output:
+        list="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.list",
+        steps="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.steps",
+        sensspec='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec'
+    params:
+        outdir="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/"
+    log:
+        "log/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
+        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        """
+
