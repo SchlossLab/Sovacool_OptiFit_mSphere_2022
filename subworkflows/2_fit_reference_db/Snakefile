@@ -188,7 +188,7 @@ rule fit_to_ref_db: # this version is based on Sarah W's email
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         set.current(processors={resources.procs});
-        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}) "
+        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column}, reflist={input.reflist}, printref={wildcards.printref}, method={wildcards.method}) "
         """
 '''
 rule fit_to_ref_db2:
