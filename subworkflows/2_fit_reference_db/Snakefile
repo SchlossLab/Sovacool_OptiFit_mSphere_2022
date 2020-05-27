@@ -12,7 +12,6 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
-leaf_jobs=['optifit', 'cluster_combined']
 datasets=["soil"]
 refs=["silva"]
 regions=['bact_v4']
@@ -180,17 +179,12 @@ rule calc_dists_combined:
             dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-# TODO: update to v1.45 and use reflist instead of accnos param to avoid re-clustering
 rule fit_to_ref_db:
     input:
         fasta=rules.combine_seqs.output.fasta_unique,
         count=rules.combine_seqs.output.count_all,
         column=rules.calc_dists_combined.output.column,
-        accnos=rules.combine_seqs.output.accnos_refs,
-        reflist=rules.cluster_db.output.list,
-        refcolumn=rules.preclust_db.output.dist,
-        reffasta=rules.preclust_db.output.fasta,
-        refcount=rules.preclust_db.output.count
+        reflist=rules.cluster_db.output.list
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec'
     params:
@@ -206,7 +200,7 @@ rule fit_to_ref_db:
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster.fit(accnos={input.accnos}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
+        cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
 rule cluster_combined:
