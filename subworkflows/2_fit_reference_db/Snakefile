@@ -224,6 +224,7 @@ rule cluster_combined:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
+'''
 rule modify_opticlust_sensspec:  # to make compatible with optifit sensspec
     input:
         txt=rules.cluster_combined.output.sensspec,
@@ -239,7 +240,7 @@ rule merge_sensspec:
         clust=expand('results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec',
             dataset=datasets, ref=refs, region=regions,seed=seeds),
         fit=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
-            dataset=datasets, ref=refs, region=regions,seed=seeds)
+            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods)
     output:
         txt="results/merged.sensspec"
     benchmark:
@@ -247,3 +248,4 @@ rule merge_sensspec:
     run:
         with open(output.txt, 'w') as outfile:
             outfile.write("iter\tlabel\tcutoff\tnumotus\ttp\ttn\tfp\tfn\tsensitivity\tspecificity\tppv\tnpv\tfdr\taccuracy\tmcc\tf1score")
+'''
