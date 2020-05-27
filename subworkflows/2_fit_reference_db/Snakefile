@@ -180,8 +180,8 @@ rule calc_dists_combined:
             dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-# TODO: get cluster.fit to NOT run cluster on ref seqs
-rule fit_to_ref_db: # this version is based on Sarah W's email
+# TODO: update to v1.45 and use reflist instead of accnos param to avoid re-clustering
+rule fit_to_ref_db:
     input:
         fasta=rules.combine_seqs.output.fasta_unique,
         count=rules.combine_seqs.output.count_all,
