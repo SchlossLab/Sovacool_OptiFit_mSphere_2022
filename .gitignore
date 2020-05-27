@@ -10,3 +10,8 @@ Rplots.pdf
 .idea/
 core.*
 .nfs*
+*.dist
+*.list
+*.count_table
+*.fasta
+*.steps
