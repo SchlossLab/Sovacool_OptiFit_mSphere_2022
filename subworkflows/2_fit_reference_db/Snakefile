@@ -230,3 +230,26 @@ rule cluster_combined:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
+rule modify_opticlust_sensspec:  # to make compatible with optifit sensspec
+    input:
+        txt=rules.cluster_combined.output.sensspec,
+        code=""
+    output:
+        txt='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec'
+    benchmark:
+        "benchmarks/{dataset}_{ref}_{region}/modify_opticlust_sensspec.seed_{seed}.txt"
+
+
+rule merge_sensspec:
+    input:
+        clust=expand('results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec',
+            dataset=datasets, ref=refs, region=regions,seed=seeds),
+        fit=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
+            dataset=datasets, ref=refs, region=regions,seed=seeds)
+    output:
+        txt="results/merged.sensspec"
+    benchmark:
+        "benchmarks/merge_sensspec.txt"
+    run:
+        with open(output.txt, 'w') as outfile:
+            outfile.write("iter\tlabel\tcutoff\tnumotus\ttp\ttn\tfp\tfn\tsensitivity\tspecificity\tppv\tnpv\tfdr\taccuracy\tmcc\tf1score")
