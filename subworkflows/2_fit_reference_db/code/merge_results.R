@@ -1,7 +1,11 @@
 library(dplyr)
 library(purrr)
 library(readr)
-infilenames <- c(snakemake@input[["clust"]], snakemake@input[["fit"]])
-dfs <- map(infilenames, read_tsv)
-sensspec <- bind_rows(dfs)
-write_tsv(sensspec, snakemake@output[["txt"]])
+
+merge_results <- function(key) {
+  infilename <- snakeamke@input[[key]]
+  dfs <- map(infilenames, read_tsv)
+  bind_rows(dfs) %>% write_tsv(snakemake@output[[key]])
+}
+merge_results('sensspec')
+merge_results('bench')
