@@ -14,7 +14,7 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
-datasets=["soil"]#, "mouse", "marine"]
+datasets=["marine", "soil"]#, "mouse", "human"]
 refs=["silva"]
 regions=['bact_v4']
 methods=["open", "closed"]
