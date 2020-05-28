@@ -23,7 +23,7 @@ rule targets_fit_ref_db:
     input:
         [target for dataset in datasets for ref in refs for region in regions for method in methods for printref in printrefs for seed in seeds for target in
             [f'results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
-             f'results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec'
+             f'results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec'
             ]
         ]
 
@@ -217,22 +217,34 @@ rule cluster_combined:
         "log/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.log"
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.txt"
+    resources:
+        procs=1
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
+        set.current(processors={resources.procs});
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-'''
+
 rule modify_opticlust_sensspec:  # to make compatible with optifit sensspec
     input:
         txt=rules.cluster_combined.output.sensspec,
-        code=""
+        code="code/modify_opticlust_sensspec.R"
     output:
         txt='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec'
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/modify_opticlust_sensspec.seed_{seed}.txt"
+    params:
+        dataset="{dataset}",
+        ref="{ref}",
+        region="{region}",
+        seed="{seed}"
+    script:
+        "{input.code}"
+
+#rule modify_optifit_sensspec:
 
 
 rule merge_sensspec:
@@ -240,12 +252,9 @@ rule merge_sensspec:
         clust=expand('results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec',
             dataset=datasets, ref=refs, region=regions,seed=seeds),
         fit=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
-            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods)
+            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs)
     output:
         txt="results/merged.sensspec"
     benchmark:
         "benchmarks/merge_sensspec.txt"
-    run:
-        with open(output.txt, 'w') as outfile:
-            outfile.write("iter\tlabel\tcutoff\tnumotus\ttp\ttn\tfp\tfn\tsensitivity\tspecificity\tppv\tnpv\tfdr\taccuracy\tmcc\tf1score")
-'''
+
