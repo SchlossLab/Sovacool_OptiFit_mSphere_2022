@@ -1,0 +1,2 @@
+s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref
+301.2116	00:05:01	2599.07	2749.28	2597.14	2597.16	571.51	565.84	0	soil	silva	bact_v4	2	open	f
