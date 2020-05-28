@@ -23,7 +23,7 @@ plot_jitter <- function(df, y) {
 ```
 
 ``` r
-sensspec <- read_tsv(here('subworkflows/2_fit_reference_db/results/merged.sensspec')) %>% 
+sensspec <- read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.txt')) %>% 
   relevel_method()
 sensspec %>% 
   plot_jitter(mcc)
@@ -40,3 +40,12 @@ benchmarks %>%
 ```
 
 ![](figures/fit_db_benchmarks-1.png)<!-- -->
+
+``` r
+df_fraction_mapped <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
+df_fraction_mapped %>% 
+  ggplot(aes(dataset, fraction_mapped)) +
+  geom_jitter()
+```
+
+![](figures/fraction_reads_mapped-1.png)<!-- -->
