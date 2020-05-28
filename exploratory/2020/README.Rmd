@@ -47,8 +47,8 @@ benchmarks %>%
 ```
 
 ```{r fraction_reads_mapped}
-df_fraction_mapped <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
-df_fraction_mapped %>% 
+fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
+fractions %>% 
   ggplot(aes(dataset, fraction_mapped)) +
   geom_jitter()
 ```

@@ -61,7 +61,6 @@ rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepa
         filter="data/{dataset}_{ref}_{region}/inputs/{dataset}.filter",
         fasta="data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta",
         count="data/{dataset}_{ref}_{region}/inputs/{dataset}.count_table",
-        column="data/{dataset}_{ref}_{region}/inputs/{dataset}.dist",
         fasta_db="data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta",
         tax="data/{dataset}_{ref}_{region}/inputs/{ref}.bacteria.tax"
     params:
@@ -71,7 +70,6 @@ rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepa
         cp {input.filter} {output.filter}
         cp {input.fasta} {output.fasta}
         cp {input.count} {output.count}
-        cp {input.column} {output.column}
         cp {input.fasta_db} {output.fasta_db}
         cp {input.tax} {output.tax}
         """
