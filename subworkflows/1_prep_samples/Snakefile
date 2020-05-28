@@ -15,7 +15,6 @@ sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "s
 
 datasets=["human", "marine", "mouse", "soil"]
 refs=["silva"]
-regions=['bact_v4']
 seeds = range(1, 11)
 
 for dataset in wildcards.dataset:
@@ -23,8 +22,8 @@ for dataset in wildcards.dataset:
 
 rule preprocess_targets:
     input:
-        #expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=('soil',), ref=("silva",), seed=seeds, ext=('list', 'steps', 'sensspec')),
-        expand('data/{dataset}/{ref}/processed/{dataset}.fasta', dataset=('soil',), ref=("silva",)),
+        #expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=datasets, ref=refs, seed=seeds, ext=('list', 'steps', 'sensspec')),
+        expand('data/{dataset}/{ref}/processed/{dataset}.fasta', dataset=datasets, ref=refs),
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("soil",) for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
