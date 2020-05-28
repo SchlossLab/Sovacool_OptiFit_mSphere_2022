@@ -317,6 +317,6 @@ rule merge_mapped_stats:
         txt='results/fraction_reads_mapped.txt'
     shell:
         """
-        echo "dataset\tref\tregion\tseed\tmethod\tprintref\tfraction_mapped\n" > output.txt
-        cat input >> output.txt
+        echo "dataset\tref\tregion\tseed\tmethod\tprintref\tfraction_mapped\n" > {output.txt}
+        cat {input} >> {output.txt}
         """
