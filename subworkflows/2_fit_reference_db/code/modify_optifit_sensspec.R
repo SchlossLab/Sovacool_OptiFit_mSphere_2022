@@ -6,7 +6,7 @@ sensspec <- read_tsv(snakemake@input[["txt"]]) %>%
     ref = snakemake@params[["ref"]],
     region = snakemake@params[["region"]],
     seed = snakemake@params[["seed"]],
-    method = snakemake@params[['method']],
-    printref = snakemake@params[['printref']]
+    method = snakemake@params[["method"]],
+    printref = snakemake@params[["printref"]]
   )
 write_tsv(sensspec, snakemake@output[["txt"]])
