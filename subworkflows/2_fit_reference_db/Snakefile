@@ -1,9 +1,11 @@
 """ Benchmarking the OptiFit algorithm using an external reference database """
+import itertools
 import shutil
 
 # TODO: take a V4 data set and try it against a FL and V4 reference
 wildcard_constraints:
-    region="bact_v4|bact_full"
+    region="bact_v4|bact_full",
+    seed='\d+'
 
 subworkflow prep_db:
     workdir:
@@ -19,19 +21,28 @@ methods=["open", "closed"]
 printrefs=['f']
 seeds=range(1,11)
 
-rule merge_sensspec2:
+rule merge_results2:
     input:
-        clust=expand('results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec',
+        sensspec=itertools.chain(
+            expand('results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec',
             dataset=datasets, ref=refs, region=regions,seed=seeds),
-        fit=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
-            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs),
-        code='code/merge_sensspec.R'
+            expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
+                dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs)
+                ),
+        bench=itertools.chain(
+            expand('benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.mod.txt',
+            dataset=datasets, ref=refs, region=regions,seed=seeds),
+            expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
+            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs)
+            ),
+        code='code/merge_results.R'
     output:
-        txt="results/merged.sensspec"
+        sensspec="results/merged.sensspec",
+        bench="results/benchmarks.txt"
     benchmark:
-        "benchmarks/merge_sensspec.txt"
+        "benchmarks/merge_results.txt"
     script:
-        'code/merge_sensspec.R'
+        'code/merge_results.R'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -234,30 +245,34 @@ rule cluster_combined:
         """
 
 
-rule modify_opticlust_sensspec:  # to make compatible with optifit sensspec
+rule reformat_opticlust_results:  # to make compatible with optifit sensspec & plotting
     input:
-        txt=rules.cluster_combined.output.sensspec,
-        code="code/modify_opticlust_sensspec.R"
+        sensspec=rules.cluster_combined.output.sensspec,
+        bench=rules.cluster_combined.benchmark,
+        code="code/reformat_opticlust_results.R"
     output:
-        txt='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec'
+        sensspec='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec',
+        bench="benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.mod.txt"
     benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/modify_opticlust_sensspec.seed_{seed}.txt"
+        "benchmarks/{dataset}_{ref}_{region}/reformat_opticlust_results.seed_{seed}.txt"
     params:
         dataset="{dataset}",
         ref="{ref}",
         region="{region}",
         seed="{seed}"
     script:
-        "code/modify_opticlust_sensspec.R"
+        "code/reformat_opticlust_results.R"
 
-rule modify_optifit_sensspec:  # to make compatible with optifit sensspec
+rule reformat_optifit_results:  # for plotting
     input:
-        txt=rules.fit_to_ref_db.output.sensspec,
-        code="code/modify_optifit_sensspec.R"
+        sensspec=rules.fit_to_ref_db.output.sensspec,
+        bench=rules.fit_to_ref_db.benchmark,
+        code="code/reformat_optifit_results.R"
     output:
-        txt='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec'
+        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
+        bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt'
     benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/modify_optifit_sensspec.method_{method}.printref_{printref}.seed_{seed}.txt"
+        "benchmarks/{dataset}_{ref}_{region}/reformat_optifit_results.method_{method}.printref_{printref}.seed_{seed}.txt"
     params:
         dataset="{dataset}",
         ref="{ref}",
@@ -266,6 +281,6 @@ rule modify_optifit_sensspec:  # to make compatible with optifit sensspec
         printref='{printref}',
         method='{method}'
     script:
-        "code/modify_optifit_sensspec.R"
+        "code/reformat_optifit_results.R"
 
 # TODO: get percentage of reads that mapped to the reference from optifit output
