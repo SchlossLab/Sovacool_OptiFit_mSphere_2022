@@ -1,5 +1,7 @@
-sensspec <- readr::read_tsv(snakemake@input[["txt"]]) %>%
-  dplyr::mutate(
+library(dplyr)
+library(readr)
+sensspec <- read_tsv(snakemake@input[["txt"]]) %>%
+  mutate(
     dataset = snakemake@params[["dataset"]],
     ref = snakemake@params[["ref"]],
     region = snakemake@params[["region"]],
@@ -9,4 +11,4 @@ sensspec <- readr::read_tsv(snakemake@input[["txt"]]) %>%
     iter = NA,
     numotus = NA
   )
-readr::write_tsv(sensspec, snakemake@output[["txt"]])
+write_tsv(sensspec, snakemake@output[["txt"]])
