@@ -7,5 +7,5 @@ merge_results <- function(key) {
   dfs <- map(infilenames, read_tsv)
   bind_rows(dfs) %>% write_tsv(snakemake@output[[key]])
 }
-merge_results('sensspec')
-merge_results('bench')
+merge_results("sensspec")
+merge_results("bench")
