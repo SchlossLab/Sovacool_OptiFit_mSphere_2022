@@ -15,9 +15,9 @@ subworkflow prep_samples:
 datasets=["soil"]
 refs=["silva"]
 regions=['bact_v4']
-methods=["open"]
+methods=["open", "closed"]
 printrefs=['f']
-seeds=range(5)
+seeds=range(1,11)
 
 rule merge_sensspec2:
     input:
