@@ -16,12 +16,12 @@ seeds = range(10)
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
-
+'''
 rule preprocess_targets:
     input:
         expand("results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.{ext}", dataset=('soil',), ref=("silva",), seed=seeds, ext=('list', 'steps', 'sensspec')),
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("soil",) for sra in sra_list[dataset] for i in (1,2)]
-
+'''
 rule download_most:
     input:
         list="data/{dataset}/SRR_Acc_List.txt",
