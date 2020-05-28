@@ -1,0 +1,45 @@
+---
+title: "plots.Rmd"
+author: "Kelly Sovacool"
+date: "5/27/2020"
+output: 
+  github_document:
+    html_preview: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      fig.path = "figures/"
+                      )
+```
+```{r lib}
+library(here)
+library(tidyverse)
+theme_set(theme_classic())
+```
+
+# Fitting datasets to a reference database vs _de novo_ clustering
+
+```{r fit_db_sensspec}
+sensspec <- read_tsv(here('subworkflows/2_fit_reference_db/results/merged.sensspec')) %>% 
+  mutate(method=fct_relevel(method, c("open", "closed", "de_novo")))
+sensspec %>% group_by(dataset, method) %>% 
+  ggplot(aes(x=method, y=mcc, fill=dataset)) +
+  geom_jitter()
+```
+
+```{r fit_db_benchmarks}
+benchmarks <- read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.txt')) %>% 
+  mutate(method=fct_relevel(method, c("open", "closed", "de_novo")))
+benchmarks %>% group_by(dataset, method) %>% 
+  ggplot(aes(x=method, y=s, fill=dataset)) +
+  geom_jitter() +
+  labs(y='seconds')
+```
+
+```{r render, echo=FALSE, eval=FALSE}
+rmarkdown::render(here::here("exploratory/2020/README.Rmd"), 
+                  output_dir = "exploratory/2020/")
+```
+
