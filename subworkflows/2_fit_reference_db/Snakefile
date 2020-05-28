@@ -305,7 +305,7 @@ rule fraction_reads_mapped:
             next(list_file)
             line = next(list_file)
             mapped_reads = {seq for column in line.split()[2:] for seq in column.split(',')}
-        fraction_mapped = len(mapped_reads.intersection(all_reads)) / len(all_reads)
+        fraction_mapped = round(len(mapped_reads.intersection(all_reads)) / len(all_reads), 3)
         with open(output.txt, 'w') as output_file:
             output_file.write(f"{wildcards.dataset}\t{wildcards.ref}\t{wildcards.region}\t{wildcards.seed}\t{wildcards.method}\t{wildcards.printref}\t{fraction_mapped}")
 
