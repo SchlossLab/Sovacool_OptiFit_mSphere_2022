@@ -242,7 +242,7 @@ rule modify_opticlust_sensspec:  # to make compatible with optifit sensspec
         region="{region}",
         seed="{seed}"
     script:
-        "{input.code}"
+        "code/modify_opticlust_sensspec.R"
 
 #rule modify_optifit_sensspec:
 
