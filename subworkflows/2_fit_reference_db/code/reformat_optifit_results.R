@@ -13,10 +13,10 @@ mutate_columns <- function(df) {
 }
 
 reformat <- function(key) {
-  read_tsv(snakemake@input[[key]]) %>% 
-    mutate_columns %>% 
+  read_tsv(snakemake@input[[key]]) %>%
+    mutate_columns() %>%
     write_tsv(snakemake@output[[key]])
 }
 
-reformat('sensspec')
-reformat('bench')
+reformat("sensspec")
+reformat("bench")
