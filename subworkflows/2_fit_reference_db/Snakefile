@@ -14,7 +14,7 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
-datasets=["soil", "mouse", "marine"]
+datasets=["soil"]#, "mouse", "marine"]
 refs=["silva"]
 regions=['bact_v4']
 methods=["open", "closed"]
@@ -55,7 +55,6 @@ rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepa
         filter=prep_samples("data/{dataset}/{ref}/processed/{dataset}.filter"),
         fasta=prep_samples("data/{dataset}/{ref}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
-        column=prep_samples("results/{dataset}/{ref}/{dataset}.dist"),
         fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
