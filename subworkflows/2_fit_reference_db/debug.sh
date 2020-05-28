@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --forcerun results/soil_silva_bact_v4/optifit/method_open/printref_f/seed_0/soil_silva.bact_v4.all.unique.optifit_mcc.sensspec
+time snakemake --profile config/slurm --latency-wait 90 --forcerun merge_mapped_stats
