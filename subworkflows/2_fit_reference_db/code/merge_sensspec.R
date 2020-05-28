@@ -1,0 +1,7 @@
+library(dplyr)
+library(purrr)
+library(readr)
+infilename <- c(snakemake@input[['clust']], snakemake@input[['fit']])
+dfs <- map(infilenames, read_tsv)
+sensspec <- bind_rows(dfs)
+write_tsv(sensspec, snakemake@output[['txt']])
