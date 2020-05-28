@@ -3,7 +3,7 @@ library(purrr)
 library(readr)
 
 merge_results <- function(key) {
-  infilename <- snakeamke@input[[key]]
+  infilename <- snakemake@input[[key]]
   dfs <- map(infilenames, read_tsv)
   bind_rows(dfs) %>% write_tsv(snakemake@output[[key]])
 }
