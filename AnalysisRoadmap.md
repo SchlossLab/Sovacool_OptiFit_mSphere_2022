@@ -1,16 +1,3 @@
-### Misc To-Do
-- [ ] What percent of sequences map to the reference?
-    - Rule written, need to test.
-    - Output in `results/{output_dir}/{dataset}/{dataset}_fraction_mapped.tsv`.
-- [ ] Determine how much of the dataset is needed to generate the reference (when using the dataset as its own reference).
-    - Need to fix the sample size and vary the reference size to answer this.
-    - Ask Sarah to implement a `sample.accnos` parameter in OptiFit?
-- [x] Replace the `{dataset}.batch` scripts in `code/data_processing/` with snakemake workflow(s).
-    - [x] Fix out-of-date commands in batch files.
-    - [x] Call the data processing workflows from the main Snakefile with the `include` statement.
-    - [x] Download the human sample dataset.
-
-
 # Analysis Roadmap
 
 ## 0. Relevant repositories to get data & see how modeling was done
@@ -56,9 +43,9 @@
     - [x] Find representative sequence from each OTU
 * For each dataset (human, murine, marine, and soil) and region (V4, full length), with 10 replicates, perform & compare MCCs:
     - [x] OptiClust: De novo clustering on samples
-    - [ ] OptiFit
-        - [ ] Open reference clustering
-        - [ ] Closed reference clustering
+    - [x] OptiFit
+        - [x] Open reference clustering
+        - [x] Closed reference clustering
     - [ ] VSEARCH / QIIME2 against representative sequences from each OTU
         - [ ] Open
         - [ ] Closed
@@ -95,9 +82,8 @@
     - [ ] Use of 10, 20, 30... 90% of data to create reference databases (R)
         - [ ] Subset with different weighted methods:
             - none
-            - ref-abundance
-            - sample-abundance
-            - sample-dists
+            - abundance
+            - distances (connectivity)
         - [ ] Cluster reference sequences using OptiClust
         - [ ] Get MCC
         - [ ] Run 10 times to get the seed that gives the best clustering for each set of references
