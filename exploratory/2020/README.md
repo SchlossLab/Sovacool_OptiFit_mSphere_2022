@@ -17,7 +17,7 @@ relevel_method <- function(df) {
 }
 plot_jitter <- function(df, y) {
   df %>% group_by(dataset, method) %>% 
-      ggplot(aes(x=method, y={{ y }}, fill=dataset)) +
+      ggplot(aes(x=method, y={{ y }}, color=dataset)) +
   geom_jitter()
 }
 ```
@@ -42,10 +42,11 @@ benchmarks %>%
 ![](figures/fit_db_benchmarks-1.png)<!-- -->
 
 ``` r
-df_fraction_mapped <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
-df_fraction_mapped %>% 
-  ggplot(aes(dataset, fraction_mapped)) +
-  geom_jitter()
+fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
+fractions %>% 
+  ggplot(aes(x=dataset, y=fraction_mapped, color=dataset)) +
+  geom_jitter() +
+  ylim(0, 1)
 ```
 
 ![](figures/fraction_reads_mapped-1.png)<!-- -->
