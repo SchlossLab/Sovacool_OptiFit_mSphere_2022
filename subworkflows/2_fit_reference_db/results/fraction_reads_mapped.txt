@@ -1,5 +1,15 @@
 dataset	ref	region	seed	method	printref	fraction_mapped
 
+marine	silva	bact_v4	1	closed	f	0.215
+marine	silva	bact_v4	2	closed	f	0.217
+marine	silva	bact_v4	3	closed	f	0.218
+marine	silva	bact_v4	4	closed	f	0.217
+marine	silva	bact_v4	5	closed	f	0.216
+marine	silva	bact_v4	6	closed	f	0.217
+marine	silva	bact_v4	7	closed	f	0.217
+marine	silva	bact_v4	8	closed	f	0.217
+marine	silva	bact_v4	9	closed	f	0.218
+marine	silva	bact_v4	10	closed	f	0.216
 soil	silva	bact_v4	1	closed	f	0.301
 soil	silva	bact_v4	2	closed	f	0.299
 soil	silva	bact_v4	3	closed	f	0.298
