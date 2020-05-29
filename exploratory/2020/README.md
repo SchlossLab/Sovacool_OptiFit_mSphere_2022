@@ -6,6 +6,12 @@ Exploratory Plots
 library(here)
 library(tidyverse)
 theme_set(theme_classic())
+color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
+dataset_colors <- list(human = color_palette[[3]],
+                       marine = color_palette[[1]],
+                       mouse = color_palette[[4]],
+                       soil = color_palette[[2]]
+                       )
 ```
 
 # Fitting datasets to a reference database vs *de novo* clustering
@@ -15,10 +21,11 @@ relevel_method <- function(df) {
   df %>%
     mutate(method = fct_relevel(method, c("open", "closed", "de_novo")))
 }
-plot_jitter <- function(df, y) {
-  df %>% group_by(dataset, method) %>% 
-      ggplot(aes(x=method, y={{ y }}, color=dataset)) +
-  geom_jitter()
+plot_jitter <- function(.df, ...) {
+  .df %>% 
+    ggplot(aes(...)) +
+    geom_jitter() +
+    scale_color_manual(values=dataset_colors)
 }
 ```
 
@@ -26,7 +33,9 @@ plot_jitter <- function(df, y) {
 sensspec <- read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.txt')) %>% 
   relevel_method()
 sensspec %>% 
-  plot_jitter(mcc)
+  group_by(dataset, method) %>% 
+  plot_jitter(x = method, y = mcc, color = dataset) +
+  ylim(0, 1)
 ```
 
 ![](figures/fit_db_sensspec-1.png)<!-- -->
@@ -35,7 +44,8 @@ sensspec %>%
 benchmarks <- read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.txt')) %>% 
   relevel_method
 benchmarks %>% 
-  plot_jitter(s) +
+  group_by(dataset, method) %>% 
+  plot_jitter(x = method, y = s, color = dataset) +
   labs(y='seconds')
 ```
 
@@ -44,8 +54,7 @@ benchmarks %>%
 ``` r
 fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
 fractions %>% 
-  ggplot(aes(x=dataset, y=fraction_mapped, color=dataset)) +
-  geom_jitter() +
+  plot_jitter(x=dataset, y=fraction_mapped, color=dataset) +
   ylim(0, 1)
 ```
 
