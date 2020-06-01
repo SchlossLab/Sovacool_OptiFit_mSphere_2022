@@ -1,1 +1,1 @@
-marine	silva	bact_v4	2	closed	f	0.217
+marine	silva	bact_v4	2	closed	f	0.216
