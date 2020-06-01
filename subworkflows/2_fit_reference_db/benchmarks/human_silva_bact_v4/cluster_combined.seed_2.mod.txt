@@ -1,0 +1,2 @@
+s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref	iter	numotus
+879.94	00:14:39	5253.41	5403.9	5250.49	5250.99	0	6.02	0	human	silva	bact_v4	2	de_novo	NA	NA	NA
