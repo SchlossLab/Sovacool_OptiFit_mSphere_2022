@@ -1,0 +1,39 @@
+""" Benchmarking the OptiFit algorithm using subsets of datasets """
+import Bio.SeqIO
+import numpy.random
+import shutil
+
+subworkflow prep_samples:
+    workdir:
+        "../1_prep_samples/"
+
+
+datasets = ["soil"]
+refs = ["silva"]
+regions = ['bact_v4']
+methods = ["open", "closed"]
+printrefs = ['f']
+seeds = range(1,2)
+
+rule split_subset:
+    input:
+        fasta=prep_samples("data/{dataset}/silva/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
+        dist=prep_samples("results/{dataset}/{ref}/{dataset}.dist")
+    output:
+        fasta="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
+        count="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
+        dist="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist",
+        ref_accnos="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.fasta"
+    run:
+        with open(input.fasta, 'r') as infile:
+            seq_records = Bio.SeqIO.read(infile, 'fasta')
+        for src, dest in [[input.fasta, output.fasta],
+                          [input.count, output.count],
+                          [input.dist, output.dist]
+                          ]:
+            shutil.copyfile(src, dest)
+        numpy.random.seed(wildcards.seed)
+
+
+
