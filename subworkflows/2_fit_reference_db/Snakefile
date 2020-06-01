@@ -17,9 +17,9 @@ subworkflow prep_samples:
 datasets = ["human", "marine", "mouse", "soil"]
 refs = ["silva"]
 regions = ['bact_v4']
-methods = ["open", "closed"]
+methods = ["closed"]
 printrefs = ['f']
-seeds = range(1,11)
+seeds = range(1,2)
 
 rule fit_ref_db_targets:
     input:
@@ -215,7 +215,7 @@ rule fit_to_ref_db:
     log:
         "log/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.log"
     resources:
-        procs=1
+        procs=8
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -239,7 +239,7 @@ rule cluster_combined:
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.txt"
     resources:
-        procs=1
+        procs=8
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
