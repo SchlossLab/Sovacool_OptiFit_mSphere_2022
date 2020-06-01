@@ -147,7 +147,7 @@ rule cluster_dataset:
 
 rule get_otu_reps_samples:
     input:
-        list=rules.cluster_samples.output.list,
+        list=rules.cluster_dataset.output.list,
         count=rules.preprocess.output.count,
         tax=rules.preprocess.output.tax,
         dist=rules.calc_dists_dataset.output.dist
