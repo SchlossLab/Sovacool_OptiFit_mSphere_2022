@@ -116,7 +116,7 @@ rule calc_dists_dataset:
 
 rule cluster_dataset:
     input:
-        dist=rules.calc_dists_samples.output.dist,
+        dist=rules.calc_dists_dataset.output.dist,
         count=rules.preprocess.output.count
     output:
         list="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.list",
@@ -150,7 +150,7 @@ rule get_otu_reps_samples:
         list=rules.cluster_samples.output.list,
         count=rules.preprocess.output.count,
         tax=rules.preprocess.output.tax,
-        dist=rules.calc_dists_samples.output.dist
+        dist=rules.calc_dists_dataset.output.dist
     output:
         tax="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
         sum="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
