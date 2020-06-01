@@ -94,7 +94,7 @@ rule preprocess:
         cp {params.fasta} {output.fasta}
         """
 
-rule calc_dists_samples:
+rule calc_dists_dataset:
     input:
         fasta=rules.preprocess.output.fasta,
     output:
@@ -114,7 +114,7 @@ rule calc_dists_samples:
         dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-rule cluster_samples:
+rule cluster_dataset:
     input:
         dist=rules.calc_dists_samples.output.dist,
         count=rules.preprocess.output.count
