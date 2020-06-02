@@ -1,14 +1,14 @@
 {
  "__default__": {
   "account_pbs": "pschloss_fluxod",
-  "account_slurm": "pschloss1",
+  "account_slurm": "pschloss99",
   "queue": "fluxod",
   "qos": "flux",
   "partition": "standard",
   "jobname": "{rule}.{wildcards}",
   "nodes": 1,
   "procs": 1,
-  "pmem": "4GB",
+  "pmem": "2GB",
   "walltime": "24:00:00",
   "email": "sovacool@umich.edu",
   "mailon": "a",
@@ -25,20 +25,17 @@
  },
  "calc_dists_db": {
   "procs": "{resources.procs}",
-  "walltime": "{resources.walltime_hrs}:00:00",
-  "pmem": "2GB"
+  "walltime": "{resources.walltime_hrs}:00:00"
  },
- "calc_dists_samples": {
+ "calc_dists_dataset": {
   "procs": "{resources.procs}",
-  "walltime": "{resources.walltime_hrs}:00:00",
-  "pmem": "2GB"
+  "walltime": "{resources.walltime_hrs}:00:00"
  },
  "preprocess": {
   "procs": "{resources.procs}"
  },
  "download_most": {
-  "pmem": "1GB",
-  "walltime": "1:00:00"
+  "pmem": "1GB"
  },
  "preclust_db": {
      "procs": "{resources.procs}",
@@ -46,7 +43,18 @@
  },
  "calc_dists_combined": {
   "procs": "{resources.procs}",
-  "walltime": "48:00:00",
-  "pmem": "2GB"
+  "walltime": "48:00:00"
  },
+ "fit_to_ref_db": {
+  "procs": "{resources.procs}"
+    },
+"cluster_combined": {
+ "procs": "{resources.procs}"
+    },
+"cluster_db": {
+ "procs": "{resources.procs}"
+    },
+"cluster_dataset": {
+ "procs": "{resources.procs}"
+    }
 }
