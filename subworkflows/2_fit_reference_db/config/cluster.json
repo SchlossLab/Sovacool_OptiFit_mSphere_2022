@@ -50,5 +50,11 @@
     },
 "cluster_combined": {
  "procs": "{resources.procs}"
+    },
+"cluster_db": {
+ "procs": "{resources.procs}"
+    },
+"cluster_dataset": {
+ "procs": "{resources.procs}"
     }
 }
