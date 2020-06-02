@@ -27,7 +27,7 @@
   "procs": "{resources.procs}",
   "walltime": "{resources.walltime_hrs}:00:00"
  },
- "calc_dists_samples": {
+ "calc_dists_dataset": {
   "procs": "{resources.procs}",
   "walltime": "{resources.walltime_hrs}:00:00"
  },
