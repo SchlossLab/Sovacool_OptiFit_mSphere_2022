@@ -15,11 +15,11 @@ subworkflow prep_samples:
         "../1_prep_samples/"
 
 datasets = ["human", "marine", "mouse", "soil"]
-refs = ["silva"]
+refs = ["silva", "gg", "rdp"]
 regions = ['bact_v4']
-methods = ["closed"]
+methods = ["open", "closed"]
 printrefs = ['f']
-seeds = range(1,2)
+seeds = range(1,11)
 
 rule fit_ref_db_targets:
     input:
