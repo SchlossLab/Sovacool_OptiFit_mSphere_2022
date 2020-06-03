@@ -14,8 +14,7 @@ def get_sra_list(dataset):
 sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "soil")}
 
 datasets=["human", "marine", "mouse", "soil"]
-refs=["silva"]
-seeds = range(1, 11)
+refs=["silva", "rdp", "gg"]
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
