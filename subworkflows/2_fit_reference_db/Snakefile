@@ -26,7 +26,8 @@ rule fit_ref_db_targets:
     input:
         "results/sensspec.txt",
         "results/benchmarks.txt",
-        'results/fraction_reads_mapped.txt'
+        'results/fraction_reads_mapped.txt',
+        'results/input_sizes.tsv'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -389,3 +390,25 @@ rule merge_results2:
         "benchmarks/merge_results.txt"
     script:
         'code/merge_results.R'
+
+def count_seqs(filename):
+    with open(filename, 'r') as infile:
+        num_seqs = sum(1 for line in infile if line.startswith('>'))
+    return num_seqs
+
+rule count_input_sizes:
+    input:
+        dataset=expand("data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta", dataset=datasets, ref=refs, region=regions),
+        ref=expand("data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta", dataset=datasets, ref=refs, region=regions)
+    output:
+        txt='results/input_sizes.tsv'
+    benchmark:
+        "benchmarks/count_input_sizes.txt"
+    run:
+        with open(output.txt, 'r') as outfile:
+            outfile.write('dataset\treference\tdataset_size\tref_size\tregion\n')
+            for dataset_filename, ref_filename in zip(input.dataset, input.ref):
+                dataset_size = count_seqs(dataset_filename)
+                ref_size = count_seqs(ref_filename)
+                outfile.write(f"{wildcards.dataset}\t{wildcards.ref}\t{dataset_size}\t{ref_size}\t{wildcards.region}\n")
+
