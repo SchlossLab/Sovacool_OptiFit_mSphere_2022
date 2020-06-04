@@ -1,0 +1,2 @@
+label	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+0.03	0.03	8165	1.93338e+07	1319	3991	0.671685	0.999932	0.860924	0.999794	0.860924	0.999726	0.76031	0.754621	
