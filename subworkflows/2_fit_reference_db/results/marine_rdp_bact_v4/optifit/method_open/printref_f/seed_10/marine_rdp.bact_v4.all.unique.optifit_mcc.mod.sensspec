@@ -1,0 +1,2 @@
+iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	dataset	ref	region	seed	method	printref
+1	0.03	0.03	55292	12275300	14540300000	2289750	2893440	0.8093	0.9998	0.8428	0.9998	0.8428	0.9996	0.8257	0.8257	marine	rdp	bact_v4	10	open	f
