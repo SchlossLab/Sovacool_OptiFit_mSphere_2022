@@ -405,7 +405,7 @@ rule count_input_sizes:
     benchmark:
         "benchmarks/count_input_sizes.txt"
     run:
-        with open(output.txt, 'r') as outfile:
+        with open(output.txt, 'w') as outfile:
             outfile.write('dataset\treference\tdataset_size\tref_size\tregion\n')
             for dataset_filename, ref_filename in zip(input.dataset, input.ref):
                 dataset_size = count_seqs(dataset_filename)
