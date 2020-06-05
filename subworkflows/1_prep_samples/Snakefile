@@ -44,7 +44,7 @@ rule download_most:
 rule preprocess:
     input:
         file="data/{dataset}/{dataset}.files",
-        align_db=prep_db("data/silva/silva.v4.fasta"),
+        align_db=prep_db("data/silva/silva.bact_v4.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
     output:
