@@ -1,0 +1,2 @@
+s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref
+1163.3761	00:19:23	10666.89	10817.08	10664.91	10665.28	1.27	2349.1	0	human	gg	bact_v4	4	open	f
