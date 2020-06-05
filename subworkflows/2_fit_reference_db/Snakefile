@@ -405,7 +405,7 @@ rule count_input_sizes:
     benchmark:
         "benchmarks/count_input_sizes.txt"
     run:
-        parameters = input.dataset.split('/')[1].split('_')
+        parameters = input.dataset[0].split('/')[1].split('_')
         dataset = parameters[0]
         ref = parameters[1]
         region = parameters[2]
