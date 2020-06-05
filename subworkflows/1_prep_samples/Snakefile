@@ -2,7 +2,7 @@ import os
 
 subworkflow prep_db:
     workdir:
-        "../0_prep_db/"
+        "./0_prep_db/"
 
 wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
@@ -51,19 +51,19 @@ rule preprocess:
         filter="data/{dataset}/processed/{dataset}.filter",
         count="data/{dataset}/processed/{dataset}.count_table",
         tax="data/{dataset}/processed/{dataset}.tax",
-        fasta="data/{dataset}/processed/{dataset}..fasta"
+        fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
-        workdir="data/{dataset}//temp/",
-        filter="data/{dataset}//temp/{dataset}.filter",
-        count="data/{dataset}//temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
-        tax="data/{dataset}//temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
-        fasta="data/{dataset}//temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
-        trim_contigs='data/{dataset}//temp/{dataset}.trim.contigs.fasta',
-        contigs_groups='data/{dataset}//temp/{dataset}.contigs.groups'
+        workdir="data/{dataset}/temp/",
+        filter="data/{dataset}/temp/{dataset}.filter",
+        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
+        tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
+        fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        trim_contigs='data/{dataset}/temp/{dataset}.trim.contigs.fasta',
+        contigs_groups='data/{dataset}/temp/{dataset}.contigs.groups'
     log:
-        "log/{dataset}/preprocess..log"
+        "log/{dataset}/preprocess.log"
     benchmark:
-        "benchmarks/{dataset}/preprocess..txt"
+        "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=12,
         pmem=8
