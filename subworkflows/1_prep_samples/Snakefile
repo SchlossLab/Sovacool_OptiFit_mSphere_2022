@@ -11,10 +11,9 @@ def get_sra_list(dataset):
         sra = [line.strip() for line in file]
     return sra
 
-sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "soil")}
+sra_list = {dataset: get_sra_list(dataset) for dataset in ['human', 'marine', 'soil']}
 
 datasets=["human", "marine", "mouse", "soil"]
-refs=["silva", "rdp", "gg"]
 regions=['bact_v4', 'bact_full']
 
 for dataset in wildcards.dataset:
@@ -22,8 +21,8 @@ for dataset in wildcards.dataset:
 
 rule preprocess_targets:
     input:
-        expand('data/{dataset}/{ref}/processed/{dataset}.{region}.fasta', dataset=datasets, ref=refs, region=regions),
-        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("soil",) for sra in sra_list[dataset] for i in (1,2)]
+        expand('data/{dataset}/processed/{dataset}.{region}.fasta', dataset=datasets, region=regions),
+        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
     input:
@@ -46,26 +45,26 @@ rule download_most:
 rule preprocess:
     input:
         file="data/{dataset}/{dataset}.files",
-        align_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
+        align_db=prep_db("data/silva/silva.{region}.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
     output:
-        filter="data/{dataset}/{ref}/processed/{dataset}.{region}.filter",
-        count="data/{dataset}/{ref}/processed/{dataset}.{region}.count_table",
-        tax="data/{dataset}/{ref}/processed/{dataset}.{region}.tax",
-        fasta="data/{dataset}/{ref}/processed/{dataset}.{region}.fasta"
+        filter="data/{dataset}/processed/{dataset}.{region}.filter",
+        count="data/{dataset}/processed/{dataset}.{region}.count_table",
+        tax="data/{dataset}/processed/{dataset}.{region}.tax",
+        fasta="data/{dataset}/processed/{dataset}.{region}.fasta"
     params:
-        workdir="data/{dataset}/{ref}/{region}/temp/",
-        filter="data/{dataset}/{ref}/{region}/temp/{dataset}.filter",
-        count="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
-        tax="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
-        fasta="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
-        trim_contigs='data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.fasta',
-        contigs_groups='data/{dataset}/{ref}/{region}/temp/{dataset}.contigs.groups'
+        workdir="data/{dataset}/{region}/temp/",
+        filter="data/{dataset}/{region}/temp/{dataset}.filter",
+        count="data/{dataset}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
+        tax="data/{dataset}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
+        fasta="data/{dataset}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        trim_contigs='data/{dataset}/{region}/temp/{dataset}.trim.contigs.fasta',
+        contigs_groups='data/{dataset}/{region}/temp/{dataset}.contigs.groups'
     log:
-        "log/{dataset}/{ref}/preprocess.{region}.log"
+        "log/{dataset}/preprocess.{region}.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/preprocess.{region}.txt"
+        "benchmarks/{dataset}/preprocess.{region}.txt"
     resources:
         procs=12,
         pmem=8
