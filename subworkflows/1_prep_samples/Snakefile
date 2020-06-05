@@ -15,13 +15,14 @@ sra_list = {dataset: get_sra_list(dataset) for dataset in ("human", "marine", "s
 
 datasets=["human", "marine", "mouse", "soil"]
 refs=["silva", "rdp", "gg"]
+regions=['bact_v4', 'bact_full']
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
 
 rule preprocess_targets:
     input:
-        expand('data/{dataset}/{ref}/processed/{dataset}.fasta', dataset=datasets, ref=refs),
+        expand('data/{dataset}/{ref}/processed/{dataset}.{region}.fasta', dataset=datasets, ref=refs, region=regions),
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ("soil",) for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
@@ -45,26 +46,26 @@ rule download_most:
 rule preprocess:
     input:
         file="data/{dataset}/{dataset}.files",
-        align_db=prep_db("data/{ref}/{ref}.bact_v4.fasta"),
+        align_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
     output:
-        filter="data/{dataset}/{ref}/processed/{dataset}.filter",
-        count="data/{dataset}/{ref}/processed/{dataset}.count_table",
-        tax="data/{dataset}/{ref}/processed/{dataset}.tax",
-        fasta="data/{dataset}/{ref}/processed/{dataset}.fasta"
+        filter="data/{dataset}/{ref}/processed/{dataset}.{region}.filter",
+        count="data/{dataset}/{ref}/processed/{dataset}.{region}.count_table",
+        tax="data/{dataset}/{ref}/processed/{dataset}.{region}.tax",
+        fasta="data/{dataset}/{ref}/processed/{dataset}.{region}.fasta"
     params:
-        workdir="data/{dataset}/{ref}/temp/",
-        filter="data/{dataset}/{ref}/temp/{dataset}.filter",
-        count="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
-        tax="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
-        fasta="data/{dataset}/{ref}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
-        trim_contigs='data/{dataset}/{ref}/temp/{dataset}.trim.contigs.fasta',
-        contigs_groups='data/{dataset}/{ref}/temp/{dataset}.contigs.groups'
+        workdir="data/{dataset}/{ref}/{region}/temp/",
+        filter="data/{dataset}/{ref}/{region}/temp/{dataset}.filter",
+        count="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
+        tax="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
+        fasta="data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        trim_contigs='data/{dataset}/{ref}/{region}/temp/{dataset}.trim.contigs.fasta',
+        contigs_groups='data/{dataset}/{ref}/{region}/temp/{dataset}.contigs.groups'
     log:
-        "log/{dataset}/{ref}/preprocess.log"
+        "log/{dataset}/{ref}/preprocess.{region}.log"
     benchmark:
-        "benchmarks/{dataset}/{ref}/preprocess.txt"
+        "benchmarks/{dataset}/{ref}/preprocess.{region}.txt"
     resources:
         procs=12,
         pmem=8
