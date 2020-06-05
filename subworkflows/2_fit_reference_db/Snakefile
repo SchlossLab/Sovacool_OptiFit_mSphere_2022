@@ -31,9 +31,9 @@ rule fit_ref_db_targets:
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
-        filter=prep_samples("data/{dataset}/processed/{dataset}.{region}.filter"),
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.{region}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.{region}.count_table"),
+        filter=prep_samples("data/{dataset}/processed/{dataset}.filter"),
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
