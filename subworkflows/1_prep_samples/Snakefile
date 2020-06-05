@@ -2,7 +2,7 @@ import os
 
 subworkflow prep_db:
     workdir:
-        "./0_prep_db/"
+        "../0_prep_db/"
 
 wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
