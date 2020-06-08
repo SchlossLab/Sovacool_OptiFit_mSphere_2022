@@ -20,7 +20,7 @@ for dataset in wildcards.dataset:
 
 rule preprocess_targets:
     input:
-        expand('data/{dataset}/processed/{dataset}.fasta', dataset=datasets),
+        'results/dataset_sizes.tsv',
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
@@ -90,3 +90,24 @@ rule preprocess:
         cp {params.tax} {output.tax}
         cp {params.fasta} {output.fasta}
         """
+
+def count_seqs(filename):
+    with open(filename, 'r') as infile:
+        num_seqs = sum(1 for line in infile if line.startswith('>'))
+    return num_seqs
+
+rule count_dataset_sizes:
+    input:
+        fasta=expand('data/{dataset}/processed/{dataset}.fasta', dataset=datasets)
+    output:
+        txt='results/dataset_sizes.tsv'
+    benchmark:
+        "benchmarks/count_dataset_sizes.txt"
+    run:
+        with open(output.txt, 'w') as outfile:
+            outfile.write('dataset\tnum_seqs\n')
+            for filename in input.fasta:
+                num_seqs = count_seqs(filename)
+                parameters = filename.split('/')[1].split('_')
+                dataset = parameters[0]
+                outfile.write(f"{dataset}\t{num_seqs}\n")
