@@ -408,7 +408,7 @@ rule count_input_sizes:
         parameters = input.dataset[0].split('/')[1].split('_')
         dataset = parameters[0]
         ref = parameters[1]
-        region = parameters[2]
+        region = parameters[3]
         with open(output.txt, 'w') as outfile:
             outfile.write('dataset\treference\tdataset_size\tref_size\tregion\n')
             for dataset_filename, ref_filename in zip(input.dataset, input.ref):
