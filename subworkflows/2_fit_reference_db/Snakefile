@@ -24,9 +24,9 @@ seeds = range(1,11)
 
 rule fit_ref_db_targets:
     input:
-        "results/sensspec.txt",
-        "results/benchmarks.txt",
-        'results/fraction_reads_mapped.txt',
+        "results/sensspec.tsv",
+        "results/benchmarks.tsv",
+        'results/fraction_reads_mapped.tsv',
         'results/input_sizes.tsv'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
@@ -361,7 +361,7 @@ rule merge_mapped_stats:
         expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
         dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds)
     output:
-        txt='results/fraction_reads_mapped.txt'
+        txt='results/fraction_reads_mapped.tsv'
     shell:
         """
         echo "dataset\tref\tregion\tseed\tmethod\tprintref\tfraction_mapped\n" > {output.txt}
@@ -384,8 +384,8 @@ rule merge_results2:
             ),
         code='code/merge_results.R'
     output:
-        sensspec="results/sensspec.txt",
-        bench="results/benchmarks.txt"
+        sensspec="results/sensspec.tsv",
+        bench="results/benchmarks.tsv"
     benchmark:
         "benchmarks/merge_results.txt"
     script:
