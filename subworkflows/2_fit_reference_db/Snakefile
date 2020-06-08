@@ -27,7 +27,7 @@ rule fit_ref_db_targets:
         "results/sensspec.tsv",
         "results/benchmarks.tsv",
         'results/fraction_reads_mapped.tsv',
-        'results/input_sizes.tsv'
+        'results/ref_sizes.tsv'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -396,23 +396,20 @@ def count_seqs(filename):
         num_seqs = sum(1 for line in infile if line.startswith('>'))
     return num_seqs
 
-rule count_input_sizes:
+rule count_ref_sizes:
     input:
-        dataset=expand("data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta", dataset=datasets, ref=refs, region=regions),
-        ref=expand("data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta", dataset=datasets, ref=refs, region=regions)
+        fasta=expand("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta", dataset=datasets, ref=refs, region=regions)
     output:
-        txt='results/input_sizes.tsv'
+        txt='results/ref_sizes.tsv'
     benchmark:
-        "benchmarks/count_input_sizes.txt"
+        'benchmarks/count_ref_sizes.txt'
     run:
-        parameters = input.dataset[0].split('/')[1].split('_')
-        dataset = parameters[0]
-        ref = parameters[1]
-        region = parameters[3]
         with open(output.txt, 'w') as outfile:
-            outfile.write('dataset\treference\tdataset_size\tref_size\tregion\n')
-            for dataset_filename, ref_filename in zip(input.dataset, input.ref):
-                dataset_size = count_seqs(dataset_filename)
-                ref_size = count_seqs(ref_filename)
-                outfile.write(f"{dataset}\t{ref}\t{dataset_size}\t{ref_size}\t{region}\n")
-
+            outfile.write('reference\tregion\tnum_seqs\tdataset_filter\n')
+            for filename in input.fasta:
+                parameters = filename.split('/')[1].split('_')
+                num_seqs = count_seqs(filename)
+                dataset = parameters[0]
+                ref = parameters[1]
+                region = parameters[3]
+                outfile.write(f"{ref}\t{region}\t{num_seqs}\t{dataset}\n")
