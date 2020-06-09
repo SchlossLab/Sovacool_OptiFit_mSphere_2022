@@ -30,41 +30,48 @@ relevel_method <- function(df) {
   df %>%
     mutate(method = fct_relevel(method, c("open", "closed", "de_novo")))
 }
-plot_jitter <- function(.df, ...) {
-  .df %>% 
-    ggplot(aes(...)) +
-    geom_jitter() +
-    scale_color_manual(values=dataset_colors)
-}
 ```
 
 ```{r fit_db_sensspec}
-sensspec <- read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.txt')) %>% 
+sensspec <-
+  read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.tsv')) %>%
   relevel_method()
-sensspec %>% 
-  group_by(dataset, method) %>% 
-  plot_jitter(x = method, y = mcc, color = dataset) +
-  ylim(0, 1)
+sensspec %>%
+  group_by(dataset, method) %>%
+  ggplot(aes(x = method, y = mcc, color = dataset)) +
+  geom_jitter(alpha = 0.5) +
+  scale_color_manual(values = dataset_colors) +
+  ylim(0, 1) +
+  facet_wrap("ref") 
 ```
 
-```{r fit_db_benchmarks}
-benchmarks <- read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.txt')) %>% 
+```{r fit_db_benchmarks, warning=FALSE}
+benchmarks <-
+  read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.tsv')) %>%
   relevel_method
-benchmarks %>% 
-  group_by(dataset, method) %>% 
-  plot_jitter(x = method, y = s, color = dataset) +
-  labs(y='seconds')
+benchmarks %>%
+  group_by(dataset, method) %>%
+  ggplot(aes(x = method, y = s, color = dataset)) +
+  geom_boxplot() +
+  scale_color_manual(values = dataset_colors) +
+  facet_wrap("ref") +
+  labs(y = 'seconds')
 ```
 
 ```{r fit_db_input_size}
-
+input_sizes <-
+  read_tsv(here('subworkflows/2_fit_reference_db/results/input_sizes.tsv'))
 ```
 
+Only for closed-reference OptiFit
 
 ```{r fraction_reads_mapped}
-fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.txt'))
+fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.tsv'))
 fractions %>% 
-  plot_jitter(x=dataset, y=fraction_mapped, color=dataset) +
+  ggplot(aes(x=dataset, y=fraction_mapped, color=dataset)) +
+  geom_jitter(alpha = 0.5) +
+  scale_color_manual(values = dataset_colors) +
+  facet_wrap("ref") +
   ylim(0, 1)
 ```
 
