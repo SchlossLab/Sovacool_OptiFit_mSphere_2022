@@ -4,6 +4,7 @@ Exploratory Plots
 
 ``` r
 library(here)
+library(knitr)
 library(tidyverse)
 theme_set(theme_classic())
 color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
@@ -58,8 +59,23 @@ benchmarks %>%
 ``` r
 ref_sizes <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
-ref_sizes
+kable(ref_sizes)
 ```
+
+| reference | region | num\_seqs | dataset\_filter |
+| :-------- | :----- | --------: | :-------------- |
+| silva     | v4     |     66531 | human           |
+| gg        | v4     |    104943 | human           |
+| rdp       | v4     |      6224 | human           |
+| silva     | v4     |     66556 | marine          |
+| gg        | v4     |    104975 | marine          |
+| rdp       | v4     |      6223 | marine          |
+| silva     | v4     |     66297 | mouse           |
+| gg        | v4     |    104739 | mouse           |
+| rdp       | v4     |      6219 | mouse           |
+| silva     | v4     |     66593 | soil            |
+| gg        | v4     |    104994 | soil            |
+| rdp       | v4     |      6224 | soil            |
 
 Potential problem: started with 174k reference sequences in RDP; filter
 with the hard parameter leaves only \~6k sequences remaining.
@@ -67,8 +83,15 @@ with the hard parameter leaves only \~6k sequences remaining.
 ``` r
 dataset_sizes <-
   read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
-dataset_sizes
+kable(dataset_sizes)
 ```
+
+| dataset | num\_seqs |
+| :------ | --------: |
+| human   |    261535 |
+| marine  |    161560 |
+| mouse   |     68108 |
+| soil    |    219752 |
 
 ``` r
 fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.tsv'))
