@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 ```{r lib}
 library(here)
+library(knitr)
 library(tidyverse)
 theme_set(theme_classic())
 color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
@@ -63,7 +64,7 @@ benchmarks %>%
 ```{r fit_db_ref_size}
 ref_sizes <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
-ref_sizes
+kable(ref_sizes)
 ```
 
 Potential problem: started with 174k reference sequences in RDP; filter with the hard parameter leaves only ~6k sequences remaining.
@@ -71,7 +72,7 @@ Potential problem: started with 174k reference sequences in RDP; filter with the
 ```{r fit_db_dataset_size}
 dataset_sizes <-
   read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
-dataset_sizes
+kable(dataset_sizes)
 ```
 
 
