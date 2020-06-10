@@ -17,7 +17,7 @@ rule download_silva:
         fasta="data/silva/silva.fasta",
         tax="data/silva/silva.tax"
     params:
-        fasta="data/silva/silva.nr_v138.align",  # TODO: change to nr 138 (expect 100k+ seqs)
+        fasta="data/silva/silva.nr_v138.align",
         tax="data/silva/silva.nr_v138.tax"
     benchmark:
         "benchmarks/silva/download.txt"
