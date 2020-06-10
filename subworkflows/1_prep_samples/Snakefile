@@ -4,6 +4,9 @@ subworkflow prep_db:
     workdir:
         "../0_prep_db/"
 
+wildcard_constraints:
+    seed='\d+'
+
 wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
 def get_sra_list(dataset):
@@ -14,12 +17,15 @@ def get_sra_list(dataset):
 sra_list = {dataset: get_sra_list(dataset) for dataset in ['human', 'marine', 'soil']}
 
 datasets=["human", "marine", "mouse", "soil"]
+seeds = range(1,11)
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
 
 rule preprocess_targets:
     input:
+        'results/sensspec.tsv',
+        "results/benchmarks.tsv",
         'results/dataset_sizes.tsv',
         [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)]
 
@@ -111,3 +117,100 @@ rule count_dataset_sizes:
                 parameters = filename.split('/')[1].split('_')
                 dataset = parameters[0]
                 outfile.write(f"{dataset}\t{num_seqs}\n")
+
+rule calc_dists_dataset:
+    input:
+        fasta=rules.preprocess.output.fasta
+    output:
+        column="results/{dataset}/{dataset}.dist"
+    params:
+        outdir="results/{dataset}/"
+    log:
+        "log/{dataset}/calc_dists.log"
+    benchmark:
+        "benchmarks/{dataset}/calc_dists.txt"
+    resources:
+        procs=16
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
+        """
+
+rule cluster_dataset:
+    input:
+        dist=rules.calc_dists_dataset.output.column,
+        count=rules.preprocess.output.count
+    output:
+        list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
+        steps="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps",
+        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'
+    params:
+        outdir="results/{dataset}/cluster/seed_{seed}/"
+    log:
+        "log/{dataset}/cluster.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{dataset}/cluster.seed_{seed}.txt"
+    resources:
+        procs=8
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
+        set.current(processors={resources.procs});
+        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        """
+
+rule get_otu_reps_dataset:
+    input:
+        list=rules.cluster_dataset.output.list,
+        count=rules.preprocess.output.count,
+        tax=rules.preprocess.output.tax,
+        dist=rules.calc_dists_dataset.output.column
+    output:
+        tax="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
+        sum="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
+        count="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
+    params:
+        workdir="results/{dataset}/cluster/"
+    log:
+        "log/{dataset}/get_otu_reps.seed_{seed}.log"
+    benchmark:
+        "benchmarks/{dataset}/get_otu_reps.seed_{seed}.txt"
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
+        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
+        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
+        """
+
+rule reformat_opticlust_results:  # to make compatible with optifit sensspec & plotting
+    input:
+        sensspec=rules.cluster_dataset.output.sensspec,
+        bench=rules.cluster_dataset.benchmark,
+        code="../../code/R/reformat_opticlust_results.R"
+    output:
+        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
+        bench="benchmarks/{dataset}/cluster.seed_{seed}.mod.txt"
+    benchmark:
+        "benchmarks/{dataset}/reformat_opticlust_results.cluster.seed_{seed}.txt"
+    params:
+        dataset="{dataset}",
+        seed="{seed}"
+    script:
+        "../../code/R/reformat_opticlust_results.R"
+
+rule merge_results1:
+    input:
+        sensspec=expand('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
+                dataset=datasets, seed=seeds),
+        bench=expand("benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
+            dataset=datasets, seed=seeds),
+        code='../../code/R/merge_results.R'
+    output:
+        sensspec="results/sensspec.tsv",
+        bench="results/benchmarks.tsv"
+    benchmark:
+        "benchmarks/merge_results.txt"
+    script:
+        '../../code/R/merge_results.R'
