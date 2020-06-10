@@ -52,8 +52,7 @@ benchmarks %>%
   group_by(dataset, method) %>%
   ggplot(aes(x = method, y = s, color = dataset)) +
   geom_boxplot() +
-  scale_color_brewer(palette = "Dark2") +
-  #scale_color_manual(values = dataset_colors) +  # bug in geom_boxplot with manual colors?
+  scale_color_manual(values = dataset_colors) +  
   facet_wrap("ref") +
   labs(y = 'seconds')
 ```
