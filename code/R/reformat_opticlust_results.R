@@ -4,8 +4,8 @@ library(readr)
 mutate_columns <- function(df) {
   df %>% mutate(
     dataset = snakemake@params[["dataset"]],
-    ref = snakemake@params[["ref"]],
-    region = snakemake@params[["region"]],
+    ref = NA,
+    region = NA,
     seed = snakemake@params[["seed"]],
     method = "de_novo",
     printref = NA,

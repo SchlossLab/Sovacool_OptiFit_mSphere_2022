@@ -2,10 +2,9 @@
 import itertools
 import shutil
 
-# TODO: take a V4 data set and try it against a FL and V4 reference
 wildcard_constraints:
-    region="bact_v4|bact_full",
-    seed='\d+'
+    seed='\d+',
+    region='bact_v4'
 
 subworkflow prep_db:
     workdir:
@@ -16,7 +15,7 @@ subworkflow prep_samples:
 
 datasets = ["human", "marine", "mouse", "soil"]
 refs = ["silva", "gg", "rdp"]
-regions = ['bact_v4', 'bact_full']
+regions = ['bact_v4']
 methods = ["open", "closed"]
 printrefs = ['f']
 seeds = range(1,11)
@@ -79,7 +78,6 @@ rule preclust_db:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
 
         filter.seqs(fasta={input.fasta_db}, hard={input.hard_filter}, processors={resources.procs});
-        unique.seqs(fasta=current);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
         dist.seqs(fasta=current, cutoff=0.03, processors={resources.procs});
 
@@ -205,72 +203,6 @@ rule cluster_combined:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule calc_dists_dataset:
-    input:
-        fasta=rules.copy_preclust_inputs.output.fasta
-    output:
-        column="data/{dataset}_{ref}_{region}/inputs/{dataset}.dist"
-    params:
-        outdir="data/{dataset}_{ref}_{region}/inputs/"
-    log:
-        "log/{dataset}_{ref}_{region}/calc_dists_dataset.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/calc_dists_dataset.txt"
-    resources:
-        procs=16
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
-        """
-
-rule cluster_dataset:
-    input:
-        dist=rules.calc_dists_dataset.output.column,
-        count=rules.copy_preclust_inputs.output.count
-    output:
-        list="results/{dataset}_{ref}_{region}/cluster_dataset/seed_{seed}/{dataset}.opti_mcc.list",
-        steps="results/{dataset}_{ref}_{region}/cluster_dataset/seed_{seed}/{dataset}.opti_mcc.steps",
-        sensspec='results/{dataset}_{ref}_{region}/cluster_dataset/seed_{seed}/{dataset}.opti_mcc.sensspec'
-    params:
-        outdir="results/{dataset}_{ref}_{region}/cluster_dataset/seed_{seed}/"
-    log:
-        "log/{dataset}_{ref}_{region}/cluster_dataset.seed_{seed}.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/cluster_dataset.seed_{seed}.txt"
-    resources:
-        procs=8
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-        set.seed(seed={wildcards.seed});
-        set.current(processors={resources.procs});
-        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
-        """
-
-rule get_otu_reps_dataset:
-    input:
-        list=rules.cluster_dataset.output.list,
-        count=rules.copy_preclust_inputs.output.count,
-        tax=rules.copy_preclust_inputs.output.tax,
-        dist=rules.calc_dists_dataset.output.column
-    output:
-        tax="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{dataset}/{ref}/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
-    params:
-        workdir="results/{dataset}/{ref}/"
-    log:
-        "log/{dataset}/{ref}/get_otu_reps.seed_{seed}.log"
-    benchmark:
-        "benchmarks/{dataset}/{ref}/get_otu_reps.seed_{seed}.txt"
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
-        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
-        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
-        """
-
 rule fit_to_ref_db:
     input:
         fasta=rules.combine_seqs.output.fasta_unique,
@@ -296,31 +228,11 @@ rule fit_to_ref_db:
         cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
-rule reformat_opticlust_results:  # to make compatible with optifit sensspec & plotting
-    input:
-        sensspec=rules.cluster_combined.output.sensspec,
-        bench=rules.cluster_combined.benchmark,
-        code="code/reformat_opticlust_results.R"
-    output:
-        sensspec='results/{dataset}_{ref}_{region}/cluster_{cluster_rule}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec',
-        bench="benchmarks/{dataset}_{ref}_{region}/cluster_{cluster_rule}.seed_{seed}.mod.txt"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/reformat_opticlust_results.cluster_{cluster_rule}.seed_{seed}.txt"
-    params:
-        dataset="{dataset}",
-        ref="{ref}",
-        region="{region}",
-        seed="{seed}"
-    wildcard_constraints:
-        cluster_rule="combined|dataset"
-    script:
-        "code/reformat_opticlust_results.R"
-
 rule reformat_optifit_results:  # for plotting
     input:
         sensspec=rules.fit_to_ref_db.output.sensspec,
         bench=rules.fit_to_ref_db.benchmark,
-        code="code/reformat_optifit_results.R"
+        code="../../code/R/reformat_optifit_results.R"
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
         bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt'
@@ -334,7 +246,7 @@ rule reformat_optifit_results:  # for plotting
         printref='{printref}',
         method='{method}'
     script:
-        "code/reformat_optifit_results.R"
+        "../../code/R/reformat_optifit_results.R"
 
 rule fraction_reads_mapped:
     input:
@@ -370,26 +282,18 @@ rule merge_mapped_stats:
 
 rule merge_results2:
     input:
-        sensspec=itertools.chain(
-            expand('results/{dataset}_{ref}_{region}/cluster_{cluster_ruletype}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.mod.sensspec',
-            dataset=datasets, ref=refs, region=regions,seed=seeds, cluster_ruletype=['combined', 'dataset']),
-            expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
-                dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs)
-                ),
-        bench=itertools.chain(
-            expand('benchmarks/{dataset}_{ref}_{region}/cluster_{cluster_ruletype}.seed_{seed}.mod.txt',
-            dataset=datasets, ref=refs, region=regions, seed=seeds, cluster_ruletype=['combined', 'dataset']),
-            expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
-            dataset=datasets, ref=refs, region=regions,seed=seeds, method=methods, printref=printrefs)
-            ),
-        code='code/merge_results.R'
+        sensspec=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
+                dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
+        bench=expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
+            dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
+        code='../../code/R/merge_results.R'
     output:
         sensspec="results/sensspec.tsv",
         bench="results/benchmarks.tsv"
     benchmark:
         "benchmarks/merge_results.txt"
     script:
-        'code/merge_results.R'
+        '../../code/R/merge_results.R'
 
 def count_seqs(filename):
     with open(filename, 'r') as infile:

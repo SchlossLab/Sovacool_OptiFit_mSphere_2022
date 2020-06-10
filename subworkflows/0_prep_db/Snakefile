@@ -1,13 +1,15 @@
 """ Download the reference databases and process with mothur """
-seeds = range(10)
+seeds = range(1,11)
+refs = ["silva", "gg", "rdp"]
+regions = ['bact_v4', 'bact_full']
 
 wildcard_constraints:
-    subset="bact_v4|bact_full",
+    region="bact_v4|bact_full",
     ref="silva|rdp|gg"
 
 rule targets:
     input:
-        expand("data/{ref}/{ref}.{region}.fasta", ref=("silva", "gg", "rdp"), region=("bact_v4", "bact_full"))
+        expand("data/{ref}/{ref}.{region}.fasta", ref=refs, region=regions)
 
 rule download_silva:
     output:
@@ -123,7 +125,7 @@ rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
     shell:
         "cp {input} {output}"
 
-rule subset_regions:
+rule subset_regions:  # TODO: find exact start/end positions for V4 region
     input:
         align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the alignment template
     output:
