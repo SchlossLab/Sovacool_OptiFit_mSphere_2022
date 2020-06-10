@@ -63,6 +63,19 @@ benchmarks %>%
 ### Reference & dataset sizes
 
 ``` r
+dataset_sizes <-
+  read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
+kable(dataset_sizes)
+```
+
+| dataset | num\_seqs |
+| :------ | --------: |
+| human   |    261535 |
+| marine  |    161560 |
+| mouse   |     68108 |
+| soil    |    219752 |
+
+``` r
 ref_sizes <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 kable(ref_sizes)
@@ -82,19 +95,6 @@ kable(ref_sizes)
 | silva     | v4     |     66593 | soil            |
 | gg        | v4     |    104994 | soil            |
 | rdp       | v4     |      6224 | soil            |
-
-``` r
-dataset_sizes <-
-  read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
-kable(dataset_sizes)
-```
-
-| dataset | num\_seqs |
-| :------ | --------: |
-| human   |    261535 |
-| marine  |    161560 |
-| mouse   |     68108 |
-| soil    |    219752 |
 
 ### Fraction of sequences that map to the reference
 

@@ -65,18 +65,18 @@ benchmarks %>%
 ```
 
 ### Reference & dataset sizes
+```{r fit_db_dataset_size}
+dataset_sizes <-
+  read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
+kable(dataset_sizes)
+```
+
 ```{r fit_db_ref_size}
 ref_sizes <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 kable(ref_sizes)
 ```
 
-
-```{r fit_db_dataset_size}
-dataset_sizes <-
-  read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
-kable(dataset_sizes)
-```
 
 ### Fraction of sequences that map to the reference
 ```{r fraction_reads_mapped}
