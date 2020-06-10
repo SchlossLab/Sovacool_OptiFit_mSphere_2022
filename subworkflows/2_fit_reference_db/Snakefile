@@ -78,6 +78,7 @@ rule preclust_db:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
 
         filter.seqs(fasta={input.fasta_db}, hard={input.hard_filter}, processors={resources.procs});
+        unique.seqs(fasta=current, format=count);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
         dist.seqs(fasta=current, cutoff=0.03, processors={resources.procs});
 
@@ -138,10 +139,11 @@ rule get_otu_reps_db:
 rule combine_seqs:
     input:
         fasta_sample=rules.copy_preclust_inputs.output.fasta,
-        fasta_db=rules.preclust_db.output.fasta
+        fasta_db=rules.preclust_db.output.fasta,
+        count_sample=rules.copy_preclust_inputs.output.count,
+        count_db=rules.preclust_db.output.count
     output:
         fasta_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.fasta",
-        fasta_unique="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.unique.fasta",
         count_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.count_table",
         accnos_refs="data/{dataset}_{ref}_{region}/combined_seqs/{ref}.{region}.filter.unique.precluster.accnos"
     params:
@@ -152,17 +154,17 @@ rule combine_seqs:
         "benchmarks/{dataset}_{ref}_{region}/combine_seqs.txt"
     shell:
         """
-        cat {input} > {output.fasta_all}
+        cat {input.fasta_sample} {input.fasta_db} > {output.fasta_all}
+        cat {input.count_sample} {input.count_db} > {output.count_all}
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             list.seqs(fasta={input.fasta_sample});
-            list.seqs(fasta={input.fasta_db});
-            unique.seqs(fasta={output.fasta_all}, format=count)
+            list.seqs(fasta={input.fasta_db})
         '
         """
 
 rule calc_dists_combined:
     input:
-        fasta=rules.combine_seqs.output.fasta_unique
+        fasta=rules.combine_seqs.output.fasta_all
     output:
         column="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.unique.dist"
     params:
@@ -205,7 +207,7 @@ rule cluster_combined:
 
 rule fit_to_ref_db:
     input:
-        fasta=rules.combine_seqs.output.fasta_unique,
+        fasta=rules.combine_seqs.output.fasta_all,
         count=rules.combine_seqs.output.count_all,
         column=rules.calc_dists_combined.output.column,
         reflist=rules.cluster_db.output.list
