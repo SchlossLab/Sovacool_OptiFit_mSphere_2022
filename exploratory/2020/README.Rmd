@@ -34,6 +34,8 @@ relevel_method <- function(df) {
 }
 ```
 
+
+### Performance as measured by MCC
 ```{r fit_db_sensspec}
 sensspec <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.tsv')) %>%
@@ -47,6 +49,7 @@ sensspec %>%
   facet_grid(dataset ~ ref)
 ```
 
+### Performance as measured by runtime
 ```{r fit_db_benchmarks, warning=FALSE}
 benchmarks <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.tsv')) %>%
@@ -61,13 +64,13 @@ benchmarks %>%
   labs(y = 'seconds')
 ```
 
+### Reference & dataset sizes
 ```{r fit_db_ref_size}
 ref_sizes <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 kable(ref_sizes)
 ```
 
-Potential problem: started with 174k reference sequences in RDP; filter with the hard parameter leaves only ~6k sequences remaining.
 
 ```{r fit_db_dataset_size}
 dataset_sizes <-
@@ -75,7 +78,7 @@ dataset_sizes <-
 kable(dataset_sizes)
 ```
 
-
+### Fraction of sequences that map to the reference
 ```{r fraction_reads_mapped}
 fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.tsv'))
 fractions %>% 
@@ -96,4 +99,5 @@ fractions %>%
 rmarkdown::render(here::here("exploratory/2020/README.Rmd"), 
                   output_dir = "exploratory/2020/")
 ```
+
 

@@ -25,6 +25,8 @@ relevel_method <- function(df) {
 }
 ```
 
+### Performance as measured by MCC
+
 ``` r
 sensspec <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/sensspec.tsv')) %>%
@@ -39,6 +41,8 @@ sensspec %>%
 ```
 
 ![](figures/fit_db_sensspec-1.png)<!-- -->
+
+### Performance as measured by runtime
 
 ``` r
 benchmarks <-
@@ -55,6 +59,8 @@ benchmarks %>%
 ```
 
 ![](figures/fit_db_benchmarks-1.png)<!-- -->
+
+### Reference & dataset sizes
 
 ``` r
 ref_sizes <-
@@ -77,9 +83,6 @@ kable(ref_sizes)
 | gg        | v4     |    104994 | soil            |
 | rdp       | v4     |      6224 | soil            |
 
-Potential problem: started with 174k reference sequences in RDP; filter
-with the hard parameter leaves only \~6k sequences remaining.
-
 ``` r
 dataset_sizes <-
   read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
@@ -92,6 +95,8 @@ kable(dataset_sizes)
 | marine  |    161560 |
 | mouse   |     68108 |
 | soil    |    219752 |
+
+### Fraction of sequences that map to the reference
 
 ``` r
 fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.tsv'))
