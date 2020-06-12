@@ -18,7 +18,7 @@ refs = ["silva", "gg", "rdp"]
 regions = ['bact_v4']
 methods = ["open", "closed"]
 printrefs = ['f']
-seeds = range(1,11)
+seeds = range(1,2)#11)
 
 
 rule fit_ref_db_targets:
@@ -166,7 +166,7 @@ rule calc_dists_combined:
     input:
         fasta=rules.combine_seqs.output.fasta_all
     output:
-        column="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.unique.dist"
+        column="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.dist"
     params:
         outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
@@ -186,9 +186,9 @@ rule cluster_combined:
         dist=rules.calc_dists_combined.output.column,
         count=rules.combine_seqs.output.count_all
     output:
-        list="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.list",
-        steps="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.steps",
-        sensspec='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.unique.opti_mcc.sensspec'
+        list="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.list",
+        steps="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.steps",
+        sensspec='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.sensspec'
     params:
         outdir="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/"
     log:
@@ -212,8 +212,8 @@ rule fit_to_ref_db:
         column=rules.calc_dists_combined.output.column,
         reflist=rules.cluster_db.output.list
     output:
-        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.sensspec',
-        list='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.list',
+        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.sensspec',
+        list='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.list',
     params:
         outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
@@ -236,7 +236,7 @@ rule reformat_optifit_results:  # for plotting
         bench=rules.fit_to_ref_db.benchmark,
         code="../../code/R/reformat_optifit_results.R"
     output:
-        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
+        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
         bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt'
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/reformat_optifit_results.method_{method}.printref_{printref}.seed_{seed}.txt"
@@ -284,7 +284,7 @@ rule merge_mapped_stats:
 
 rule merge_results2:
     input:
-        sensspec=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.unique.optifit_mcc.mod.sensspec',
+        sensspec=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
                 dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
         bench=expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
             dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
