@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=ofa_db
+#SBATCH --job-name=sub0
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --forcerun download_gg
+time snakemake --profile config/slurm --latency-wait 90 --forcerun download_rdp
