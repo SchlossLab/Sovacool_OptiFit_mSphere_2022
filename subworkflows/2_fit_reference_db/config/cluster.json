@@ -47,7 +47,7 @@
  },
  "fit_to_ref_db": {
   "procs": "{resources.procs}",
-  "pmem": "3GB"
+  "pmem": "4GB"
     },
 "cluster_combined": {
  "procs": "{resources.procs}"
