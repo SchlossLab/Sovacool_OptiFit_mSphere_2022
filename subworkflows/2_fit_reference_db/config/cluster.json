@@ -39,6 +39,7 @@
  },
  "preclust_db": {
      "procs": "{resources.procs}",
+     "pmem": "2GB",
      "walltime": "{resources.walltime_hrs}:00:00"
  },
  "calc_dists_combined": {
