@@ -67,7 +67,7 @@ rule preclust_db:
         tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.bacteria.pick.tax",
         outdir="data/{dataset}_{ref}_{region}/preclust_db/"
     resources:
-        procs=12,
+        procs=8,
         walltime_hrs=48
     log:
         "log/{dataset}_{ref}_{region}/preclust_db.log"
@@ -77,7 +77,7 @@ rule preclust_db:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
         set.current(processors={resources.procs});
-        
+
         filter.seqs(fasta={input.fasta_db}, hard={input.hard_filter});
         unique.seqs(fasta=current, format=count);
         pre.cluster(fasta=current, name=current, diffs=2, processors={resources.procs});
