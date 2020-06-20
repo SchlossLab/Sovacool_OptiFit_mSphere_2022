@@ -153,7 +153,7 @@ rule combine_seqs:
         fasta_sample=rules.copy_preclust_inputs.output.fasta,
         fasta_db=rules.preclust_db.output.fasta,
         count_sample=rules.copy_preclust_inputs.output.count,
-        count_db=rules.mod_ref_count.output.count
+        count_db=rules.mutate_ref_count.output.count
     output:
         fasta_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.fasta",
         count_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.count_table",
