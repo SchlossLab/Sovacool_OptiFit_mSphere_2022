@@ -168,8 +168,8 @@ rule combine_seqs:
         cat {input.fasta_sample} {input.fasta_db} > {output.fasta_all}
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             list.seqs(fasta={input.fasta_sample});
-            list.seqs(fasta={input.fasta_db})
-            merge.count(input={input.count_db}-{input.count_sample}, output={output.count_all})
+            list.seqs(fasta={input.fasta_db});
+            merge.count(count={input.count_sample}-{input.count_db}, output={output.count_all})
         '
         """
 
