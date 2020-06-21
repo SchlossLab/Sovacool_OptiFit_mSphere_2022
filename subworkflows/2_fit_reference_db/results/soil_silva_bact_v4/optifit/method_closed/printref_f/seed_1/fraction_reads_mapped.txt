@@ -1,1 +1,1 @@
-soil	silva	bact_v4	1	closed	f	0.301
+soil	silva	bact_v4	1	closed	f	0.327
