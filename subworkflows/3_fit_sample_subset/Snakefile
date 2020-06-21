@@ -15,8 +15,11 @@ methods = ["open", "closed"]
 printrefs = ['f']
 seeds = range(1,2)
 
-rule split_subset:
+random_weight_options = {'simple', 'abundance', 'distance'}
+
+rule split_weighted_subsample:
     input:
+        code="../../code/py/split_weighted_subsample.py"
         fasta=prep_samples("data/{dataset}/silva/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{ref}/{dataset}.dist")
@@ -25,15 +28,10 @@ rule split_subset:
         count="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
         dist="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist",
         ref_accnos="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.fasta"
-    run:
-        with open(input.fasta, 'r') as infile:
-            seq_records = Bio.SeqIO.read(infile, 'fasta')
-        for src, dest in [[input.fasta, output.fasta],
-                          [input.count, output.count],
-                          [input.dist, output.dist]
-                          ]:
-            shutil.copyfile(src, dest)
-        numpy.random.seed(wildcards.seed)
+    script:
+        "../../code/py/split_weighted_subsample.py"
+
+
 
 
 
