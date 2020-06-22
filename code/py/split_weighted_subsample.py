@@ -16,7 +16,7 @@ def main():
 
     all_seqs = SeqList.from_files(snakemake.input.fasta, snakemake.input.count, snakemake.input.dist)
     print('all_seqs read')
-    sample_size = round(float(snakemake.wildcards.sample_frac) * len(all_seqs), 0)
+    sample_size = float(snakemake.wildcards.sample_frac) * len(all_seqs)
     print(sample_size)
     ref_size = round(float(snakemake.wildcards.ref_frac) * len(all_seqs), 0)
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
