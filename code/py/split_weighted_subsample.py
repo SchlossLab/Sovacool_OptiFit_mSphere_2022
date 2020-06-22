@@ -72,7 +72,7 @@ class SeqList:
     def from_files(cls, fasta_fn, count_fn, dist_fn):
         with open(fasta_fn, "r") as fasta_file:
             seq_dict = {
-                seq_record.id: MetaSeq(line.strip('>'),strip(), np.nan, np.nan)
+                seq_record.id: MetaSeq(line.strip('>').strip(), np.nan, np.nan)
                 for line in fasta_file if line.startswith('>')
             }
         with open(count_fn, "r") as count_file:
