@@ -80,9 +80,10 @@ class SeqList:
                 distances[seq_id1].append(dist)
                 distances[seq_id2].append(dist)
         with open(count_fn, "r") as count_file:
-            seq_dict = {line.strip().split("\t")[0]: MetaSeq(seq_id = line.strip().split("\t")[0],
-                                                            avg_abun = np.mean([float(count) for count in line.strip().split("\t")[1:]]),
-                                                            avg_dist = np.mean(distances[line.strip().split("\t")[0]]))
+            line = next(count_file)
+            seq_dict = {line.strip().split()[0]: MetaSeq(seq_id = line.strip().split()[0],
+                                                            avg_abun = np.mean([float(count) for count in line.strip().split()[1:]]),
+                                                            avg_dist = np.mean(distances[line.strip().split()[0]]))
                         for line in count_file
                         }
         print('seqs with nans:') # todo: fix bug: all are NaN
