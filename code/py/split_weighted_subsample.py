@@ -82,9 +82,9 @@ class SeqList:
                 seq_id = line[0]
                 seq_dict[seq_id].avg_abun = np.mean([float(count) for count in line[1:]])
         with open(dist_fn, "r") as dist_file:
-            line = next(count_file)
+            line = next(dist_file)
             distances = defaultdict(list)
-            for line in file:
+            for line in dist_file:
                 line = line.strip().split("\t")
                 seq_id1 = line[0]
                 seq_id2 = line[1]
