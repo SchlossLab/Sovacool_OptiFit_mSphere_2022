@@ -50,21 +50,21 @@ class SeqList:
         return len(self.seqs)
 
     @property
-    def ids():
+    def ids(self):
         return [seq.seq_id for seq in self.seqs]
 
     @property
-    def scaled_abuns():
+    def scaled_abuns(self):
         total_abun = sum(seq.avg_abun for seq in self.seqs)
         return [seq.avg_abun / total_abun for seq in self.seqs]
 
     @property
-    def scaled_dists():
+    def scaled_dists(self):
         total_dist = sum(seq.avg_dist for seq in self.seqs)
         return [seq.avg_dist / total_dist for seq in self.seqs]
 
     @property
-    def scaled_sims():
+    def scaled_sims(self):
         return [dist - 1 for dist in self.scaled_dists]
 
     @classmethod
