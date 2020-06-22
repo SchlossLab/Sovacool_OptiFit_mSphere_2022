@@ -85,7 +85,7 @@ class SeqList:
             line = next(dist_file)
             distances = defaultdict(list)
             for line in dist_file:
-                line = line.strip().split("\t")
+                line = line.strip().split()
                 seq_id1 = line[0]
                 seq_id2 = line[1]
                 dist = float(line[2])
