@@ -92,6 +92,8 @@ class SeqList:
                 distances[seq_id2].append(dist)
         for seq_id in distances:
             seq_dict[seq_id].avg_dist = np.mean(distances[seq_id])
+        print('seqs with nans:')
+        print([seq.seq_id for seq in seq_dict.values()])
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
     @classmethod
