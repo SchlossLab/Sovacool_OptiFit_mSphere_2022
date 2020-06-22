@@ -13,12 +13,12 @@ def main():
         [snakemake.input.dist, snakemake.output.dist],
     ]:
         shutil.copyfile(src, dest)
-    sample_size = round(float(snakemake.wildcards.sample_frac) * seq_list.len, 0)
-    print(sample_size)
-    ref_size = round(float(snakemake.wildcards.ref_frac) * seq_list.len, 0)
 
     all_seqs = SeqList.from_files(snakemake.input.fasta, snakemake.input.count, snakemake.input.dist)
     print('all_seqs read')
+    sample_size = round(float(snakemake.wildcards.sample_frac) * all_seqs.len, 0)
+    print(sample_size)
+    ref_size = round(float(snakemake.wildcards.ref_frac) * all_seqs.len, 0)
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
     print('ref_list made')
     ref_list.write_ids(snakemake.output.ref_accnos)
