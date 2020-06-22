@@ -47,7 +47,7 @@ class SeqList:
         self.seqs = seqs
 
     @property
-    def __len__():
+    def __len__(self):
         return len(self.seqs)
 
     @property
