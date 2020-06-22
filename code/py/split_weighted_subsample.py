@@ -16,7 +16,7 @@ def main():
     sample_size = round(wildcards.sample_frac * seq_list.len, 0)
     ref_size = round(wildcards.ref_frac * seq_list.len, 0)
 
-    all_seqs = SeqList.create_seq_list(input.fasta, input.count, input.dist)
+    all_seqs = SeqList.from_files(input.fasta, input.count, input.dist)
     ref_list = all_seqs.get_sample(ref_size, wildcards.ref_weight)
     ref_list.write_ids(output.ref_accnos)
 
@@ -63,7 +63,7 @@ class SeqList:
         return [dist - 1 for dist in self.scaled_dists]
 
     @classmethod
-    def create_seq_list(fasta_fn, count_fn, dist_fn):
+    def from_files(cls, fasta_fn, count_fn, dist_fn):
         with open(fasta_fn, "r") as fasta_file:
             seq_dict = {
                 seq_record.id: MetaSeq(line.strip('>'),strip(), np.nan, np.nan)
@@ -87,11 +87,11 @@ class SeqList:
                 distances[seq_id2].append(dist)
         for seq_id in distances:
             seq_dict[seq_id].avg_dist = np.mean(distances[seq_id])
-        return SeqList(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
+        return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
     @classmethod
-    def set_diff(lhs, rhs):
-        return SeqList([seq for seq in lhs.seqs if seq.seq_id not in rhs.ids])
+    def set_diff(cls, lhs, rhs):
+        return cls([seq for seq in lhs.seqs if seq.seq_id not in rhs.ids])
 
     def get_sample(self, sample_size, weight_method):
         random_weight_probs = {
