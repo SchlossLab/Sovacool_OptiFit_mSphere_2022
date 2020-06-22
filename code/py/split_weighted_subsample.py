@@ -23,7 +23,7 @@ def main():
     print('ref_list made')
     ref_list.write_ids(snakemake.output.ref_accnos)
     print('ref_list written')
-    remaining_seqs = seq_list.set_diff(all_seqs, ref_list)
+    remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     print('remaining seqs extracted')
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
     print('sample seqs obtained')
@@ -86,8 +86,10 @@ class SeqList:
                                                             avg_dist = np.mean(distances[line.strip().split()[0]]))
                         for line in count_file
                         }
-        print('seqs with nans:') # todo: fix bug: all are NaN
-        print(len([seq.seq_id for seq in seq_dict.values()]))
+        print('seqs with abun NaN:') # todo: fix bug: all are NaN
+        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_abun)]))
+        print('seqs with dist NaN:') # todo: fix bug: all are NaN
+        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_dist)]))
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
     @classmethod
