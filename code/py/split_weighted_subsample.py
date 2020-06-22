@@ -1,6 +1,5 @@
 #!/usr/local/bin/python3
 """ Select weighted subsets of sequences to be used as references and samples for OptiFit """
-import Bio.SeqIO
 from collections import defaultdict
 import numpy as np
 import shutil
@@ -17,7 +16,7 @@ def main():
     sample_size = round(wildcards.sample_frac * seq_list.len, 0)
     ref_size = round(wildcards.ref_frac * seq_list.len, 0)
 
-    all_seqs = SeqList.get_seqs(input.fasta, input.count, input.dist)
+    all_seqs = SeqList.create_seq_list(input.fasta, input.count, input.dist)
     ref_list = all_seqs.get_sample(ref_size, wildcards.ref_weight)
     ref_list.write_ids(output.ref_accnos)
 
@@ -27,11 +26,10 @@ def main():
 
 
 class MetaSeq:
-    def __init__(self, seq_id, avg_abun, avg_dist, seq_record):
+    def __init__(self, seq_id, avg_abun, avg_dist):
         self.seq_id = seq_id
         self.avg_abun = avg_abun
         self.avg_dist = avg_dist
-        self.seq_record = seq_record
 
     @property
     def avg_sim():
@@ -65,11 +63,11 @@ class SeqList:
         return [dist - 1 for dist in self.scaled_dists]
 
     @classmethod
-    def get_seqs(fasta_fn, count_fn, dist_fn):
+    def create_seq_list(fasta_fn, count_fn, dist_fn):
         with open(fasta_fn, "r") as fasta_file:
             seq_dict = {
-                seq_record.id: MetaSeq(seq_record.id, np.nan, np.nan, seq_record)
-                for seq_record in Bio.SeqIO.read(fasta_file, "fasta")
+                seq_record.id: MetaSeq(line.strip('>'),strip(), np.nan, np.nan)
+                for line in fasta_file if line.startswith('>')
             }
         with open(count_fn, "r") as count_file:
             line = next(count_file)
