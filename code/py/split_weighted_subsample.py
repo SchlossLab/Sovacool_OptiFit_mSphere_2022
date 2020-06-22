@@ -39,8 +39,11 @@ class MetaSeq:
         self.avg_abun = avg_abun
         self.avg_dist = avg_dist
 
+    def __repr__(self):
+        return f"{self.__class}({self.__dict__})"
+
     @property
-    def avg_sim():
+    def avg_sim(self):
         return 1 - avg_dist
 
 
@@ -50,6 +53,9 @@ class SeqList:
 
     def __len__(self):
         return len(self.seqs)
+
+    def __repr__(self):
+        return f"{self.__class}({self.__dict__})"
 
     @property
     def ids(self):
