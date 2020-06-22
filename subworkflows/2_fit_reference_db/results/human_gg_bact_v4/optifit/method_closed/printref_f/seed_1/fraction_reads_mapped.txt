@@ -1,1 +1,1 @@
-human	gg	bact_v4	1	closed	f	0.437
+human	gg	bact_v4	1	closed	f	0.509

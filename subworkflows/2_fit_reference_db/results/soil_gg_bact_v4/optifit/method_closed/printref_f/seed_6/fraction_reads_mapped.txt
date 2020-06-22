@@ -1,1 +1,1 @@
-soil	gg	bact_v4	6	closed	f	0.332
+soil	gg	bact_v4	6	closed	f	0.362

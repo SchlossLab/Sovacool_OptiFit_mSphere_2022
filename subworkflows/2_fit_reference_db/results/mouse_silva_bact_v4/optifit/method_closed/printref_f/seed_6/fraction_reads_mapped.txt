@@ -1,1 +1,1 @@
-mouse	silva	bact_v4	6	closed	f	0.26
+mouse	silva	bact_v4	6	closed	f	0.382

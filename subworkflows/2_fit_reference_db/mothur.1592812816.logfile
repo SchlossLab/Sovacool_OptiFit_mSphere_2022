@@ -1,0 +1,83 @@
+
+mothur > set.dir(output=results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/)
+Mothur's directories:
+outputDir=results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/
+
+mothur > 
+        set.seed(seed=5)
+Setting random seed to 5.
+
+Setting random seed to 5.
+
+
+mothur > 
+        set.current(processors=8)
+
+Using 8 processors.
+
+Current files saved by mothur:
+processors=8
+
+Output File Names: 
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/current_files.summary
+
+
+mothur > 
+        cluster.fit(reflist=results/human_silva_bact_v4/cluster_db/seed_5/silva.bact_v4.filter.unique.precluster.opti_mcc.list, fasta=data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.fasta, count=data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.count_table, column=data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.dist,  printref=f, method=closed) 
+0.03
+
+Clustering data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.dist
+
+Fitting 261539 sequences to reference otus.
+
+
+list	state	iter	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+1	combo	0	0.03	316848	0.03	131166	5.13615e+10	27405	5.5996e+07	0.00233694	0.999999	0.827175	0.998911	0.827175	0.99891	0.0439326	0.00466072	
+1	fit	0	0.03	15705	0.03	0	3.22404e+10	0	5.52906e+07	0	1	0	0.998288	1	0.998288	0	0	
+1	combo	1	0.03	216146	0.03	3.8888e+07	5.13554e+10	6.10981e+06	1.72392e+07	0.692855	0.999881	0.86422	0.999664	0.86422	0.999546	0.773592	0.769108	
+1	fit	1	0.03	15705	0.03	3.83204e+07	3.22345e+10	5.90733e+06	1.69702e+07	0.693072	0.999817	0.866434	0.999474	0.866434	0.999292	0.774582	0.770117	
+1	combo	2	0.03	216162	0.03	3.89168e+07	5.13557e+10	5.83538e+06	1.72104e+07	0.693369	0.999886	0.869607	0.999665	0.869607	0.999552	0.776291	0.771552	
+1	fit	2	0.03	15705	0.03	3.83506e+07	3.22348e+10	5.63242e+06	1.694e+07	0.693619	0.999825	0.871941	0.999475	0.871941	0.999301	0.777354	0.772625	
+1	combo	3	0.03	216230	0.03	3.89135e+07	5.13557e+10	5.82579e+06	1.72137e+07	0.69331	0.999887	0.869784	0.999665	0.869784	0.999552	0.776337	0.771585	
+1	fit	3	0.03	15705	0.03	3.83475e+07	3.22348e+10	5.62266e+06	1.69431e+07	0.693562	0.999826	0.872125	0.999475	0.872125	0.999301	0.777404	0.772661	
+
+
+
+Fitted 100618 sequences to 1696 existing OTUs.
+Disregarding sequences that were unable to be fitted existing OTUs.
+iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+/******************************************/
+Running command: list.seqs(list=results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.list)
+
+Output File Names: 
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.accnos
+
+
+/***** NOTE: Please ignore warnings for get.dists command *****/
+Running command: get.dists(column=data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.dist, accnos=results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.accnos)
+Selected 147347 groups or sequences from your column file.
+
+Output File names: 
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.pick.dist
+
+/nRunning command: get.seqs(accnos=results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.accnos, count=data/human_silva_bact_v4/combined_seqs/human_silva.bact_v4.all.count_table)
+Selected 20536559 sequences from your count file.
+
+Output File Names:
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.pick.count_table
+
+1	0.03	0.03	15705	3.89135e+07	1.08094e+10	5.82579e+06	1.32769e+06	0.967007	0.999461	0.869784	0.999877	0.869784	0.999341	0.916788	0.915822
+
+It took 916 seconds to fit sequences to reference OTUs.
+
+Output File Names: 
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.sensspec
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.steps
+results/human_silva_bact_v4/optifit/method_closed/printref_f/seed_5/human_silva.bact_v4.all.optifit_mcc.list
+
+
+mothur > quit()
+
+
+It took 917 seconds to run 6 commands from your script.
+

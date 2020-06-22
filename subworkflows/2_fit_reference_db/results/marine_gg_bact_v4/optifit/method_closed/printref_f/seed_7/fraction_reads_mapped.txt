@@ -1,1 +1,1 @@
-marine	gg	bact_v4	7	closed	f	0.218
+marine	gg	bact_v4	7	closed	f	0.262

@@ -1,1 +1,1 @@
-human	silva	bact_v4	4	closed	f	0.251
+human	silva	bact_v4	4	closed	f	0.378
