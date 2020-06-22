@@ -69,12 +69,6 @@ class SeqList:
 
     @classmethod
     def from_files(cls, fasta_fn, count_fn, dist_fn):
-        with open(count_fn, "r") as count_file:
-            seq_dict = {line.strip().split("\t")[0]: MetaSeq(line.strip().split("\t")[0],
-                                                            np.mean([float(count) for count in line.strip().split("\t")[1:]]),
-                                                            np.nan)
-                        for line in count_file
-                        }
         with open(dist_fn, "r") as dist_file:
             line = next(dist_file)
             distances = defaultdict(list)
@@ -85,8 +79,12 @@ class SeqList:
                 dist = float(line[2])
                 distances[seq_id1].append(dist)
                 distances[seq_id2].append(dist)
-        for seq_id in distances:
-            seq_dict[seq_id].avg_dist = np.mean(distances[seq_id])
+        with open(count_fn, "r") as count_file:
+            seq_dict = {line.strip().split("\t")[0]: MetaSeq(seq_id = line.strip().split("\t")[0],
+                                                            avg_abun = np.mean([float(count) for count in line.strip().split("\t")[1:]]),
+                                                            avg_dist = np.mean(distances[line.strip().split("\t")[0]]))
+                        for line in count_file
+                        }
         print('seqs with nans:') # todo: fix bug: all are NaN
         print(len([seq.seq_id for seq in seq_dict.values()]))
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
