@@ -47,7 +47,6 @@ class MetaSeq:
         return 1 - avg_dist
 
 
-
 class SeqList:
     def __init__(self, seqs):
         self.seqs = seqs
