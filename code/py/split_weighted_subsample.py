@@ -6,7 +6,7 @@ import shutil
 
 
 def main():
-    numpy.random.seed(wildcards.seed)
+    np.random.seed(wildcards.seed)
     for src, dest in [
         [input.fasta, output.fasta],
         [input.count, output.count],
