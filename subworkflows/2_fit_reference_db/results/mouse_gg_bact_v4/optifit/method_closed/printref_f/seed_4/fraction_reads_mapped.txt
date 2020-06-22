@@ -1,1 +1,1 @@
-mouse	gg	bact_v4	4	closed	f	0.416
+mouse	gg	bact_v4	4	closed	f	0.509

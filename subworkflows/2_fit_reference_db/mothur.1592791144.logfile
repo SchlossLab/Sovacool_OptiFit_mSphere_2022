@@ -1,0 +1,83 @@
+
+mothur > set.dir(output=results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/)
+Mothur's directories:
+outputDir=results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/
+
+mothur > 
+        set.seed(seed=5)
+Setting random seed to 5.
+
+Setting random seed to 5.
+
+
+mothur > 
+        set.current(processors=8)
+
+Using 8 processors.
+
+Current files saved by mothur:
+processors=8
+
+Output File Names: 
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/current_files.summary
+
+
+mothur > 
+        cluster.fit(reflist=results/human_rdp_bact_v4/cluster_db/seed_5/rdp.bact_v4.filter.unique.precluster.opti_mcc.list, fasta=data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.fasta, count=data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.count_table, column=data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.dist,  printref=f, method=closed) 
+0.03
+
+Clustering data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.dist
+
+Fitting 261539 sequences to reference otus.
+
+
+list	state	iter	label	num_otus	cutoff	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+1	combo	0	0.03	266590	0.03	8177	3.37842e+10	1315	5.54054e+07	0.000147563	1	0.861462	0.998363	0.861462	0.998363	0.0112625	0.000295076	
+1	fit	0	0.03	1613	0.03	0	3.21846e+10	0	5.52906e+07	0	1	0	0.998285	1	0.998285	0	0	
+1	combo	1	0.03	228993	0.03	2.06195e+07	3.37804e+10	3.87458e+06	3.47941e+07	0.372102	0.999885	0.841816	0.998971	0.841816	0.998857	0.559251	0.516083	
+1	fit	1	0.03	1613	0.03	2.05354e+07	3.21807e+10	3.84861e+06	3.47552e+07	0.371408	0.99988	0.842167	0.998921	0.842167	0.998803	0.558826	0.515482	
+1	combo	2	0.03	228970	0.03	2.06482e+07	3.37804e+10	3.81716e+06	3.47654e+07	0.37262	0.999887	0.843977	0.998972	0.843977	0.99886	0.560361	0.516988	
+1	fit	2	0.03	1613	0.03	2.05643e+07	3.21808e+10	3.79066e+06	3.47263e+07	0.371931	0.999882	0.844358	0.998922	0.844358	0.998805	0.559949	0.516395	
+1	combo	3	0.03	228965	0.03	2.06504e+07	3.37804e+10	3.81985e+06	3.47632e+07	0.37266	0.999887	0.843898	0.998972	0.843898	0.99886	0.560365	0.517011	
+1	fit	3	0.03	1613	0.03	2.05665e+07	3.21808e+10	3.79334e+06	3.47241e+07	0.371971	0.999882	0.844279	0.998922	0.844279	0.998805	0.559952	0.516419	
+
+
+
+Fitted 37625 sequences to 407 existing OTUs.
+Disregarding sequences that were unable to be fitted existing OTUs.
+iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
+/******************************************/
+Running command: list.seqs(list=results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.list)
+
+Output File Names: 
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.accnos
+
+
+/***** NOTE: Please ignore warnings for get.dists command *****/
+Running command: get.dists(column=data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.dist, accnos=results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.accnos)
+Selected 42130 groups or sequences from your column file.
+
+Output File names: 
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.pick.dist
+
+/nRunning command: get.seqs(accnos=results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.accnos, count=data/human_rdp_bact_v4/combined_seqs/human_rdp.bact_v4.all.count_table)
+Selected 9191081 sequences from your count file.
+
+Output File Names:
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.pick.count_table
+
+1	0.03	0.03	1613	2.06504e+07	8.62928e+08	3.81985e+06	48932	0.997636	0.995593	0.843898	0.999943	0.843898	0.995641	0.915493	0.91435
+
+It took 646 seconds to fit sequences to reference OTUs.
+
+Output File Names: 
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.sensspec
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.steps
+results/human_rdp_bact_v4/optifit/method_closed/printref_f/seed_5/human_rdp.bact_v4.all.optifit_mcc.list
+
+
+mothur > quit()
+
+
+It took 647 seconds to run 6 commands from your script.
+

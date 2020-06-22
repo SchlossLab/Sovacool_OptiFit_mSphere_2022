@@ -1,2 +1,2 @@
 s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref
-228.7484	00:03:48	1860.51	2010.96	1857.88	1858.04	639.43	410.65	0	marine	silva	bact_v4	7	closed	f
+241.933	00:04:01	2370.88	2521.38	2366.8	2368.04	232.77	465.9	0	marine	silva	bact_v4	7	closed	f

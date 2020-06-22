@@ -1,1 +1,1 @@
-marine	gg	bact_v4	9	closed	f	0.218
+marine	gg	bact_v4	9	closed	f	0.265

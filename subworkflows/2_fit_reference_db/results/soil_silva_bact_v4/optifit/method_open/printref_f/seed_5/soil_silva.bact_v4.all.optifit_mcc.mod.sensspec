@@ -1,0 +1,2 @@
+iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score	dataset	ref	region	seed	method	printref
+1	0.03	0.03	96322	9213640	37960300000	3538890	4251940	0.6842	0.9999	0.7225	0.9999	0.7225	0.9998	0.703	0.7028	soil	silva	bact_v4	5	open	f

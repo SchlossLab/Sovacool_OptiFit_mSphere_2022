@@ -1,1 +1,1 @@
-soil	rdp	bact_v4	2	closed	f	0.067
+soil	rdp	bact_v4	2	closed	f	0.08
