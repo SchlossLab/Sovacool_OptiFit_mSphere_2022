@@ -14,8 +14,11 @@ regions = ['bact_v4']
 methods = ["open", "closed"]
 printrefs = ['f']
 seeds = range(1,2)
+random_refweight_options = ['simple', 'abundance', 'distance']
 
-random_weight_options = {'simple', 'abundance', 'distance'}
+rule subset_targets:
+    input:
+        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_0.2/seed_{seed}/sample.accnos", dataset=datasets, ref_weight=random_refweight_options, ref_frac=[i/10 for i in range(2,10,2)], seed=seeds)
 
 rule split_weighted_subsample:
     input:
@@ -24,10 +27,11 @@ rule split_weighted_subsample:
         count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{ref}/{dataset}.dist")
     output:
-        fasta="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
-        count="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
-        dist="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist",
-        ref_accnos="data/{dataset}/weight_{weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.fasta"
+        fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
+        count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
+        dist="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist",
+        ref_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
+        sample_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"
     script:
         "../../code/py/split_weighted_subsample.py"
 
