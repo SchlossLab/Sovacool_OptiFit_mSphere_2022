@@ -1,7 +1,4 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
-import Bio.SeqIO
-import numpy.random
-import shutil
 
 subworkflow prep_samples:
     workdir:
@@ -22,10 +19,10 @@ rule subset_targets:
 
 rule split_weighted_subsample:
     input:
-        code="../../code/py/split_weighted_subsample.py"
-        fasta=prep_samples("data/{dataset}/silva/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/{ref}/processed/{dataset}.count_table"),
-        dist=prep_samples("results/{dataset}/{ref}/{dataset}.dist")
+        code="../../code/py/split_weighted_subsample.py",
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
         count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",

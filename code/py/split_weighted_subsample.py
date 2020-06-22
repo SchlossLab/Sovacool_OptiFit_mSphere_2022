@@ -1,7 +1,9 @@
 #!/usr/local/bin/python3
+""" Select weighted subsets of sequences to be used as references and samples for OptiFit """
 import Bio.SeqIO
 from collections import defaultdict
 import numpy as np
+import shutil
 
 
 def main():
@@ -17,7 +19,7 @@ def main():
     all_seqs = SeqList.get_seqs(input.fasta, input.count, input.dist)
     ref_list = all_seqs.get_sample(ref_size, wildcards.ref_weight)
     ref_list.write_ids(output.ref_accnos)
-    
+
     remaining_seqs = seq_list.set_diff(all_seqs, ref_list)
     sample_list = remaining_seqs.get_sample(sample_size, 'simple')
     sample_list.write_ids(output.sample_accnos)
