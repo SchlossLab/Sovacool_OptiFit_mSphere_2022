@@ -14,21 +14,23 @@ def main():
     ]:
         shutil.copyfile(src, dest)
 
-    all_seqs = SeqList.from_files(snakemake.input.fasta, snakemake.input.count, snakemake.input.dist)
-    print('all_seqs read')
+    all_seqs = SeqList.from_files(
+        snakemake.input.fasta, snakemake.input.count, snakemake.input.dist
+    )
+    print("all_seqs read")
     sample_size = int(round(float(snakemake.wildcards.sample_frac) * len(all_seqs), 0))
     print(sample_size)
     ref_size = int(round(float(snakemake.wildcards.ref_frac) * len(all_seqs), 0))
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
-    print('ref_list made')
+    print("ref_list made")
     ref_list.write_ids(snakemake.output.ref_accnos)
-    print('ref_list written')
+    print("ref_list written")
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
-    print('remaining seqs extracted')
+    print("remaining seqs extracted")
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
-    print('sample seqs obtained')
+    print("sample seqs obtained")
     sample_list.write_ids(snakemake.output.sample_accnos)
-    print('sample accnos written')
+    print("sample accnos written")
 
 
 class MetaSeq:
@@ -81,14 +83,19 @@ class SeqList:
                 distances[seq_id2].append(dist)
         with open(count_fn, "r") as count_file:
             line = next(count_file)
-            seq_dict = {line.strip().split()[0]: MetaSeq(seq_id = line.strip().split()[0],
-                                                            avg_abun = np.mean([float(count) for count in line.strip().split()[1:]]),
-                                                            avg_dist = np.mean(distances[line.strip().split()[0]]))
-                        for line in count_file
-                        }
-        print('seqs with abun NaN:') # todo: fix bug: all are NaN
+            seq_dict = {
+                line.strip().split()[0]: MetaSeq(
+                    seq_id=line.strip().split()[0],
+                    avg_abun=np.mean(
+                        [float(count) for count in line.strip().split()[1:]]
+                    ),
+                    avg_dist=np.mean(distances[line.strip().split()[0]]),
+                )
+                for line in count_file
+            }
+        print("seqs with abun NaN:")  # todo: fix bug: all are NaN
         print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_abun)]))
-        print('seqs with dist NaN:') # todo: fix bug: all are NaN
+        print("seqs with dist NaN:")  # todo: fix bug: all are NaN
         print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_dist)]))
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
