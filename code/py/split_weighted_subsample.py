@@ -6,23 +6,23 @@ import shutil
 
 
 def main():
-    np.random.seed(wildcards.seed)
+    np.random.seed(snakemake.wildcards.seed)
     for src, dest in [
-        [input.fasta, output.fasta],
-        [input.count, output.count],
-        [input.dist, output.dist],
+        [snakemake.input.fasta, snakemake.output.fasta],
+        [snakemake.input.count, snakemake.output.count],
+        [snakemake.input.dist, snakemake.output.dist],
     ]:
         shutil.copyfile(src, dest)
-    sample_size = round(wildcards.sample_frac * seq_list.len, 0)
-    ref_size = round(wildcards.ref_frac * seq_list.len, 0)
+    sample_size = round(snakemake.wildcards.sample_frac * seq_list.len, 0)
+    ref_size = round(snakemake.wildcards.ref_frac * seq_list.len, 0)
 
-    all_seqs = SeqList.from_files(input.fasta, input.count, input.dist)
-    ref_list = all_seqs.get_sample(ref_size, wildcards.ref_weight)
-    ref_list.write_ids(output.ref_accnos)
+    all_seqs = SeqList.from_files(snakemake.input.fasta, snakemake.input.count, snakemake.input.dist)
+    ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
+    ref_list.write_ids(snakemake.output.ref_accnos)
 
     remaining_seqs = seq_list.set_diff(all_seqs, ref_list)
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
-    sample_list.write_ids(output.sample_accnos)
+    sample_list.write_ids(snakemake.output.sample_accnos)
 
 
 class MetaSeq:
