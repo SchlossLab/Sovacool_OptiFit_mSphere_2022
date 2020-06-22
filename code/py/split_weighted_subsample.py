@@ -6,16 +6,16 @@ import shutil
 
 
 def main():
-    np.random.seed(snakemake.wildcards.seed)
+    np.random.seed(int(snakemake.wildcards.seed))
     for src, dest in [
         [snakemake.input.fasta, snakemake.output.fasta],
         [snakemake.input.count, snakemake.output.count],
         [snakemake.input.dist, snakemake.output.dist],
     ]:
         shutil.copyfile(src, dest)
-    sample_size = round(snakemake.wildcards.sample_frac * seq_list.len, 0)
+    sample_size = round(float(snakemake.wildcards.sample_frac) * seq_list.len, 0)
     print(sample_size)
-    ref_size = round(snakemake.wildcards.ref_frac * seq_list.len, 0)
+    ref_size = round(float(snakemake.wildcards.ref_frac) * seq_list.len, 0)
 
     all_seqs = SeqList.from_files(snakemake.input.fasta, snakemake.input.count, snakemake.input.dist)
     print('all_seqs read')
