@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --keep-going
+time snakemake --profile config/slurm --latency-wait 90 --keep-going --forcerun benchmarks/human_gg_bact_v4/optifit.method_{open,closed}.printref_f.seed_{0..9}.mod.txt
