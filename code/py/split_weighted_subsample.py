@@ -13,6 +13,7 @@ def main():
         snakemake.input.fasta, snakemake.input.count, snakemake.input.dist
     )
     num_all_seqs = len(all_seqs)
+    print(snakemake.wildcards.sample_frac, snakemake.wildcards.ref_frac)
     sample_size = int(round(float(snakemake.wildcards.sample_frac) * num_all_seqs, 0))
     ref_size = int(round(float(snakemake.wildcards.ref_frac) * num_all_seqs, 0))
 
