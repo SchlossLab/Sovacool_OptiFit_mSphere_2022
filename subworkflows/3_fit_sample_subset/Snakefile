@@ -26,11 +26,12 @@ rule copy_data:
         fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
         count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
         dist="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist"
-    """
-    cp {input.fasta} {output.fasta}
-    cp {input.count} {output.count}
-    cp {input.dist} {output.dist}
-    """
+    shell:
+        """
+        cp {input.fasta} {output.fasta}
+        cp {input.count} {output.count}
+        cp {input.dist} {output.dist}
+        """
 
 
 rule split_weighted_subsample:
