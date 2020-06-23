@@ -17,16 +17,29 @@ rule subset_targets:
     input:
         expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos", dataset=datasets, ref_weight=random_refweight_options, sample_frac=[0.2], ref_frac=[0.2], seed=seeds)
 
-rule split_weighted_subsample:
+rule copy_data:
     input:
-        code="../../code/py/split_weighted_subsample.py",
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
         count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
-        dist="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist",
+        dist="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist"
+    """
+    cp {input.fasta} {output.fasta}
+    cp {input.count} {output.count}
+    cp {input.dist} {output.dist}
+    """
+
+
+rule split_weighted_subsample:
+    input:
+        code="../../code/py/split_weighted_subsample.py",
+        fasta=rules.copy_data.output.fasta,
+        count=rules.copy_data.output.count,
+        dist=rules.copy_data.output.dist
+    output:
         ref_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
         sample_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"
     script:
