@@ -28,7 +28,9 @@ rule fit_ref_db_targets:
         "results/sensspec.tsv",
         "results/benchmarks.tsv",
         'results/fraction_reads_mapped.tsv',
-        'results/ref_sizes.tsv'
+        'results/ref_sizes.tsv',
+        expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
+                dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs)
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
