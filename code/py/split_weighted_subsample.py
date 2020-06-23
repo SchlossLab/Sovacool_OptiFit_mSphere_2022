@@ -37,7 +37,7 @@ class MetaSeq:
         self.sum_dist = sum_dist
 
     def __repr__(self):
-        return f"{self.__class}({self.__dict__})"
+        return f"{self.__class__}({self.__dict__})"
 
     def __hash__(self):
         return hash(self.__repr__())
