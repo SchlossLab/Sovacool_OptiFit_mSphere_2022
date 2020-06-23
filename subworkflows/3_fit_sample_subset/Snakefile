@@ -11,10 +11,11 @@ methods = ["open", "closed"]
 printrefs = ['f']
 seeds = range(1,2)
 random_refweight_options = ['simple', 'abundance', 'distance']
+ref_fracs = [i/10 for i in range(2,10,2)]
 
 rule subset_targets:
     input:
-        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_0.2/seed_{seed}/sample.accnos", dataset=datasets, ref_weight=random_refweight_options, ref_frac=[i/10 for i in range(2,10,2)], seed=seeds)
+        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos", dataset=datasets, ref_weight=random_refweight_options, sample_frac=[0.2], ref_frac=[0.2], seed=seeds)
 
 rule split_weighted_subsample:
     input:
