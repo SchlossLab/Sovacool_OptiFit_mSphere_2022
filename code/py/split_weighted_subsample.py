@@ -15,21 +15,22 @@ def main():
     num_all_seqs = len(all_seqs)
     ref_frac = float(snakemake.wildcards.ref_frac)
     sample_frac = float(snakemake.wildcards.sample_frac)
-    print(ref_frac, sample_frac, num_all_seqs)
-    sample_size = int(round(sample_frac * num_all_seqs, 0))
-    ref_size = int(round(ref_frac * num_all_seqs, 0))
+    sample_size = round_subset_size(sample_frac, num_all_seqs)
+    ref_size = round_subset_size(ref_frac, num_all_seqs)
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
-    print('ref_size', ref_size, len(ref_list))
-    print(check_fraction(ref_frac, len(ref_list), num_all_seqs))
+    assert check_subsample(ref_frac, len(ref_list), num_all_seqs)
     ref_list.write_ids(snakemake.output.ref_accnos)
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
-    print("sample_size", sample_size, len(sample_list))
+    assert check_subsample(sample_frac, len(sample_list), num_all_seqs)
     sample_list.write_ids(snakemake.output.sample_accnos)
 
-def check_fraction(fraction, subset_size, total_size):
+def round_subset_size(fraction, total_size):
+    return int(round(fraction * total_size, 0))
+
+def check_subsample(fraction, subset_size, total_size):
     return np.isclose(subset_size, fraction * total_size)
 
 class MetaSeq:
