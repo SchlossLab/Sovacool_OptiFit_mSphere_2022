@@ -98,7 +98,7 @@ class SeqList:
 
     @classmethod
     def set_diff(cls, lhs, rhs):
-        return cls([seq for seq in lhs.seqs if seq.seq_id not in rhs.ids])
+        return cls([seq for seq in lhs.seqs if seq.seq_id not in set(rhs.ids)])
 
     def get_sample(self, sample_size, weight_method):
         random_weight_probs = {
