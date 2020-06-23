@@ -20,7 +20,7 @@ def main():
     ref_size = int(round(ref_frac * num_all_seqs, 0))
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
-    print('ref_size', ref_size, len(ref_list))
+    print("ref_size", ref_size, len(ref_list))
     print(check_fraction(ref_frac, len(ref_list), num_all_seqs))
     ref_list.write_ids(snakemake.output.ref_accnos)
 
@@ -29,8 +29,10 @@ def main():
     print("sample_size", sample_size, len(sample_list))
     sample_list.write_ids(snakemake.output.sample_accnos)
 
+
 def check_fraction(fraction, subset_size, total_size):
     return np.isclose(subset_size, fraction * total_size)
+
 
 class MetaSeq:
     def __init__(self, seq_id, abs_abun, sum_dist):
