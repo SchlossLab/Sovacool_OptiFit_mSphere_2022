@@ -39,6 +39,9 @@ class MetaSeq:
     def __repr__(self):
         return f"{self.__class}({self.__dict__})"
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
     @property
     def sum_sim(self):
         return 1 - sum_dist
@@ -94,11 +97,11 @@ class SeqList:
                 )
                 for line in count_file
             }
-        return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
+        return cls(list(seq_dict.values()))
 
     @classmethod
     def set_diff(cls, lhs, rhs):
-        return cls([seq for seq in lhs.seqs if seq.seq_id not in set(rhs.ids)])
+        return cls(list(set(lhs.seqs) - set(rhs.seqs)))
 
     def get_sample(self, sample_size, weight_method):
         random_weight_probs = {
