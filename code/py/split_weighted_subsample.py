@@ -8,17 +8,12 @@ import shutil
 
 def main():
     np.random.seed(int(snakemake.wildcards.seed))
-    for src, dest in [
-        [snakemake.input.fasta, snakemake.output.fasta],
-        [snakemake.input.count, snakemake.output.count],
-        [snakemake.input.dist, snakemake.output.dist],
-    ]:
-        shutil.copyfile(src, dest)
 
     all_seqs = SeqList.from_files(
         snakemake.input.fasta, snakemake.input.count, snakemake.input.dist
     )
     print("all_seqs read")
+
     sample_size = int(round(float(snakemake.wildcards.sample_frac) * len(all_seqs), 0))
     print(sample_size)
     ref_size = int(round(float(snakemake.wildcards.ref_frac) * len(all_seqs), 0))
@@ -26,6 +21,7 @@ def main():
     print("ref_list made")
     ref_list.write_ids(snakemake.output.ref_accnos)
     print("ref_list written")
+
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     print("remaining seqs extracted")
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
@@ -93,15 +89,11 @@ class SeqList:
             seq_dict = {
                 line.strip().split()[0]: MetaSeq(
                     seq_id=line.strip().split()[0],
-                    abs_abun=line.strip().split()[1],
+                    abs_abun=int(line.strip().split()[1]),
                     sum_dist=sum_dists[line.strip().split()[0]]
                 )
                 for line in count_file
             }
-        print("seqs with abun NaN:")  # todo: fix bug: all are NaN
-        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.abs_abun)]))
-        print("seqs with dist NaN:")  # todo: fix bug: all are NaN
-        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.sum_dist)]))
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
     @classmethod
