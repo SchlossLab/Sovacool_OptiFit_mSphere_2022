@@ -18,14 +18,13 @@ def main():
     ref_size = int(round(float(snakemake.wildcards.ref_frac) * num_all_seqs, 0))
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
-    print('ref_size', ref_size, len(ref_list))
+    print("ref_size", ref_size, len(ref_list))
     ref_list.write_ids(snakemake.output.ref_accnos)
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
-    print('sample_size', sample_size, len(sample_list))
+    print("sample_size", sample_size, len(sample_list))
     sample_list.write_ids(snakemake.output.sample_accnos)
-
 
 
 class MetaSeq:
