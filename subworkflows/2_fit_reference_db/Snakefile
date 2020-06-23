@@ -2,6 +2,8 @@
 import itertools
 import shutil
 
+configfile: '../../config/config.yaml'
+
 wildcard_constraints:
     seed='\d+',
     region='bact_v4'
@@ -13,12 +15,12 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
-datasets = ["human", "marine", "mouse", "soil"]
-refs = ["silva", "gg", "rdp"]
+datasets = config['datasets']
+refs = config['references']
 regions = ['bact_v4']
-methods = ["open", "closed"]
-printrefs = ['f']
-seeds = range(1, 11)
+methods = config['methods']
+printrefs = config['printrefs']
+seeds = range(1, config['seeds']+1)
 
 
 rule fit_ref_db_targets:

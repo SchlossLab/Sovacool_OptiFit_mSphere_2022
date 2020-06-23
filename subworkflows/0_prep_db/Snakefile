@@ -1,6 +1,8 @@
 """ Download the reference databases and process with mothur """
-seeds = range(1,11)
-refs = ["silva", "gg", "rdp"]
+
+configfile: '../../config/config.yaml'
+
+refs = config['references']
 regions = ['bact_v4', 'bact_full']
 
 wildcard_constraints:
