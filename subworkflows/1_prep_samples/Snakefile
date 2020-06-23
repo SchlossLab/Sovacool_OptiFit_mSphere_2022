@@ -29,7 +29,8 @@ rule preprocess_targets:
         'results/sensspec.tsv',
         "results/benchmarks.tsv",
         'results/dataset_sizes.tsv',
-        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)]
+        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)],
+        expand('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec', dataset=datasets, seed=seeds)
 
 rule download_most:
     input:
