@@ -90,7 +90,7 @@ class SeqList:
                 line.strip().split()[0]: MetaSeq(
                     seq_id=line.strip().split()[0],
                     abs_abun=int(line.strip().split()[1]),
-                    sum_dist=sum_dists[line.strip().split()[0]]
+                    sum_dist=sum_dists[line.strip().split()[0]],
                 )
                 for line in count_file
             }
