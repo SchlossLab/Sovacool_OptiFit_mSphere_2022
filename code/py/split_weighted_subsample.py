@@ -33,6 +33,7 @@ def round_subset_size(fraction, total_size):
 def check_subsample(fraction, subset_size, total_size):
     return np.isclose(subset_size, fraction * total_size)
 
+
 class MetaSeq:
     def __init__(self, seq_id, abs_abun, sum_dist):
         self.seq_id = seq_id
