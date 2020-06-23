@@ -2,6 +2,7 @@
 """ Select weighted subsets of sequences to be used as references and samples for OptiFit """
 from collections import defaultdict
 import numpy as np
+import pandas as pd
 import shutil
 
 
@@ -34,17 +35,17 @@ def main():
 
 
 class MetaSeq:
-    def __init__(self, seq_id, avg_abun, avg_dist):
+    def __init__(self, seq_id, abs_abun, sum_dist):
         self.seq_id = seq_id
-        self.avg_abun = avg_abun
-        self.avg_dist = avg_dist
+        self.abs_abun = abs_abun
+        self.sum_dist = sum_dist
 
     def __repr__(self):
         return f"{self.__class}({self.__dict__})"
 
     @property
-    def avg_sim(self):
-        return 1 - avg_dist
+    def sum_sim(self):
+        return 1 - sum_dist
 
 
 class SeqList:
@@ -62,47 +63,45 @@ class SeqList:
         return [seq.seq_id for seq in self.seqs]
 
     @property
-    def scaled_abuns(self):
-        total_abun = sum(seq.avg_abun for seq in self.seqs)
-        return [seq.avg_abun / total_abun for seq in self.seqs]
+    def rel_abuns(self):
+        total_abun = sum(seq.abs_abun for seq in self.seqs)
+        return [seq.abs_abun / total_abun for seq in self.seqs]
 
     @property
-    def scaled_dists(self):
-        total_dist = sum(seq.avg_dist for seq in self.seqs)
-        return [seq.avg_dist / total_dist for seq in self.seqs]
+    def rel_dists(self):
+        total_dist = sum(seq.sum_dist for seq in self.seqs)
+        return [seq.sum_dist / total_dist for seq in self.seqs]
 
     @property
-    def scaled_sims(self):
-        return [dist - 1 for dist in self.scaled_dists]
+    def rel_sims(self):
+        return [dist - 1 for dist in self.rel_dists]
 
     @classmethod
     def from_files(cls, fasta_fn, count_fn, dist_fn):
         with open(dist_fn, "r") as dist_file:
             line = next(dist_file)
-            distances = defaultdict(list)
+            sum_dists = defaultdict(int)
             for line in dist_file:
                 line = line.strip().split()
                 seq_id1 = line[0]
                 seq_id2 = line[1]
                 dist = float(line[2])
-                distances[seq_id1].append(dist)
-                distances[seq_id2].append(dist)
+                sum_dists[seq_id1] += dist
+                sum_dists[seq_id2] += dist
         with open(count_fn, "r") as count_file:
-            line = next(count_file)
+            line = next(count_file)  # toss out the header
             seq_dict = {
                 line.strip().split()[0]: MetaSeq(
                     seq_id=line.strip().split()[0],
-                    avg_abun=np.mean(
-                        [float(count) for count in line.strip().split()[1:]]
-                    ),
-                    avg_dist=np.mean(distances[line.strip().split()[0]]),
+                    abs_abun=line.strip().split()[1],
+                    sum_dist=sum_dists[line.strip().split()[0]]
                 )
                 for line in count_file
             }
         print("seqs with abun NaN:")  # todo: fix bug: all are NaN
-        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_abun)]))
+        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.abs_abun)]))
         print("seqs with dist NaN:")  # todo: fix bug: all are NaN
-        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.avg_dist)]))
+        print(len([seq.seq_id for seq in seq_dict.values() if np.isnan(seq.sum_dist)]))
         return cls(list(sorted(seq_dict.values(), key=lambda seq: seq.seq_id)))
 
     @classmethod
@@ -112,8 +111,8 @@ class SeqList:
     def get_sample(self, sample_size, weight_method):
         random_weight_probs = {
             "simple": None,
-            "abundance": self.scaled_abuns,
-            "distance": self.scaled_dists,
+            "abundance": self.rel_abuns,
+            "distance": self.rel_dists,
         }
         sample_seqs = np.random.choice(
             self.seqs,
