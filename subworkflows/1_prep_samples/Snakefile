@@ -1,5 +1,7 @@
 import os
 
+configfile: '../../config/config.yaml'
+
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
@@ -16,8 +18,8 @@ def get_sra_list(dataset):
 
 sra_list = {dataset: get_sra_list(dataset) for dataset in ['human', 'marine', 'soil']}
 
-datasets=["human", "marine", "mouse", "soil"]
-seeds = range(1,11)
+datasets = config['datasets']
+seeds = range(1, config['seeds']+1)
 
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
