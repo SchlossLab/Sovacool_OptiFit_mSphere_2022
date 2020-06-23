@@ -21,7 +21,7 @@ def main():
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
     print('ref_size', ref_size, len(ref_list))
-    print(check_fraction(ref_frac, len(ref_list), num_all_seqs)
+    print(check_fraction(ref_frac, len(ref_list), num_all_seqs))
     ref_list.write_ids(snakemake.output.ref_accnos)
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
