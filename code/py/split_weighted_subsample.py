@@ -26,7 +26,7 @@ def main():
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     sample_list = remaining_seqs.get_sample(sample_size, "simple")
-    print('sample_size', sample_size, len(sample_list))
+    print("sample_size", sample_size, len(sample_list))
     sample_list.write_ids(snakemake.output.sample_accnos)
 
 def check_fraction(fraction, subset_size, total_size):
