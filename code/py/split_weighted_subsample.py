@@ -27,8 +27,10 @@ def main():
     assert check_subsample(sample_frac, len(sample_list), num_all_seqs)
     sample_list.write_ids(snakemake.output.sample_accnos)
 
+
 def round_subset_size(fraction, total_size):
     return int(round(fraction * total_size, 0))
+
 
 def check_subsample(fraction, subset_size, total_size):
     return np.isclose(subset_size, fraction * total_size)
