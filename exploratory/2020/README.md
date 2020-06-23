@@ -30,7 +30,7 @@ plot_box_mcc <- function(df) {
     ggplot(aes(x = method, y = mcc, color = dataset)) +
     geom_boxplot(alpha = 0.5) +
     scale_color_manual(values = dataset_colors) +
-    ylim(0.6, 1) +
+    ylim(0.5, 1) +
     facet_grid(dataset ~ ref) +
     theme(legend.position = "None",
           axis.title.x = element_blank())
@@ -41,8 +41,8 @@ plot_box_time <- function(df) {
     ggplot(aes(x = method, y = s, color = dataset)) +
     geom_boxplot() +
     scale_color_manual(values = dataset_colors) +
-    ylim(0, 1000) +
     facet_wrap("ref") +
+    ylim(0,2100) +
     labs(y = 'seconds') +
     theme(axis.title.x = element_blank())
 }
