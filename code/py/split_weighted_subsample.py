@@ -38,7 +38,7 @@ class MetaSeq:
     def __init__(self, seq_id, abs_abun, sum_dist):
         self.seq_id = seq_id
         self.abs_abun = abs_abun
-        self.sum_dist = sum_dist
+        self.sum_sim = sum_sim
 
     def __repr__(self):
         return f"{self.__class__}({self.__dict__})"
@@ -46,9 +46,6 @@ class MetaSeq:
     def __hash__(self):
         return hash(self.__repr__())
 
-    @property
-    def sum_sim(self):
-        return 1 - sum_dist
 
 
 class SeqList:
@@ -71,37 +68,33 @@ class SeqList:
         return [seq.abs_abun / total_abun for seq in self.seqs]
 
     @property
-    def rel_dists(self):
-        total_dist = sum(seq.sum_dist for seq in self.seqs)
-        return [seq.sum_dist / total_dist for seq in self.seqs]
-
-    @property
     def rel_sims(self):
-        return [dist - 1 for dist in self.rel_dists]
+        total_sim = sum(seq.sum_sim for seq in self.seqs)
+        return [seq.sum_sim / total_sim for seq in self.seqs]
 
     @classmethod
-    def from_files(cls, fasta_fn, count_fn, dist_fn):
+    def from_files(cls, fasta_fn, count_fn, dist_fn, threshold = 0.3):
         with open(dist_fn, "r") as dist_file:
             line = next(dist_file)
-            sum_dists = defaultdict(int)
+            sum_sims = defaultdict(int)
             for line in dist_file:
                 line = line.strip().split()
                 seq_id1 = line[0]
                 seq_id2 = line[1]
-                dist = float(line[2])
-                sum_dists[seq_id1] += dist
-                sum_dists[seq_id2] += dist
+                is_similar = int(float(line[2]) < threshold)
+                sum_sims[seq_id1] += is_similar
+                sum_sims[seq_id2] += is_similar
         with open(count_fn, "r") as count_file:
             line = next(count_file)  # toss out the header
-            seq_dict = {
+            seq_list = [
                 line.strip().split()[0]: MetaSeq(
                     seq_id=line.strip().split()[0],
                     abs_abun=int(line.strip().split()[1]),
-                    sum_dist=sum_dists[line.strip().split()[0]],
+                    sum_sim=sum_sims[line.strip().split()[0]],
                 )
                 for line in count_file
-            }
-        return cls(list(seq_dict.values()))
+            ]
+        return cls(seq_list)
 
     @classmethod
     def set_diff(cls, lhs, rhs):
@@ -111,7 +104,7 @@ class SeqList:
         random_weight_probs = {
             "simple": None,
             "abundance": self.rel_abuns,
-            "distance": self.rel_dists,
+            "distance": self.rel_sims,
         }
         sample_seqs = np.random.choice(
             self.seqs,
