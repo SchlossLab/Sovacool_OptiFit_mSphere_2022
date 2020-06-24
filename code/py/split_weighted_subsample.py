@@ -37,7 +37,7 @@ def check_subsample(fraction, subset_size, total_size):
 
 
 class MetaSeq:
-    def __init__(self, seq_id, abs_abun, sum_dist):
+    def __init__(self, seq_id, abs_abun, sum_sim):
         self.seq_id = seq_id
         self.abs_abun = abs_abun
         self.sum_sim = sum_sim
