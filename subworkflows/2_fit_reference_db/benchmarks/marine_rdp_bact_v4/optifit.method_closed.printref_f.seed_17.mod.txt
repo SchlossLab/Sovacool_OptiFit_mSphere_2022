@@ -1,0 +1,2 @@
+s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref
+120.1308	00:02:00	1389.91	1540.3	1385.95	1386.7	608.6	11.98	0	marine	rdp	bact_v4	17	closed	f
