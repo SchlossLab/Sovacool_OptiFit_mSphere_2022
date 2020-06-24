@@ -1,2 +1,0 @@
-s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref	iter	numotus
-193.2468	00:03:13	1244.78	1395.36	1242	1242.41	0	0.07	0	soil	NA	NA	86	de_novo	NA	NA	NA
