@@ -49,7 +49,6 @@ class MetaSeq:
         return hash(self.__repr__())
 
 
-
 class SeqList:
     def __init__(self, seqs):
         self.seqs = seqs
@@ -75,7 +74,7 @@ class SeqList:
         return [seq.sum_sim / total_sim for seq in self.seqs]
 
     @classmethod
-    def from_files(cls, fasta_fn, count_fn, dist_fn, threshold = 0.3):
+    def from_files(cls, fasta_fn, count_fn, dist_fn, threshold=0.3):
         with open(dist_fn, "r") as dist_file:
             line = next(dist_file)
             sum_sims = defaultdict(int)
