@@ -89,7 +89,7 @@ class SeqList:
         with open(count_fn, "r") as count_file:
             line = next(count_file)  # toss out the header
             seq_list = [
-                line.strip().split()[0]: MetaSeq(
+                MetaSeq(
                     seq_id=line.strip().split()[0],
                     abs_abun=int(line.strip().split()[1]),
                     sum_sim=sum_sims[line.strip().split()[0]],
