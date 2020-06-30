@@ -57,7 +57,7 @@ sensspec_fit %>%
   scale_color_manual(values = dataset_colors) +
   ylim(0.5, 1) +
   facet_grid(dataset ~ ref) +
-  labs(caption = "The black line represents the *de novo* clustering mcc sccore.") +
+  labs(caption = "The black line represents the *de novo* clustering mcc score.") +
   theme(legend.position = "None",
         axis.title.x = element_blank(),
         plot.caption = element_markdown())
