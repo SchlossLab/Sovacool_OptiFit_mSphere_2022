@@ -34,18 +34,7 @@ relevel_method <- function(df) {
   df %>%
     mutate(method = fct_relevel(method, c("open", "closed", "de_novo")))
 }
-plot_box_mcc <- function(df) {
-  df %>%
-    group_by(dataset, method) %>%
-    ggplot(aes(x = method, y = mcc, color = dataset)) +
-    geom_boxplot(alpha = 0.5) +
-    scale_color_manual(values = dataset_colors) +
-    ylim(0.5, 1) +
-    #facet_wrap("ref") +
-    facet_grid(dataset ~ ref) +
-    theme(legend.position = "None",
-          axis.title.x = element_blank())
-}
+
 plot_box_time <- function(df) {
   df %>%
     group_by(dataset, method) %>%
@@ -68,13 +57,19 @@ sensspec_clust <- read_tsv(here('subworkflows/1_prep_samples/results/sensspec.ts
   select(-ref) %>% 
   group_by(dataset) %>% 
   summarize(mean_mcc = mean(mcc))
-#sensspec <- bind_rows(sensspec_fit, sensspec_clust) 
-
-sensspec_fit %>% 
-  plot_box_mcc() +
+#sensspec <- bind_rows(sensspec_fit, sensspec_clust)
+sensspec_fit %>%
+  group_by(dataset, method) %>%
+  ggplot(aes(x = method, y = mcc, color = dataset)) +
   geom_hline(aes(yintercept = mean_mcc), sensspec_clust) +
+  geom_boxplot(alpha = 0.5) +
+  scale_color_manual(values = dataset_colors) +
+  ylim(0.5, 1) +
+  facet_grid(dataset ~ ref) +
   labs(caption = "The black line represents the *de novo* clustering mcc sccore.") +
-  theme(plot.caption = element_markdown())
+  theme(legend.position = "None",
+        axis.title.x = element_blank(),
+        plot.caption = element_markdown())
 ```
 
 ### Performance as measured by runtime
