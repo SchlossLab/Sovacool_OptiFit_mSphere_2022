@@ -30,7 +30,7 @@ rule split_weighted_subsample:
     script:
         "../../code/py/split_weighted_subsample.py"
 
-rule prep_subsample:  # TODO: don't do this for all sample fracs, only all ref fracs, since that'd be repetitive
+rule prep_subsample:
     input:
         accnos=rules.split_weighted_subsample.output.ref_accnos,
         fasta=rules.copy_data.output.fasta,
@@ -82,12 +82,13 @@ rule combine_for_fit:
             get.dists(accnos=current, column={input.dist});
         '
         """
-
+        
+'''
 rule copy_data:  # TODO: copy files just prior to cluster / fit for various seeds
     input:
-        fasta=#prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=#prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        dist=#prep_samples("results/{dataset}/{dataset}.dist")
+        fasta=rules.combine_for_fit.output.fasta_all,
+        count=rules.combine_for_fit.output.count_all,
+        dist=rules.combine_for_fit.output.dist
     output:
         fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
         count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
@@ -98,8 +99,9 @@ rule copy_data:  # TODO: copy files just prior to cluster / fit for various seed
         cp {input.count} {output.count}
         cp {input.dist} {output.dist}
         """
+'''
 
-rule cluster_ref:  # TODO: don't need sample_frac for clustering ref; avoid repetitive jobs
+rule cluster_ref:
     input:
         dist=rules.prep_subsample.output.dist,
         count=rules.prep_subsample.output.count
