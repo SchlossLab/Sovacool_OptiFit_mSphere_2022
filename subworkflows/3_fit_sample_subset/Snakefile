@@ -57,8 +57,8 @@ rule prep_subsample_ref:
 
 rule combine_for_fit:
     input:
-        accnos_ref=rules.split_weighted_subsample.ref_accnos,
-        accnos_sample=rules.split_weighted_subsample.sample_accnos,
+        accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
+        accnos_sample=rules.split_weighted_subsample.output.sample_accnos,
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
