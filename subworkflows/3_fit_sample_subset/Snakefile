@@ -39,7 +39,7 @@ rule prep_subsample:  # TODO: don't do this for all sample fracs, only all ref f
     output:
         fasta="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.fasta",
         count="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.count_table",
-        dist="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.dist
+        dist="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.dist"
     log:
         "log/{dataset}/prep_subsample.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.txt"
     benchmark:
