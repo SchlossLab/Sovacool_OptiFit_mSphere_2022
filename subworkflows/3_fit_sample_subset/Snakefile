@@ -33,9 +33,9 @@ rule split_weighted_subsample:
 rule prep_subsample:
     input:
         accnos=rules.split_weighted_subsample.output.ref_accnos,
-        fasta=rules.copy_data.output.fasta,
-        count=rules.copy_data.output.count,
-        dist=rules.copy_data.output.dist
+        fasta=rules.split_weighted_subsample.output.fasta,
+        count=rules.split_weighted_subsample.output.count,
+        dist=rules.split_weighted_subsample.output.dist
     output:
         fasta="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.fasta",
         count="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.pick.count_table",
@@ -59,9 +59,9 @@ rule combine_for_fit:
     input:
         accnos_ref=rules.split_weighted_subsample.ref_accnos,
         accnos_sample=rules.split_weighted_subsample.sample_accnos,
-        fasta=rules.copy_data.output.fasta,
-        count=rules.copy_data.output.count,
-        dist=rules.copy_data.output.dist
+        fasta=rules.prep_subsample.output.fasta,
+        count=rules.prep_subsample.output.count,
+        dist=rules.prep_subsample.output.dist
     output:
         accnos_all="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos",
         fasta_all="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.fasta",
@@ -82,24 +82,6 @@ rule combine_for_fit:
             get.dists(accnos=current, column={input.dist});
         '
         """
-        
-'''
-rule copy_data:  # TODO: copy files just prior to cluster / fit for various seeds
-    input:
-        fasta=rules.combine_for_fit.output.fasta_all,
-        count=rules.combine_for_fit.output.count_all,
-        dist=rules.combine_for_fit.output.dist
-    output:
-        fasta="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.fasta",
-        count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.count_table",
-        dist="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/{dataset}.dist"
-    shell:
-        """
-        cp {input.fasta} {output.fasta}
-        cp {input.count} {output.count}
-        cp {input.dist} {output.dist}
-        """
-'''
 
 rule cluster_ref:
     input:
