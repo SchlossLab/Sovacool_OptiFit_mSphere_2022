@@ -25,10 +25,10 @@ rule split_weighted_subsample:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        ref_accnos="data/{dataset}/refweight_{ref_weight}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
-        sample_accnos="data/{dataset}/refweight_{ref_weight}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"
+        ref_accnos="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.accnos",
+        sample_accnos="data/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/sample.accnos"
     benchmark:
-        "benchmarks/{dataset}/refweight_{ref_weight}/samplefrac_{sample_frac}/seed_{seed}/split_weighted_subsample.txt"
+        "benchmarks/{dataset}/split_weighted_subsample.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.txt"
     script:
         "../../code/py/split_weighted_subsample.py"
 
