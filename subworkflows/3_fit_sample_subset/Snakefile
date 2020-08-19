@@ -16,7 +16,9 @@ sample_fracs = [0.2]
 rule subset_targets:
     input:
         expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
-        dataset=datasets, ref_weight=random_refweight_options, sample_frac=sample_fracs, ref_frac=ref_fracs, seed=seeds)
+        dataset=datasets, ref_weight=random_refweight_options, sample_frac=sample_fracs, ref_frac=ref_fracs, seed=seeds),
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
 
 rule split_weighted_subsample:
     input:
@@ -90,14 +92,14 @@ rule cluster_ref:
         dist=rules.prep_subsample_ref.output.dist,
         count=rules.prep_subsample_ref.output.count
     output:
-        list="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.list",
-        sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.sensspec'
+        list="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.list",
+        sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.sensspec'
     params:
-        outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/cluster/"
+        outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/"
     log:
-        "log/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.log"
+        "log/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.log"
     benchmark:
-        "benchmarks/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.txt"
+        "benchmarks/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     resources:
         procs=8
     shell:
@@ -133,18 +135,16 @@ rule fit_subsample:
         cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
-### TODO: rules copied from sub 1 & 2 ###
-
 rule reformat_opticlust_results3:  # to make compatible with optifit sensspec & plotting
     input:
         sensspec=rules.cluster_ref.output.sensspec,
         bench=rules.cluster_ref.benchmark,
         code="../../code/R/reformat_opticlust_results.R"
     output:
-        sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.mod.sensspec',
-        bench="benchmarks/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.mod.txt"
+        sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/ref.pick.opti_mcc.mod.sensspec',
+        bench="benchmarks/{dataset}/cluster.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt"
     benchmark:
-        "benchmarks/{dataset}/reformat_opticlust_results.refweight_{ref_weight}.reffrac_{ref_frac}.seed_{seed}.txt"
+        "benchmarks/{dataset}/reformat_opticlust_results.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     params:
         dataset="{dataset}",
         seed="{seed}",
@@ -152,7 +152,6 @@ rule reformat_opticlust_results3:  # to make compatible with optifit sensspec & 
         ref_frac='{ref_frac}'
     script:
         "../../code/R/reformat_opticlust_results.R"
-
 
 rule reformat_optifit_results3:  # for plotting
     input:
