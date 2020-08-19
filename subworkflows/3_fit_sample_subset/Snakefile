@@ -15,7 +15,7 @@ sample_fracs = [0.2]
 
 rule subset_targets:
     input:
-        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/seed_{seed}/ref.accnos",
+        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
         dataset=datasets, ref_weight=random_refweight_options, sample_frac=sample_fracs, ref_frac=ref_fracs, seed=seeds)
 
 rule split_weighted_subsample:
