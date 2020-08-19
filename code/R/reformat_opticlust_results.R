@@ -12,10 +12,10 @@ mutate_columns <- function(df_orig) {
     iter = NA,
     numotus = NA
   )
-  if (all(c('ref_weight', 'ref_frac') %in% names(snakemake@params))) {
+  if (all(c("ref_weight", "ref_frac") %in% names(snakemake@params))) {
     df_new <- df_new %>% mutate(
-      ref_weight = snakemake@params[['ref_weight']],
-      ref_frac = snakemake@params[['ref_frac']],
+      ref_weight = snakemake@params[["ref_weight"]],
+      ref_frac = snakemake@params[["ref_frac"]],
       sample_frac = NA
     )
   }
