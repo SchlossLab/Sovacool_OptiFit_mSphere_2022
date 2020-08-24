@@ -13,12 +13,13 @@ random_refweight_options = ['simple', 'abundance', 'distance']
 ref_fracs = [i/10 for i in range(2,10,2)]
 sample_fracs = [0.2]
 
+wildcard_constraints:
+    seed="\d+"
+
 rule subset_targets:
     input:
-        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
-        dataset=datasets, ref_weight=random_refweight_options, sample_frac=sample_fracs, ref_frac=ref_fracs, seed=seeds),
-        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
-            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
+        "results/sensspec.tsv",
+        "results/benchmarks.tsv"
 
 rule split_weighted_subsample:
     input:
