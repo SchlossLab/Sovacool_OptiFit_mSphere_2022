@@ -26,7 +26,7 @@ reformat <- function(key) {
     write_tsv(snakemake@output[[key]])
 }
 
-log_filepath <- snakemake@log[1]
+log_filepath <- snakemake@log[1][[1]]
 if (!is.null(log_filepath)) {
   saveRDS(log_filepath, "smk_log_filepath.rds")
   log <- file(log_filepath, open = 'wt')
