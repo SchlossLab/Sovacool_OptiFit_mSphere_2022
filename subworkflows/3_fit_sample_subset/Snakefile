@@ -8,9 +8,9 @@ subworkflow prep_samples:
 datasets = ["human", "marine", "mouse", "soil"]
 methods = ['open', 'closed']
 printrefs=['f']
-seeds = range(1, 10)
+seeds = range(1, 100)
 random_refweight_options = ['simple', 'abundance', 'distance']
-ref_fracs = [i/10 for i in range(2,10,2)]
+ref_fracs = [i/10 for i in range(2,10,1)]
 sample_fracs = [0.2]
 
 wildcard_constraints:
