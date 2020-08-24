@@ -19,9 +19,8 @@ def main():
     )
     wildcards = snakemake.wildcards
     with open(snakemake.output.txt, "w") as output_file:
-        output_file.write(
-            f"{wildcards.dataset}\t{wildcards.ref}\t{wildcards.region}\t{wildcards.seed}\t{wildcards.method}\t{wildcards.printref}\t{fraction_mapped}\n"
-        )
+        data_str = f"{wildcards.dataset}\t{wildcards.seed}\t{wildcards.method}\t{wildcards.printref}\t{fraction_mapped}\t{wildcards.sample_frac}\t{wildcards.ref_frac}\t{wildcards.ref_weight}\n" if 'sample_frac' in wildcards.__dict__.keys() else f"{wildcards.dataset}\t{wildcards.ref}\t{wildcards.region}\t{wildcards.seed}\t{wildcards.method}\t{wildcards.printref}\t{fraction_mapped}\n"
+        output_file.write(data_str)
 
 
 main()
