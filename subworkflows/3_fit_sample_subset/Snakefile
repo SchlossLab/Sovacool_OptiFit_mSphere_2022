@@ -5,7 +5,7 @@ subworkflow prep_samples:
         "../1_prep_samples/"
 
 
-datasets = ["soil"]#["human", "marine", "mouse", "soil"]
+datasets = ["human", "marine", "mouse", "soil"]
 methods = ['open']#, 'closed']
 printrefs=['f']
 seeds = range(1, 2)
