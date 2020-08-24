@@ -1,6 +1,6 @@
 Exploratory Plots
 ================
-5/27/2020
+May 2020
 
 ``` r
 library(cowplot)
