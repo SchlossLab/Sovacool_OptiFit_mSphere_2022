@@ -9,7 +9,7 @@ datasets = ["soil"]#["human", "marine", "mouse", "soil"]
 methods = ['open']#, 'closed']
 printrefs=['f']
 seeds = range(1, 2)
-random_refweight_options = ['simple', 'abundance', 'distance']
+random_refweight_options = ['simple']#, 'abundance', 'distance']
 ref_fracs = [i/10 for i in range(2,4,2)]# range(2,10,2)]
 sample_fracs = [0.2]
 
