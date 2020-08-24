@@ -40,14 +40,6 @@
   "pmem": "1GB",
   "walltime": "1:00:00"
 },
-"combine_for_fit": {
-    "procs": "{resources.procs}",
-    "walltime": "{resources.walltime_hrs}:00:00"
-},
-"prep_subsample_ref": {
-    "procs": "{resources.procs}",
-    "walltime": "{resources.walltime_hrs}:00:00"
-},
 "cluster_ref": {
     "procs": "{resources.procs}"
 },

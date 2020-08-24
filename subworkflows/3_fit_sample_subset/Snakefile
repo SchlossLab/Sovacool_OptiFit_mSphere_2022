@@ -50,16 +50,12 @@ rule prep_subsample_ref:
         "benchmarks/{dataset}/prep_subsample_ref.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     params:
         outdir="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/"
-    resources:
-        procs=8,
-        walltime_hrs=48
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             get.seqs(accnos={input.accnos}, fasta={input.fasta});
             get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist}, cutoff=0.03, processors={resources.procs});
-        '
+            get.dists(accnos=current, column={input.dist}); '
         """
 
 rule combine_for_fit:
@@ -80,16 +76,13 @@ rule combine_for_fit:
         "benchmarks/{dataset}/combine_for_fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     benchmark:
         "benchmarks/{dataset}/combine_for_fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
-    resources:
-        procs=8,
-        walltime_hrs=48
     shell:
         """
         cat {input.accnos_ref} {input.accnos_sample} > {output.accnos_all}
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             get.seqs(accnos={output.accnos_all}, fasta={input.fasta});
             get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist}, cutoff=0.03, processors={resources.procs}); '
+            get.dists(accnos=current, column={input.dist}); '
         """
 
 rule cluster_ref:
