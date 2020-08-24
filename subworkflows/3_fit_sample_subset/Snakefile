@@ -19,7 +19,8 @@ wildcard_constraints:
 rule subset_targets:
     input:
         "results/sensspec.tsv",
-        "results/benchmarks.tsv"
+        "results/benchmarks.tsv"#,
+        #'results/fraction_reads_mapped.tsv'
 
 rule split_weighted_subsample:
     input:
@@ -117,7 +118,7 @@ rule fit_subsample:
         reflist=rules.cluster_ref.output.list
     output:
         sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec',
-        list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list',
+        list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list'
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
     log:
@@ -182,7 +183,7 @@ rule reformat_optifit_results3:  # for plotting
 rule merge_results3:
     input:
         sensspec=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
-            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs),
         bench=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
             dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
         code='../../code/R/merge_results.R'
@@ -194,28 +195,26 @@ rule merge_results3:
     script:
         '../../code/R/merge_results.R'
 
-'''
-rule fraction_reads_mapped: TODO: fix column names
+rule fraction_reads_mapped3:
     input:
         code="../../code/py/fraction_reads_mapped.py",
-        list=rules.fit_subsample.output.list,
-        count=rules.prep_subsample_ref.output.count
+        list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list',#rules.fit_subsample.output.list,
+        count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"#rules.prep_subsample_ref.output.count
     output:
-        txt='results/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/fraction_reads_mapped.txt'
+        txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
     wildcard_constraints:
         method='closed'
     script:
         "../../code/py/fraction_reads_mapped.py"
 
-rule merge_mapped_stats:
+rule merge_mapped_stats3:
     input:
-        expand('results/{dataset}/method_{method}/printref_{printref}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/fraction_reads_mapped.txt',
-        dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs)
     output:
         txt='results/fraction_reads_mapped.tsv'
     shell:
         """
-        echo "dataset\tref\tregion\tseed\tmethod\tprintref\tfraction_mapped\n" > {output.txt}
+        echo "dataset\tseed\tmethod\tprintref\tfraction_mapped\tsample_frac\tref_frac\tref_weight\n" > {output.txt}
         cat {input} >> {output.txt}
         """
-'''
