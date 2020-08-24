@@ -19,8 +19,8 @@ wildcard_constraints:
 rule subset_targets:
     input:
         "results/sensspec.tsv",
-        "results/benchmarks.tsv"#,
-        #'results/fraction_reads_mapped.tsv'
+        "results/benchmarks.tsv",
+        'results/fraction_reads_mapped.tsv'
 
 rule split_weighted_subsample:
     input:
@@ -198,8 +198,8 @@ rule merge_results3:
 rule fraction_reads_mapped3:
     input:
         code="../../code/py/fraction_reads_mapped.py",
-        list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list',#rules.fit_subsample.output.list,
-        count="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"#rules.prep_subsample_ref.output.count
+        list=rules.fit_subsample.output.list,
+        count=rules.split_weighted_subsample.output.sample_accnos
     output:
         txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
     wildcard_constraints:
@@ -209,8 +209,8 @@ rule fraction_reads_mapped3:
 
 rule merge_mapped_stats3:
     input:
-        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs)
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
     output:
         txt='results/fraction_reads_mapped.tsv'
     shell:
