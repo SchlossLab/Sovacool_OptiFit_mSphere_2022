@@ -27,9 +27,9 @@ reformat <- function(key) {
 }
 
 if (!is.null(snakemake@log[1])) {
-    log <- file(snakemake@log[1])
-    sink(log)
-    sink(log, append = TRUE, type = "message")
+  log <- file(snakemake@log[1])
+  sink(log)
+  sink(log, append = TRUE, type = "message")
 }
 reformat("sensspec")
 reformat("bench")
