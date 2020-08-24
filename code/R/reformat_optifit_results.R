@@ -15,6 +15,7 @@ mutate_columns <- function(df_orig) {
       ref_weight = snakemake@params[['ref_weight']],
       ref_frac = snakemake@params[['ref_frac']],
       sample_frac = snakemake@params[['sample_frac']]
+    )
   }
   return(df_new)
 }
