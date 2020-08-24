@@ -5,12 +5,12 @@ subworkflow prep_samples:
         "../1_prep_samples/"
 
 
-datasets = ["human", "marine", "mouse", "soil"]
+datasets = ["soil"]#["human", "marine", "mouse", "soil"]
 methods = ['open']#, 'closed']
 printrefs=['f']
 seeds = range(1, 2)
 random_refweight_options = ['simple', 'abundance', 'distance']
-ref_fracs = [i/10 for i in range(2,10,2)]
+ref_fracs = [i/10 for i in range(2,4,2)]# range(2,10,2)]
 sample_fracs = [0.2]
 
 rule subset_targets:
@@ -50,12 +50,15 @@ rule prep_subsample_ref:
         "benchmarks/{dataset}/prep_subsample_ref.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     params:
         outdir="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/"
+    resources:
+        procs=8,
+        walltime_hrs=48
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             get.seqs(accnos={input.accnos}, fasta={input.fasta});
             get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist});
+            get.dists(accnos=current, column={input.dist}, cutoff=0.03, processors={resources.procs});
         '
         """
 
@@ -77,14 +80,16 @@ rule combine_for_fit:
         "benchmarks/{dataset}/combine_for_fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     benchmark:
         "benchmarks/{dataset}/combine_for_fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+    resources:
+        procs=8,
+        walltime_hrs=48
     shell:
         """
         cat {input.accnos_ref} {input.accnos_sample} > {output.accnos_all}
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             get.seqs(accnos={output.accnos_all}, fasta={input.fasta});
             get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist});
-        '
+            get.dists(accnos=current, column={input.dist}, cutoff=0.03, processors={resources.procs}); '
         """
 
 rule cluster_ref:
