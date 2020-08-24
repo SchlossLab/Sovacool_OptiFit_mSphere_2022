@@ -28,9 +28,10 @@ reformat <- function(key) {
     write_tsv(snakemake@output[[key]])
 }
 
-if (!is.null(snakemake@log[1])) {
-  log <- file(snakemake@log[1])
-  sink(log)
+if (!is.null(snakemake@log)) {
+  log_filepath <- snakemake@log[1][[1]]
+  log <- file(log_filepath, open = "wt")
+  sink(log, append = TRUE)
   sink(log, append = TRUE, type = "message")
 }
 reformat("sensspec")
