@@ -49,7 +49,7 @@ rule prep_subsample_ref:
     benchmark:
         "benchmarks/{dataset}/prep_subsample_ref.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     params:
-        outdir="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/"
+        outdir="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref/"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
