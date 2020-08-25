@@ -20,7 +20,9 @@ rule subset_targets:
     input:
         "results/sensspec.tsv",
         "results/benchmarks.tsv",
-        'results/fraction_reads_mapped.tsv'
+        'results/fraction_reads_mapped.tsv',
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs)
 
 rule split_weighted_subsample:
     input:
