@@ -32,7 +32,7 @@ jobs:
         run: |
           Rscript -e "install.packages(c('styler','usethis'))"
           python -m pip install --upgrade pip
-          pip install black snakefmt
+          pip install snakefmt
       - name: Style R code
         run: |
           Rscript -e 'usethis::use_tidy_style()'
