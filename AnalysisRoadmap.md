@@ -80,20 +80,19 @@
     - How sensitive is OptiFit to random variation?
 * For each dataset (human, marine, mouse, soil):
     - [ ] Use of 10, 20, 30... 90% of data to create reference databases (R)
-        - [ ] Subset with different weighted methods:
+        - [x] Subset with different weighted methods:
             - none
             - abundance
             - distances (connectivity)
-        - [ ] Cluster reference sequences using OptiClust
-        - [ ] Get MCC
+        - [x] Cluster reference sequences using OptiClust
+        - [x] Get MCC
         - [ ] Run 10 times to get the seed that gives the best clustering for each set of references
     - [ ] On remaining fraction of data (U)
         - [ ] OptiClust on its own
-        - [ ] Use OptiFit/open to fit U sequences into R OTUs
+        - [x] Use OptiFit/open to fit U sequences into R OTUs
             - [ ] Capture MCC values for U sequences with and without R sequences included
-            - [ ] % of sequences that map to references
             - [ ] Run 10 times to see level of variation
-        - [ ] Use OptiFit/closed to fit U sequences into R OTUs
+        - [x] Use OptiFit/closed to fit U sequences into R OTUs
             - [ ] Capture MCC values for U sequences with and without R sequences included
             - [ ] % of sequences that map to references
             - [ ] Run 10 times to see level of variation
