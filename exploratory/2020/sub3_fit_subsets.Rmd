@@ -66,10 +66,10 @@ benchmarks_fit %>%
 ```{r fraction_reads_mapped}
 fractions <- read_tsv(here('subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv'))
 fractions %>% 
-  ggplot(aes(x=dataset, y=fraction_mapped, color=dataset)) +
+  ggplot(aes(x=ref_weight, y=fraction_mapped, color=dataset)) +
   geom_boxplot(alpha = 0.5) +
   scale_color_manual(values = dataset_colors) +
-  facet_wrap("ref_weight") +
+  facet_wrap("dataset", nrow = 1) + 
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit")
 ```
