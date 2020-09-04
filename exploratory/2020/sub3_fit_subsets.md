@@ -44,13 +44,13 @@ sample fraction = 0.2
 ``` r
 benchmarks_fit <-
   read_tsv(here('subworkflows/2_fit_reference_db/results/benchmarks.tsv'))
-# TODO: show number of unique seqs 
+# TODO: show number of unique seqs, use as x axis?
 benchmarks_fit %>% 
     group_by(dataset, method) %>%
     ggplot(aes(x = method, y = s, color = dataset)) +
     geom_boxplot() +
     scale_color_manual(values = dataset_colors) +
-    #facet_grid(ref_weight ~ .) +
+    #facet_wrap("ref_weight") +
     ylim(0,2100) +
     labs(y = 'seconds') +
     theme(axis.title.x = element_blank())
@@ -63,10 +63,11 @@ benchmarks_fit %>%
 ``` r
 fractions <- read_tsv(here('subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv'))
 fractions %>% 
+  group_by(dataset, ref_weight, ref_frac) %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=dataset)) +
   geom_point(alpha = 0.5) +
   scale_color_manual(values = dataset_colors) +
-  facet_grid(ref_weight ~ dataset) +
+  facet_wrap("ref_weight") +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit")
 ```
