@@ -5,11 +5,11 @@ subworkflow prep_samples:
         "../1_prep_samples/"
 
 
-datasets = ['soil']#["human", "marine", "mouse", "soil"]
+datasets = ["human", "marine", "mouse", "soil"]
 methods = ['closed']#['open', 'closed']
 printrefs=['f']
 seeds = range(1, 2)
-random_refweight_options = ['simple']#, 'abundance', 'distance']
+random_refweight_options = ['simple', 'abundance', 'distance']
 ref_fracs = [i/10 for i in range(2,4,2)]
 sample_fracs = [0.2]
 
