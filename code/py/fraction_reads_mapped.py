@@ -4,7 +4,7 @@ calculate the fraction of reads that mapped during closed-reference clustering
 """
 
 
-def main():
+def main():  # TODO: write to log file
     with open(snakemake.input.count, "r") as count_file:
         # first column of all lines except first line
         next(count_file)
