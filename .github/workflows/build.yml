@@ -44,7 +44,7 @@ jobs:
       - name: Style Python code
         run: |
           black .
-          snakefmt .
+          #snakefmt .
           git add .
           git diff-index --quiet HEAD \
           || git commit \
