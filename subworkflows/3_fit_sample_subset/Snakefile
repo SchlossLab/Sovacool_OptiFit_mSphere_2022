@@ -217,8 +217,12 @@ rule merge_mapped_stats3:
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
     output:
         txt='results/fraction_reads_mapped.tsv'
+    log:
+        "log/merge_mapped_stats.txt"
+    benchmark:
+        "benchmarks/merge_mapped_stats.txt"
     shell:
         """
         echo "dataset\tseed\tmethod\tprintref\tfraction_mapped\tsample_frac\tref_frac\tref_weight\n" > {output.txt}
-        cat {input} >> {output.txt}
+        cat {input} >> {output.txt} 2> {log}
         """
