@@ -1,4 +1,5 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
+import numpy
 
 subworkflow prep_samples:
     workdir:
@@ -12,6 +13,9 @@ seeds = range(1, 11)
 random_refweight_options = ['simple', 'abundance', 'distance']
 ref_fracs = [i/10 for i in range(2,10,2)]
 sample_fracs = [0.2]
+
+n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, ref_fracs, sample_fracs]])
+print(f"Params will produce {n_runs} optifit runs")
 
 wildcard_constraints:
     seed="\d+"
