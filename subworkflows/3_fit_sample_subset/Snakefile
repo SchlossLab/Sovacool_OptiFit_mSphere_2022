@@ -200,25 +200,82 @@ rule fraction_reads_mapped3:
     script:
         "../../code/py/fraction_reads_mapped.py"
 
-rule merge_results3:
+rule count_input_sizes:
     input:
-        sensspec=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs),
-        bench=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
-            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
-        mapped=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs),
-        code='../../code/R/merge_results.R',
-        fcns='../../code/R/functions.R'
+        ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
+        sample_accnos=rules.split_weighted_subsample.output.sample_accnos
     output:
-        sensspec="results/sensspec.tsv",
-        bench="results/benchmarks.tsv",
-        mapped='results/fraction_reads_mapped.tsv'
-    benchmark:
-        "benchmarks/merge_results.txt"
+        tsv="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv"
+    run:
+        with open(output.tsv, 'w') as outfile:
+            header = f'dataset\tref_weight\tref_frac\tsample_frac\tseed\tnum_ref_seqs\tnum_sample_seqs\n'
+            outfile.write(header)
+            for ref_fn, sample_fn in zip(ref_accnos, sample_accnos):
+                with open(ref_fn, 'r') as infile:
+                    num_refs = len(infile.readlines())
+                with open(sample_fn, 'r') as infile:
+                    num_samples = len(infile.readlines())
+                data_str = f'{wildcards.dataset}\t{wildcards.ref_weight}\t{wildcards.ref_frac}\t{wildcards.sample_frac}\t{wildcards.seed}\t{num_refs}\t{num_samples}\n'
+                outfile.write(data_str)
+
+rule merge_sensspec:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs)
+    output:
+        tsv="results/sensspec.tsv"
     log:
-        'log/merge_results.txt'
+        'log/merge_sensspec.tsv'
+    benchmark:
+        'benchmarks/merge_sensspec.txt'
     script:
         '../../code/R/merge_results.R'
 
-# TODO: write csv of sample & reference sizes (# unique seqs)
+rule merge_benchmarks:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
+    output:
+        tsv="results/benchmarks.tsv"
+    log:
+        'log/merge_benchmarks.tsv'
+    benchmark:
+        'benchmarks/merge_benchmarks.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_fractions:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
+    output:
+        tsv="results/fraction_reads_mapped.tsv"
+    log:
+        'log/merge_fractions.tsv'
+    benchmark:
+        'benchmarks/merge_fractions.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_sizes:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
+    output:
+        tsv="results/input_sizes.tsv"
+    log:
+        'log/merge_sizes.tsv'
+    benchmark:
+        'benchmarks/merge_sizes.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+
