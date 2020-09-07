@@ -277,28 +277,20 @@ rule fraction_reads_mapped:
     script:
         "../../code/py/fraction_reads_mapped.py"
 
-rule merge_mapped_stats:
-    input:
-        expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
-        dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds)
-    output:
-        txt='results/fraction_reads_mapped.tsv'
-    shell:
-        """
-        echo "dataset\tref\tregion\tseed\tmethod\tprintref\tfraction_mapped\n" > {output.txt}
-        cat {input} >> {output.txt}
-        """
-
 rule merge_results2:
     input:
         sensspec=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
                 dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
         bench=expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
             dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
+        mapped=expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
+        dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds),
+        fcns='../../code/R/functions.R',
         code='../../code/R/merge_results.R'
     output:
         sensspec="results/sensspec.tsv",
-        bench="results/benchmarks.tsv"
+        bench="results/benchmarks.tsv",
+        mapped='results/fraction_reads_mapped.tsv'
     benchmark:
         "benchmarks/merge_results.txt"
     script:

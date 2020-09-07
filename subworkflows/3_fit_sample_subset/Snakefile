@@ -188,21 +188,6 @@ rule reformat_optifit_results3:  # for plotting
     script:
         "../../code/R/reformat_optifit_results.R"
 
-rule merge_results3:
-    input:
-        sensspec=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs),
-        bench=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
-            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
-        code='../../code/R/merge_results.R'
-    output:
-        sensspec="results/sensspec.tsv",
-        bench="results/benchmarks.tsv"
-    benchmark:
-        "benchmarks/merge_results.txt"
-    script:
-        '../../code/R/merge_results.R'
-
 rule fraction_reads_mapped3:
     input:
         code="../../code/py/fraction_reads_mapped.py",
@@ -215,18 +200,25 @@ rule fraction_reads_mapped3:
     script:
         "../../code/py/fraction_reads_mapped.py"
 
-rule merge_mapped_stats3:
+rule merge_results3:
     input:
-        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
+        sensspec=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs),
+        bench=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
+        mapped=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs),
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R'
     output:
-        txt='results/fraction_reads_mapped.tsv'
-    log:
-        "log/merge_mapped_stats.txt"
+        sensspec="results/sensspec.tsv",
+        bench="results/benchmarks.tsv",
+        mapped='results/fraction_reads_mapped.tsv'
     benchmark:
-        "benchmarks/merge_mapped_stats.txt"
-    shell:
-        """
-        echo "dataset\tseed\tmethod\tprintref\tfraction_mapped\tsample_frac\tref_frac\tref_weight\n" > {output.txt}
-        cat {input} >> {output.txt} 2> {log}
-        """
+        "benchmarks/merge_results.txt"
+    log:
+        'log/merge_results.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+# TODO: write csv of sample & reference sizes (# unique seqs)
