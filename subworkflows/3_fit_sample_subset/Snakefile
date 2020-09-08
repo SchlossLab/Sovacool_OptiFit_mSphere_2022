@@ -1,17 +1,21 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
 import numpy
 
+configfile: 'config/config.yaml'
+
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
 
-datasets = ['soil']#["human", "marine", "mouse", "soil"]
-methods = ['closed']# ['open', 'closed']
-printrefs=['f']
-seeds = range(1, 2)#1)
-random_refweight_options = ['simple']#, 'abundance', 'distance']
-ref_fracs = [0.2]#[i/10 for i in range(1,9,1)]
+datasets = config['datasets']
+methods = config['methods']
+printrefs = config['printrefs']
+seeds = range(1, config['nseeds'] + 1)
+random_refweight_options = config['weights']
+
+fracs = config['ref_fracs']
+ref_fracs = [i/10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
 sample_fracs = [0.2]
 
 n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, ref_fracs, sample_fracs]])
