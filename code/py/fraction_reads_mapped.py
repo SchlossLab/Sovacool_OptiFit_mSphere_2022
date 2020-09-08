@@ -31,7 +31,7 @@ def main():  # TODO: write to log file
     )
 
     with open(snakemake.output.txt, "w") as output_file:
-        outfile.write(header_line)
+        output_file.write(header_line)
         output_file.write(data_str)
 
 
