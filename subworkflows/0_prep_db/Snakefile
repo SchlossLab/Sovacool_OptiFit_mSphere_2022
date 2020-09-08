@@ -1,17 +1,12 @@
 """ Download the reference databases and process with mothur """
 
-configfile: '../../config/config.yaml'
-
-refs = config['references']
-regions = ['bact_v4', 'bact_full']
-
 wildcard_constraints:
     region="bact_v4|bact_full",
     ref="silva|rdp|gg"
 
 rule targets:
     input:
-        expand("data/{ref}/{ref}.{region}.fasta", ref=refs, region=regions)
+        expand("data/{ref}/{ref}.{region}.fasta", ref=['silva', 'rdp', 'gg'], region=['bact_v4', 'bact_full'])
 
 rule download_silva:
     output:

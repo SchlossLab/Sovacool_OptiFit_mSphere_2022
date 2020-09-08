@@ -1,7 +1,7 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
 import numpy
 
-configfile: 'config/config.yaml'
+configfile: '../../config/config.yaml'
 
 subworkflow prep_samples:
     workdir:
@@ -11,7 +11,7 @@ subworkflow prep_samples:
 datasets = config['datasets']
 methods = config['methods']
 printrefs = config['printrefs']
-seeds = range(1, config['nseeds'] + 1)
+seeds = range(1, config['seeds'] + 1)
 random_refweight_options = config['weights']
 
 fracs = config['ref_fracs']
