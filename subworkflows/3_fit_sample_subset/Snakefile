@@ -25,10 +25,15 @@ rule subset_targets:
         "results/sensspec.tsv",
         "results/benchmarks.tsv",
         'results/fraction_reads_mapped.tsv',
+        "results/input_sizes.tsv",
         expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, method=methods, printref=printrefs),
-        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fraction_reads_mapped.txt',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
+        expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
+        expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
 
 rule split_weighted_subsample:
     input:
@@ -194,11 +199,11 @@ rule fraction_reads_mapped3:
         list=rules.fit_subsample.output.list,
         count=rules.split_weighted_subsample.output.sample_accnos
     output:
-        txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fraction_reads_mapped.txt'
+        txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
     log:
-        "log/{dataset}/fraction_reads_mapped3.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+        "log/{dataset}/fraction_reads_mapped3.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     benchmark:
-        "benchmarks/{dataset}/fraction_reads_mapped3.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+        "benchmarks/{dataset}/fraction_reads_mapped3.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     wildcard_constraints:
         method='closed'
     script:
@@ -256,8 +261,8 @@ rule merge_fractions:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fraction_reads_mapped.txt',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds, printref=printrefs)
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
     output:
         tsv="results/fraction_reads_mapped.tsv"
     log:
