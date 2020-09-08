@@ -222,16 +222,15 @@ rule count_input_sizes:
     benchmark:
         "benchmarks/{dataset}/count_input_sizes.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     run:
+        with open(input.ref_accnos, 'r') as infile:
+            num_refs = len(infile.readlines())
+        with open(input.sample_accnos, 'r') as infile:
+            num_samples = len(infile.readlines())
         with open(output.tsv, 'w') as outfile:
             header = f'dataset\tref_weight\tref_frac\tsample_frac\tseed\tnum_ref_seqs\tnum_sample_seqs\n'
             outfile.write(header)
-            for ref_fn, sample_fn in zip(input.ref_accnos, input.sample_accnos):
-                with open(ref_fn, 'r') as infile:
-                    num_refs = len(infile.readlines())
-                with open(sample_fn, 'r') as infile:
-                    num_samples = len(infile.readlines())
-                data_str = f'{wildcards.dataset}\t{wildcards.ref_weight}\t{wildcards.ref_frac}\t{wildcards.sample_frac}\t{wildcards.seed}\t{num_refs}\t{num_samples}\n'
-                outfile.write(data_str)
+            data_str = f'{wildcards.dataset}\t{wildcards.ref_weight}\t{wildcards.ref_frac}\t{wildcards.sample_frac}\t{wildcards.seed}\t{num_refs}\t{num_samples}\n'
+            outfile.write(data_str)
 
 rule merge_sensspec:
     input:
