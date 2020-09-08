@@ -1,5 +1,7 @@
 datasets:
 - soil
+references:
+- silva
 weights:
 - simple
 methods:
@@ -10,4 +12,4 @@ ref_fracs:
     start: 2
     stop: 4
     step: 2
-nseeds: 1
+seeds: 1
