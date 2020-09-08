@@ -1,6 +1,3 @@
-mothur_bin: /nfs/turbo/schloss-lab/bin/mothur-1.42.0/mothur
-subsample_test: False
-subsample_size: 1000
 datasets:
 - human
 - marine
@@ -8,17 +5,15 @@ datasets:
 - soil
 weights:
 - none
-- ref-abundance
-- sample-abundance
-- sample-dists
+- abundance
+- distance
 methods:
 - open
 - closed
 printrefs:
-- t
 - f
-reference_fractions:
-    start: 10
-    stop: 100
-    step: 10
-seeds: 10
+ref_fracs:
+    start: 1
+    stop: 9
+    step: 1
+nseeds: 20
