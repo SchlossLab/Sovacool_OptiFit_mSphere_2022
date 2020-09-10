@@ -8,7 +8,7 @@ references:
 - rdp
 - gg
 weights:
-- none
+- simple
 - abundance
 - distance
 methods:
