@@ -30,7 +30,7 @@ rule subset_targets:
         "results/benchmarks.tsv",
         'results/fraction_reads_mapped.tsv',
         "results/input_sizes.tsv",
-        expand('results/{dataset}/gaps_count.txt', dataset=datasets)
+        'results/gap_counts.tsv'
 
 rule split_weighted_subsample:
     input:
@@ -223,6 +223,15 @@ rule count_input_sizes:
             data_str = f'{wildcards.dataset}\t{wildcards.ref_weight}\t{wildcards.ref_frac}\t{wildcards.sample_frac}\t{wildcards.seed}\t{num_refs}\t{num_samples}\n'
             outfile.write(data_str)
 
+rule count_gaps:
+    input:
+        py='../../code/py/count_gaps.py',
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+    output:
+        txt=temp('results/{dataset}/gaps_count.tsv')
+    script:
+        '../../code/py/count_gaps.py'
+
 rule merge_sensspec:
     input:
         code='../../code/R/merge_results.R',
@@ -283,6 +292,16 @@ rule merge_sizes:
     script:
         '../../code/R/merge_results.R'
 
+rule merge_gap_counts:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/gaps_count.tsv')
+    output:
+        tsv='results/gap_counts.tsv'
+    script:
+        '../../code/R/merge_results.R'
+
 rule merge_all_inputs:
     input:
         expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
@@ -293,12 +312,3 @@ rule merge_all_inputs:
             dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
         expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
-
-rule count_gaps:
-    input:
-        py='../../code/py/count_gaps.py',
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta")
-    output:
-        txt='results/{dataset}/gaps_count.txt'
-    script:
-        '../../code/py/count_gaps.py'
