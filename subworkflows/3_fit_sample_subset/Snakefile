@@ -228,7 +228,7 @@ rule count_gaps:
         py='../../code/py/count_gaps.py',
         fasta=rules.combine_for_fit.output.fasta_all
     output:
-        txt=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/gaps_count.tsv')
+        txt=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv')
     script:
         '../../code/py/count_gaps.py'
 
@@ -296,7 +296,7 @@ rule merge_gap_counts:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/gaps_count.tsv',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
     output:
         tsv='results/gap_counts.tsv'
@@ -313,5 +313,5 @@ rule merge_all_inputs:
             dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
         expand("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
-        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/gaps_count.tsv',
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
