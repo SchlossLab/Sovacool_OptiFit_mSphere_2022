@@ -29,7 +29,8 @@ rule subset_targets:
         "results/sensspec.tsv",
         "results/benchmarks.tsv",
         'results/fraction_reads_mapped.tsv',
-        "results/input_sizes.tsv"
+        "results/input_sizes.tsv",
+        expand('results/{dataset}/gaps_count.txt', dataset=datasets)
 
 rule split_weighted_subsample:
     input:
