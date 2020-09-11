@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile ../../config/slurm --latency-wait 90 --forcerun merge_sensspec
+time snakemake --profile ../../config/slurm --latency-wait 90 
