@@ -1,6 +1,6 @@
 ---
 title: "Exploratory Plots"
-date: "Aug. 2020"
+date: "Sept. 2020"
 output: 
   github_document:
     html_preview: false
