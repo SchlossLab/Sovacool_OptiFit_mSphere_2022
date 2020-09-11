@@ -94,7 +94,7 @@ runtime %>%
 fractions <- read_tsv(here('subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv'))
 fractions %>% 
   group_by(dataset, ref_weight, ref_frac) %>% 
-  ggplot(aes(x=ref_frac, y=fraction_mapped, color=dataset, shape=ref_weight)) +
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=dataset)) +
   geom_jitter(alpha = 0.5, width = 0.01, size=1) +
   scale_color_manual(values = dataset_colors) +
   facet_wrap("ref_weight") +
