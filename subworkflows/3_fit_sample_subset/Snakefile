@@ -292,3 +292,12 @@ rule merge_all_inputs:
             dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds),
         expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
+
+rule count_gaps:
+    input:
+        py='../../code/py/count_gaps.py',
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+    output:
+        txt='results/{dataset}/gaps_count.txt'
+    script:
+        '../../code/py/count_gaps.py'
