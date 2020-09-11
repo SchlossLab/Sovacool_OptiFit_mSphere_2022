@@ -296,7 +296,8 @@ rule merge_gap_counts:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/gaps_count.tsv')
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/gaps_count.tsv',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs, seed=seeds)
     output:
         tsv='results/gap_counts.tsv'
     script:
