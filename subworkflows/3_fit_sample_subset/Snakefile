@@ -296,9 +296,11 @@ rule merge_gap_counts:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/gaps_count.tsv')
+        tsv=expand('results/{dataset}/gaps_count.tsv', dataset=datasets)
     output:
         tsv='results/gap_counts.tsv'
+    log:
+        'log/merge_gap_counts.tsv'
     script:
         '../../code/R/merge_results.R'
 
