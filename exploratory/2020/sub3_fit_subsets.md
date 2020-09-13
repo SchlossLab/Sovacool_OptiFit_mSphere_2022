@@ -79,33 +79,6 @@ runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
 ![](figures/runtime_ref_seqs-1.png)<!-- -->
 
 ``` r
-runtime %>% 
-  ggplot(aes(x=num_total_seqs, y=s, color=dataset)) +
-  geom_point(alpha = 0.5) +
-  facet_grid(method ~ ref_weight) +
-  scale_color_manual(values = dataset_colors) +
-  xlim(0, 300000) +
-  labs(title = 'Runtime over sample + reference size',
-       x = '# sequences total',
-       y = 'seconds')
-```
-
-![](figures/runtime_total_seqs-1.png)<!-- -->
-
-``` r
-runtime %>% 
-  ggplot(aes(x=n_gaps, y=s, color=dataset)) +
-  geom_point(alpha = 0.5) +
-  facet_grid(method ~ ref_weight) +
-  scale_color_manual(values = dataset_colors) +
-  labs(title = 'Runtime over number of gaps',
-       x = '# gaps',
-       y = 'seconds')
-```
-
-![](figures/runtime_gaps-1.png)<!-- -->
-
-``` r
 runtime %>% full_join(sensspec_fit) %>% 
   ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
   geom_point(alpha = 0.5) +
