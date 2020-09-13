@@ -1,6 +1,6 @@
 Exploratory Plots
 ================
-Aug. 2020
+Sept. 2020
 
 ``` r
 library(cowplot)
@@ -63,22 +63,26 @@ sample fraction = 0.2
 runtime <- full_join(
   read_tsv(here('subworkflows/3_fit_sample_subset/results/benchmarks.tsv')),
   read_tsv(here('subworkflows/3_fit_sample_subset/results/input_sizes.tsv'))
-  )
+  ) %>% 
+  full_join(read_tsv(here('subworkflows/3_fit_sample_subset/results/gap_counts.tsv'))) %>% 
+  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
+         gaps_frac = n_gaps / total_chars)
 runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
   labs(title = 'Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds')
 ```
 
-![](figures/runtime_ref_size-1.png)<!-- -->
+![](figures/runtime_ref_seqs-1.png)<!-- -->
 
 ``` r
 runtime %>% 
-  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs) %>% 
   ggplot(aes(x=num_total_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
   xlim(0, 300000) +
   labs(title = 'Runtime over sample + reference size',
@@ -86,7 +90,33 @@ runtime %>%
        y = 'seconds')
 ```
 
-![](figures/runtime_total_size-1.png)<!-- -->
+![](figures/runtime_total_seqs-1.png)<!-- -->
+
+``` r
+runtime %>% 
+  ggplot(aes(x=n_gaps, y=s, color=dataset)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
+  scale_color_manual(values = dataset_colors) +
+  labs(title = 'Runtime over number of gaps',
+       x = '# gaps',
+       y = 'seconds')
+```
+
+![](figures/runtime_gaps-1.png)<!-- -->
+
+``` r
+runtime %>% full_join(sensspec_fit) %>% 
+  ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
+  scale_color_manual(values = dataset_colors) +
+  labs(title = 'Runtime over number of OTUs',
+       x = '# OTUs',
+       y = 'seconds')
+```
+
+![](figures/runtime_numotus-1.png)<!-- -->
 
 ## Fraction of sequences that map to the reference
 

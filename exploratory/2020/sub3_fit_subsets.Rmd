@@ -64,30 +64,57 @@ sensspec_fit %>%
 sample fraction = 0.2
 
 ## Runtime
-```{r runtime_ref_size}
+```{r runtime_ref_seqs}
 runtime <- full_join(
   read_tsv(here('subworkflows/3_fit_sample_subset/results/benchmarks.tsv')),
   read_tsv(here('subworkflows/3_fit_sample_subset/results/input_sizes.tsv'))
-  )
+  ) %>% 
+  full_join(read_tsv(here('subworkflows/3_fit_sample_subset/results/gap_counts.tsv'))) %>% 
+  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
+         gaps_frac = n_gaps / total_chars)
 runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
   labs(title = 'Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds')
 ```
 
-```{r runtime_total_size}
+```{r runtime_total_seqs}
 runtime %>% 
-  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs) %>% 
   ggplot(aes(x=num_total_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
   xlim(0, 300000) +
   labs(title = 'Runtime over sample + reference size',
        x = '# sequences total',
        y = 'seconds')
 ```
+
+```{r runtime_gaps}
+runtime %>% 
+  ggplot(aes(x=n_gaps, y=s, color=dataset)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
+  scale_color_manual(values = dataset_colors) +
+  labs(title = 'Runtime over number of gaps',
+       x = '# gaps',
+       y = 'seconds')
+```
+
+```{r runtime_numotus}
+runtime %>% full_join(sensspec_fit) %>% 
+  ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
+  scale_color_manual(values = dataset_colors) +
+  labs(title = 'Runtime over number of OTUs',
+       x = '# OTUs',
+       y = 'seconds')
+```
+
 
 ## Fraction of sequences that map to the reference
 ```{r fraction_reads_mapped}
