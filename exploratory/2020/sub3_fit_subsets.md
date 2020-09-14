@@ -25,6 +25,8 @@ sensspec_fit <-
 
 ## Subsetting datasets with different reference sizes
 
+Sample fraction of 0.2 with 20 different seeds.
+
 ``` r
 sensspec_fit %>%
   ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
@@ -38,7 +40,12 @@ sensspec_fit %>%
 
 ![](figures/fit_ref_frac-1.png)<!-- -->
 
-sample fraction = 0.2
+The performance is very consistent across reference fractions when
+weighting sequences by abundance or not at all (simple). When weighting
+by distance, the performance decreases as the reference fraction
+increases. This is expected because a larger fraction means **more**
+sequences with **fewer** pairwise distances under the 0.03 threshold are
+included in the reference.
 
 ## Runtime
 
@@ -64,6 +71,16 @@ runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
 
 ![](figures/runtime_ref_seqs-1.png)<!-- -->
 
+Runtime is also fairly consistent regardless of weighting method. For
+abundance and simple weighting, runtime seems to continue increasing
+roughly linearly (maybe a little worse than linear). When weighting by
+distance, runtime reaches a plateau sooner than other selection methods
+as the size of the reference increases. Perhaps the sequences with the
+most similarities are the most influential over OTU clustering, so after
+you reach some critical number of similarities, the runtime doesn’t
+increase as much. I’m not sure why the human dataset takes so much
+longer than the others.
+
 ``` r
 runtime %>% full_join(sensspec_fit) %>% 
   ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
@@ -78,6 +95,12 @@ runtime %>% full_join(sensspec_fit) %>%
 ```
 
 ![](figures/runtime_numotus-1.png)<!-- -->
+
+Open-reference clustering has more OTUs because it will cluster any
+sequences *de novo* that do not fit into existing OTUs, while
+closed-reference clustering throws them out. This plot is confounded by
+the number of sequences in the reference, perhaps I should re-plot it as
+the ratio of OTUs to reference sequences?
 
 ## Fraction of sequences that map to the reference
 
@@ -96,3 +119,12 @@ fractions %>%
 ```
 
 ![](figures/fraction_reads_mapped-1.png)<!-- -->
+
+The fraction of sequences that are able to be fit to the reference in
+closed-reference clustering increases as the reference size increases
+when weighting sequences by abundance or not at all for reference
+selection. It’s also remarkably stable between abundance & simple
+weighting, and between all seeds. Weighting by distance performs poorly,
+likely because the top n sequences with the most pairwise similarities
+are included in the reference, leaving sequences with few similarities
+to then be fit to the highly-connected reference.
