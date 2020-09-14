@@ -27,33 +27,16 @@ sensspec_fit <-
 
 ``` r
 sensspec_fit %>%
-  filter(method == 'open') %>% 
-  group_by(dataset, ref_weight) %>%
   ggplot(aes(x = as.factor(ref_frac), y = mcc, color = dataset)) +
   geom_boxplot() +
   scale_color_manual(values = dataset_colors) +
   ylim(0.5, 1) +
-  facet_grid(dataset ~ ref_weight) +
-  labs(title='Open-reference OptiFit Performance',
+  facet_grid(method ~ ref_weight) +
+  labs(title='OptiFit Performance',
        x='reference fraction')
 ```
 
-![](figures/fit_ref_frac_open-1.png)<!-- -->
-
-``` r
-sensspec_fit %>%
-  filter(method == 'closed') %>% 
-  group_by(dataset, ref_weight) %>%
-  ggplot(aes(x = as.factor(ref_frac), y = mcc, color = dataset)) +
-  geom_boxplot() +
-  scale_color_manual(values = dataset_colors) +
-  ylim(0.5, 1) +
-  facet_grid(dataset ~ ref_weight) +
-  labs(title='Closed-reference OptiFit Performance',
-       x='reference fraction')
-```
-
-![](figures/fit_ref_frac_closed-1.png)<!-- -->
+![](figures/fit_ref_frac-1.png)<!-- -->
 
 sample fraction = 0.2
 
