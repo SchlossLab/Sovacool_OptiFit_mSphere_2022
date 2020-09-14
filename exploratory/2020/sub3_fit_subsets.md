@@ -27,10 +27,10 @@ sensspec_fit <-
 
 ``` r
 sensspec_fit %>%
-  ggplot(aes(x = as.factor(ref_frac), y = mcc, color = dataset)) +
-  geom_boxplot() +
+  ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar') +
   scale_color_manual(values = dataset_colors) +
-  ylim(0.5, 1) +
   facet_grid(method ~ ref_weight) +
   labs(title='OptiFit Performance',
        x='reference fraction')
@@ -50,6 +50,7 @@ runtime <- full_join(
   full_join(read_tsv(here('subworkflows/3_fit_sample_subset/results/gap_counts.tsv'))) %>% 
   mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
          gaps_frac = n_gaps / total_chars)
+
 runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
   facet_grid(method ~ ref_weight) +
