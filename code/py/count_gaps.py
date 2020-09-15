@@ -21,5 +21,4 @@ def count_gaps(infile, gap_char="-", header_char=">"):
     total_chars = len(seqs_cat)
     return n_gaps, total_chars
 
-
 main()
