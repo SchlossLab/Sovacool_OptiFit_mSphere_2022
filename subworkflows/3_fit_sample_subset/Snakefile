@@ -17,6 +17,7 @@ random_refweight_options = config['weights']
 fracs = config['ref_fracs']
 ref_fracs = [i/10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
 sample_frac_fixed = [0.2]
+sample_fracs_varied = [round(1 - ref_frac,1) for ref_frac in ref_fracs]
 
 n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, ref_fracs, sample_frac_fixed]])
 print(f"Params will produce {n_runs} optifit runs")
@@ -27,7 +28,7 @@ wildcard_constraints:
 rule subset_targets:
     input:
         expand("results/{subdir}/{fn}.tsv",
-            subdir = ['fixed-sample'],
+            subdir = ['fixed-sample', 'all-seqs'],
             fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'gap_counts'])
 
 rule split_weighted_subsample:
@@ -230,7 +231,7 @@ rule count_gaps:
     script:
         '../../code/py/count_gaps.py'
 
-rule merge_sensspec:
+rule merge_sensspec1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -245,7 +246,7 @@ rule merge_sensspec:
     script:
         '../../code/R/merge_results.R'
 
-rule merge_benchmarks:
+rule merge_benchmarks1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -260,7 +261,7 @@ rule merge_benchmarks:
     script:
         '../../code/R/merge_results.R'
 
-rule merge_fractions:
+rule merge_fractions1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -275,11 +276,11 @@ rule merge_fractions:
     script:
         '../../code/R/merge_results.R'
 
-rule merge_sizes:
+rule merge_sizes1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
+        tsv=expand("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds)
     output:
         tsv="results/fixed-sample/input_sizes.tsv"
@@ -290,7 +291,7 @@ rule merge_sizes:
     script:
         '../../code/R/merge_results.R'
 
-rule merge_gap_counts:
+rule merge_gap_counts1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -298,6 +299,77 @@ rule merge_gap_counts:
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds)
     output:
         tsv='results/fixed-sample/gap_counts.tsv'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_sensspec2:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds, method=methods, printref=printrefs)
+    output:
+        tsv="results/all-seqs/sensspec.tsv"
+    log:
+        'log/merge_sensspec.all-seqs.tsv'
+    benchmark:
+        'benchmarks/merge_sensspec.all-seqs.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_benchmarks2:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds)
+    output:
+        tsv="results/all-seqs/benchmarks.tsv"
+    log:
+        'log/merge_benchmarks.all-seqs.tsv'
+    benchmark:
+        'benchmarks/merge_benchmarks.all-seqs.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_fractions2:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds)
+    output:
+        tsv="results/all-seqs/fraction_reads_mapped.tsv"
+    log:
+        'log/merge_fractions.all-seqs.tsv'
+    benchmark:
+        'benchmarks/merge_fractions.all-seqs.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_sizes2:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds)
+    output:
+        tsv="results/all-seqs/input_sizes.tsv"
+    log:
+        'log/merge_sizes.all-seqs.tsv'
+    benchmark:
+        'benchmarks/merge_sizes.all-seqs.txt'
+    script:
+        '../../code/R/merge_results.R'
+
+rule merge_gap_counts2:
+    input:
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds)
+    output:
+        tsv='results/all-seqs/gap_counts.tsv'
     script:
         '../../code/R/merge_results.R'
 
@@ -312,4 +384,14 @@ rule merge_all_inputs:
         expand("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds),
         expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
-            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds)
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds),
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds, method=methods, printref=printrefs),
+        expand('benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt',
+            dataset=datasets, method=methods, printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds),
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt',
+            dataset=datasets, method=['closed'], printref=printrefs, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds),
+        expand("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv",
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds),
+        expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
+            dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_fracs_varied, seed=seeds)
