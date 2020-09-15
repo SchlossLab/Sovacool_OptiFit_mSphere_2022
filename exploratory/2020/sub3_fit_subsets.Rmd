@@ -34,60 +34,73 @@ sensspec_fit <-
 
 ## Subsetting datasets with different reference sizes
 
-```{r fit_ref_frac_open}
+
+Sample fraction of 0.2 with 20 different seeds.
+
+```{r fit_ref_frac}
 sensspec_fit %>%
-  filter(method == 'open') %>% 
-  group_by(dataset, ref_weight) %>%
-  ggplot(aes(x = as.factor(ref_frac), y = mcc, color = dataset)) +
-  geom_boxplot() +
+  ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar') +
   scale_color_manual(values = dataset_colors) +
-  ylim(0.5, 1) +
-  facet_grid(dataset ~ ref_weight) +
-  labs(title='Open-reference OptiFit Performance',
+  facet_grid(method ~ ref_weight) +
+  labs(title='OptiFit Performance',
        x='reference fraction')
 ```
 
-```{r fit_ref_frac_closed}
-sensspec_fit %>%
-  filter(method == 'closed') %>% 
-  group_by(dataset, ref_weight) %>%
-  ggplot(aes(x = as.factor(ref_frac), y = mcc, color = dataset)) +
-  geom_boxplot() +
-  scale_color_manual(values = dataset_colors) +
-  ylim(0.5, 1) +
-  facet_grid(dataset ~ ref_weight) +
-  labs(title='Closed-reference OptiFit Performance',
-       x='reference fraction')
-```
-
-
-sample fraction = 0.2
+The performance is very consistent across reference fractions when weighting sequences by abundance or not at all (simple).
+When weighting by distance, the performance decreases as the reference fraction increases.
+This is expected because a larger fraction means **more** sequences with **fewer** 
+pairwise distances under the 0.03 threshold are included in the reference.
 
 ## Runtime
-```{r runtime_ref_size}
+
+```{r runtime_ref_seqs}
 runtime <- full_join(
   read_tsv(here('subworkflows/3_fit_sample_subset/results/benchmarks.tsv')),
   read_tsv(here('subworkflows/3_fit_sample_subset/results/input_sizes.tsv'))
-  )
+  ) %>% 
+  full_join(read_tsv(here('subworkflows/3_fit_sample_subset/results/gap_counts.tsv'))) %>% 
+  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
+         gaps_frac = n_gaps / total_chars)
+
 runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
+  scale_x_continuous(breaks = seq(0, 200000, 50000),
+                     labels = c('0', '50k', '100k', '150k', '200k')) +
   labs(title = 'Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds')
 ```
 
-```{r runtime_total_size}
-runtime %>% 
-  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs) %>% 
-  ggplot(aes(x=num_total_seqs, y=s, color=dataset)) +
+Runtime is also fairly consistent regardless of weighting method.
+For abundance and simple weighting, runtime seems to continue increasing roughly linearly (maybe a little worse than linear).
+When weighting by distance, runtime reaches a plateau sooner than other selection methods as the size of the reference increases.
+Perhaps the sequences with the most similarities are the most influential
+over OTU clustering, 
+so after you reach some critical number of similarities, the runtime doesn't increase as much.
+I'm not sure why the human dataset takes so much longer than the others.
+
+```{r runtime_numotus}
+runtime %>% full_join(sensspec_fit) %>% 
+  ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
   geom_point(alpha = 0.5) +
+  facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
-  xlim(0, 300000) +
-  labs(title = 'Runtime over sample + reference size',
-       x = '# sequences total',
+  scale_x_continuous(breaks = seq(0, 40000, 10000),
+                     labels = c('0', '10k', '20k', '30k', '40k')) +
+  labs(title = 'Runtime over number of OTUs',
+       x = '# OTUs',
        y = 'seconds')
 ```
+
+Open-reference clustering has more OTUs because it will cluster any sequences 
+_de novo_ that do not fit into existing OTUs, 
+while closed-reference clustering throws them out.
+This plot is confounded by the number of sequences in the reference, 
+perhaps I should re-plot it as the ratio of OTUs to reference sequences?
 
 ## Fraction of sequences that map to the reference
 ```{r fraction_reads_mapped}
@@ -103,3 +116,12 @@ fractions %>%
        x='reference fraction',
        y='fraction mapped')
 ```
+
+The fraction of sequences that are able to be fit to the reference in closed-reference
+clustering increases as the reference size increases when weighting sequences 
+by abundance or not at all for reference selection.
+It's also remarkably stable between abundance & simple weighting, and 
+between all seeds.
+Weighting by distance performs poorly, likely because the top n sequences with 
+the most pairwise similarities are included in the reference, 
+leaving sequences with few similarities to then be fit to the highly-connected reference.
