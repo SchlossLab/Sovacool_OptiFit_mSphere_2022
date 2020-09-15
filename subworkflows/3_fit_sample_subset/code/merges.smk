@@ -104,7 +104,7 @@ rule merge_fractions2:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt' for ref_frac, sample_frac in zip(ref_fracs, sample_fracs_varied) for dataset in datasets for ref_weight in random_refweight_options for seed in seeds for method in methods for printref in printrefs]
+        tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_closed/printref_{printref}/fraction_reads_mapped.txt' for ref_frac, sample_frac in zip(ref_fracs, sample_fracs_varied) for dataset in datasets for ref_weight in random_refweight_options for seed in seeds for printref in printrefs]
     output:
         tsv="results/all-seqs/fraction_reads_mapped.tsv"
     log:
