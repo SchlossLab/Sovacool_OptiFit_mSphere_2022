@@ -66,9 +66,9 @@ rule merge_gap_counts1:
         tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds)
     output:
-        tsv='results/fixed-sample/gap_counts.tsv'
+        tsv='results/gap_counts.fixed-sample.tsv'
     log:
-        'log/fixed-sample/merge_gap_counts.txt'
+        'log/merge_gap_counts.fixed-sample.txt'
     script:
         '../../code/R/merge_results.R'
 
@@ -80,6 +80,8 @@ rule merge_diversity1:
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds, method=methods, printref=printrefs)
     output:
         tsv='results/fixed-sample/diversity.tsv'
+    log:
+        'log/merge_gap_counts.fixed-sample.txt'
     script:
         '../../code/R/merge_results.R'
 
@@ -136,6 +138,8 @@ rule merge_sizes2:
         'log/merge_sizes.all-seqs.txt'
     benchmark:
         'benchmarks/merge_sizes.all-seqs.txt'
+    log:
+        'log/merge_sizes.all-seqs.txt'
     script:
         '../../code/R/merge_results.R'
 
@@ -146,6 +150,8 @@ rule merge_gap_counts2:
         tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv' for ref_frac, sample_frac in zip(ref_fracs, sample_fracs_varied) for dataset in datasets for ref_weight in random_refweight_options for seed in seeds for method in methods for printref in printrefs]
     output:
         tsv='results/all-seqs/gap_counts.tsv'
+    log:
+        'log/merge_gap_counts.all-seqs.txt'
     script:
         '../../code/R/merge_results.R'
 
@@ -156,6 +162,8 @@ rule merge_diversity2:
         tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary' for ref_frac, sample_frac in zip(ref_fracs, sample_fracs_varied) for dataset in datasets for ref_weight in random_refweight_options for seed in seeds for method in methods for printref in printrefs]
     output:
         tsv='results/all-seqs/diversity.tsv'
+    log:
+        'log/merge_diversity.all-seqs.txt'
     script:
         '../../code/R/merge_results.R'
 
