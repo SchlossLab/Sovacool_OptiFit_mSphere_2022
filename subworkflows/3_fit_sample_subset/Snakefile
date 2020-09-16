@@ -265,9 +265,11 @@ rule calc_diversity:
 
 rule reformat_diversity:
     input:
-        sum=rules.calc_diversity.output.sum
+        fcns='../../code/R/functions.R',
+        R="../../code/R/reformat_tsv.R",
+        tsv=rules.calc_diversity.output.sum
     output:
-        sum='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary'
+        tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary'
     log:
         "log/{dataset}/reformat_diversity.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     benchmark:
@@ -283,4 +285,4 @@ rule reformat_diversity:
         ref_frac='{ref_frac}',
         sample_frac='{sample_frac}'
     script:
-        "../../code/R/reformat_optifit_results.R"
+        "../../code/R/reformat_tsv.R"
