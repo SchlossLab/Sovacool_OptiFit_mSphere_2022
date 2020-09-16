@@ -66,7 +66,7 @@ rule merge_gap_counts1:
         tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv',
             dataset=datasets, ref_weight=random_refweight_options, ref_frac=ref_fracs, sample_frac=sample_frac_fixed, seed=seeds)
     output:
-        tsv='results/gap_counts.fixed-sample.tsv'
+        tsv='results/fixed-sample/gap_counts.tsv'
     log:
         'log/merge_gap_counts.fixed-sample.txt'
     script:
