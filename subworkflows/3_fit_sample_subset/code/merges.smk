@@ -38,7 +38,7 @@ rule merge_fractions1:
     output:
         tsv="results/fixed-sample/fraction_reads_mapped.tsv"
     log:
-        'log/merge_fractions.fixed-sample.tsv'
+        'log/merge_fractions.fixed-sample.txt'
     benchmark:
         'benchmarks/merge_fractions.fixed-sample.txt'
     script:
@@ -53,7 +53,7 @@ rule merge_sizes1:
     output:
         tsv="results/fixed-sample/input_sizes.tsv"
     log:
-        'log/merge_sizes.fixed-sample.tsv'
+        'log/merge_sizes.fixed-sample.txt'
     benchmark:
         'benchmarks/merge_sizes.fixed-sample.txt'
     script:
@@ -68,7 +68,7 @@ rule merge_gap_counts1:
     output:
         tsv='results/fixed-sample/gap_counts.tsv'
     log:
-        'log/merge_gap_counts.tsv'
+        'log/fixed-sample/merge_gap_counts.txt'
     script:
         '../../code/R/merge_results.R'
 
@@ -91,7 +91,7 @@ rule merge_sensspec2:
     output:
         tsv="results/all-seqs/sensspec.tsv"
     log:
-        'log/merge_sensspec.all-seqs.tsv'
+        'log/merge_sensspec.all-seqs.txt'
     benchmark:
         'benchmarks/merge_sensspec.all-seqs.txt'
     script:
@@ -105,7 +105,7 @@ rule merge_benchmarks2:
     output:
         tsv="results/all-seqs/benchmarks.tsv"
     log:
-        'log/merge_benchmarks.all-seqs.tsv'
+        'log/merge_benchmarks.all-seqs.txt'
     benchmark:
         'benchmarks/merge_benchmarks.all-seqs.txt'
     script:
@@ -119,7 +119,7 @@ rule merge_fractions2:
     output:
         tsv="results/all-seqs/fraction_reads_mapped.tsv"
     log:
-        'log/merge_fractions.all-seqs.tsv'
+        'log/merge_fractions.all-seqs.txt'
     benchmark:
         'benchmarks/merge_fractions.all-seqs.txt'
     script:
@@ -133,7 +133,7 @@ rule merge_sizes2:
     output:
         tsv="results/all-seqs/input_sizes.tsv"
     log:
-        'log/merge_sizes.all-seqs.tsv'
+        'log/merge_sizes.all-seqs.txt'
     benchmark:
         'benchmarks/merge_sizes.all-seqs.txt'
     script:
