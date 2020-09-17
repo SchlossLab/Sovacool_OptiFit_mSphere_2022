@@ -53,7 +53,7 @@ rule mutate_ref_count3:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         code="../../code/R/mutate_ref_count.R"
     output:
-        count='results/{dataset}/{dataset}.mod.count_table'
+        count='data/{dataset}/{dataset}.count_table'
     script:
         "../../code/R/mutate_ref_count.R"
 
