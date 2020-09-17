@@ -47,11 +47,21 @@ rule split_weighted_subsample:
     script:
         "../../code/py/split_weighted_subsample.py"
 
+
+rule mutate_ref_count3:
+    input:
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        code="../../code/R/mutate_ref_count.R"
+    output:
+        count='results/{dataset}/{dataset}.mod.count_table'
+    script:
+        "../../code/R/mutate_ref_count.R"
+
 rule prep_subsample_ref:
     input:
         accnos=rules.split_weighted_subsample.output.ref_accnos,
+        count=rules.mutate_ref_count3.output.count,
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         fasta=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref/{dataset}.pick.fasta"),
@@ -75,8 +85,8 @@ rule combine_for_fit:
     input:
         accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
         accnos_sample=rules.split_weighted_subsample.output.sample_accnos,
+        count=rules.mutate_ref_count3.output.count,
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         accnos_all="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos",
@@ -234,20 +244,10 @@ rule count_gaps:
     script:
         '../../code/py/count_gaps.py'
 
-
-rule mutate_ref_count3:
-    input:
-        count=rules.fit_subsample.output.count,
-        code="../../code/R/mutate_ref_count.R"
-    output:
-        count='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.mod.count_table'
-    script:
-        "../../code/R/mutate_ref_count.R"
-
 rule calc_diversity:
     input:
         list=rules.fit_subsample.output.list,
-        count=rules.mutate_ref_count3.output.count
+        count=rules.combine_for_fit.output.count_all
     output:
         sum='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary'
     params:
