@@ -12,7 +12,7 @@ rule merge_sensspec1:
     benchmark:
         'benchmarks/merge_sensspec.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_benchmarks1:
     input:
@@ -27,7 +27,7 @@ rule merge_benchmarks1:
     benchmark:
         'benchmarks/merge_benchmarks.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_fractions1:
     input:
@@ -42,7 +42,7 @@ rule merge_fractions1:
     benchmark:
         'benchmarks/merge_fractions.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_sizes1:
     input:
@@ -57,7 +57,7 @@ rule merge_sizes1:
     benchmark:
         'benchmarks/merge_sizes.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_gap_counts1:
     input:
@@ -70,7 +70,7 @@ rule merge_gap_counts1:
     log:
         'log/merge_gap_counts.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_diversity1:
     input:
@@ -83,7 +83,7 @@ rule merge_diversity1:
     log:
         'log/merge_gap_counts.fixed-sample.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_sensspec2:
     input:
@@ -97,7 +97,7 @@ rule merge_sensspec2:
     benchmark:
         'benchmarks/merge_sensspec.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_benchmarks2:
     input:
@@ -111,7 +111,7 @@ rule merge_benchmarks2:
     benchmark:
         'benchmarks/merge_benchmarks.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_fractions2:
     input:
@@ -125,7 +125,7 @@ rule merge_fractions2:
     benchmark:
         'benchmarks/merge_fractions.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_sizes2:
     input:
@@ -141,7 +141,7 @@ rule merge_sizes2:
     log:
         'log/merge_sizes.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_gap_counts2:
     input:
@@ -153,7 +153,7 @@ rule merge_gap_counts2:
     log:
         'log/merge_gap_counts.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_diversity2:
     input:
@@ -165,7 +165,7 @@ rule merge_diversity2:
     log:
         'log/merge_diversity.all-seqs.txt'
     script:
-        '../../code/R/merge_results.R'
+        '../../../code/R/merge_results.R'
 
 rule merge_all_inputs:
     input:
