@@ -247,7 +247,7 @@ rule count_gaps:
 rule calc_diversity:
     input:
         list=rules.fit_subsample.output.list,
-        count=rules.fit_subsample.output.count_all
+        count=rules.fit_subsample.output.count
     output:
         sum='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary'
     params:
