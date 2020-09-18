@@ -1,12 +1,28 @@
 #!/usr/local/bin/python3
 """ Select weighted subsets of sequences to be used as references and samples for OptiFit """
 from collections import defaultdict
+import logging
 import numpy as np
 import pandas as pd
 import shutil
 
 
 def main():
+    logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
+    filename=snakemake.log[1],
+    filemode='a'
+    )
+
+    stdout_logger = logging.getLogger('STDOUT')
+    sl = StreamToLogger(stdout_logger, logging.INFO)
+    sys.stdout = sl
+
+    stderr_logger = logging.getLogger('STDERR')
+    sl = StreamToLogger(stderr_logger, logging.ERROR)
+    sys.stderr = sl
+
     np.random.seed(int(snakemake.wildcards.seed))
 
     all_seqs = SeqList.from_files(
@@ -123,5 +139,18 @@ class SeqList:
             for seq_id in self.ids:
                 outfile.write(f"{seq_id}\n")
 
+
+class StreamToLogger(object): # from http://techies-world.com/how-to-redirect-stdout-and-stderr-to-a-logger-in-python/
+      """
+      Fake file-like stream object that redirects writes to a logger instance.
+      """
+      def __init__(self, logger, log_level=logging.INFO):
+            self.logger = logger
+            self.log_level = log_level
+            self.linebuf = ''
+
+      def write(self, buf):
+            for line in buf.rstrip().splitlines():
+                  self.logger.log(self.log_level, line.rstrip())
 
 main()
