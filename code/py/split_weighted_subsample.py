@@ -27,7 +27,7 @@ def main():
     assert check_subsample(sample_frac, len(sample_list), num_all_seqs)
     sample_list.write_ids(snakemake.output.sample_accnos)
 
-    all_seqs = [seq for seqlist in [ref_list, sample_list] for seq in seqlist.seqs]
+    all_seqs = SeqList([seq for seqlist in [ref_list, sample_list] for seq in seqlist.seqs])
     all_seqs.write_ids(snakemake.output.all_accnos)
 
 
