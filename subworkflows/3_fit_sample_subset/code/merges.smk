@@ -1,5 +1,6 @@
 
 rule merge_sensspec1:
+    priority: 5
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -15,6 +16,7 @@ rule merge_sensspec1:
         '../../../code/R/merge_results.R'
 
 rule merge_benchmarks1:
+    priority: 7
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -30,6 +32,7 @@ rule merge_benchmarks1:
         '../../../code/R/merge_results.R'
 
 rule merge_fractions1:
+    priority: 1
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -60,6 +63,7 @@ rule merge_sizes1:
         '../../../code/R/merge_results.R'
 
 rule merge_diversity1:
+    priority: 3
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -73,6 +77,7 @@ rule merge_diversity1:
         '../../../code/R/merge_results.R'
 
 rule merge_sensspec2:
+    priority: 6
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -87,6 +92,7 @@ rule merge_sensspec2:
         '../../../code/R/merge_results.R'
 
 rule merge_benchmarks2:
+    priority: 8
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -101,6 +107,7 @@ rule merge_benchmarks2:
         '../../../code/R/merge_results.R'
 
 rule merge_fractions2:
+    priority: 2
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
@@ -131,6 +138,7 @@ rule merge_sizes2:
         '../../../code/R/merge_results.R'
 
 rule merge_diversity2:
+    priority: 4
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
