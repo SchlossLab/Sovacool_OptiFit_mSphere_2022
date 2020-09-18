@@ -20,7 +20,7 @@ sample_frac_fixed = [0.2]
 sample_fracs_varied = [round(1 - ref_frac,1) for ref_frac in ref_fracs]
 
 n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, ref_fracs, sample_frac_fixed]]) + numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, sample_fracs_varied]])
-print(f"Params will produce {n_runs} optifit runs")
+#print(f"Params will produce {n_runs} optifit runs")
 
 wildcard_constraints:
     seed="\d+"
