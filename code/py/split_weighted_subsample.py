@@ -8,7 +8,7 @@ import shutil
 
 
 def main():
-    fh = logging.FileHandler(snakemake.log)
+    fh = logging.FileHandler(str(snakemake.log))
     fh.setLevel(logging.DEBUG)
 
     np.random.seed(int(snakemake.wildcards.seed))
