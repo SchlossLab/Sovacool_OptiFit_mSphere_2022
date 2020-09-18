@@ -8,10 +8,11 @@ import shutil
 
 
 def main():
+    print(snakemake.log)
     logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
-    filename=snakemake.log[1],
+    filename=snakemake.log,
     filemode='a'
     )
 
