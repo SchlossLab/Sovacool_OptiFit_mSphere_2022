@@ -41,7 +41,8 @@ rule split_weighted_subsample:
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         ref_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
-        sample_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos"
+        sample_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos",
+        all_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos"
     benchmark:
         "benchmarks/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     script:
@@ -85,11 +86,12 @@ rule combine_for_fit:
     input:
         accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
         accnos_sample=rules.split_weighted_subsample.output.sample_accnos,
+        accnos_all=rules.split_weighted_subsample.output.all_accnos,
         count=rules.mutate_ref_count3.output.count,
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        dist=prep_samples("results/{dataset}/{dataset}.dist")
+        dist=prep_samples("results/{dataset}/{dataset}.dist"),
+        py="code/check_fracs.py"
     output:
-        accnos_all="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos",
         fasta_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.fasta"),
         count_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.count_table"),
         dist_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.dist")
@@ -101,11 +103,16 @@ rule combine_for_fit:
         "benchmarks/{dataset}/combine_for_fit.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     shell:
         """
-        cat {input.accnos_ref} {input.accnos_sample} > {output.accnos_all}
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            get.seqs(accnos={output.accnos_all}, fasta={input.fasta});
-            get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist}); '
+        if $(python3 {input.py} {wildcards.ref_frac} {wildcards.sample_frac}); then
+            cp {input.fasta} {output.fasta_all}
+            cp {input.dist} {output.dist_all}
+            cp {input.count} {output.count_all}
+        else
+            mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+                get.seqs(accnos={input.accnos_all}, fasta={input.fasta});
+                get.seqs(accnos=current, count={input.count});
+                get.dists(accnos=current, column={input.dist}); '
+        fi
         """
 
 rule cluster_ref:
