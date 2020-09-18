@@ -27,11 +27,17 @@ wildcard_constraints:
 
 include: "code/merges.smk"
 
-rule subset_targets:
+rule full_join:
     input:
-        expand("results/{subdir}/{fn}.tsv",
-            subdir = ['fixed-sample', 'all-seqs'],
-            fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
+        fcns='../../code/R/functions.R',
+        R='../../code/R/full_join_tsvs.R',
+        tsv=expand("results/{subdir}/{fn}.tsv",
+                    subdir = ['fixed-sample', 'all-seqs'],
+                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
+    output:
+        tsv='results/full_results.tsv'
+    log:
+        'log/full_join.txt'
 
 rule split_weighted_subsample:
     input:

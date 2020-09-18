@@ -9,7 +9,7 @@ rule merge_sensspec1:
     output:
         tsv="results/fixed-sample/sensspec.tsv"
     log:
-        'log/merge_sensspec.fixed-sample.tsv'
+        'log/merge_sensspec.fixed-sample.txt'
     benchmark:
         'benchmarks/merge_sensspec.fixed-sample.txt'
     script:
@@ -25,7 +25,7 @@ rule merge_benchmarks1:
     output:
         tsv="results/fixed-sample/benchmarks.tsv"
     log:
-        'log/merge_benchmarks.fixed-sample.tsv'
+        'log/merge_benchmarks.fixed-sample.txt'
     benchmark:
         'benchmarks/merge_benchmarks.fixed-sample.txt'
     script:
@@ -149,6 +149,7 @@ rule merge_diversity2:
         'log/merge_diversity.all-seqs.txt'
     script:
         '../../../code/R/merge_results.R'
+
 
 rule merge_all_inputs:
     input:
