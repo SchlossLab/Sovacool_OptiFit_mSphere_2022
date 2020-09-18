@@ -31,7 +31,7 @@ rule subset_targets:
     input:
         expand("results/{subdir}/{fn}.tsv",
             subdir = ['fixed-sample', 'all-seqs'],
-            fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'gap_counts', 'diversity'])
+            fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
 
 rule split_weighted_subsample:
     input:
@@ -227,31 +227,17 @@ rule fraction_reads_mapped3:
 
 rule count_input_sizes:
     input:
+        py='../../code/py/count_input_sizes.py',
+        fasta=rules.combine_for_fit.output.fasta_all,
         ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
         sample_accnos=rules.split_weighted_subsample.output.sample_accnos
     output:
         tsv=temp("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv")
     benchmark:
         "benchmarks/{dataset}/count_input_sizes.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
-    run:
-        with open(input.ref_accnos, 'r') as infile:
-            num_refs = len(infile.readlines())
-        with open(input.sample_accnos, 'r') as infile:
-            num_samples = len(infile.readlines())
-        with open(output.tsv, 'w') as outfile:
-            header = f'dataset\tref_weight\tref_frac\tsample_frac\tseed\tnum_ref_seqs\tnum_sample_seqs\n'
-            outfile.write(header)
-            data_str = f'{wildcards.dataset}\t{wildcards.ref_weight}\t{wildcards.ref_frac}\t{wildcards.sample_frac}\t{wildcards.seed}\t{num_refs}\t{num_samples}\n'
-            outfile.write(data_str)
-
-rule count_gaps:
-    input:
-        py='../../code/py/count_gaps.py',
-        fasta=rules.combine_for_fit.output.fasta_all
-    output:
-        txt=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/gaps_count.tsv')
     script:
-        '../../code/py/count_gaps.py'
+        '../../code/py/count_input_sizes.py'
+
 
 rule calc_diversity:
     input:
