@@ -1,1 +1,0 @@
-mouse	silva	bact_v4	59	closed	f	0.376

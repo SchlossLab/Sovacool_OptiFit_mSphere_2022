@@ -1,2 +1,0 @@
-iter	label	cutoff	numotus	tp	tn	fp	fn	sensitivity	specificity	ppv	npv	fdr	accuracy	mcc	f1score
-1	0.03	0.03	15108	4.80807e+06	2.58232e+09	753786	343239	0.9334	0.9997	0.8645	0.9999	0.8645	0.9996	0.8981	0.8976

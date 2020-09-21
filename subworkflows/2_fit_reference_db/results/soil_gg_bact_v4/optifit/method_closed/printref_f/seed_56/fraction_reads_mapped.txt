@@ -1,1 +1,0 @@
-soil	gg	bact_v4	56	closed	f	0.36

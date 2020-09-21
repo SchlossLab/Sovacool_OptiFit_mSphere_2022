@@ -1,1 +1,0 @@
-human	rdp	bact_v4	2	closed	f	0.144
