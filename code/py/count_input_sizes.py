@@ -4,11 +4,11 @@
 def main():
     with open(snakemake.input.fasta, "r") as infile:
         n_gaps, total_chars = count_gaps(infile)
-    with open(snakemake.input.ref_accnos, 'r') as infile:
+    with open(snakemake.input.ref_accnos, "r") as infile:
         num_refs = len(infile.readlines())
-    with open(snakemake.input.sample_accnos, 'r') as infile:
+    with open(snakemake.input.sample_accnos, "r") as infile:
         num_samples = len(infile.readlines())
-    with open(snakemake.output.txt, "w") as outfile:
+    with open(snakemake.output.tsv, "w") as outfile:
         outfile.write(
             "num_ref_seqs\tnum_sample_seqs\tnum_total_seqs\tn_gaps\ttotal_chars\tdataset\tref_weight\tref_frac\tsample_frac\tseed\n"
         )

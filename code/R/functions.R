@@ -7,11 +7,11 @@ library(readr)
 #' @export
 #'
 log_smk <- function() {
-    if (length(snakemake@log) != 0) {
-      log <- file(snakemake@log[1][[1]], open = "wt")
-      sink(log, append = TRUE)
-      sink(log, append = TRUE, type = "message")
-    }
+  if (length(snakemake@log) != 0) {
+    log <- file(snakemake@log[1][[1]], open = "wt")
+    sink(log, append = TRUE)
+    sink(log, append = TRUE, type = "message")
+  }
 }
 
 #' Merge rows of all tsv files to one file
@@ -21,7 +21,7 @@ log_smk <- function() {
 #' @return (None) writes tsv file
 #' @export
 #'
-merge_results <- function(key) {  ## probably shoulda called this rbind_results
+merge_results <- function(key) { ## probably shoulda called this rbind_results
   snakemake@input[[key]] %>%
     map(read_tsv) %>%
     bind_rows() %>%
