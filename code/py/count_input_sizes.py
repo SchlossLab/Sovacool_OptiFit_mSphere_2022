@@ -4,9 +4,9 @@
 def main():
     with open(snakemake.input.fasta, "r") as infile:
         n_gaps, total_chars = count_gaps(infile)
-    with open(snakemake.input.ref_accnos, 'r') as infile:
+    with open(snakemake.input.ref_accnos, "r") as infile:
         num_refs = len(infile.readlines())
-    with open(snakemake.input.sample_accnos, 'r') as infile:
+    with open(snakemake.input.sample_accnos, "r") as infile:
         num_samples = len(infile.readlines())
     with open(snakemake.output.txt, "w") as outfile:
         outfile.write(
