@@ -38,6 +38,8 @@ rule full_join:
         tsv='results/full_results.tsv'
     log:
         'log/full_join.txt'
+    script:
+        '../../code/R/full_join_tsvs.R'
 
 rule split_weighted_subsample:
     input:
