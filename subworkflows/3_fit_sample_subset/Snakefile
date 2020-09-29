@@ -32,8 +32,8 @@ rule full_join:
         fcns='../../code/R/functions.R',
         R='../../code/R/full_join_tsvs.R',
         tsv=expand("results/{subdir}/{fn}.tsv",
-                    subdir = ['fixed-sample', 'all-seqs'],
-                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
+                    subdir = ['all-seqs'],#, 'fixed-sample'],
+                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes'])#, 'diversity'])
     output:
         tsv='results/full_results.tsv'
     log:
