@@ -1,13 +1,13 @@
 library(dplyr)
 library(readr)
-source(snakemake@input[['fcns']])
+source(snakemake@input[["fcns"]])
 log_smk()
 
-sensspec <- snakemake@input[['sensspec']]
-max_iter <- sensspec %>% 
-  read_tsv() %>% 
+sensspec <- snakemake@input[["sensspec"]]
+max_iter <- sensspec %>%
+  read_tsv() %>%
   dplyr::top_n(1, mcc) %>%
   pull(iter)
-best_list_file <- snakemake@input[['lists']][[max_iter]]
-message(paste('Copying best list file:', best_list_file))
-file.copy(best_list_file, snakemake@output[['list']])
+best_list_file <- snakemake@input[["lists"]][[max_iter]]
+message(paste("Copying best list file:", best_list_file))
+file.copy(best_list_file, snakemake@output[["list"]])
