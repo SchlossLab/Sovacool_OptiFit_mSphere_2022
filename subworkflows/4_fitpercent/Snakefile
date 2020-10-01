@@ -21,7 +21,7 @@ random_refweight_options = [refweight_map[weight] for weight in config['weights'
 
 
 fracs = config['ref_fracs']
-fitpercents = list(range(fracs['start'], fracs['stop'], fracs['step']))
+fitpercents = [i*10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
 
 wildcard_constraints:
     seed="\d+"

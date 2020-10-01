@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=sub3
+#SBATCH --job-name=sub4
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss99
+#SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options

@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=debug
+#SBATCH --job-name=debug4
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss99
+#SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml
+time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml --forceall
