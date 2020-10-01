@@ -1,7 +1,7 @@
 {
  "__default__": {
   "account_pbs": "pschloss_fluxod",
-  "account_slurm": "pschloss99",
+  "account_slurm": "pschloss1",
   "queue": "fluxod",
   "qos": "flux",
   "partition": "standard",
@@ -65,6 +65,9 @@
     "procs": "{resources.procs}"
     },
 "fit_subsample": {
+    "procs": "{resources.procs}"
+    },
+"fit_subsample_percent": {
     "procs": "{resources.procs}"
     }
 }
