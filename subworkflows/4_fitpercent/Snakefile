@@ -12,7 +12,13 @@ datasets = config['datasets']
 methods = config['methods']
 printrefs = config['printrefs']
 seeds = range(1, config['seeds'] + 1)
-random_refweight_options = config['weights']
+
+refweight_map = {'simple': 'none',
+                 'abundance': 'abundance',
+                 'distance': 'connectivity'}
+# because I initially picked different option names from what Sarah W. later implemented in mothur
+random_refweight_options = [refweight_map[weight] for weight in config['weights']]
+
 
 fracs = config['ref_fracs']
 fitpercents = list(range(fracs['start'], fracs['stop'], fracs['step']))
@@ -65,7 +71,7 @@ rule fit_subsample_percent:
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster.fit(fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight=) "
+        cluster.fit(fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight={wildcards.ref_weight}) "
         """
 
 rule reformat_optifit_results3:  # for plotting
