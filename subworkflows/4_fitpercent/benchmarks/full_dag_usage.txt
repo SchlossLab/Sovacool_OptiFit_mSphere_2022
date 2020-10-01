@@ -1,0 +1,1 @@
+walltime: 44:22.85	CPU: 99%	max mem kb: 866732
