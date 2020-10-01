@@ -34,13 +34,7 @@ dataset_colors <- c(
 sample frac = 1 - reference frac
 
 ```{r read_join}
-dirpath <- 'subworkflows/3_fit_sample_subset/results/all-seqs/'
-results <- list.files(here(dirpath)) %>% 
-  (function(x) { here(glue('{dirpath}{x}')) }) %>% 
-  map(read_tsv) %>% 
-  reduce(full_join) %>% 
-  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
-         gaps_frac = n_gaps / total_chars)
+results <- read_tsv('subworkflows/4_fitpercent/results/full_results.tsv')
 head(results)
 dim(results)
 ```
