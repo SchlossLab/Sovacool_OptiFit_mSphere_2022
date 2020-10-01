@@ -1,0 +1,167 @@
+""" Benchmarking the OptiFit algorithm using subsets of datasets """
+import numpy
+
+configfile: '../../config/config.yaml'
+
+subworkflow prep_samples:
+    workdir:
+        "../1_prep_samples/"
+
+
+datasets = config['datasets']
+methods = config['methods']
+printrefs = config['printrefs']
+seeds = range(1, config['seeds'] + 1)
+random_refweight_options = config['weights']
+
+fracs = config['ref_fracs']
+fitpercents = list(range(fracs['start'], fracs['stop'], fracs['step']))
+
+wildcard_constraints:
+    seed="\d+"
+
+include: "code/merges.smk"
+
+rule full_join:
+    input:
+        fcns='../../code/R/functions.R',
+        R='../../code/R/full_join_tsvs.R',
+        tsv=expand("results/pre-join/{fn}.tsv",
+                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped'])#, 'input_sizes'])#, 'diversity'])
+    output:
+        tsv='results/full_results.tsv'
+    log:
+        'log/full_join.txt'
+    script:
+        '../../code/R/full_join_tsvs.R'
+
+rule mutate_ref_count3:
+    input:
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        code="../../code/R/mutate_ref_count.R"
+    output:
+        count=temp('data/{dataset}/{dataset}.count_table')
+    script:
+        "../../code/R/mutate_ref_count.R"
+
+rule fit_subsample_percent:
+    input:
+        count=rules.mutate_ref_count3.output.count,
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        column=prep_samples("results/{dataset}/{dataset}.dist")
+    output:
+        sensspec=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
+        list=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list')
+    params:
+        outdir="results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/"
+    log:
+        "log/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    benchmark:
+        "benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    resources:
+        procs=8
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
+        set.current(processors={resources.procs});
+        cluster.fit(fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight=) "
+        """
+
+rule reformat_optifit_results3:  # for plotting
+    input:
+        sensspec=rules.fit_subsample_percent.output.sensspec,
+        bench=rules.fit_subsample_percent.benchmark,
+        code="../../code/R/reformat_optifit_results.R"
+    output:
+        sensspec='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+        bench="benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.mod.txt"
+    log:
+        "log/{dataset}/reformat_optifit_results.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    benchmark:
+        "benchmarks/{dataset}/reformat_optifit_results.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    params:
+        dataset="{dataset}",
+        ref="NA",
+        region="NA",
+        seed="{seed}",
+        printref='{printref}',
+        method='{method}',
+        ref_weight='{ref_weight}',
+        ref_frac='100-{fitpercent}',
+        sample_frac='{fitpercent}'
+    script:
+        "../../code/R/reformat_optifit_results.R"
+
+rule fraction_reads_mapped3:
+    input:
+        code="../../code/py/fraction_reads_mapped.py",
+        list=rules.fit_subsample_percent.output.list,
+        count=rules.mutate_ref_count3.output.count
+    output:
+        txt='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
+    benchmark:
+        "benchmarks/{dataset}/fraction_reads_mapped3.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    wildcard_constraints:
+        method='closed'
+    script:
+        "../../code/py/fraction_reads_mapped.py"
+
+
+'''
+rule count_input_sizes:  # TODO: use cluster.fit output files for accnos
+    input:
+        py='../../code/py/count_input_sizes.py',
+        fasta=rules.combine_for_fit.output.fasta_all,
+        ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
+        sample_accnos=rules.split_weighted_subsample.output.sample_accnos
+    output:
+        tsv="results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/input_size.tsv"
+    benchmark:
+        "benchmarks/{dataset}/count_input_sizes.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    script:
+        '../../code/py/count_input_sizes.py'
+'''
+
+rule calc_diversity:
+    input:
+        list=rules.fit_subsample_percent.output.list,
+        count=rules.mutate_ref_count3.output.count
+    output:
+        sum=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary')
+    params:
+        outdir="results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/"
+    log:
+        "log/{dataset}/calc_diversity.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    resources:
+        procs=8
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        make.shared(list={input.list}, count={input.count}, label=0.03);
+        summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
+        """
+
+rule reformat_diversity:
+    input:
+        fcns='../../code/R/functions.R',
+        R="../../code/R/reformat_tsv.R",
+        tsv=rules.calc_diversity.output.sum
+    output:
+        tsv='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary'
+    log:
+        "log/{dataset}/reformat_diversity.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    benchmark:
+        "benchmarks/{dataset}/reformat_diversity.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
+    params:
+        dataset="{dataset}",
+        ref="NA",
+        region="NA",
+        seed="{seed}",
+        printref='{printref}',
+        method='{method}',
+        ref_weight='{ref_weight}',
+        ref_frac='{ref_frac}',
+        sample_frac='{sample_frac}'
+    script:
+        "../../code/R/reformat_tsv.R"
