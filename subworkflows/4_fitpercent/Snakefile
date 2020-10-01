@@ -53,7 +53,6 @@ rule mutate_ref_count3:
 rule fit_subsample_percent:
     input:
         count=rules.mutate_ref_count3.output.count,
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         column=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         sensspec=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
@@ -71,7 +70,7 @@ rule fit_subsample_percent:
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster.fit(fasta={input.fasta}, count={input.count}, column={input.column}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight={wildcards.ref_weight}) "
+        cluster.fit(column={input.column}, count={input.count}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight={wildcards.ref_weight}) "
         """
 
 rule reformat_optifit_results3:  # for plotting
