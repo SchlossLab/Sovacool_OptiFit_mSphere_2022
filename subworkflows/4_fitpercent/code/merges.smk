@@ -4,7 +4,7 @@ rule merge_sensspec1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.mod.sensspec',
             dataset=datasets, ref_weight=random_refweight_options, fitpercent=fitpercents, seed=seeds, method=methods, printref=printrefs)
     output:
         tsv="results/pre-join/sensspec.tsv"
@@ -67,7 +67,7 @@ rule merge_diversity1:
     input:
         code='../../code/R/merge_results.R',
         fcns='../../code/R/functions.R',
-        tsv=expand('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary',
+        tsv=expand('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc.summary',
             dataset=datasets, ref_weight=random_refweight_options, fitpercent=fitpercents, seed=seeds, method=methods, printref=printrefs)
     output:
         tsv='results/pre-join/diversity.tsv'

@@ -55,8 +55,8 @@ rule fit_subsample_percent:
         count=rules.mutate_ref_count3.output.count,
         column=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        sensspec=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
-        list=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list')
+        sensspec=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.sensspec'),
+        lists=expand('results/{{dataset}}/refweight_{{ref_weight}}/fitpercent_{{fitpercent}}/seed_{{seed}}/method_{{method}}/printref_{{printref}}/{{dataset}}.optifit_mcc_denovo.{i}.list', i = range(1, 11))
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/"
     log:
@@ -73,13 +73,24 @@ rule fit_subsample_percent:
         cluster.fit(column={input.column}, count={input.count}, printref={wildcards.printref}, method={wildcards.method}, fitpercent={wildcards.fitpercent}, refweight={wildcards.ref_weight}) "
         """
 
+rule pick_best_list:
+    input:
+        R='../../code/R/pick_best_list.R',
+        fcns='../../code/R/functions.R',
+        sensspec=rules.fit_subsample_percent.output.sensspec,
+        lists=rules.fit_subsample_percent.output.lists
+    output:
+        list='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.best.list'
+    script:
+        "../../code/R/pick_best_list.R"
+
 rule reformat_optifit_results3:  # for plotting
     input:
         sensspec=rules.fit_subsample_percent.output.sensspec,
         bench=rules.fit_subsample_percent.benchmark,
         code="../../code/R/reformat_optifit_results.R"
     output:
-        sensspec='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
+        sensspec='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.mod.sensspec',
         bench="benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.mod.txt"
     log:
         "log/{dataset}/reformat_optifit_results.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
@@ -101,7 +112,7 @@ rule reformat_optifit_results3:  # for plotting
 rule fraction_reads_mapped3:
     input:
         code="../../code/py/fraction_reads_mapped.py",
-        list=rules.fit_subsample_percent.output.list,
+        list=rules.pick_best_list.output.list,
         count=rules.mutate_ref_count3.output.count
     output:
         txt='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
@@ -130,10 +141,10 @@ rule count_input_sizes:  # TODO: use cluster.fit output files for accnos
 
 rule calc_diversity:
     input:
-        list=rules.fit_subsample_percent.output.list,
+        list=rules.pick_best_list.output.list,
         count=rules.mutate_ref_count3.output.count
     output:
-        sum=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary')
+        sum=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.groups.summary')
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/"
     log:
