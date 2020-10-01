@@ -81,6 +81,8 @@ rule pick_best_list:
         lists=rules.fit_subsample_percent.output.lists
     output:
         list='results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.best.list'
+    log:
+        "log/{dataset}/pick_best_list.method_{method}.printref_{printref}.refweight_{ref_weight}.fitpercent_{fitpercent}.seed_{seed}.txt"
     script:
         "../../code/R/pick_best_list.R"
 
