@@ -26,6 +26,11 @@ dataset_colors <- c(
   mouse = color_palette[[4]],
   soil = color_palette[[2]]
 )
+full_join_files <- function(filenames) {
+  filenames %>% 
+  lapply(read_tsv) %>% 
+  reduce(full_join)
+}
 ```
 ```{r download_data}
 dat <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/sensspec.tsv?token=AEHR6TOTYRF3XTCACDHGFRK7QRYH2',
@@ -33,10 +38,22 @@ dat <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb
               'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/input_sizes.tsv?token=AEHR6TJVM5FBTZRRY4USOYS7QRY6U',
               'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/gap_counts.tsv?token=AEHR6TMQKLHG2RNGUZQI35C7QRY5G',
               'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv?token=AEHR6TIY56KPVNGRKCOAYI27QRZBW') %>% 
-  lapply(read_tsv) %>% 
-  reduce(full_join) %>% 
+  full_join_files() %>% 
   mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
          gaps_frac = n_gaps / total_chars)
+
+denovo <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
+            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
+            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
+  full_join_files() %>% 
+  mutate(ref_frac = 1)
+
+denovo_sum <- denovo %>% group_by(dataset) %>% summarize(mean_mcc=mean(mcc), 
+                                                         sd_mcc=sd(mcc),
+                                                         mean_sec=mean(s),
+                                                         sd_sec=sd(s),
+                                                         num_ref_seqs = mean(num_seqs))
+denovo_sum
 ```
 
 ## Subsetting datasets with different reference sizes
@@ -53,6 +70,27 @@ dat %>%
   facet_grid(method ~ ref_weight) +
   labs(title='OptiFit Performance',
        x='reference fraction')
+dat %>%
+  ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar') +
+  geom_hline(aes(yintercept = mean_mcc, color = dataset), denovo_sum) +
+  scale_color_manual(values = dataset_colors) +
+  facet_grid(method ~ ref_weight) +
+  labs(title='OptiFit Performance',
+       x='reference fraction',
+       caption='Sample fraction = 0.2 for OptiFit runs. The horizontal line represents _de novo_ clustering for the whole dataset.') +
+  theme(plot.caption = element_markdown())
+dat %>%
+  ggplot(aes(x = ref_frac, y = mcc, color = ref_weight)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar') +
+  geom_hline(aes(yintercept = mean_mcc), denovo_sum) +
+  facet_grid(dataset ~ method) +
+  labs(title='OptiFit Performance',
+       x='reference fraction',
+       caption='Sample fraction = 0.2 for OptiFit runs. The horizontal line represents _de novo_ clustering for the whole dataset.') +
+  theme(plot.caption = element_markdown())
 ```
 
 The performance is very consistent across reference fractions when weighting sequences by abundance or not at all (simple).
@@ -72,6 +110,20 @@ dat %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   labs(title = 'Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds')
+dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>% 
+  summarize(mean_sec=mean(s)) %>% 
+  ggplot(aes(x=num_ref_seqs, y=mean_sec, color=ref_weight)) +
+  geom_point(alpha = 0.5) +
+  geom_point(aes(x=num_ref_seqs, y=mean_sec, color=NULL), denovo_sum) +
+  facet_grid(dataset ~ method, scales = 'free') +
+  #scale_color_manual(values = dataset_colors) +
+  scale_x_continuous(breaks = seq(0, 200000, 50000),
+                     labels = c('0', '50k', '100k', '150k', '200k')) +
+  labs(title = 'Runtime over reference size',
+       x = '# sequences in reference',
+       y = 'seconds',
+       caption = 'Sample fraction = 0.2 for OptiFit runs. The black dot represents _de novo_ clustering for the whole dataset') +
+  theme(plot.caption = element_markdown())
 ```
 
 Runtime is also fairly consistent regardless of weighting method.
@@ -110,6 +162,17 @@ dat %>%
   geom_jitter(alpha = 0.5, width = 0.01, size=1) +
   scale_color_manual(values = dataset_colors) +
   facet_wrap("ref_weight") +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during closed-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
+dat %>% 
+  filter(method == 'closed') %>% 
+  group_by(dataset, ref_weight, ref_frac) %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  #scale_color_manual(values = dataset_colors) +
+  facet_wrap("dataset", nrow=1) +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit",
        x='reference fraction',
