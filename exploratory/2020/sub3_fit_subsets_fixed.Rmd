@@ -27,9 +27,16 @@ dataset_colors <- c(
   soil = color_palette[[2]]
 )
 ```
-```{r}
-sensspec_fit <-
-  read_tsv(here('subworkflows/3_fit_sample_subset/results/sensspec.tsv'))
+```{r download_data}
+dat <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/sensspec.tsv?token=AEHR6TOTYRF3XTCACDHGFRK7QRYH2',
+              'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/benchmarks.tsv?token=AEHR6TLJWOKI4YC6OJ6BRMC7QRYXY',
+              'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/input_sizes.tsv?token=AEHR6TJVM5FBTZRRY4USOYS7QRY6U',
+              'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/gap_counts.tsv?token=AEHR6TMQKLHG2RNGUZQI35C7QRY5G',
+              'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv?token=AEHR6TIY56KPVNGRKCOAYI27QRZBW') %>% 
+  lapply(read_tsv) %>% 
+  reduce(full_join) %>% 
+  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
+         gaps_frac = n_gaps / total_chars)
 ```
 
 ## Subsetting datasets with different reference sizes
@@ -38,7 +45,7 @@ sensspec_fit <-
 Sample fraction of 0.2 with 20 different seeds.
 
 ```{r fit_ref_frac}
-sensspec_fit %>%
+dat %>%
   ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
   geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
   stat_summary(fun = mean, geom = 'crossbar') +
@@ -56,15 +63,7 @@ pairwise distances under the 0.03 threshold are included in the reference.
 ## Runtime
 
 ```{r runtime_ref_seqs}
-runtime <- full_join(
-  read_tsv(here('subworkflows/3_fit_sample_subset/results/benchmarks.tsv')),
-  read_tsv(here('subworkflows/3_fit_sample_subset/results/input_sizes.tsv'))
-  ) %>% 
-  full_join(read_tsv(here('subworkflows/3_fit_sample_subset/results/gap_counts.tsv'))) %>% 
-  mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
-         gaps_frac = n_gaps / total_chars)
-
-runtime %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
+dat %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
   facet_grid(method ~ ref_weight) +
   scale_color_manual(values = dataset_colors) +
@@ -84,7 +83,7 @@ so after you reach some critical number of similarities, the runtime doesn't inc
 I'm not sure why the human dataset takes so much longer than the others.
 
 ```{r runtime_numotus}
-runtime %>% full_join(sensspec_fit) %>% 
+dat %>%
   ggplot(aes(x=numotus, y=s, color=dataset, shape = ref_weight)) +
   geom_point(alpha = 0.5) +
   facet_grid(method ~ ref_weight) +
@@ -104,8 +103,8 @@ perhaps I should re-plot it as the ratio of OTUs to reference sequences?
 
 ## Fraction of sequences that map to the reference
 ```{r fraction_reads_mapped}
-fractions <- read_tsv(here('subworkflows/3_fit_sample_subset/results/fraction_reads_mapped.tsv'))
-fractions %>% 
+dat %>% 
+  filter(method == 'closed') %>% 
   group_by(dataset, ref_weight, ref_frac) %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=dataset)) +
   geom_jitter(alpha = 0.5, width = 0.01, size=1) +
