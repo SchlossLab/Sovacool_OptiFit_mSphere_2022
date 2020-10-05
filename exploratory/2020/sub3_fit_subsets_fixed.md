@@ -82,7 +82,7 @@ dat %>%
   facet_grid(method ~ ref_weight) +
   labs(title='OptiFit Performance',
        x='reference fraction',
-       caption='Sample fraction = 0.2 for OptiFit runs. The horizontal line represents _de novo_ clustering for the whole dataset.') +
+       caption='Sample fraction = 0.2 for OptiFit runs.\nThe horizontal line represents _de novo_ clustering for the whole dataset.') +
   theme(plot.caption = element_markdown())
 ```
 
@@ -139,7 +139,7 @@ dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>%
   labs(title = 'Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds',
-       caption = 'Sample fraction = 0.2 for OptiFit runs. The black dot represents _de novo_ clustering for the whole dataset') +
+       caption = 'Sample fraction = 0.2 for OptiFit runs.\nThe black dot represents _de novo_ clustering for the whole dataset') +
   theme(plot.caption = element_markdown())
 ```
 
