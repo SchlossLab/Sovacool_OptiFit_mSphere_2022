@@ -33,7 +33,7 @@ rule full_join:
         fcns='../../code/R/functions.R',
         R='../../code/R/full_join_tsvs.R',
         tsv=expand("results/pre-join/{fn}.tsv",
-                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped'])#, 'input_sizes'])#, 'diversity'])
+                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'diversity'])#, 'input_sizes'])
     output:
         tsv='results/full_results.tsv'
     log:
@@ -50,10 +50,16 @@ rule mutate_ref_count3:
     script:
         "../../code/R/mutate_ref_count.R"
 
+rule copy_dist:
+    input:
+        column=prep_samples("results/{dataset}/{dataset}.dist")
+    output:
+        column="data/{dataset}/{dataset}.dist"
+
 rule fit_subsample_percent:
     input:
         count=rules.mutate_ref_count3.output.count,
-        column=prep_samples("results/{dataset}/{dataset}.dist")
+        column=rules.copy_dist.output.column
     output:
         sensspec=temp('results/{dataset}/refweight_{ref_weight}/fitpercent_{fitpercent}/seed_{seed}/method_{method}/printref_{printref}/{dataset}.optifit_mcc_denovo.sensspec'),
         lists=expand('results/{{dataset}}/refweight_{{ref_weight}}/fitpercent_{{fitpercent}}/seed_{{seed}}/method_{{method}}/printref_{{printref}}/{{dataset}}.optifit_mcc_denovo.{i}.list', i = range(1, 11))
