@@ -39,7 +39,7 @@ head(results)
 dim(results)
 ```
 
-```{r sensspec}
+```{r sensspec_fitpercent}
 results %>% 
   ggplot(aes(x = ref_frac, y = mcc, color = dataset)) +
   geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
@@ -50,7 +50,7 @@ results %>%
        x='reference fraction')
 ```
 
-```{r runtime}
+```{r runtime_fitpercent}
 results %>% ggplot(aes(x=num_ref_seqs, y=s, color=dataset)) +
   geom_point(alpha = 0.3) +
   facet_grid(method ~ ref_weight) +
@@ -72,7 +72,7 @@ results %>%
        y = 'seconds')
 ```
 
-```{r fraction_mapped}
+```{r fraction_mapped_fitpercent}
 results %>% 
   group_by(dataset, ref_weight, ref_frac) %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=dataset)) +
