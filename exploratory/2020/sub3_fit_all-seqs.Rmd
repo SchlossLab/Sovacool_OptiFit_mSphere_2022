@@ -43,9 +43,10 @@ dat <- c('subworkflows/3_fit_sample_subset/results/all-seqs/sensspec.tsv',
   mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
          gaps_frac = n_gaps / total_chars)
 
-denovo <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
-            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
-            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
+denovo <- c('sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
+            'benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
+            'dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
+  lapply(function(x) { paste0('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/', x)}) %>% 
   full_join_files() %>% 
   mutate(ref_frac = 1)
 
