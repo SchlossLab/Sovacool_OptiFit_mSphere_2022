@@ -21,6 +21,7 @@ full_join_files <- function(filenames) {
   lapply(read_tsv) %>% 
   reduce(full_join)
 }
+set.seed(2018)
 ```
 
 ``` r
