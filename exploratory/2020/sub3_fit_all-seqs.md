@@ -32,11 +32,14 @@ dat <- c('subworkflows/3_fit_sample_subset/results/all-seqs/sensspec.tsv',
   here() %>% 
   full_join_files() %>% 
   mutate(num_total_seqs = num_ref_seqs + num_sample_seqs,
-         gaps_frac = n_gaps / total_chars)
+         gaps_frac = n_gaps / total_chars,
+         mem_mb = max_rss,
+         mem_gb = mem_mb / 1024)
 
-denovo <- c('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
-            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
-            'https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
+denovo <- c('sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
+            'benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
+            'dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
+  lapply(function(x) { paste0('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/', x)}) %>% 
   full_join_files() %>% 
   mutate(ref_frac = 1)
 
@@ -44,17 +47,19 @@ denovo_sum <- denovo %>% group_by(dataset) %>% summarize(mean_mcc=mean(mcc),
                                                          sd_mcc=sd(mcc),
                                                          mean_sec=mean(s),
                                                          sd_sec=sd(s),
-                                                         num_ref_seqs = mean(num_seqs))
+                                                         num_ref_seqs = mean(num_seqs),
+                                                         mean_mem_gb=mean(max_rss/1024),
+                                                         sd_mem_gb=sd(max_rss/1024))
 denovo_sum
 ```
 
-    ## # A tibble: 4 x 6
-    ##   dataset mean_mcc    sd_mcc mean_sec sd_sec num_ref_seqs
-    ##   <chr>      <dbl>     <dbl>    <dbl>  <dbl>        <dbl>
-    ## 1 human      0.821 0.00123       774.   84.4       261539
-    ## 2 marine     0.815 0.0000999     166.   16.6       161561
-    ## 3 mouse      0.831 0.00103       110.   13.2        68111
-    ## 4 soil       0.729 0.00267       180.   23.4       219754
+    ## # A tibble: 4 x 8
+    ##   dataset mean_mcc    sd_mcc mean_sec sd_sec num_ref_seqs mean_mem_gb sd_mem_gb
+    ##   <chr>      <dbl>     <dbl>    <dbl>  <dbl>        <dbl>       <dbl>     <dbl>
+    ## 1 human      0.821 0.00123       774.   84.4       261539       5.05   0.000448
+    ## 2 marine     0.815 0.0000999     166.   16.6       161561       1.34   0.000875
+    ## 3 mouse      0.831 0.00103       110.   13.2        68111       0.914  0.000364
+    ## 4 soil       0.729 0.00267       180.   23.4       219754       1.22   0.00158
 
 ## OptiFit performance with varied reference sizes
 
@@ -201,6 +206,45 @@ sequences *de novo* that do not fit into existing OTUs, while
 closed-reference clustering throws them out. This plot is confounded by
 the number of sequences in the reference, perhaps I should re-plot it as
 the ratio of OTUs to reference sequences?
+
+## Memory usage
+
+``` r
+dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>% 
+  summarize(mean_mem_gb=mean(mem_gb)) %>% 
+  ggplot(aes(x=num_ref_seqs, y=mean_mem_gb, color=dataset)) +
+  geom_point(alpha = 0.5) +
+  geom_point(aes(x=num_ref_seqs, y=mean_mem_gb), denovo_sum, shape='triangle') +
+  facet_grid(method ~ ref_weight) +
+  scale_color_manual(values = dataset_colors) +
+  scale_x_continuous(breaks = seq(0, 300000, 50000),
+                     labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
+  labs(title = 'Memory usage over reference size',
+       x = '# sequences in reference',
+       y = 'MB',
+       caption = 'Triangles: mean runtime for _de novo_ clustering on the entire dataset') +
+  theme(plot.caption = element_markdown())
+```
+
+![](figures/mem-1.png)<!-- -->
+
+``` r
+dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>% 
+  summarize(mean_mem_gb=mean(mem_gb)) %>% 
+  ggplot(aes(x=num_ref_seqs, y=mean_mem_gb, color=ref_weight)) +
+  geom_point(alpha = 0.5) +
+  geom_point(aes(x=num_ref_seqs, y=mean_mem_gb, color=NULL), denovo_sum, shape='triangle') +
+  facet_grid(dataset ~ method, scales = 'free') +
+  scale_x_continuous(breaks = seq(0, 300000, 50000),
+                     labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
+  labs(title = 'Memory usage over reference size',
+       x = '# sequences in reference',
+       y = 'MB',
+       caption = 'Black triangles: mean runtime for _de novo_ clustering on the entire dataset') +
+  theme(plot.caption = element_markdown())
+```
+
+![](figures/mem-2.png)<!-- -->
 
 ## Fraction of sequences that map to the reference
 
