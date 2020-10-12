@@ -222,7 +222,7 @@ dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>%
                      labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
   labs(title = 'Memory usage over reference size',
        x = '# sequences in reference',
-       y = 'MB',
+       y = 'GB',
        caption = 'Triangles: mean runtime for _de novo_ clustering on the entire dataset') +
   theme(plot.caption = element_markdown())
 ```
@@ -240,7 +240,7 @@ dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>%
                      labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
   labs(title = 'Memory usage over reference size',
        x = '# sequences in reference',
-       y = 'MB',
+       y = 'GB',
        caption = 'Black triangles: mean runtime for _de novo_ clustering on the entire dataset') +
   theme(plot.caption = element_markdown())
 ```
