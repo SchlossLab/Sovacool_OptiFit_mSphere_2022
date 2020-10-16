@@ -1,0 +1,164 @@
+perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
+
+configfile: '../../config/config.yaml'
+datasets = config['datasets']
+refs = config['references']
+methods = config['methods']
+regions = ['bact_v4']
+
+wildcard_constraints:
+    region='bact_v4'
+
+subworkflow prep_samples:
+    workdir:
+        "../1_prep_samples/"
+subworkflow fit_ref_db:
+    workdir:
+        "../2_fit_reference_db/"
+
+rule targets_qiime2_vsearch:
+    input:
+        expand('results/{dataset}/{method}_ref/{ref}/{region}/table.qza',
+            dataset = datasets,
+            method = methods,
+            ref = refs,
+            region = regions
+        ),
+        expand('results/{dataset}/de_novo/table.qza',
+            dataset = datasets
+        )
+
+rule import_fasta:
+    input:
+        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+    output:
+        qza="data/{dataset}/{dataset}_seqs.qza"
+    shell:
+        """
+        qiime tools import \
+            --input-path {input.fna} \
+            --ouptut-path {output.qza} \
+            --type 'FeatureData[AlignedSequence]'
+        """
+
+rule import_table:
+    input:
+        count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table")
+    output:
+        shared='data/{dataset}/{dataset}.shared',
+        biom="data/{dataset}/{dataset}.biom",
+        qza="data/{dataset}/{dataset}_table.qza"
+    params:
+        outdir='data/{dataset}/processed/'
+    log:
+        'log/{dataset}/import_table.txt'
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            make.shared(count={input.count_table}, label=asv);
+            make.biom(shared=current); '
+        qiime tools import \
+            --input-path {output.biom} \
+            --type 'FeatureTable[Frequency]' \
+            --input-format BIOMV210Format \
+            --output-path {output.qza}
+        """
+
+rule import_ref:
+    input:
+        fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+    output:
+        qza="data/{dataset}/{ref}_{region}_seqs.qza"
+    shell:
+        """
+        qiime tools import \
+            --input-path {input.fna} \
+            --ouptut-path {output.qza} \
+            --type 'FeatureData[AlignedSequence]'
+        """
+
+rule qiime_de_novo:
+    input:
+        table=rules.import_table.output.qza,
+        seqs=rules.import_fasta.output.qza
+    output:
+        table='results/{dataset}/de_novo/table.qza',
+        seqs='results/{dataset}/de_novo/seqs.qza'
+    benchmark:
+        'benchmarks/{dataset}/qiime_de_novo.txt'
+    params:
+        p=perc_identity,
+        expdir='results/{dataset}/de_novo/export/'
+    shell:
+        """
+        qiime vsearch cluster-features-de-novo \
+            --i-table {input.table} \
+            --i-sequences {input.seqs} \
+            --p-perc-identity {params.p} \
+            --o-clustered-table {output.table} \
+            --o-clustered-sequences {output.seqs}
+        qiime tools export \
+            --input-path {output.table}
+            --output-path {params.expdir}
+        """
+
+rule qiime_closed_ref:
+    input:
+        table=rules.import_table.output.qza,
+        seqs=rules.import_fasta.output.qza,
+        ref=rules.import_ref.output.qza
+    output:
+        table='results/{dataset}/closed_ref/{ref}/{region}/table.qza',
+        seqs='results/{dataset}/closed_ref/{ref}/{region}/seqs.qza',
+        unmatched='results/{dataset}/closed_ref/{ref}/{region}/unmatched.qza'
+    benchmark:
+        'benchmarks/{dataset}/closed_ref.{ref}.{region}.txt'
+    params:
+        p=perc_identity,
+        expdir='results/{dataset}/closed_ref/{ref}/{region}/export/'
+    shell:
+        """
+        qiime vsearch cluster-features-closed-reference \
+            --i-table {input.table} \
+            --i-sequences {input.seqs} \
+            --i-reference-sequences {input.ref} \
+            --p-perc-identity {params.p} \
+            --o-clustered-table {output.table} \
+            --o-clustered-sequences {output.seqs} \
+            --o-umatched-sequences {output.unmatched}
+        qiime tools export \
+            --input-path {output.table}
+            --output-path {params.expdir}
+        """
+
+rule qiime_open_ref:
+    input:
+        table=rules.import_table.output.qza,
+        seqs=rules.import_fasta.output.qza,
+        ref=rules.import_ref.output.qza
+    output:
+        table='results/{dataset}/open_ref/{ref}/{region}/table.qza',
+        seqs='results/{dataset}/open_ref/{ref}/{region}/seqs.qza',
+        new='results/{dataset}/open_ref/{ref}/{region}/new.qza'
+    benchmark:
+        'benchmarks/{dataset}/open_ref.{ref}.{region}.txt'
+    params:
+        p=perc_identity,
+        expdir='results/{dataset}/open_ref/{ref}.{region}/export/'
+    shell:
+        """
+        qiime vsearch cluster-features-open-reference \
+            --i-table {input.table} \
+            --i-sequences {input.seqs} \
+            --i-reference-sequences {input.ref} \
+            --p-perc-identity {params.p} \
+            --o-clustered-table {output.table} \
+            --o-clustered-sequences {output.seqs} \
+            --o-new-reference-sequences {output.new}
+        qiime tools export \
+            --input-path {output.table}
+            --output-path {params.expdir}
+        """
+
+# TODO: mothur sens.spec on qiime output for performance metrics
+# TODO: aggregate benchmarks
