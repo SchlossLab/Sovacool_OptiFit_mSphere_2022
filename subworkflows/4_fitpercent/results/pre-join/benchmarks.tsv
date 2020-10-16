@@ -1,2 +1,0 @@
-s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref	ref_weight	ref_frac	sample_frac
-3536.416	00:58:56	3527.45	3681.59	3524.61	3524.8	2556.43	5306.17	0	soil	NA	NA	1	closed	FALSE	none	100-20	20
