@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml --forceall
+time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml results/soil/refweight_none/fitpercent_10/seed_10/method_closed/printref_f/soil.optifit_mcc_denovo.best.list
