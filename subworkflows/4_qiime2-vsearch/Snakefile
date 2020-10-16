@@ -33,6 +33,8 @@ rule import_fasta:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
     output:
         qza="data/{dataset}/{dataset}_seqs.qza"
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime tools import \
@@ -52,6 +54,8 @@ rule import_table:
         outdir='data/{dataset}/processed/'
     log:
         'log/{dataset}/import_table.txt'
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -69,6 +73,8 @@ rule import_ref:
         fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
     output:
         qza="data/{dataset}/{ref}_{region}_seqs.qza"
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime tools import \
@@ -89,6 +95,8 @@ rule qiime_de_novo:
     params:
         p=perc_identity,
         expdir='results/{dataset}/de_novo/export/'
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-de-novo \
@@ -116,6 +124,8 @@ rule qiime_closed_ref:
     params:
         p=perc_identity,
         expdir='results/{dataset}/closed_ref/{ref}/{region}/export/'
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-closed-reference \
@@ -145,6 +155,8 @@ rule qiime_open_ref:
     params:
         p=perc_identity,
         expdir='results/{dataset}/open_ref/{ref}.{region}/export/'
+    conda:
+        '../../config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-open-reference \
