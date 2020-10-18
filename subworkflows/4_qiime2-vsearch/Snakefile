@@ -41,7 +41,7 @@ rule import_fasta:
         qiime tools import \
             --input-path {input.fna} \
             --output-path {output.qza} \
-            --type 'FeatureData[AlignedSequence]'
+            --type 'FeatureData[Sequence]'
         """
 
 rule import_table:
@@ -139,7 +139,7 @@ rule qiime_closed_ref:
             --p-perc-identity {params.p} \
             --o-clustered-table {output.table} \
             --o-clustered-sequences {output.seqs} \
-            --o-umatched-sequences {output.unmatched}
+            --o-unmatched-sequences {output.unmatched}
         qiime tools export \
             --input-path {output.table} \
             --output-path {params.expdir}
