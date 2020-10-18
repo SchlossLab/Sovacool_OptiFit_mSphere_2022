@@ -40,7 +40,7 @@ rule import_fasta:
         """
         qiime tools import \
             --input-path {input.fna} \
-            --ouptut-path {output.qza} \
+            --output-path {output.qza} \
             --type 'FeatureData[AlignedSequence]'
         """
 
@@ -48,11 +48,13 @@ rule import_table:
     input:
         count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table")
     output:
-        shared='data/{dataset}/{dataset}.shared',
+        shared='data/{dataset}/{dataset}.asv.shared',
+        list='data/{dataset}/{dataset}.asv.list',
         biom="data/{dataset}/{dataset}.biom",
         qza="data/{dataset}/{dataset}_table.qza"
     params:
-        outdir='data/{dataset}/processed/'
+        outdir='data/{dataset}/processed/',
+        biom='data/{dataset}/processed/{dataset}.asv.asv.biom'
     log:
         'log/{dataset}/import_table.txt'
     conda:
@@ -62,6 +64,7 @@ rule import_table:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             make.shared(count={input.count_table}, label=asv);
             make.biom(shared=current); '
+        mv {params.biom} {output.biom}
         qiime tools import \
             --input-path {output.biom} \
             --type 'FeatureTable[Frequency]' \
@@ -80,7 +83,7 @@ rule import_ref:
         """
         qiime tools import \
             --input-path {input.fna} \
-            --ouptut-path {output.qza} \
+            --output-path {output.qza} \
             --type 'FeatureData[AlignedSequence]'
         """
 
@@ -175,3 +178,13 @@ rule qiime_open_ref:
 
 # TODO: mothur sens.spec on qiime output for performance metrics
 # TODO: aggregate benchmarks
+
+
+rule biom_to_list:
+    input:
+        R="code/biom_to_list.R",
+        biom="",
+    output:
+        list=""
+    script:
+        "code/biom_to_list.R"
