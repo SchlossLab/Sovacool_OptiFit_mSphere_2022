@@ -1,10 +1,11 @@
-perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
-
 configfile: '../../config/config.yaml'
+
 datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
+
 regions = ['bact_v4']
+perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
 
 wildcard_constraints:
     region='bact_v4'
@@ -34,7 +35,7 @@ rule import_fasta:
     output:
         qza="data/{dataset}/{dataset}_seqs.qza"
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime tools import \
@@ -55,7 +56,7 @@ rule import_table:
     log:
         'log/{dataset}/import_table.txt'
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -74,7 +75,7 @@ rule import_ref:
     output:
         qza="data/{dataset}/{ref}_{region}_seqs.qza"
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime tools import \
@@ -96,7 +97,7 @@ rule qiime_de_novo:
         p=perc_identity,
         expdir='results/{dataset}/de_novo/export/'
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-de-novo \
@@ -125,7 +126,7 @@ rule qiime_closed_ref:
         p=perc_identity,
         expdir='results/{dataset}/closed_ref/{ref}/{region}/export/'
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-closed-reference \
@@ -156,7 +157,7 @@ rule qiime_open_ref:
         p=perc_identity,
         expdir='results/{dataset}/open_ref/{ref}.{region}/export/'
     conda:
-        '../../config/qiime2-2020.8-py36-linux-conda.yml'
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime vsearch cluster-features-open-reference \
