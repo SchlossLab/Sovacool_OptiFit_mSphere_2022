@@ -175,3 +175,13 @@ rule qiime_open_ref:
 
 # TODO: mothur sens.spec on qiime output for performance metrics
 # TODO: aggregate benchmarks
+
+
+rule biom_to_list:
+    input:
+        R="code/biom_to_list.R",
+        biom="",
+    output:
+        list=""
+    script:
+        "code/biom_to_list.R"
