@@ -110,7 +110,7 @@ rule qiime_de_novo:
             --o-clustered-table {output.table} \
             --o-clustered-sequences {output.seqs}
         qiime tools export \
-            --input-path {output.table}
+            --input-path {output.table} \
             --output-path {params.expdir}
         """
 
@@ -141,7 +141,7 @@ rule qiime_closed_ref:
             --o-clustered-sequences {output.seqs} \
             --o-umatched-sequences {output.unmatched}
         qiime tools export \
-            --input-path {output.table}
+            --input-path {output.table} \
             --output-path {params.expdir}
         """
 
@@ -172,7 +172,7 @@ rule qiime_open_ref:
             --o-clustered-sequences {output.seqs} \
             --o-new-reference-sequences {output.new}
         qiime tools export \
-            --input-path {output.table}
+            --input-path {output.table} \
             --output-path {params.expdir}
         """
 
