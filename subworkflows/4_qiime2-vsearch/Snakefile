@@ -19,13 +19,13 @@ subworkflow fit_ref_db:
 
 rule targets_qiime2_vsearch:
     input:
-        expand('results/{dataset}/{method}_ref/{ref}/{region}/table.qza',
+        expand('results/{dataset}/{method}_ref/{ref}/{region}/feature-table.tsv',
             dataset = datasets,
             method = methods,
             ref = refs,
             region = regions
         ),
-        expand('results/{dataset}/de_novo/table.qza',
+        expand('results/{dataset}/de_novo/feature-table.tsv',
             dataset = datasets
         )
 
@@ -54,57 +54,44 @@ rule import_fasta:
             --type 'FeatureData[Sequence]'
         """
 
-rule mutate_count_table:
+rule prep_count_table:
     input:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        code="../../code/R/mutate_ref_count.R"
+        code="code/prep_count_table.R"
     output:
-        count=temp('data/{dataset}/{dataset}.count_table')
+        count='data/{dataset}/{dataset}.count_table',
     script:
-        "../../code/R/mutate_ref_count.R"
+        "code/prep_count_table.R"
 
-rule make_shared_list:
+rule make_biom:
     input:
-        count=rules.mutate_count_table.output.count
+        count=rules.prep_count_table.output.count
     output:
-        shared='data/{dataset}/{dataset}.asv.shared',
-        list='data/{dataset}/{dataset}.asv.list'
-    params:
-        outdir='data/{dataset}/'
-    log:
-        'log/{dataset}/make_shared_list.txt'
+        biom='data/{dataset}/{dataset}.biom'
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            make.shared(count={input.count}, label=asv) '
+        biom convert -i {input.count} -o {output.biom} --table-type="OTU table" --to-hdf5
         """
 
 rule import_table:
     input:
-        shared=rules.make_shared_list.output.shared
+        biom=rules.make_biom.output.biom
     output:
-        biom="data/{dataset}/{dataset}.biom",
         qza="data/{dataset}/{dataset}_table.qza"
     params:
-        outdir='data/{dataset}/',
-        biom='data/{dataset}/{dataset}.asv.asv.biom'
-    log:
-        'log/{dataset}/import_table.txt'
+        outdir='data/{dataset}/'
     conda:
         'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            make.biom(shared={input.shared}); '
-        mv {params.biom} {output.biom}
         qiime tools import \
-            --input-path {output.biom} \
+            --input-path {input.biom} \
             --type 'FeatureTable[Frequency]' \
-            --input-format BIOMV100Format \
+            --input-format BIOMV210Format \
             --output-path {output.qza}
         """
 
-rule remove_gaps_ref:
+rule remove_gaps_ref: # TODO: silva also has dots (.) that qiime doesn't like
     input:
         fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
     output:
@@ -139,8 +126,7 @@ rule qiime_de_novo:
     benchmark:
         'benchmarks/{dataset}/qiime_de_novo.txt'
     params:
-        p=perc_identity,
-        expdir='results/{dataset}/de_novo/export/'
+        p=perc_identity
     conda:
         'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
@@ -151,9 +137,6 @@ rule qiime_de_novo:
             --p-perc-identity {params.p} \
             --o-clustered-table {output.table} \
             --o-clustered-sequences {output.seqs}
-        qiime tools export \
-            --input-path {output.table} \
-            --output-path {params.expdir}
         """
 
 rule qiime_closed_ref:
@@ -168,8 +151,7 @@ rule qiime_closed_ref:
     benchmark:
         'benchmarks/{dataset}/closed_ref.{ref}.{region}.txt'
     params:
-        p=perc_identity,
-        expdir='results/{dataset}/closed_ref/{ref}/{region}/export/'
+        p=perc_identity
     conda:
         'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
@@ -182,9 +164,6 @@ rule qiime_closed_ref:
             --o-clustered-table {output.table} \
             --o-clustered-sequences {output.seqs} \
             --o-unmatched-sequences {output.unmatched}
-        qiime tools export \
-            --input-path {output.table} \
-            --output-path {params.expdir}
         """
 
 rule qiime_open_ref:
@@ -199,8 +178,7 @@ rule qiime_open_ref:
     benchmark:
         'benchmarks/{dataset}/open_ref.{ref}.{region}.txt'
     params:
-        p=perc_identity,
-        expdir='results/{dataset}/open_ref/{ref}.{region}/export/'
+        p=perc_identity
     conda:
         'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
@@ -213,20 +191,33 @@ rule qiime_open_ref:
             --o-clustered-table {output.table} \
             --o-clustered-sequences {output.seqs} \
             --o-new-reference-sequences {output.new}
-        qiime tools export \
-            --input-path {output.table} \
-            --output-path {params.expdir}
         """
 
 # TODO: mothur sens.spec on qiime output for performance metrics
 # TODO: aggregate benchmarks
 
+rule export_biom:
+    input:
+        qza="{input_dir}/table.qza"
+    output:
+        biom="{input_dir}/feature-table.biom",
+        tsv="{input_dir}/feature-table.tsv"
+    params:
+        expdir="{input_dir}/"
+    shell:
+        """
+        qiime tools export \
+            --input-path {input.qza} \
+            --output-path {params.expdir}
+        biom convert -i {output.biom} -o {output.tsv} --to-tsv
+        """
+
 
 rule biom_to_list:
     input:
         R="code/biom_to_list.R",
-        biom="",
+        biom="BIOMFILE"
     output:
-        list="FILE"
+        list="LISTFILE"
     script:
         "code/biom_to_list.R"
