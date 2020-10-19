@@ -93,14 +93,14 @@ rule import_table:
             --output-path {output.qza}
         """
 
-rule remove_gaps_ref: # TODO: silva also has dots (.) that qiime doesn't like
+rule remove_gaps_ref:
     input:
         fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
     output:
         fna="data/{dataset}/{ref}_{region}.fna"
     shell:
         """
-        cat {input.fna} | sed 's/-//g' > {output.fna}
+        cat {input.fna} | sed 's/-//g' | sed 's/^[^>].*\.//g' > {output.fna}
         """
 
 rule import_ref:
