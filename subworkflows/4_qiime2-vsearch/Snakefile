@@ -100,7 +100,7 @@ rule remove_gaps_ref:
         fna="data/{dataset}/{ref}_{region}.fna"
     shell:
         """
-        cat {input.fna} | sed 's/-//g' | sed 's/^[^>].*\.//g' > {output.fna}
+        cat {input.fna} | sed 's/-//g' | sed 's/^[^>]*\.//g' > {output.fna}
         """
 
 rule import_ref:
