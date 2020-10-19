@@ -68,6 +68,8 @@ rule make_biom:
         count=rules.prep_count_table.output.count
     output:
         biom='data/{dataset}/{dataset}.biom'
+    conda:
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         biom convert -i {input.count} -o {output.biom} --table-type="OTU table" --to-hdf5
@@ -204,6 +206,8 @@ rule export_biom:
         tsv="{input_dir}/feature-table.tsv"
     params:
         expdir="{input_dir}/"
+    conda:
+        'config/qiime2-2020.8-py36-linux-conda.yml'
     shell:
         """
         qiime tools export \
