@@ -71,6 +71,8 @@ rule make_shared_list:
         list='data/{dataset}/{dataset}.asv.list'
     params:
         outdir='data/{dataset}/'
+    log:
+        'log/{dataset}/make_shared_list.txt'
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
