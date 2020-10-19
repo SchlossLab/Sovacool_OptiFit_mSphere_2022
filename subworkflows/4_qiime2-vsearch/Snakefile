@@ -74,7 +74,7 @@ rule prep_count_table_biom:
 
 rule make_biom:
     input:
-        count=rules.prep_count_table.output.count
+        count=rules.prep_count_table_biom.output.count
     output:
         biom='data/{dataset}/{dataset}.biom'
     conda:
