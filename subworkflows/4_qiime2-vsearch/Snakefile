@@ -29,7 +29,7 @@ rule targets_qiime2_vsearch:
             dataset = datasets
         )
 
-rule remove_gaps:
+rule remove_gaps_query:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
     output:
@@ -41,7 +41,7 @@ rule remove_gaps:
 
 rule import_fasta:
     input:
-        fna=rules.remove_gaps.output.fna
+        fna=rules.remove_gaps_query.output.fna
     output:
         qza="data/{dataset}/{dataset}_seqs.qza"
     conda:
@@ -82,9 +82,19 @@ rule import_table:
             --output-path {output.qza}
         """
 
-rule import_ref:
+rule remove_gaps_ref:
     input:
         fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+    output:
+        fna="data/{dataset}/{ref}_{region}.fna"
+    shell:
+        """
+        cat {input.fna} | sed 's/-//g' > {output.fna}
+        """
+
+rule import_ref:
+    input:
+        fna=rules.remove_gaps_ref.output.fna
     output:
         qza="data/{dataset}/{ref}_{region}_seqs.qza"
     conda:
@@ -94,7 +104,7 @@ rule import_ref:
         qiime tools import \
             --input-path {input.fna} \
             --output-path {output.qza} \
-            --type 'FeatureData[AlignedSequence]'
+            --type 'FeatureData[Sequence]'
         """
 
 rule qiime_de_novo:
