@@ -54,12 +54,21 @@ rule import_fasta:
             --type 'FeatureData[Sequence]'
         """
 
-rule prep_count_table:
+rule prep_count_table_mothur:
+    input:
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        code="../../code/R/mutate_ref_count.R"
+    output:
+        count='data/{dataset}/{dataset}.count_table'
+    script:
+        "../../code/R/mutate_ref_count.R"
+
+rule prep_count_table_biom:
     input:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         code="code/prep_count_table.R"
     output:
-        count='data/{dataset}/{dataset}.count_table',
+        count='data/{dataset}/{dataset}.count_table.tsv',
     script:
         "code/prep_count_table.R"
 
@@ -195,15 +204,13 @@ rule qiime_open_ref:
             --o-new-reference-sequences {output.new}
         """
 
-# TODO: mothur sens.spec on qiime output for performance metrics
-# TODO: aggregate benchmarks
-
-rule export_biom:
+rule export_qiime:
     input:
-        qza="{input_dir}/table.qza"
+        table="{input_dir}/table.qza",
+        seqs="{input_dir}/dna-sequences.fasta"
     output:
         biom="{input_dir}/feature-table.biom",
-        tsv="{input_dir}/feature-table.tsv"
+        fna="{input_dir}/dna-sequences.fasta"
     params:
         expdir="{input_dir}/"
     conda:
@@ -211,17 +218,53 @@ rule export_biom:
     shell:
         """
         qiime tools export \
-            --input-path {input.qza} \
+            --input-path {input.table} \
             --output-path {params.expdir}
-        biom convert -i {output.biom} -o {output.tsv} --to-tsv
+        qiime tools export \
+            --input-path {input.seqs} \
+            --output-path {params.expdir}
+        """
+
+rule biom_to_tsv:
+    input:
+        biom=rules.export_qiime.output.biom
+    output:
+        tsv="{input_dir}/feature-table.tsv"
+    conda:
+        'config/qiime2-2020.8-py36-linux-conda.yml'
+    shell:
+        """
+        biom convert -i {input.biom} -o {output.tsv} --to-tsv
         """
 
 
-rule biom_to_list:
+rule biom_tsv_to_list:
     input:
-        R="code/biom_to_list.R",
-        biom="BIOMFILE"
+        R="code/biom_tsv_to_list.py",
+        tsv=rules.biom_to_tsv.output.tsv
     output:
         list="LISTFILE"
+    params:
+        perc_identity=perc_identity # label = 1 - perc_identity
     script:
-        "code/biom_to_list.R"
+        "code/biom_tsv_to_list.py"
+
+
+# TODO: mothur sens.spec on qiime output for performance metrics
+rule sensspec_qiime:
+    input:
+        list=rules.biom_tsv_to_list.output.list,
+        count=rules.prep_count_table_mothur.output.count,
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
+    output:
+        tsv='results/{dataset}/closed_ref/{ref}/{region}/{dataset}.sensspec'
+    log:
+        'log/{dataset}/open_ref.{ref}.{region}.txt'
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
+        """
+
+
+# TODO: aggregate benchmarks
