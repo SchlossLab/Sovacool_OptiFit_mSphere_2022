@@ -54,12 +54,33 @@ rule import_fasta:
             --type 'FeatureData[Sequence]'
         """
 
-rule import_table:
+rule mutate_count_table:
     input:
-        count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table")
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        code="../../code/R/mutate_ref_count.R"
+    output:
+        count=temp('data/{dataset}/{dataset}.count_table')
+    script:
+        "../../code/R/mutate_ref_count.R"
+
+rule make_shared_list:
+    input:
+        count=rules.mutate_count_table.output.count
     output:
         shared='data/{dataset}/{dataset}.asv.shared',
-        list='data/{dataset}/{dataset}.asv.list',
+        list='data/{dataset}/{dataset}.asv.list'
+    params:
+        outdir='data/{dataset}/'
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            make.shared(count={input.count}, label=asv) '
+        """
+
+rule import_table:
+    input:
+        shared=rules.make_shared_list.output.shared
+    output:
         biom="data/{dataset}/{dataset}.biom",
         qza="data/{dataset}/{dataset}_table.qza"
     params:
@@ -72,8 +93,7 @@ rule import_table:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            make.shared(count={input.count_table}, label=asv);
-            make.biom(shared=current); '
+            make.biom(shared={input.shared}); '
         mv {params.biom} {output.biom}
         qiime tools import \
             --input-path {output.biom} \
@@ -205,6 +225,6 @@ rule biom_to_list:
         R="code/biom_to_list.R",
         biom="",
     output:
-        list=""
+        list="FILE"
     script:
         "code/biom_to_list.R"
