@@ -61,18 +61,18 @@ rule prep_count_table_mothur:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         code="../../code/R/mutate_ref_count.R"
     output:
-        count='data/{dataset}/{dataset}.count_table'
+        count='data/{dataset}/{dataset}.for_mothur.count_table'
     script:
         "../../code/R/mutate_ref_count.R"
 
 rule prep_count_table_biom:
     input:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        code="code/prep_count_table.R"
+        code="code/count_matrix.R"
     output:
-        count='data/{dataset}/{dataset}.count_table.tsv',
+        count='data/{dataset}/{dataset}.for_qiime.count_table.tsv',
     script:
-        "code/prep_count_table.R"
+        "code/count_matrix.R"
 
 rule make_biom:
     input:
