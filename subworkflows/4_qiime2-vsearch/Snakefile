@@ -19,14 +19,16 @@ subworkflow fit_ref_db:
 
 rule targets_qiime2_vsearch:
     input:
-        expand('results/{dataset}/{method}_ref/{ref}/{region}/feature-table.tsv',
+        expand('results/{dataset}/{method}_ref/{ref}/{region}/{file}',
             dataset = datasets,
             method = methods,
             ref = refs,
-            region = regions
+            region = regions,
+            file = ['feature-table.tsv', 'dna-sequences.fasta']
         ),
-        expand('results/{dataset}/de_novo/feature-table.tsv',
-            dataset = datasets
+        expand('results/{dataset}/de_novo/{file}',
+            dataset = datasets,
+            file = ['feature-table.tsv', 'dna-sequences.fasta']
         )
 
 rule remove_gaps_query:
@@ -207,7 +209,7 @@ rule qiime_open_ref:
 rule export_qiime:
     input:
         table="{input_dir}/table.qza",
-        seqs="{input_dir}/dna-sequences.fasta"
+        seqs="{input_dir}/seqs.qza"
     output:
         biom="{input_dir}/feature-table.biom",
         fna="{input_dir}/dna-sequences.fasta"
