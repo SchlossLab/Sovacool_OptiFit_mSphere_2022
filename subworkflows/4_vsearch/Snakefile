@@ -19,9 +19,9 @@ subworkflow fit_ref_db:
 
 rule targets_vsearch:
     input:
-        expand('results/{dataset}/de_novo/{dataset}{ext}',
+        expand('results/{dataset}/de_novo/{dataset}.{ext}',
             dataset = datasets,
-            ext = ['_clusters.tsv', '.shared']
+            ext = ['biom', 'tsv']
         )
 
 rule remove_gaps_query:
@@ -77,8 +77,7 @@ rule vsearch_de_novo:
     input:
         query=rules.remove_gaps_query.output.fna
     output:
-        shared='results/{dataset}/de_novo/{dataset}.shared',
-        tsv='results/{dataset}/de_novo/{dataset}_clusters.tsv'
+        biom='results/{dataset}/de_novo/{dataset}.biom'
     params:
         perc_identity=perc_identity
     resources:
@@ -86,8 +85,7 @@ rule vsearch_de_novo:
     shell:
         """
         vsearch --cluster_size {input.query} \
-            --uc {output.tsv} \
-            --mothur_shared_out {output.shared} \
+            --biomout {output.biom} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \
@@ -107,6 +105,16 @@ rule vsearch_open_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
+
+rule biom_to_tsv:
+    input:
+        biom="{input_dir}/{dataset}.biom"
+    output:
+        tsv="{input_dir}/{dataset}.tsv"
+    shell:
+        """
+        biom convert -i {input.biom} -o {output.tsv} --to-tsv
+        """
 
 rule make_list: # TODO: create list file from vsearch uc output
     input:
