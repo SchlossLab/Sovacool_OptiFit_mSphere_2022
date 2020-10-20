@@ -69,5 +69,20 @@
     },
 "fit_subsample_percent": {
     "procs": "{resources.procs}"
+    },
+"remove_gaps_query": {
+    "procs": "{resources.procs}"
+    },
+"remove_gaps_ref": {
+    "procs": "{resources.procs}"
+    },
+"vsearch_de_novo": {
+    "procs": "{resources.procs}"
+    },
+"vsearch_open_ref": {
+    "procs": "{resources.procs}"
+    },
+"vsearch_closed_ref": {
+    "procs": "{resources.procs}"
     }
 }
