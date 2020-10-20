@@ -38,7 +38,7 @@ rule remove_gaps_query:
     shell:
         """
         mothur '#set.dir(output={params.outdir});
-            degap.seqs(fasta={input.fna}, processors={resources.procs})
+            degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots in fasta headers
         cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
@@ -58,7 +58,7 @@ rule remove_gaps_ref:
     shell:
         """
         mothur '#set.dir(output={params.outdir});
-            degap.seqs(fasta={input.fna}, processors={resources.procs})
+            degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots in fasta headers
         cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
