@@ -158,8 +158,7 @@ rule fit_subsample:
         reflist=rules.cluster_ref.output.list
     output:
         sensspec=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
-        list=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list'),
-        count=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.count_table')
+        list=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list')
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
     log:

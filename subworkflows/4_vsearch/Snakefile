@@ -108,9 +108,9 @@ rule vsearch_open_ref:
 
 rule biom_to_tsv:
     input:
-        biom="{input_dir}/{dataset}.biom"
+        biom="results/{dataset}/de_novo/{dataset}.biom"
     output:
-        tsv="{input_dir}/{dataset}.tsv"
+        tsv="results/{dataset}/de_novo/{dataset}.tsv"
     shell:
         """
         biom convert -i {input.biom} -o {output.tsv} --to-tsv
