@@ -84,5 +84,8 @@
     },
 "vsearch_closed_ref": {
     "procs": "{resources.procs}"
+    },
+"biom_to_tsv": {
+    "pmem": "16GB"
     }
 }
