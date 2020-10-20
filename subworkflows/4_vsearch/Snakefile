@@ -123,7 +123,7 @@ rule make_list: # TODO: create list file from vsearch uc output
         list='{input_dir}/{dataset}_clusters.list'
 
 # TODO: mothur sens.spec on vsearch output for performance metrics
-rule sensspec:
+rule sensspec_vsearch:
     input:
         list=rules.make_list.output.list,
         count=rules.prep_count_table_mothur.output.count,
