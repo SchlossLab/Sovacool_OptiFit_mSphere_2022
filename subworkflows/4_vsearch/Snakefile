@@ -28,27 +28,11 @@ rule remove_gaps_query:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
     output:
+        degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
         fna="data/{dataset}/{dataset}.ng.fasta"
     params:
-        outdir="data/{dataset}/"
-    resources:
-        procs=4
-    shell:
-        """
-        mothur '#set.dir(output={params.outdir});
-            degap.seqs(fasta={input.fna}, processors={resources.procs}) '
-        # vsearch doesn't support dots in fasta headers
-        cat {output.fna} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
-        """
-
-rule remove_gaps_ref:
-    input:
-        fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
-    output:
-        fna="data/{dataset}/{ref}_{region}.ng.fasta"
-    params:
         outdir="data/{dataset}/",
-        prefix="{ref}_{region}.ng"
+        prefix='{dataset}.tmp'
     resources:
         procs=4
     shell:
@@ -57,7 +41,27 @@ rule remove_gaps_ref:
             degap.seqs(fasta={input.fna}, processors={resources.procs})
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots in fasta headers
-        cat {output.fna} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
+        cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
+        """
+
+rule remove_gaps_ref:
+    input:
+        fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+    output:
+        degap=temp("data/{dataset}/{ref}_{region}.tmp.fasta"),
+        fna="data/{dataset}/{ref}_{region}.ng.fasta"
+    params:
+        outdir="data/{dataset}/",
+        prefix='{ref}_{region}.tmp'
+    resources:
+        procs=4
+    shell:
+        """
+        mothur '#set.dir(output={params.outdir});
+            degap.seqs(fasta={input.fna}, processors={resources.procs})
+            rename.file(fasta=current, prefix={params.prefix}) '
+        # vsearch doesn't support dots in fasta headers
+        cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
         """
 
 rule prep_count_table_mothur:
