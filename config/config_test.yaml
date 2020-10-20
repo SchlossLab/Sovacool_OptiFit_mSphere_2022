@@ -5,6 +5,7 @@ references:
 weights:
 - simple
 methods:
+- open
 - closed
 printrefs:
 - f
