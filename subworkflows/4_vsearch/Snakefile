@@ -41,7 +41,7 @@ rule remove_gaps_query:
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots in fasta headers
-        cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
+        cat {output.degap} | sed 's/\./_/g' > {output.fna}
         """
 
 rule remove_gaps_ref:
@@ -61,7 +61,7 @@ rule remove_gaps_ref:
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots in fasta headers
-        cat {output.degap} | sed 's/\(^>.*\)\./\1_/g' > {output.fna}
+        cat {output.degap} | sed 's/\./_/g' > {output.fna}
         """
 
 rule prep_count_table_mothur:
