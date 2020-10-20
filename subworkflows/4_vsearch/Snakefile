@@ -24,6 +24,38 @@ rule targets_vsearch:
             ext = ['_clusters.tsv', '.shared']
         )
 
+rule remove_gaps_query:
+    input:
+        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+    output:
+        fna="data/{dataset}/{dataset}.ng.fasta"
+    params:
+        outdir="data/{dataset}/"
+    resources:
+        procs=4
+    shell:
+        """
+        mothur '#set.dir(output={params.outdir});
+            degap.seqs(fasta={input.fna}, processors={resources.procs}) '
+        """
+
+rule remove_gaps_ref:
+    input:
+        fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+    output:
+        fna="data/{dataset}/{ref}_{region}.ng.fasta"
+    params:
+        outdir="data/{dataset}/",
+        prefix="{ref}_{region}.ng"
+    resources:
+        procs=4
+    shell:
+        """
+        mothur '#set.dir(output={params.outdir});
+            degap.seqs(fasta={input.fna}, processors={resources.procs})
+            rename.file(fasta=current, prefix={params.prefix}) '
+        """
+
 rule prep_count_table_mothur:
     input:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
@@ -35,7 +67,7 @@ rule prep_count_table_mothur:
 
 rule vsearch_de_novo:
     input:
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+        query=rules.remove_gaps_query.output.fna
     output:
         shared='results/{dataset}/de_novo/{dataset}.shared',
         tsv='results/{dataset}/de_novo/{dataset}_clusters.tsv'
@@ -45,7 +77,7 @@ rule vsearch_de_novo:
         procs=8
     shell:
         """
-        vsearch --cluster_size {input.fasta} \
+        vsearch --cluster_size {input.query} \
             --uc {output.tsv} \
             --mothur_shared_out {output.shared} \
             --threads {resources.procs} \
@@ -60,15 +92,15 @@ rule vsearch_de_novo:
 
 rule vsearch_closed_ref:
     input:
-        query=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        ref=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+        query=rules.remove_gaps_query.output.fna,
+        ref=rules.remove_gaps_ref.output.fna
 
 rule vsearch_open_ref:
     input:
-        query=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        ref=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
+        query=rules.remove_gaps_query.output.fna,
+        ref=rules.remove_gaps_ref.output.fna
 
-rule make_list:
+rule make_list: # TODO: create list file from vsearch uc output
     input:
         tsv='{input_dir}/{dataset}_clusters.tsv'
     output:
@@ -82,6 +114,8 @@ rule sensspec:
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         tsv='{input_dir}/{dataset}.sensspec'
+    params:
+        outdir='{input_dir}/'
     shell:
         """
         mothur '#set.dir(output={params.outdir});
