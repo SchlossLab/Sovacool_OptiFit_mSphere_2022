@@ -21,7 +21,7 @@ rule targets_vsearch:
     input:
         expand('results/{dataset}/de_novo/{dataset}.{ext}',
             dataset = datasets,
-            ext = ['biom', 'tsv']
+            ext = ['biom', 'list', 'sensspec']
         )
 
 rule remove_gaps_query:
@@ -106,26 +106,19 @@ rule vsearch_open_ref:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
 
-rule biom_to_tsv:
+rule biom_to_list:
     input:
+        code="code/biom_to_list.R",
         biom="results/{dataset}/de_novo/{dataset}.biom"
     output:
-        tsv="results/{dataset}/de_novo/{dataset}.tsv"
-    shell:
-        """
-        biom convert -i {input.biom} -o {output.tsv} --to-tsv
-        """
-
-rule make_list: # TODO: create list file from vsearch uc output
-    input:
-        tsv='{input_dir}/{dataset}_clusters.tsv'
-    output:
-        list='{input_dir}/{dataset}_clusters.list'
+        list="results/{dataset}/de_novo/{dataset}.list"
+    script:
+        "code/biom_to_list.R"
 
 # TODO: mothur sens.spec on vsearch output for performance metrics
 rule sensspec_vsearch:
     input:
-        list=rules.make_list.output.list,
+        list=rules.biom_to_list.output.list,
         count=rules.prep_count_table_mothur.output.count,
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
