@@ -1,6 +1,7 @@
 # original source: https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/biom_to_list.R
 # Modified Oct. 2020 by KLS
 
+library(dplyr)
 library("jsonlite")
 
 biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
@@ -17,10 +18,12 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
     paste(x, collapse = ",")
   })$x
 
-  list_data <- paste(paste(c("label", "numOTUs", otu_names), collapse = "\t"),
-    paste(c(label, n_otus, otu_assignments), collapse = "\t"),
-    sep = "\n"
-  )
+  list_data <- paste(paste(c("label", "numOTUs", otu_names), 
+                           collapse = "\t"),
+                     paste(c(label, n_otus, otu_assignments %>%  
+                               gsub('_', '.', .)), # revert seq names to originals with dots
+                           collapse = "\t"),
+                     sep = "\n")
 
   write(list_data, list_file_name)
 }
