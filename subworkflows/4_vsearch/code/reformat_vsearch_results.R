@@ -6,6 +6,7 @@ dsrr <- strsplit(snakemake@wildcards[["dataset_ref_region"]], "_") %>% unlist()
 
 sapply(c("bench", "sensspec", "div"), function(x) snakemake@input[[x]]) %>%
   map(read_tsv) %>%
+  reduce(bind_cols) %>%
   mutate(
     dataset = snakemake@wildcards[["dataset"]],
     method = snakemake@wildcards[["method"]],
@@ -19,5 +20,4 @@ sapply(c("bench", "sensspec", "div"), function(x) snakemake@input[[x]]) %>%
     ),
     tool = "vsearch"
   ) %>%
-  reduce(full_join) %>%
   write_tsv(snakemake@output[["tsv"]])
