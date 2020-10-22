@@ -10,13 +10,16 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
   n_otus <- biom_json$shape[1]
   n_seqs <- biom_json$shape[2]
   seq_names <- biom_json$columns[["id"]]
+  otu_names <- biom_json$rows[['id']]
 
   biom_json$data <- biom_json$data + 1
   otu_assignments <- aggregate(seq_names[biom_json$data[, 2]], by = list(biom_json$data[, 1]), function(x) {
     paste(x, collapse = ",")
   })$x
 
-  list_data <- paste(c(label, n_otus, otu_assignments), collapse = "\t")
+  list_data <- paste(paste(c('label', 'numOTUs', otu_names), collapse = '\t'),
+                     paste(c(label, n_otus, otu_assignments), collapse = "\t"),
+                     sep = '\n')
 
   write(list_data, list_file_name)
 }
