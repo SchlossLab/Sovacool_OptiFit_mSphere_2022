@@ -97,6 +97,7 @@ rule rename_seqs:  # to match those from remove_gaps rules
     shell:
         """
         cat {input.count} | sed 's/\./_/g' > {output.count}
+        cat {input.dist} | sed 's/\./_/g' > {output.dist}
         """
 
 rule vsearch_de_novo:
