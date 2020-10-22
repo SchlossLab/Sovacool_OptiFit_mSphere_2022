@@ -83,9 +83,21 @@ rule prep_count_table_mothur:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         code="../../code/R/mutate_ref_count.R"
     output:
-        count='data/{dataset}/{dataset}.count_table'
+        count='data/{dataset}/{dataset}.dummyRefGroup.count_table'
     script:
         "../../code/R/mutate_ref_count.R"
+
+rule rename_seqs:  # to match those from remove_gaps rules
+    input:
+        count=rules.prep_count_table_mothur.output.count,
+        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: need different dist file for reference clustering
+    output:
+        count='data/{dataset}/{dataset}.dummyRefGroup.ng.count_table',
+        dist='data/{dataset}/{dataset}.ng.dist'
+    shell:
+        """
+        cat {input.count} | sed 's/\./_/g' > {output.count}
+        """
 
 rule vsearch_de_novo:
     input:
@@ -158,8 +170,8 @@ rule biom_to_list:
 rule sensspec_vsearch:
     input:
         list=rules.biom_to_list.output.list,
-        count=rules.prep_count_table_mothur.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: is this the right dist file for reference-based?
+        count=rules.rename_seqs.output.count,
+        dist=rules.rename_seqs.output.dist
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
@@ -177,7 +189,7 @@ rule sensspec_vsearch:
 rule calc_diversity4:
     input:
         list=rules.biom_to_list.output.list,
-        count=rules.prep_count_table_mothur.output.count
+        count=rules.rename_seqs.output.count
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
     params:
