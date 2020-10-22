@@ -26,7 +26,7 @@ wildcard_constraints:
     seed="\d+"
 
 include: "code/merges.smk"
-'''
+
 rule full_join:
     input:
         fcns='../../code/R/functions.R',
@@ -40,7 +40,7 @@ rule full_join:
         'log/full_join.txt'
     script:
         '../../code/R/full_join_tsvs.R'
-'''
+
 rule split_weighted_subsample:
     input:
         code="../../code/py/split_weighted_subsample.py",
