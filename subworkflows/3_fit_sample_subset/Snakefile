@@ -248,7 +248,7 @@ rule count_input_sizes:
         '../../code/py/count_input_sizes.py'
 
 
-rule calc_diversity:
+rule calc_diversity3:
     input:
         list=rules.fit_subsample.output.list,
         count=rules.combine_for_fit.output.count_all,

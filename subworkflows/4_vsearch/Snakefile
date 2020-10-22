@@ -174,7 +174,7 @@ rule sensspec_vsearch:
             sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
         """
 
-rule calc_diversity3:
+rule calc_diversity4:
     input:
         list=rules.biom_to_list.output.list,
         count=rules.prep_count_table_mothur.output.count
@@ -199,7 +199,7 @@ rule reformat_vsearch_results:
         fcns='../../code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset_ref_region}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        div=rules.calc_diversity3.output.tsv
+        div=rules.calc_diversity4.output.tsv
     output:
         tsv='results/{dataset}/{method}/results.{dataset_ref_region}.tsv'
     script: # TODO: aggregate benchmarks, sensspec, & diversity files
