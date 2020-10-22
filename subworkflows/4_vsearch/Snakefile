@@ -87,19 +87,6 @@ rule prep_count_table_mothur:
     script:
         "../../code/R/mutate_ref_count.R"
 
-rule rename_seqs:  # to match those from remove_gaps rules
-    input:
-        count=rules.prep_count_table_mothur.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: need different dist file for reference clustering
-    output:
-        count='data/{dataset}/{dataset}.dummyRefGroup.ng.count_table',
-        dist='data/{dataset}/{dataset}.ng.dist'
-    shell:
-        """
-        cat {input.count} | sed 's/\./_/g' > {output.count}
-        cat {input.dist} | sed 's/\./_/g' > {output.dist}
-        """
-
 rule vsearch_de_novo:
     input:
         query=rules.remove_gaps_query.output.fna
@@ -171,8 +158,8 @@ rule biom_to_list:
 rule sensspec_vsearch:
     input:
         list=rules.biom_to_list.output.list,
-        count=rules.rename_seqs.output.count,
-        dist=rules.rename_seqs.output.dist
+        count=rules.prep_count_table_mothur.output.count,
+        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: need different dist file for reference clustering
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
@@ -190,7 +177,7 @@ rule sensspec_vsearch:
 rule calc_diversity4:
     input:
         list=rules.biom_to_list.output.list,
-        count=rules.rename_seqs.output.count
+        count=rules.prep_count_table_mothur.output.count,
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
     params:
