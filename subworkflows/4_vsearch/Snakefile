@@ -17,11 +17,6 @@ subworkflow fit_ref_db:
     workdir:
         "../2_fit_reference_db/"
 
-rule targets_vsearch:
-    input:
-        expand('results/{dataset}/de_novo/results.{dataset}.tsv',
-                dataset=datasets)
-
 rule aggregate_vsearch_results:
     input:
         tsv=[expand('results/{dataset}/de_novo/results.{dataset}.tsv',
@@ -117,7 +112,8 @@ rule vsearch_closed_ref:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
     output:
-        biom='results/{dataset}/closed/{datset}_{ref}_{region}.biom'
+        biom='results/{dataset}/closed/{datset}_{ref}_{region}.biom',
+        unmatched='results/{dataset}/closed/{datset}_{ref}_{region}.unmatched.fasta'
     benchmark:
         'benchmarks/{dataset}/vsearch.method_closed.{datset}_{ref}_{region}.txt'
     params:
@@ -126,7 +122,18 @@ rule vsearch_closed_ref:
         procs=8
     shell:
         """
-        echo "TODO"
+        vsearch --usearch_global {input.query} \
+            --db {input.ref} \
+            --biomout {output.biom} \
+            --notmatched {output.unmatched} \
+            --threads {resources.procs} \
+            --id {params.perc_identity} \
+            --relabel OTU_ \
+            --relabel_keep \
+            --qmask none \
+            --xsize \
+            --minseqlength 1 \
+            --fasta_width 0 \
         """
 
 rule vsearch_open_ref:
@@ -134,7 +141,9 @@ rule vsearch_open_ref:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
     output:
-        biom='results/{dataset}/open/{datset}_{ref}_{region}.biom'
+        closed='results/{dataset}/open/{datset}_{ref}_{region}.closed.biom',
+        unmatched='results/{dataset}/open/{datset}_{ref}_{region}.unmatched.fasta',
+        denovo='results/{dataset}/open/{datset}_{ref}_{region}.biom' # TODO: concatentated biom file from closed & denovo
     benchmark:
         'benchmarks/{dataset}/vsearch.method_open.{datset}_{ref}_{region}.txt'
     params:
@@ -143,7 +152,29 @@ rule vsearch_open_ref:
         procs=8
     shell:
         """
-        echo "TODO"
+        vsearch --usearch_global {input.query} \
+            --db {input.ref} \
+            --biomout {output.closed} \
+            --notmatched {output.unmatched} \
+            --threads {resources.procs} \
+            --id {params.perc_identity} \
+            --relabel OTU_ \
+            --relabel_keep \
+            --qmask none \
+            --xsize \
+            --minseqlength 1 \
+            --fasta_width 0 \
+        vsearch --cluster_size {output.unmatched} \
+            --biomout {output.denovo} \
+            --threads {resources.procs} \
+            --id {params.perc_identity} \
+            --relabel OTU_ \
+            --relabel_keep \
+            --qmask none \
+            --xsize \
+            --minseqlength 1 \
+            --fasta_width 0 \
+        # TODO: merge biom output from both methods
         """
 
 rule biom_to_list:
