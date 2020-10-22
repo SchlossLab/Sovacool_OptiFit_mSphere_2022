@@ -115,7 +115,6 @@ rule biom_to_list:
     script:
         "code/biom_to_list.R"
 
-# TODO: mothur sens.spec on vsearch output for performance metrics
 rule sensspec_vsearch:
     input:
         list=rules.biom_to_list.output.list,
@@ -125,6 +124,8 @@ rule sensspec_vsearch:
         tsv='results/{dataset}/{method}/{dataset}.sensspec'
     params:
         outdir='results/{dataset}/{method}/'
+    benchmark:
+        'benchmarks/{dataset}/sensspec.method_{method}.txt'
     log:
         'log/{dataset}/sensspec.method_{method}.txt'
     shell:
@@ -133,4 +134,4 @@ rule sensspec_vsearch:
             sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
         """
 
-# TODO: aggregate benchmarks
+# TODO: aggregate benchmarks & sensspec files
