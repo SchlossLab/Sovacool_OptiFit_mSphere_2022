@@ -2,7 +2,7 @@ configfile: '../../config/config.yaml'
 
 datasets = config['datasets']
 refs = config['references']
-methods = config['methods']
+methods = config['methods'] + ['de_novo']
 
 regions = ['bact_v4']
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
@@ -109,9 +109,9 @@ rule vsearch_open_ref:
 rule biom_to_list:
     input:
         code="code/biom_to_list.R",
-        biom="results/{dataset}/de_novo/{dataset}.biom"
+        biom="results/{dataset}/{method}/{dataset}.biom"
     output:
-        list="results/{dataset}/de_novo/{dataset}.list"
+        list="results/{dataset}/{method}/{dataset}.list"
     script:
         "code/biom_to_list.R"
 
@@ -122,12 +122,14 @@ rule sensspec_vsearch:
         count=rules.prep_count_table_mothur.output.count,
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        tsv='{input_dir}/{dataset}.sensspec'
+        tsv='results/{dataset}/{method}/{dataset}.sensspec'
     params:
-        outdir='{input_dir}/'
+        outdir='results/{dataset}/{method}/'
+    log:
+        'log/{dataset}/sensspec.method_{method}.txt'
     shell:
         """
-        mothur '#set.dir(output={params.outdir});
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
         """
 
