@@ -86,6 +86,6 @@
     "procs": "{resources.procs}"
     },
 "biom_to_tsv": {
-    "pmem": "16GB"
+    "pmem": "160GB"
     }
 }
