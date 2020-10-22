@@ -26,7 +26,7 @@ wildcard_constraints:
     seed="\d+"
 
 include: "code/merges.smk"
-
+'''
 rule full_join:
     input:
         fcns='../../code/R/functions.R',
@@ -40,7 +40,7 @@ rule full_join:
         'log/full_join.txt'
     script:
         '../../code/R/full_join_tsvs.R'
-
+'''
 rule split_weighted_subsample:
     input:
         code="../../code/py/split_weighted_subsample.py",
@@ -157,8 +157,8 @@ rule fit_subsample:
         column=rules.combine_for_fit.output.dist_all,
         reflist=rules.cluster_ref.output.list
     output:
-        sensspec=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
-        list=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list')
+        sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec',
+        list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list'
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
     log:
@@ -251,10 +251,10 @@ rule count_input_sizes:
 rule calc_diversity:
     input:
         list=rules.fit_subsample.output.list,
-        count=rules.fit_subsample.output.count,
+        count=rules.combine_for_fit.output.count_all,
         ref_accnos=rules.split_weighted_subsample.output.ref_accnos
     output:
-        sum=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary')
+        tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary'
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
     log:
@@ -273,7 +273,7 @@ rule reformat_diversity:
     input:
         fcns='../../code/R/functions.R',
         R="../../code/R/reformat_tsv.R",
-        tsv=rules.calc_diversity.output.sum
+        tsv=rules.calc_diversity.output.tsv
     output:
         tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary'
     log:
