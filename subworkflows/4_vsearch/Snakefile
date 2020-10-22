@@ -172,7 +172,6 @@ rule vsearch_open_ref: # TODO: concatentated biom file from closed & denovo
             --relabel OTU_ \
             --relabel_keep \
             --qmask none \
-            --dbmask none \
             --xsize \
             --minseqlength 1 \
             --fasta_width 0
