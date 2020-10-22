@@ -11,12 +11,12 @@ sapply(c("bench", "sensspec", "div"), function(x) snakemake@input[[x]]) %>%
     dataset = snakemake@wildcards[["dataset"]],
     method = snakemake@wildcards[["method"]],
     ref = ifelse(method == "de_novo",
-                 NA,
-                 dsrr[[2]]
+      NA,
+      dsrr[[2]]
     ),
     region = ifelse(method == "de_novo",
-                    NA,
-                    paste(dsrr[[3]], dsrr[[4]], sep = "_")
+      NA,
+      paste(dsrr[[3]], dsrr[[4]], sep = "_")
     ),
     tool = "vsearch"
   ) %>%
