@@ -22,17 +22,21 @@ rule targets_vsearch:
         expand('results/{dataset}/de_novo/results.{dataset}.tsv',
                 dataset=datasets)
 
-rule aggregate_vsearch_results: # TODO: bind_rows
+rule aggregate_vsearch_results:
     input:
-        expand('results/{dataset}/de_novo/results.{dataset}.tsv',
-                dataset=datasets),
-        expand('results/{dataset}/{method}/results.{dataset}_{ref}_{region}.tsv',
-                dataset=datasets,
-                method=methods,
-                ref=refs,
-                region=regions)
+        tsv=[expand('results/{dataset}/de_novo/results.{dataset}.tsv',
+                 dataset=datasets) +
+             expand('results/{dataset}/{method}/results.{dataset}_{ref}_{region}.tsv',
+                 dataset=datasets,
+                 method=methods,
+                 ref=refs,
+                 region=regions)],
+        fcns='../../code/R/functions.R',
+        R='../../code/R/merge_results.R'
     output:
-        'results/vsearch_results.tsv'
+        tsv='results/vsearch_results.tsv'
+    script:
+        '../../code/R/merge_results.R'
 
 rule remove_gaps_query:
     input:
@@ -192,6 +196,7 @@ rule calc_diversity3:
 rule reformat_vsearch_results:
     input:
         R="code/reformat_vsearch_results.R",
+        fcns='../../code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset_ref_region}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
         div=rules.calc_diversity3.output.tsv
