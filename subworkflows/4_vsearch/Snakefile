@@ -2,7 +2,7 @@ configfile: '../../config/config.yaml'
 
 datasets = config['datasets']
 refs = config['references']
-methods = config['methods'] + ['de_novo']
+methods = config['methods']
 
 regions = ['bact_v4']
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
@@ -19,10 +19,20 @@ subworkflow fit_ref_db:
 
 rule targets_vsearch:
     input:
-        expand('results/{dataset}/de_novo/{dataset}.{ext}',
-            dataset = datasets,
-            ext = ['biom', 'list', 'sensspec']
-        )
+        expand('results/{dataset}/de_novo/results.{dataset}.tsv',
+                dataset=datasets)
+
+rule aggregate_vsearch_results: # TODO: bind_rows
+    input:
+        expand('results/{dataset}/de_novo/results.{dataset}.tsv',
+                dataset=datasets),
+        expand('results/{dataset}/{method}/results.{dataset}_{ref}_{region}.tsv',
+                dataset=datasets,
+                method=methods,
+                ref=refs,
+                region=regions)
+    output:
+        'results/vsearch_results.tsv'
 
 rule remove_gaps_query:
     input:
@@ -78,6 +88,8 @@ rule vsearch_de_novo:
         query=rules.remove_gaps_query.output.fna
     output:
         biom='results/{dataset}/de_novo/{dataset}.biom'
+    benchmark:
+        'benchmarks/{dataset}/vsearch.method_de_novo.{dataset}.txt'
     params:
         perc_identity=perc_identity
     resources:
@@ -100,18 +112,42 @@ rule vsearch_closed_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
+    output:
+        biom='results/{dataset}/closed/{datset}_{ref}_{region}.biom'
+    benchmark:
+        'benchmarks/{dataset}/vsearch.method_closed.{datset}_{ref}_{region}.txt'
+    params:
+        perc_identity=perc_identity
+    resources:
+        procs=8
+    shell:
+        """
+        echo "TODO"
+        """
 
 rule vsearch_open_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
+    output:
+        biom='results/{dataset}/open/{datset}_{ref}_{region}.biom'
+    benchmark:
+        'benchmarks/{dataset}/vsearch.method_open.{datset}_{ref}_{region}.txt'
+    params:
+        perc_identity=perc_identity
+    resources:
+        procs=8
+    shell:
+        """
+        echo "TODO"
+        """
 
 rule biom_to_list:
     input:
         code="code/biom_to_list.R",
-        biom="results/{dataset}/{method}/{dataset}.biom"
+        biom="results/{dataset}/{method}/{dataset_ref_region}.biom"
     output:
-        list="results/{dataset}/{method}/{dataset}.list"
+        list="results/{dataset}/{method}/{dataset_ref_region}.list"
     script:
         "code/biom_to_list.R"
 
@@ -119,19 +155,48 @@ rule sensspec_vsearch:
     input:
         list=rules.biom_to_list.output.list,
         count=rules.prep_count_table_mothur.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist")
+        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: is this the right dist file for reference-based?
     output:
-        tsv='results/{dataset}/{method}/{dataset}.sensspec'
+        tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
         outdir='results/{dataset}/{method}/'
     benchmark:
-        'benchmarks/{dataset}/sensspec.method_{method}.txt'
+        'benchmarks/{dataset}/sensspec.method_{method}.{dataset_ref_region}.txt'
     log:
-        'log/{dataset}/sensspec.method_{method}.txt'
+        'log/{dataset}/sensspec.method_{method}.{dataset_ref_region}.txt'
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
         """
 
-# TODO: aggregate benchmarks & sensspec files
+rule calc_diversity3:
+    input:
+        list=rules.biom_to_list.output.list,
+        count=rules.prep_count_table_mothur.output.count
+    output:
+        tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
+    params:
+        outdir="results/{dataset}/{method}/"
+    log:
+        "log/{dataset}/calc_diversity.{dataset_ref_region}.method_{method}.txt"
+    resources:
+        procs=8
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        make.shared(list={input.list}, count={input.count}, label=0.03);
+        summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
+        """
+
+rule reformat_vsearch_results:
+    input:
+        R="code/reformat_vsearch_results.R",
+        bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset_ref_region}.txt',
+        sensspec=rules.sensspec_vsearch.output.tsv,
+        div=rules.calc_diversity3.output.tsv
+    output:
+        tsv='results/{dataset}/{method}/results.{dataset_ref_region}.tsv'
+    script: # TODO: aggregate benchmarks, sensspec, & diversity files
+        "code/reformat_vsearch_results.R" # TODO: use wildcards object to get ref, region etc
+
