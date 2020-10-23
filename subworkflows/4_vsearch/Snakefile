@@ -17,6 +17,8 @@ subworkflow fit_ref_db:
     workdir:
         "../2_fit_reference_db/"
 
+ruleorder: combine_open_lists > biom_to_list
+
 rule aggregate_vsearch_results:
     input:
         tsv=[expand('results/{dataset}/de_novo/results.{dataset}.tsv',
