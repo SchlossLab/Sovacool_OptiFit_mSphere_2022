@@ -100,7 +100,6 @@ rule vsearch_de_novo:
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \
-            --relabel_keep \
             --qmask none \
             --xsize \
             --minseqlength 1 \
@@ -129,7 +128,6 @@ rule vsearch_closed_ref:
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \
-            --relabel_keep \
             --qmask none \
             --xsize \
             --minseqlength 1 \
@@ -143,7 +141,7 @@ rule vsearch_open_ref: # TODO: concatentated biom file from closed & denovo
     output:
         closed='results/{dataset}/open/{datset}_{ref}_{region}.closed.biom',
         unmatched='results/{dataset}/open/{datset}_{ref}_{region}.unmatched.fasta',
-        denovo='results/{dataset}/open/{datset}_{ref}_{region}.biom'
+        denovo='results/{dataset}/open/{datset}_{ref}_{region}.denovo.biom'
     benchmark:
         'benchmarks/{dataset}/vsearch.method_open.{datset}_{ref}_{region}.txt'
     params:
@@ -158,8 +156,6 @@ rule vsearch_open_ref: # TODO: concatentated biom file from closed & denovo
             --notmatched {output.unmatched} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
-            --relabel OTU_ \
-            --relabel_keep \
             --qmask none \
             --dbmask none \
             --xsize \
@@ -169,13 +165,10 @@ rule vsearch_open_ref: # TODO: concatentated biom file from closed & denovo
             --biomout {output.denovo} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
-            --relabel OTU_ \
-            --relabel_keep \
             --qmask none \
             --xsize \
             --minseqlength 1 \
             --fasta_width 0
-        # TODO: merge biom output from both methods
         """
 
 rule biom_to_list:
@@ -187,9 +180,19 @@ rule biom_to_list:
     script:
         "code/biom_to_list.R"
 
+rule combine_open_lists: # TODO: bind cols & relabel OTUs
+    input:
+        l1='results/{dataset}/open/{datset}_{ref}_{region}.closed.list',
+        l2='results/{dataset}/open/{datset}_{ref}_{region}.denovo.list',
+        py='code/combine_open_lists.py'
+    output:
+        list='results/{dataset}/open/{datset}_{ref}_{region}.list'
+    script:
+        'code/combine_open_lists.py'
+
 rule sensspec_vsearch:
     input:
-        list=rules.biom_to_list.output.list,
+        list="results/{dataset}/{method}/{dataset_ref_region}.list",
         count=rules.prep_count_table_mothur.output.count,
         dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: need different dist file for reference clustering
     output:
@@ -208,7 +211,7 @@ rule sensspec_vsearch:
 
 rule calc_diversity4:
     input:
-        list=rules.biom_to_list.output.list,
+        list="results/{dataset}/{method}/{dataset_ref_region}.list",
         count=rules.prep_count_table_mothur.output.count,
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
@@ -221,7 +224,10 @@ rule calc_diversity4:
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        make.shared(list={input.list}, count={input.count}, label=0.03);
+        # TODO: get seqs from listfile and trim count file
+        list.seqs(list={input.list});
+        get.seqs(count={input.count}, accnos=current);
+        make.shared(list={input.list}, count=current, label=0.03);
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
 
