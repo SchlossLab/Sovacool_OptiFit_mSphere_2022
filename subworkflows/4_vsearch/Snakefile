@@ -226,7 +226,6 @@ rule calc_diversity4:
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        # TODO: get seqs from listfile and trim count file
         list.seqs(list={input.list});
         get.seqs(count={input.count}, accnos=current);
         make.shared(list={input.list}, count=current, label=0.03);
