@@ -240,7 +240,7 @@ rule fraction_reads_mapped4:
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset_ref_region}.txt'
     script:
-        "../../code/py/fraction_reads_mapped.py"
+        "code/fraction_mapped_vsearch.py"
 
 rule reformat_vsearch_results:
     input:
