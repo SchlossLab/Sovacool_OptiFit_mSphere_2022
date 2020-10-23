@@ -35,7 +35,7 @@ rule aggregate_vsearch_results:
     script:
         '../../code/R/merge_results.R'
 
-rule remove_gaps_query:
+rule remove_gaps_query:  # TODO: vsearch doesn't support hyphens in seq names (mouse dataset)
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
     output:
