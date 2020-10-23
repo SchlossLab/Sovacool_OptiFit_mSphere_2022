@@ -7,7 +7,6 @@ weights:
 methods:
 - open
 - closed
-- open
 printrefs:
 - f
 ref_fracs:
