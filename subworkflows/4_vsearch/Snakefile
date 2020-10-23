@@ -182,11 +182,11 @@ rule biom_to_list:
 
 rule combine_open_lists: # TODO: bind cols & relabel OTUs
     input:
-        l1='results/{dataset}/open/{datset}_{ref}_{region}.closed.list',
-        l2='results/{dataset}/open/{datset}_{ref}_{region}.denovo.list',
+        l1='results/{dataset}/open/{dataset_ref_region}.closed.list',
+        l2='results/{dataset}/open/{dataset_ref_region}.denovo.list',
         py='code/combine_open_lists.py'
     output:
-        list='results/{dataset}/open/{datset}_{ref}_{region}.list'
+        list='results/{dataset}/open/{dataset_ref_region}.list'
     script:
         'code/combine_open_lists.py'
 
