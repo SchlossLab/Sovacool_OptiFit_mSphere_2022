@@ -36,4 +36,4 @@
 #SBATCH --mail-type=BEGIN,END
 
 source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
-time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml --use-conda
+time snakemake --profile ../../config/slurm --latency-wait 90 --configfile ../../config/config_test.yaml 
