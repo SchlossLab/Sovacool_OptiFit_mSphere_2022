@@ -1,14 +1,15 @@
 """ Combine two mothur list files into one with renamed OTUs """
+import sys
 
 
-def main():
-    mlist = mothurList.from_list_file(snakemake.input.l1)
-    mlist.combine(mothurList.from_list_file(snakemake.input.l2))
-    mlist.write(snakemake.output.list)
+def main(infilename1, infilename2, outfilename):
+    mlist = mothurList.from_list_file(infilename1)
+    mlist.combine(mothurList.from_list_file(infilename2))
+    mlist.write(outfilename)
 
 
 class mothurList:
-    def __init__(label, otu_assigns):
+    def __init__(self, label, otu_assigns):
         self.label = label
         self.otu_assigns = otu_assigns
 
@@ -36,9 +37,14 @@ class mothurList:
 
     def write(self, list_filename):
         with open(list_filename, "w") as listfile:
-            listfile.write("\t".join(["label", "numOTUs"] + self.get_new_otu_names))
-            listfile.write("\t".join([self.label, self.num_otus] + self.otu_assigns))
+            listfile.write("\t".join(["label", "numOTUs"] + self.get_new_otu_names) + '\n')
+            listfile.write("\t".join([self.label, str(self.num_otus)] + self.otu_assigns))
 
 
 if __name__ == "__main__":
-    main()
+    if "snakemake" in locals() or "snakemake" in globals():
+        main(snakemake.input.l1, snakemake.input.l2, snakemake.output.list)
+    else:
+        main(sys.argv[1], sys.argv[2], sys.argv[3])
+
+
