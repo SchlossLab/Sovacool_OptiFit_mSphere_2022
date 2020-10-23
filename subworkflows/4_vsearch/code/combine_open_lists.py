@@ -37,8 +37,12 @@ class mothurList:
 
     def write(self, list_filename):
         with open(list_filename, "w") as listfile:
-            listfile.write("\t".join(["label", "numOTUs"] + self.get_new_otu_names) + '\n')
-            listfile.write("\t".join([self.label, str(self.num_otus)] + self.otu_assigns))
+            listfile.write(
+                "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
+            )
+            listfile.write(
+                "\t".join([self.label, str(self.num_otus)] + self.otu_assigns)
+            )
 
 
 if __name__ == "__main__":
@@ -46,5 +50,3 @@ if __name__ == "__main__":
         main(snakemake.input.l1, snakemake.input.l2, snakemake.output.list)
     else:
         main(sys.argv[1], sys.argv[2], sys.argv[3])
-
-
