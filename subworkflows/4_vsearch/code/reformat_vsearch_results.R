@@ -4,7 +4,7 @@ log_smk()
 
 dsrr <- strsplit(snakemake@wildcards[["dataset_ref_region"]], "_") %>% unlist()
 
-sapply(c("bench", "sensspec", "div"), function(x) snakemake@input[[x]]) %>%
+sapply(c("bench", "sensspec", "div", "map"), function(x) snakemake@input[[x]]) %>%
   map(read_tsv) %>%
   reduce(bind_cols) %>%
   mutate(

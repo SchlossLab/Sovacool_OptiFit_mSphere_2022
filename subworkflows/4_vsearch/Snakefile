@@ -136,7 +136,7 @@ rule vsearch_closed_ref:
             --fasta_width 0
         """
 
-rule vsearch_open_ref: # TODO: concatentated biom file from closed & denovo
+rule vsearch_open_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
         ref=rules.remove_gaps_ref.output.fna
@@ -182,7 +182,7 @@ rule biom_to_list:
     script:
         "code/biom_to_list.R"
 
-rule combine_open_lists: # TODO: bind cols & relabel OTUs
+rule combine_open_lists:
     input:
         l1='results/{dataset}/open/{dataset_ref_region}.closed.list',
         l2='results/{dataset}/open/{dataset_ref_region}.denovo.list',
@@ -196,7 +196,7 @@ rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset_ref_region}.list",
         count=rules.prep_count_table_mothur.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: need different dist file for reference clustering
+        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: ? need different dist file for reference clustering
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
@@ -232,15 +232,26 @@ rule calc_diversity4:
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
 
+rule fraction_reads_mapped4:
+    input:
+        code="../../code/py/fraction_reads_mapped.py",
+        list="results/{dataset}/closed/{dataset_ref_region}.list",
+        count=rules.prep_count_table_mothur.output.count
+    output:
+        txt='results/{dataset}/closed/{dataset_ref_region}/fraction_reads_mapped.txt'
+    script:
+        "../../code/py/fraction_reads_mapped.py"
+
 rule reformat_vsearch_results:
     input:
         R="code/reformat_vsearch_results.R",
         fcns='../../code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset_ref_region}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        div=rules.calc_diversity4.output.tsv
+        div=rules.calc_diversity4.output.tsv,
+        map=rules.fraction_reads_mapped4.output.txt
     output:
         tsv='results/{dataset}/{method}/results.{dataset_ref_region}.tsv'
-    script: # TODO: aggregate benchmarks, sensspec, & diversity files
-        "code/reformat_vsearch_results.R" # TODO: use wildcards object to get ref, region etc
+    script:
+        "code/reformat_vsearch_results.R"
 
