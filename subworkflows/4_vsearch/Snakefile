@@ -51,8 +51,8 @@ rule remove_gaps_query:  # TODO: vsearch doesn't support hyphens in seq names (m
         mothur '#set.dir(output={params.outdir});
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
-        # vsearch doesn't support dots in fasta headers
-        cat {output.degap} | sed 's/\./_/g' > {output.fna}
+        # vsearch doesn't support dots or hyphens in fasta headers
+        cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
 rule remove_gaps_ref:
@@ -71,8 +71,8 @@ rule remove_gaps_ref:
         mothur '#set.dir(output={params.outdir});
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
-        # vsearch doesn't support dots in fasta headers
-        cat {output.degap} | sed 's/\./_/g' > {output.fna}
+        # vsearch doesn't support dots or hyphens in fasta headers
+        cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
 rule prep_count_table_mothur:
