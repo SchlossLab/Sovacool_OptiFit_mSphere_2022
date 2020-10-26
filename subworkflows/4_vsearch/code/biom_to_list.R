@@ -22,7 +22,7 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
     collapse = "\t"
   ),
   paste(c(label, n_otus, otu_assignments), # revert seq names to originals with dots
-  collapse = "\t"
+    collapse = "\t"
   ),
   sep = "\n"
   )
