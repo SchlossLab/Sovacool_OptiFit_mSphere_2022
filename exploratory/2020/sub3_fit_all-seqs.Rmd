@@ -46,10 +46,10 @@ dat <- c('subworkflows/3_fit_sample_subset/results/all-seqs/sensspec.tsv',
          mem_mb = max_rss,
          mem_gb = mem_mb / 1024)
 
-denovo <- c('sensspec.tsv?token=AEHR6TOXMAB75QDAO7CGTA27QR4KQ',
-            'benchmarks.tsv?token=AEHR6TI35D2TNWARGGL37W27QR4MM',
-            'dataset_sizes.tsv?token=AEHR6TJKE2C7SRDUZSGRTCC7QR4MG') %>% 
-  lapply(function(x) { paste0('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/4fa7127bb6bacaa63657f0c18c0a8c6b6d18ebe7/subworkflows/1_prep_samples/results/', x)}) %>% 
+denovo <- c('sensspec.tsv?token=AEHR6TKSSN7MCV5HE2X7GVK7T5ZH2',
+            'benchmarks.tsv?token=AEHR6TPJKCME4ZASVBZ3QYK7T5ZL6',
+            'dataset_sizes.tsv?token=AEHR6TNFM52JSRD3LU45DB27T5ZN2') %>% 
+  lapply(function(x) { paste0('https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/master/subworkflows/1_prep_samples/results/', x)}) %>% 
   full_join_files() %>% 
   mutate(ref_frac = 1)
 
@@ -140,13 +140,23 @@ dat %>% group_by(num_ref_seqs, dataset, ref_weight, method) %>%
   geom_point(alpha = 0.5) +
   geom_point(aes(x=num_ref_seqs, y=mean_sec, color=NULL), denovo_sum, shape='triangle') +
   facet_grid(dataset ~ method, scales = 'free') +
-  #scale_color_manual(values = dataset_colors) +
   scale_x_continuous(breaks = seq(0, 300000, 50000),
                      labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
   labs(title = 'Mean Runtime over reference size',
        x = '# sequences in reference',
        y = 'seconds',
        caption = 'Black triangles: mean runtime for _de novo_ clustering on the entire dataset') +
+  theme(plot.caption = element_markdown())
+dat %>% ggplot(aes(x=num_ref_seqs, y=s)) +
+  geom_point(aes(color = ref_weight), alpha = 0.3) +
+  geom_point(aes(x=num_ref_seqs, y=mean_sec), denovo_sum, shape='triangle') +
+  facet_grid(dataset ~ method, scales = 'free') +
+  scale_x_continuous(breaks = seq(0, 300000, 50000),
+                     labels = c('0', '50k', '100k', '150k', '200k', '250k', '300k')) +
+  labs(title = 'Runtime over reference size',
+       x = '# sequences in reference',
+       y = 'seconds',
+       caption = 'Triangles: mean runtime for _de novo_ clustering on the entire dataset') +
   theme(plot.caption = element_markdown())
 ```
 

@@ -55,7 +55,9 @@ dat_filt <- dat %>% filter(ref %in% c('silva', NA),
 dat_filt %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>% 
   ggplot(aes(x = method, y = value, color = tool)) +
   geom_boxplot() +
-  facet_wrap('metric', scales = 'free')
+  facet_wrap('metric', scales = 'free') + 
+  labs(caption = "For reference clustering, the soil dataset was fit to the silva db.") +
+  theme(axis.title = element_blank())
 ```
 
 ![](figures/silva-soil-only-1.png)<!-- -->

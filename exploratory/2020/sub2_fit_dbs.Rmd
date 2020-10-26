@@ -60,14 +60,14 @@ sensspec_clust <- read_tsv(here('subworkflows/1_prep_samples/results/sensspec.ts
 #sensspec <- bind_rows(sensspec_fit, sensspec_clust)
 sensspec_fit %>%
   group_by(dataset, method) %>%
-  ggplot(aes(x = method, y = mcc, color = dataset)) +
+  ggplot(aes(x = method, y = mcc, color = ref)) +
   geom_hline(aes(yintercept = mean_mcc), sensspec_clust) +
   geom_boxplot(alpha = 0.5) +
-  scale_color_manual(values = dataset_colors) +
-  ylim(0.5, 1) +
-  facet_grid(dataset ~ ref) +
+  scale_color_brewer(palette = 'Dark2') +
+  #ylim(0.5, 1) +
+  facet_wrap('dataset', scales = 'free') +
   labs(caption = "The black line represents the *de novo* clustering mcc score.") +
-  theme(legend.position = "None",
+  theme(#legend.position = "None",
         axis.title.x = element_blank(),
         plot.caption = element_markdown())
 ```
@@ -105,13 +105,13 @@ kable(ref_sizes)
 
 
 ### Fraction of sequences that map to the reference
-```{r fraction_reads_mapped}
+```{r fraction_reads_mapped_dbs}
 fractions <- read_tsv(here('subworkflows/2_fit_reference_db/results/fraction_reads_mapped.tsv'))
 fractions %>% 
-  ggplot(aes(x=dataset, y=fraction_mapped, color=dataset)) +
+  ggplot(aes(x=dataset, y=fraction_mapped, color=ref)) +
   geom_boxplot(alpha = 0.5) +
-  scale_color_manual(values = dataset_colors) +
-  facet_wrap("ref") +
+  scale_color_brewer(palette = 'Dark2') +
+  facet_wrap("dataset", scales = 'free') +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit")
 ```
