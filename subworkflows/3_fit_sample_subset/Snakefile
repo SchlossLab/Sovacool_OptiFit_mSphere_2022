@@ -273,7 +273,7 @@ rule reformat_diversity:
     input:
         fcns='../../code/R/functions.R',
         R="../../code/R/reformat_tsv.R",
-        tsv=rules.calc_diversity.output.tsv
+        tsv=rules.calc_diversity3.output.tsv
     output:
         tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.summary'
     log:
