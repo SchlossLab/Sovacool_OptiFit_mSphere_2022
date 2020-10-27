@@ -20,12 +20,10 @@ def main():  # TODO: write to log file
     )
     wildcards = snakemake.wildcards
     method = wildcards.method
-    ref = "NA" if method == 'de_novo' else 'gg'
+    ref = "NA" if method == "de_novo" else "gg"
     region = "NA"
     header_line = "dataset\tref\tregion\tmethod\tfraction_mapped\n"
-    data_str = (
-        f"{wildcards.dataset}\t{ref}\t{region}\t{method}\t{fraction_mapped}\n"
-    )
+    data_str = f"{wildcards.dataset}\t{ref}\t{region}\t{method}\t{fraction_mapped}\n"
     with open(snakemake.output.txt, "w") as output_file:
         output_file.write(header_line)
         output_file.write(data_str)
