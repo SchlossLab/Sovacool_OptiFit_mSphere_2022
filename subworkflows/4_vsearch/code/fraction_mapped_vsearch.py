@@ -19,12 +19,12 @@ def main():  # TODO: write to log file
         len(mapped_reads.intersection(all_reads)) / len(all_reads), 3
     )
     wildcards = snakemake.wildcards
-    dsrr = wildcards.dataset_ref_region.split("_")
-    ref = dsrr[1] if len(dsrr) > 1 else "NA"
-    region = "_".join(dsrr[2:]) if len(dsrr) > 1 else "NA"
+    method = wildcards.method
+    ref = "NA" if method == 'de_novo' else 'gg'
+    region = "NA"
     header_line = "dataset\tref\tregion\tmethod\tfraction_mapped\n"
     data_str = (
-        f"{wildcards.dataset}\t{ref}\t{region}\t{wildcards.method}\t{fraction_mapped}\n"
+        f"{wildcards.dataset}\t{ref}\t{region}\t{method}\t{fraction_mapped}\n"
     )
     with open(snakemake.output.txt, "w") as output_file:
         output_file.write(header_line)
