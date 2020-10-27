@@ -10,24 +10,20 @@ perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
 wildcard_constraints:
     region='bact_v4'
 
+subworkflow prep_db:
+    workdir:
+        "../0_prep_db/"
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
-subworkflow fit_ref_db:
-    workdir:
-        "../2_fit_reference_db/"
 
 ruleorder: combine_open_lists > biom_to_list
 
 rule aggregate_vsearch_results:
     input:
-        tsv=[expand('results/{dataset}/de_novo/results.{dataset}.tsv',
-                 dataset=datasets) +
-             expand('results/{dataset}/{method}/results.{dataset}_{ref}_{region}.tsv',
-                 dataset=datasets,
-                 method=methods,
-                 ref=refs,
-                 region=regions)],
+        tsv=expand('results/{dataset}/{method}/results.{dataset}.tsv',
+                    dataset=datasets,
+                    method=methods + ['de_novo']),
         fcns='../../code/R/functions.R',
         R='../../code/R/merge_results.R'
     output:
@@ -55,48 +51,6 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
-rule remove_gaps_ref:
-    input:
-        fna=fit_ref_db("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta")
-    output:
-        degap=temp("data/{dataset}/{ref}_{region}.tmp.fasta"),
-        fna="data/{dataset}/{ref}_{region}.ng.fasta"
-    params:
-        outdir="data/{dataset}/",
-        prefix='{ref}_{region}.tmp'
-    resources:
-        procs=4
-    shell:
-        """
-        mothur '#set.dir(output={params.outdir});
-            degap.seqs(fasta={input.fna}, processors={resources.procs});
-            rename.file(fasta=current, prefix={params.prefix}) '
-        # vsearch doesn't support dots or hyphens in fasta headers
-        cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
-        """
-
-rule vsearch_cluster_ref:
-    input:
-        fna=rules.remove_gaps_ref.output.fna
-    output:
-        fna='results/cluster_ref/{ref}_{region}.{dataset}.centroids.fasta'
-    params:
-        perc_identity=perc_identity
-    resources:
-        procs=8
-    shell:
-        '''
-        vsearch --cluster_size {input.fna} \
-            --centroids {output.fna} \
-            --threads {resources.procs} \
-            --id {params.perc_identity} \
-            --relabel OTU_ \
-            --qmask none \
-            --xsize \
-            --minseqlength 1 \
-            --fasta_width 0 \
-        '''
-
 rule vsearch_de_novo:
     input:
         query=rules.remove_gaps_query.output.fna
@@ -121,15 +75,15 @@ rule vsearch_de_novo:
             --fasta_width 0 \
         """
 
-rule vsearch_closed_ref:
+rule vsearch_closed_ref:  # TODO: just use greengenes
     input:
         query=rules.remove_gaps_query.output.fna,
-        ref=rules.vsearch_cluster_ref.output.fna
+        ref=prep_db("data/gg/gg.fasta")
     output:
-        biom='results/{dataset}/closed/{dataset}_{ref}_{region}.biom',
-        unmatched='results/{dataset}/closed/{dataset}_{ref}_{region}.unmatched.fasta'
+        biom='results/{dataset}/closed/{dataset}.biom',
+        unmatched='results/{dataset}/closed/{dataset}.unmatched.fasta'
     benchmark:
-        'benchmarks/{dataset}/vsearch.method_closed.{dataset}_{ref}_{region}.txt'
+        'benchmarks/{dataset}/vsearch.method_closed.{dataset}.txt'
     params:
         perc_identity=perc_identity
     resources:
@@ -152,13 +106,13 @@ rule vsearch_closed_ref:
 rule vsearch_open_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
-        ref=rules.vsearch_cluster_ref.output.fna
+        ref=prep_db("data/gg/gg.fasta")
     output:
-        closed='results/{dataset}/open/{dataset}_{ref}_{region}.closed.biom',
-        unmatched='results/{dataset}/open/{dataset}_{ref}_{region}.unmatched.fasta',
-        denovo='results/{dataset}/open/{dataset}_{ref}_{region}.denovo.biom'
+        closed='results/{dataset}/open/{dataset}.closed.biom',
+        unmatched='results/{dataset}/open/{dataset}.unmatched.fasta',
+        denovo='results/{dataset}/open/{dataset}.denovo.biom'
     benchmark:
-        'benchmarks/{dataset}/vsearch.method_open.{dataset}_{ref}_{region}.txt'
+        'benchmarks/{dataset}/vsearch.method_open.{dataset}.txt'
     params:
         perc_identity=perc_identity
     resources:
@@ -189,19 +143,19 @@ rule vsearch_open_ref:
 rule biom_to_list:
     input:
         code="code/biom_to_list.R",
-        biom="results/{dataset}/{method}/{dataset_ref_region}.biom"
+        biom="results/{dataset}/{method}/{dataset_step}.biom"
     output:
-        list="results/{dataset}/{method}/{dataset_ref_region}.list"
+        list="results/{dataset}/{method}/{dataset_step}.list"
     script:
         "code/biom_to_list.R"
 
 rule combine_open_lists:
     input:
-        l1='results/{dataset}/open/{dataset_ref_region}.closed.list',
-        l2='results/{dataset}/open/{dataset_ref_region}.denovo.list',
+        l1='results/{dataset}/open/{dataset}.closed.list',
+        l2='results/{dataset}/open/{dataset}.denovo.list',
         py='code/combine_open_lists.py'
     output:
-        list='results/{dataset}/open/{dataset_ref_region}.list'
+        list='results/{dataset}/open/{dataset}.list'
     script:
         'code/combine_open_lists.py'
 
@@ -229,17 +183,17 @@ rule prep_dist:
 
 rule sensspec_vsearch:
     input:
-        list="results/{dataset}/{method}/{dataset_ref_region}.list",
+        list="results/{dataset}/{method}/{dataset}.list",
         count=rules.prep_count_table.output.count,
         dist=rules.prep_dist.output.dist
     output:
-        tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
+        tsv='results/{dataset}/{method}/{dataset}.sensspec'
     params:
         outdir='results/{dataset}/{method}/'
     benchmark:
-        'benchmarks/{dataset}/sensspec.method_{method}.{dataset_ref_region}.txt'
+        'benchmarks/{dataset}/sensspec.method_{method}.{dataset}.txt'
     log:
-        'log/{dataset}/sensspec.method_{method}.{dataset_ref_region}.txt'
+        'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -248,14 +202,14 @@ rule sensspec_vsearch:
 
 rule calc_diversity4:
     input:
-        list="results/{dataset}/{method}/{dataset_ref_region}.list",
+        list="results/{dataset}/{method}/{dataset}.list",
         count=rules.prep_count_table.output.count,
     output:
-        tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
+        tsv='results/{dataset}/{method}/{dataset}.groups.summary'
     params:
         outdir="results/{dataset}/{method}/"
     log:
-        "log/{dataset}/calc_diversity.{dataset_ref_region}.method_{method}.txt"
+        "log/{dataset}/calc_diversity.{dataset}.method_{method}.txt"
     resources:
         procs=8
     shell:
@@ -270,10 +224,10 @@ rule calc_diversity4:
 rule fraction_reads_mapped4:
     input:
         code="code/fraction_mapped_vsearch.py",
-        list="results/{dataset}/{method}/{dataset_ref_region}.list",
+        list="results/{dataset}/{method}/{dataset}.list",
         count=rules.prep_count_table.output.count
     output:
-        txt='results/{dataset}/{method}/fraction-mapped_{dataset_ref_region}.txt'
+        txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
     script:
         "code/fraction_mapped_vsearch.py"
 
@@ -281,12 +235,12 @@ rule reformat_vsearch_results:
     input:
         R="code/reformat_vsearch_results.R",
         fcns='../../code/R/functions.R',
-        bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset_ref_region}.txt',
+        bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
         div=rules.calc_diversity4.output.tsv,
         map=rules.fraction_reads_mapped4.output.txt
     output:
-        tsv='results/{dataset}/{method}/results.{dataset_ref_region}.tsv'
+        tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
         "code/reformat_vsearch_results.R"
 
