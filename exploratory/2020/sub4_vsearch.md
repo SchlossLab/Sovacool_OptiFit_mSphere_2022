@@ -41,11 +41,11 @@ dat <- bind_rows(optifit, opticlust) %>%
          sec = s)
 ```
 
-For now, just going to show silva v4 for reference-clustering with the
-soil dataset. Will expand to include more variables later.
+Preliminary results with just the soil dataset vs greengenes below. Will
+expand to include more datasets later.
 
 ``` r
-dat_filt <- dat %>% filter(ref %in% c('silva', NA), 
+dat_filt <- dat %>% filter(ref %in% c('gg', NA), 
                            region %in% c('bact_v4', NA),
                            dataset == 'soil') %>% 
   select(dataset, ref, region, tool, method, mcc, sec, mem_gb, numotus, fraction_mapped) %>% 
@@ -56,11 +56,11 @@ dat_filt %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>%
   ggplot(aes(x = method, y = value, color = tool)) +
   geom_boxplot() +
   facet_wrap('metric', scales = 'free') + 
-  labs(caption = "For reference clustering, the soil dataset was fit to the silva db.") +
+  labs(caption = "For reference clustering, the soil dataset was fit to the greengenes db.") +
   theme(axis.title = element_blank())
 ```
 
-![](figures/silva-soil-only-1.png)<!-- -->
+![](figures/vsearch-soil-only-1.png)<!-- -->
 
 ## OTU Quality
 
@@ -72,7 +72,7 @@ dat_filt %>% ggplot(aes(x = tool, y = mcc, color = dataset)) +
   ylim(0, 1)
 ```
 
-![](figures/mcc-1.png)<!-- -->
+![](figures/vsearch_mcc-1.png)<!-- -->
 
 ## Performance
 
@@ -83,7 +83,7 @@ dat_filt %>% ggplot(aes(x = tool, y = sec, color = dataset)) +
   scale_color_manual(values = dataset_colors)
 ```
 
-![](figures/runtime-1.png)<!-- -->
+![](figures/vsearch_runtime-1.png)<!-- -->
 
 ``` r
 dat_filt %>% ggplot(aes(x = tool, y = mem_gb, color = dataset)) +
@@ -92,7 +92,7 @@ dat_filt %>% ggplot(aes(x = tool, y = mem_gb, color = dataset)) +
   scale_color_manual(values = dataset_colors)
 ```
 
-![](figures/runtime-2.png)<!-- -->
+![](figures/vsearch_runtime-2.png)<!-- -->
 
 ## Fraction reads mapped during closed-reference clustering
 
@@ -104,4 +104,4 @@ dat_filt %>% filter(method == 'closed') %>%
   ylim(0, 1)
 ```
 
-![](figures/fraction-1.png)<!-- -->
+![](figures/vsearch_fraction-1.png)<!-- -->

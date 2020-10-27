@@ -51,11 +51,10 @@ dat <- bind_rows(optifit, opticlust) %>%
          sec = s)
 ```
 
-
-For now, just going to show silva v4 for reference-clustering with the soil dataset.
-Will expand to include more variables later.
-```{r silva-soil-only}
-dat_filt <- dat %>% filter(ref %in% c('silva', NA), 
+Preliminary results with just the soil dataset vs greengenes below.
+Will expand to include more datasets later.
+```{r vsearch-soil-only}
+dat_filt <- dat %>% filter(ref %in% c('gg', NA), 
                            region %in% c('bact_v4', NA),
                            dataset == 'soil') %>% 
   select(dataset, ref, region, tool, method, mcc, sec, mem_gb, numotus, fraction_mapped) %>% 
@@ -66,14 +65,14 @@ dat_filt %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>%
   ggplot(aes(x = method, y = value, color = tool)) +
   geom_boxplot() +
   facet_wrap('metric', scales = 'free') + 
-  labs(caption = "For reference clustering, the soil dataset was fit to the silva db.") +
+  labs(caption = "For reference clustering, the soil dataset was fit to the greengenes db.") +
   theme(axis.title = element_blank())
 ```
 
 
 ## OTU Quality
 
-```{r mcc}
+```{r vsearch_mcc}
 dat_filt %>% ggplot(aes(x = tool, y = mcc, color = dataset)) +
   geom_boxplot() +
   facet_wrap('method') +
@@ -83,7 +82,7 @@ dat_filt %>% ggplot(aes(x = tool, y = mcc, color = dataset)) +
 
 ## Performance
 
-```{r runtime}
+```{r vsearch_runtime}
 dat_filt %>% ggplot(aes(x = tool, y = sec, color = dataset)) +
   geom_boxplot() +
   facet_wrap('method') +
@@ -97,7 +96,7 @@ dat_filt %>% ggplot(aes(x = tool, y = mem_gb, color = dataset)) +
 
 ## Fraction reads mapped during closed-reference clustering
 
-```{r fraction}
+```{r vsearch_fraction}
 dat_filt %>% filter(method == 'closed') %>% 
   ggplot(aes(x = tool, y = fraction_mapped, color = dataset)) +
   geom_boxplot() +
