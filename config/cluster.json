@@ -87,5 +87,8 @@
     },
 "biom_to_tsv": {
     "pmem": "160GB"
+    },
+"sensspec_vsearch": {
+    "pmem": "16GB"
     }
 }
