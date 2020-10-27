@@ -251,8 +251,7 @@ rule count_input_sizes:
 rule calc_diversity3:
     input:
         list=rules.fit_subsample.output.list,
-        count=rules.combine_for_fit.output.count_all,
-        ref_accnos=rules.split_weighted_subsample.output.ref_accnos
+        count=rules.combine_for_fit.output.count_all
     output:
         tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary'
     params:
@@ -264,7 +263,8 @@ rule calc_diversity3:
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        remove.seqs(count={input.count}, accnos={input.ref_accnos});
+        list.seqs(list={input.list});
+        get.seqs(count={input.count}, accnos=current);
         make.shared(list={input.list}, count=current, label=0.03);
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
