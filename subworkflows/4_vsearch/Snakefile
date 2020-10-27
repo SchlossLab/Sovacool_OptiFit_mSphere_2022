@@ -79,7 +79,7 @@ rule vsearch_cluster_ref:
     input:
         fna=rules.remove_gaps_ref.output.fna
     output:
-        fna='results/cluster_ref/{ref}_{region}.{dataset}.cons.fasta'
+        fna='results/cluster_ref/{ref}_{region}.{dataset}.centroids.fasta'
     params:
         perc_identity=perc_identity
     resources:
@@ -87,7 +87,7 @@ rule vsearch_cluster_ref:
     shell:
         '''
         vsearch --cluster_size {input.fna} \
-            --consout {output.fna} \
+            --centroids {output.fna} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \

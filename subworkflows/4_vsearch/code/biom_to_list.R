@@ -2,7 +2,7 @@
 # Modified Oct. 2020 by KLS
 
 library(dplyr)
-library("jsonlite")
+library(jsonlite)
 
 biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
   biom_file <- scan(biom_file_name, what = "", sep = "\n", quiet = TRUE)
