@@ -214,11 +214,22 @@ rule prep_count_table:
     script:
         "code/prep_count_table.R"
 
+rule prep_dist:
+    input:
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
+    output:
+        dist='data/{dataset}/{dataset}.dist'
+    shell:
+        """
+        # vsearch doesn't support dots or hyphens in fasta headers
+        cat {input.dist} | sed 's/[\.-]/_/g' > {output.dist}
+        """
+
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset_ref_region}.list",
         count=rules.prep_count_table.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist")
+        dist=rules.prep_dist.output.dist
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
