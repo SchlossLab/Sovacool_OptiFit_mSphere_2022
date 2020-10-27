@@ -41,7 +41,7 @@ rule remove_gaps_query:
         outdir="data/{dataset}/",
         prefix='{dataset}.tmp'
     resources:
-        procs=4
+        procs=2
     shell:
         """
         mothur '#set.dir(output={params.outdir});
@@ -75,7 +75,7 @@ rule vsearch_de_novo:
             --fasta_width 0 \
         """
 
-rule vsearch_closed_ref:  # TODO: just use greengenes
+rule vsearch_closed_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
         ref=prep_db("data/gg/gg.fasta")
@@ -210,8 +210,6 @@ rule calc_diversity4:
         outdir="results/{dataset}/{method}/"
     log:
         "log/{dataset}/calc_diversity.{dataset}.method_{method}.txt"
-    resources:
-        procs=8
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
