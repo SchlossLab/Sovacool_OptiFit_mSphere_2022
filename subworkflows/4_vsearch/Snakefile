@@ -221,8 +221,10 @@ rule prep_dist:
         dist='data/{dataset}/{dataset}.dist'
     shell:
         """
-        # vsearch doesn't support dots or hyphens in fasta headers
-        cat {input.dist} | sed 's/[\.-]/_/g' > {output.dist}
+        # vsearch doesn't support dots or hyphens in fasta headers.
+        # replace them in fasta headers (1st & 2nd occurrence),
+        # but not in the distance value (3rd occurrence).
+        cat {input.dist} |  sed 's/[\.-]/_/' | sed 's/[\.-]/_/' > {output.dist}
         """
 
 rule sensspec_vsearch:
