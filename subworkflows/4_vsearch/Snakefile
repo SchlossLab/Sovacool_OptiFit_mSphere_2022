@@ -35,7 +35,7 @@ rule aggregate_vsearch_results:
     script:
         '../../code/R/merge_results.R'
 
-rule remove_gaps_query:  # TODO: vsearch doesn't support hyphens in seq names (mouse dataset)
+rule remove_gaps_query:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
     output:
@@ -74,15 +74,6 @@ rule remove_gaps_ref:
         # vsearch doesn't support dots or hyphens in fasta headers
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
-
-rule prep_count_table_mothur:
-    input:
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        code="../../code/R/mutate_ref_count.R"
-    output:
-        count='data/{dataset}/{dataset}.dummyRefGroup.count_table'
-    script:
-        "../../code/R/mutate_ref_count.R"
 
 rule vsearch_cluster_ref:
     input:
@@ -214,11 +205,20 @@ rule combine_open_lists:
     script:
         'code/combine_open_lists.py'
 
+rule prep_count_table:
+    input:
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        code="code/prep_count_table.R"
+    output:
+        count='data/{dataset}/{dataset}.dummyRefGroup.count_table'
+    script:
+        "code/prep_count_table.R"
+
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset_ref_region}.list",
-        count=rules.prep_count_table_mothur.output.count,
-        dist=prep_samples("results/{dataset}/{dataset}.dist") # TODO: ? need different dist file for reference clustering
+        count=rules.prep_count_table.output.count,
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.sensspec'
     params:
@@ -236,7 +236,7 @@ rule sensspec_vsearch:
 rule calc_diversity4:
     input:
         list="results/{dataset}/{method}/{dataset_ref_region}.list",
-        count=rules.prep_count_table_mothur.output.count,
+        count=rules.prep_count_table.output.count,
     output:
         tsv='results/{dataset}/{method}/{dataset_ref_region}.groups.summary'
     params:
@@ -258,7 +258,7 @@ rule fraction_reads_mapped4:
     input:
         code="code/fraction_mapped_vsearch.py",
         list="results/{dataset}/{method}/{dataset_ref_region}.list",
-        count=rules.prep_count_table_mothur.output.count
+        count=rules.prep_count_table.output.count
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset_ref_region}.txt'
     script:
