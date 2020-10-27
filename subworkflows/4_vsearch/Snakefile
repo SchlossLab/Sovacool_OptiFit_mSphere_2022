@@ -84,6 +84,28 @@ rule prep_count_table_mothur:
     script:
         "../../code/R/mutate_ref_count.R"
 
+rule vsearch_cluster_ref:
+    input:
+        fna=rules.remove_gaps_ref.output.fna
+    output:
+        fna='results/cluster_ref/{ref}_{region}.{dataset}.cons.fasta'
+    params:
+        perc_identity=perc_identity
+    resources:
+        procs=8
+    shell:
+        '''
+        vsearch --cluster_size {input.fna} \
+            --consout {output.fna} \
+            --threads {resources.procs} \
+            --id {params.perc_identity} \
+            --relabel OTU_ \
+            --qmask none \
+            --xsize \
+            --minseqlength 1 \
+            --fasta_width 0 \
+        '''
+
 rule vsearch_de_novo:
     input:
         query=rules.remove_gaps_query.output.fna
@@ -111,12 +133,12 @@ rule vsearch_de_novo:
 rule vsearch_closed_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
-        ref=rules.remove_gaps_ref.output.fna
+        ref=rules.vsearch_cluster_ref.output.fna
     output:
-        biom='results/{dataset}/closed/{datset}_{ref}_{region}.biom',
-        unmatched='results/{dataset}/closed/{datset}_{ref}_{region}.unmatched.fasta'
+        biom='results/{dataset}/closed/{dataset}_{ref}_{region}.biom',
+        unmatched='results/{dataset}/closed/{dataset}_{ref}_{region}.unmatched.fasta'
     benchmark:
-        'benchmarks/{dataset}/vsearch.method_closed.{datset}_{ref}_{region}.txt'
+        'benchmarks/{dataset}/vsearch.method_closed.{dataset}_{ref}_{region}.txt'
     params:
         perc_identity=perc_identity
     resources:
@@ -139,13 +161,13 @@ rule vsearch_closed_ref:
 rule vsearch_open_ref:
     input:
         query=rules.remove_gaps_query.output.fna,
-        ref=rules.remove_gaps_ref.output.fna
+        ref=rules.vsearch_cluster_ref.output.fna
     output:
-        closed='results/{dataset}/open/{datset}_{ref}_{region}.closed.biom',
-        unmatched='results/{dataset}/open/{datset}_{ref}_{region}.unmatched.fasta',
-        denovo='results/{dataset}/open/{datset}_{ref}_{region}.denovo.biom'
+        closed='results/{dataset}/open/{dataset}_{ref}_{region}.closed.biom',
+        unmatched='results/{dataset}/open/{dataset}_{ref}_{region}.unmatched.fasta',
+        denovo='results/{dataset}/open/{dataset}_{ref}_{region}.denovo.biom'
     benchmark:
-        'benchmarks/{dataset}/vsearch.method_open.{datset}_{ref}_{region}.txt'
+        'benchmarks/{dataset}/vsearch.method_open.{dataset}_{ref}_{region}.txt'
     params:
         perc_identity=perc_identity
     resources:
