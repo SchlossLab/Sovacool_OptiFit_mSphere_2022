@@ -8,7 +8,8 @@ mutate_columns <- function(df_orig) {
     region = snakemake@params[["region"]],
     seed = snakemake@params[["seed"]],
     method = snakemake@params[["method"]],
-    printref = snakemake@params[["printref"]]
+    printref = snakemake@params[["printref"]],
+    tool = 'mothur'
   )
   if (all(c("ref_weight", "ref_frac", "sample_frac") %in% names(snakemake@params))) {
     df_new <- df_new %>% mutate(
