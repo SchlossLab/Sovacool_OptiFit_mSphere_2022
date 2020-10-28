@@ -23,14 +23,19 @@ printrefs = config['printrefs']
 seeds = range(1, config['seeds']+1)
 
 
-rule fit_ref_db_targets:
+rule full_join_optifit_dbs:
     input:
-        "results/sensspec.tsv",
-        "results/benchmarks.tsv",
-        'results/fraction_reads_mapped.tsv',
-        'results/ref_sizes.tsv',
-        expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
-                dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs)
+        fcns='../../code/R/functions.R',
+        R='../../code/R/full_join_tsvs.R',
+        tsv=expand("results/{subdir}/{fn}.tsv",
+                    subdir = datasets,
+                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped']) + [prep_samples('results/dataset_sizes.tsv')]
+    output:
+        tsv='results/optifit_dbs_results.tsv'
+    log:
+        'log/full_join.txt'
+    script:
+        '../../code/R/full_join_tsvs.R'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -245,14 +250,35 @@ rule fit_to_ref_db:
         cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
-rule reformat_optifit_results:  # for plotting
+rule calc_diversity2:
+    input:
+        list=rules.fit_to_ref_db.output.list,
+        count=rules.copy_preclust_inputs.output.count
+    output:
+        tsv=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}.pick.optifit_mcc.groups.summary')
+    params:
+        outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
+    log:
+        "log/{dataset}_{ref}_{region}/calc_diversity.method_{method}.printref_{printref}.seed_{seed}.log"
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        list.seqs(list={input.list});
+        get.seqs(count={input.count}, accnos=current);
+        make.shared(list={input.list}, count=current, label=0.03);
+        summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
+        """
+
+rule reformat_optifit_results2:  # for plotting
     input:
         sensspec=rules.fit_to_ref_db.output.sensspec,
         bench=rules.fit_to_ref_db.benchmark,
+        div=rules.calc_diversity2.output.tsv,
         code="../../code/R/reformat_optifit_results.R"
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
-        bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt'
+        bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
+        div='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}.pick.optifit_mcc.groups.mod.summary'
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/reformat_optifit_results.method_{method}.printref_{printref}.seed_{seed}.txt"
     params:
@@ -277,22 +303,33 @@ rule fraction_reads_mapped:
     script:
         "../../code/py/fraction_reads_mapped.py"
 
-rule merge_results2:
+rule rbind_results2:
     input:
-        sensspec=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
-                dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        bench=expand('benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
-            dataset=datasets, ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        mapped=expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
-        dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds),
+        sensspec=expand('results/{{dataset}}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{{dataset}}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
+            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
+        bench=expand('benchmarks/{{dataset}}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
+            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
+        div=expand('results/{{dataset}}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{{dataset}}.pick.optifit_mcc.groups.mod.summary',
+            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
         fcns='../../code/R/functions.R',
-        code='../../code/R/merge_results.R'
+        code='../../code/R/rbind_results.R'
     output:
-        sensspec="results/sensspec.tsv",
-        bench="results/benchmarks.tsv",
-        mapped='results/fraction_reads_mapped.tsv'
+        sensspec="results/{dataset}/sensspec.tsv",
+        bench="results/{dataset}/benchmarks.tsv",
+        div='results/{dataset}/diversity.tsv'
     benchmark:
-        "benchmarks/merge_results.txt"
+        "benchmarks/{dataset}/rbind_results.txt"
+    script:
+        '../../code/R/rbind_results.R'
+
+rule merge_fraction_mapped2:
+    input:
+        tsv=expand('results/{{dataset}}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
+            ref=refs, region=regions, printref=printrefs, seed=seeds),
+        code='../../code/R/merge_results.R',
+        fcns='../../code/R/functions.R'
+    output:
+        tsv='results/{dataset}/fraction_reads_mapped.tsv'
     script:
         '../../code/R/merge_results.R'
 
