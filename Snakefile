@@ -1,34 +1,45 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
 
 configfile: 'config/config.yaml'
+print(config)
 
 subworkflow prep_db:
     workdir:
         "subworkflows/0_prep_db/"
+    configfile:
+        config['configpath']
 
 subworkflow prep_samples:
     workdir:
         "subworkflows/1_prep_samples/"
+    configfile:
+        config['configpath']
 
 subworkflow fit_ref_db:
     workdir:
         "subworkflows/2_fit_reference_db/"
+    configfile:
+        config['configpath']
 
-subworkflow fit_subset:
+subworkflow fit_split:
     workdir:
-        "subworkflows/3_fit_sample_subset/"
+        "subworkflows/3_fit_sample_split/"
+    configfile:
+        config['configpath']
 
 subworkflow vsearch:
     workdir:
         "subworkflows/4_vsearch/"
+    configfile:
+        config['configpath']
 
 rule targets:
     input:
         'paper/paper.pdf',
-        prep_samples('results/opticlust_results.tsv'),
-        fit_ref_db('results/optifit_dbs_results.tsv'),
-        fit_subset('results/optifit_subset_results.tsv'),
-        vsearch('results/vsearch_results.tsv')
+        opticlust=prep_samples('results/opticlust_results.tsv'),
+        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        optifit_split=fit_split('results/optifit_split_results.tsv'),
+        vsearch=vsearch('results/vsearch_results.tsv')
 
 rule render_paper:
     input:

@@ -14,3 +14,4 @@ ref_fracs:
     stop: 4
     step: 2
 seeds: 1
+configpath: 'config/config_test.yaml'
