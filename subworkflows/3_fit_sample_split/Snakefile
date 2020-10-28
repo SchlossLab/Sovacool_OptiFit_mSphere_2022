@@ -58,20 +58,10 @@ rule split_weighted_subsample:
     script:
         "../../code/py/split_weighted_subsample.py"
 
-
-rule mutate_ref_count3:
-    input:
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        code="../../code/R/mutate_ref_count.R"
-    output:
-        count=temp('data/{dataset}/{dataset}.count_table')
-    script:
-        "../../code/R/mutate_ref_count.R"
-
 rule prep_subsample_ref:
     input:
         accnos=rules.split_weighted_subsample.output.ref_accnos,
-        count=rules.mutate_ref_count3.output.count,
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
@@ -97,7 +87,7 @@ rule combine_for_fit:
         accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
         accnos_sample=rules.split_weighted_subsample.output.sample_accnos,
         accnos_all=rules.split_weighted_subsample.output.all_accnos,
-        count=rules.mutate_ref_count3.output.count,
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         dist=prep_samples("results/{dataset}/{dataset}.dist"),
         py="code/check_fracs.py"

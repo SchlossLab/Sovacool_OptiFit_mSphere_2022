@@ -159,15 +159,19 @@ rule combine_open_lists:
     script:
         'code/combine_open_lists.py'
 
+# vsearch doesn't support dots or hyphens in sequence names.
 rule prep_count_table:
     input:
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        code="code/prep_count_table.R"
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table")
     output:
-        count='data/{dataset}/{dataset}.dummyRefGroup.count_table'
-    script:
-        "code/prep_count_table.R"
+        count='data/{dataset}/{dataset}.count_table'
+    shell:
+        """
+        cat {input.count} |  sed 's/[\.-]/_/g' > {output.count}
+        """
 
+# replace dots/hyphens in fasta headers (1st & 2nd occurrence),
+# but not in the distance value (3rd occurrence).
 rule prep_dist:
     input:
         dist=prep_samples("results/{dataset}/{dataset}.dist")
@@ -175,9 +179,6 @@ rule prep_dist:
         dist='data/{dataset}/{dataset}.dist'
     shell:
         """
-        # vsearch doesn't support dots or hyphens in fasta headers.
-        # replace them in fasta headers (1st & 2nd occurrence),
-        # but not in the distance value (3rd occurrence).
         cat {input.dist} |  sed 's/[\.-]/_/' | sed 's/[\.-]/_/' > {output.dist}
         """
 

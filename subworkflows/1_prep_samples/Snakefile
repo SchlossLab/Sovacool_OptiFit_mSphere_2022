@@ -68,13 +68,12 @@ rule preprocess:
         rdp_tax=prep_db("data/rdp/rdp.tax")
     output:
         filter="data/{dataset}/processed/{dataset}.filter",
-        count="data/{dataset}/processed/{dataset}.count_table",
+        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/processed/{dataset}.tax",
         fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
         workdir="data/{dataset}/temp/",
         filter="data/{dataset}/temp/{dataset}.filter",
-        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
         fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
         trim_contigs='data/{dataset}/temp/{dataset}.trim.contigs.fasta',
@@ -105,10 +104,18 @@ rule preprocess:
             classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
         cp {params.filter} {output.filter}
-        cp {params.count} {output.count}
         cp {params.tax} {output.tax}
         cp {params.fasta} {output.fasta}
         """
+
+rule mutate_count1:
+    input:
+        count=rules.preprocess.output.count,
+        code="../../code/R/mutate_ref_count.R"
+    output:
+        count='data/{dataset}/processed/{dataset}.count_table'
+    script:
+        "../../code/R/mutate_ref_count.R"
 
 def count_seqs(filename):
     with open(filename, 'r') as infile:
@@ -153,10 +160,10 @@ rule calc_dists_dataset:
 rule cluster_dataset:
     input:
         dist=rules.calc_dists_dataset.output.column,
-        count=rules.preprocess.output.count
+        count=rules.mutate_count1.output.count
     output:
-        list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
-        steps="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps",
+        list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
+        steps=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps"),
         sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec')
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
@@ -174,35 +181,12 @@ rule cluster_dataset:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule get_otu_reps_dataset:
-    input:
-        list=rules.cluster_dataset.output.list,
-        count=rules.preprocess.output.count,
-        tax=rules.preprocess.output.tax,
-        dist=rules.calc_dists_dataset.output.column
-    output:
-        tax="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{dataset}/cluster/{dataset}.seed_{seed}.opti_mcc.0.03.rep.count_table"
-    params:
-        workdir="results/{dataset}/cluster/"
-    log:
-        "log/{dataset}/get_otu_reps.seed_{seed}.log"
-    benchmark:
-        "benchmarks/{dataset}/get_otu_reps.seed_{seed}.txt"
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.workdir});
-        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
-        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
-        """
-
 rule calc_diversity1:
     input:
         list=rules.cluster_dataset.output.list,
-        count=rules.preprocess.output.count
+        count=rules.mutate_count1.output.count
     output:
-        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.summary")
+        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.group.summary")
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
