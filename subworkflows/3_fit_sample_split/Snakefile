@@ -1,12 +1,12 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
 import numpy
 
-configfile: '../../config/config.yaml'
-
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
 
+
+configfile: '../../config/config.yaml'
 
 datasets = config['datasets']
 methods = config['methods']
@@ -27,7 +27,7 @@ wildcard_constraints:
 
 include: "code/merges.smk"
 
-rule full_join_optifit_subset:
+rule full_join_optifit_split:
     input:
         fcns='../../code/R/functions.R',
         R='../../code/R/full_join_tsvs.R',
@@ -35,7 +35,7 @@ rule full_join_optifit_subset:
                     subdir = ['all-seqs'],#, 'fixed-sample'],
                     fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
     output:
-        tsv='results/optifit_subset_results.tsv'
+        tsv='results/optifit_split_results.tsv'
     log:
         'log/full_join.txt'
     script:

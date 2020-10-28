@@ -2,8 +2,6 @@
 import itertools
 import shutil
 
-configfile: '../../config/config.yaml'
-
 wildcard_constraints:
     seed='\d+',
     region='bact_v4'
@@ -14,6 +12,8 @@ subworkflow prep_db:
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
+
+configfile: '../../config/config.yaml'
 
 datasets = config['datasets']
 refs = config['references']

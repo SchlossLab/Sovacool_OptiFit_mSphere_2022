@@ -4,9 +4,11 @@ wildcard_constraints:
     region="bact_v4|bact_full",
     ref="silva|rdp|gg"
 
+configfile: '../../config/config.yaml'
+
 rule targets:
     input:
-        expand("data/{ref}/{ref}.{region}.fasta", ref=['silva', 'rdp', 'gg'], region=['bact_v4', 'bact_full'])
+        expand("data/{ref}/{ref}.{region}.fasta", ref=config['references'], region=['bact_v4', 'bact_full'])
 
 rule download_silva:
     output:
