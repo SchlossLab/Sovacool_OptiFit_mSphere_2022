@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss99
+#SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
@@ -35,4 +35,5 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
+source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
 time snakemake --profile config/slurm --latency-wait 90 --configfile config/config_test.yaml
