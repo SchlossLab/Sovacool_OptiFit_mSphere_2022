@@ -38,7 +38,8 @@ dat <- bind_rows(optifit, opticlust) %>%
   bind_rows(vsearch) %>% 
   mutate(mem_mb = max_rss,
          mem_gb = mem_mb / 1024,
-         sec = s)
+         sec = s) %>% 
+  filter(ref %in% c('gg', NA))
 ```
 
 Preliminary results with just the soil dataset vs greengenes below. Will
@@ -65,11 +66,12 @@ dat_filt %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>%
 ## OTU Quality
 
 ``` r
-dat_filt %>% ggplot(aes(x = tool, y = mcc, color = dataset)) +
+mcc <- dat %>% ggplot(aes(x = method, y = mcc, color = tool)) +
   geom_boxplot() +
-  facet_wrap('method') +
-  scale_color_manual(values = dataset_colors) +
-  ylim(0, 1)
+  facet_wrap('dataset', ncol = 1) +
+  ylim(0, 1) + 
+  labs(x = '')
+mcc
 ```
 
 ![](figures/vsearch_mcc-1.png)<!-- -->
@@ -77,19 +79,21 @@ dat_filt %>% ggplot(aes(x = tool, y = mcc, color = dataset)) +
 ## Performance
 
 ``` r
-dat_filt %>% ggplot(aes(x = tool, y = sec, color = dataset)) +
+sec <- dat %>% ggplot(aes(x = method, y = sec, color = tool)) +
   geom_boxplot() +
-  facet_wrap('method') +
-  scale_color_manual(values = dataset_colors)
+  facet_wrap('dataset', scales = 'free', ncol = 1)  +
+  labs(x = '')
+sec
 ```
 
 ![](figures/vsearch_runtime-1.png)<!-- -->
 
 ``` r
-dat_filt %>% ggplot(aes(x = tool, y = mem_gb, color = dataset)) +
+mem <- dat %>% ggplot(aes(x = method, y = mem_gb, color = tool)) +
   geom_boxplot() +
-  facet_wrap('method') +
-  scale_color_manual(values = dataset_colors)
+  facet_wrap('dataset', scales = 'free', ncol = 1)  +
+  labs(x = '')
+mem
 ```
 
 ![](figures/vsearch_runtime-2.png)<!-- -->
@@ -97,11 +101,36 @@ dat_filt %>% ggplot(aes(x = tool, y = mem_gb, color = dataset)) +
 ## Fraction reads mapped during closed-reference clustering
 
 ``` r
-dat_filt %>% filter(method == 'closed') %>% 
-  ggplot(aes(x = tool, y = fraction_mapped, color = dataset)) +
+dat %>% filter(method == 'closed') %>% 
+  ggplot(aes(x = method, y = fraction_mapped, color = tool)) +
   geom_boxplot() +
-  scale_color_manual(values = dataset_colors) +
-  ylim(0, 1)
+  facet_wrap('dataset') +
+  ylim(0, 1) +
+  labs(caption = 'Sequences were aligned to the greengenes database.')
 ```
 
 ![](figures/vsearch_fraction-1.png)<!-- -->
+
+## All metrics summarized on one plot
+
+``` r
+dat %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>% 
+  ggplot(aes(x = method, y = value, color = tool)) +
+  geom_boxplot() +
+  facet_wrap(dataset ~ metric, scales = 'free', ncol = 3, nrow = 4) + 
+  labs(caption = "For reference clustering, the soil dataset was fit to the greengenes db.") +
+  theme(axis.title = element_blank())
+```
+
+![](figures/vsearch_summary-1.png)<!-- -->
+
+``` r
+legend <- get_legend(mcc)
+pgrid <- plot_grid(mcc + theme(legend.position = 'none'), 
+          sec + theme(legend.position = 'none'), 
+          mem + theme(legend.position = 'none'), 
+          align = 'h', nrow = 1)
+plot_grid(pgrid, legend, rel_widths = c(3, .4))
+```
+
+![](figures/vsearch_cowplot-1.png)<!-- -->

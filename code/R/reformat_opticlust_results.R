@@ -9,8 +9,7 @@ mutate_columns <- function(df_orig) {
     seed = snakemake@params[["seed"]],
     method = "de_novo",
     printref = NA,
-    iter = NA,
-    numotus = NA
+    tool = "mothur"
   )
   if (all(c("ref_weight", "ref_frac") %in% names(snakemake@params))) {
     df_new <- df_new %>% mutate(
@@ -36,3 +35,4 @@ if (!is.null(snakemake@log)) {
 }
 reformat("sensspec")
 reformat("bench")
+reformat("div")

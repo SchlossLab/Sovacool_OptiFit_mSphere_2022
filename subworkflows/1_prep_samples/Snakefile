@@ -24,13 +24,23 @@ seeds = range(1, config['seeds']+1)
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
 
-rule preprocess_targets:
+rule full_join_opticlust:
     input:
-        'results/sensspec.tsv',
-        "results/benchmarks.tsv",
-        'results/dataset_sizes.tsv',
-        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)],
-        expand('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec', dataset=datasets, seed=seeds)
+        fcns='../../code/R/functions.R',
+        R='../../code/R/full_join_tsvs.R',
+        tsv=expand("results/{subdir}/{fn}.tsv",
+                    subdir = datasets,
+                    fn = ['sensspec', 'benchmarks', 'diversity']) + ['results/dataset_sizes.tsv']
+    output:
+        tsv='results/opticlust_results.tsv'
+    log:
+        'log/full_join.txt'
+    script:
+        '../../code/R/full_join_tsvs.R'
+
+rule fastq_targets:
+    input:
+        [f"data/{dataset}/raw/{sra}_{i}.fastq.gz" for dataset in ['human', 'marine', 'soil'] for sra in sra_list[dataset] for i in (1,2)]
 
 rule download_most:
     input:
@@ -147,7 +157,7 @@ rule cluster_dataset:
     output:
         list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
         steps="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps",
-        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'
+        sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec')
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
@@ -187,14 +197,35 @@ rule get_otu_reps_dataset:
         get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
         """
 
+rule calc_diversity1:
+    input:
+        list=rules.cluster_dataset.output.list,
+        count=rules.preprocess.output.count
+    output:
+        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.summary")
+    params:
+        outdir="results/{dataset}/cluster/seed_{seed}/"
+    log:
+        "log/{dataset}/calc_diversity.seed_{seed}.txt"
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        list.seqs(list={input.list});
+        get.seqs(count={input.count}, accnos=current);
+        make.shared(list={input.list}, count=current, label=0.03);
+        summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
+        """
+
 rule reformat_opticlust_results:  # to make compatible with optifit sensspec & plotting
     input:
         sensspec=rules.cluster_dataset.output.sensspec,
         bench=rules.cluster_dataset.benchmark,
+        div=rules.calc_diversity1.output.tsv,
         code="../../code/R/reformat_opticlust_results.R"
     output:
         sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
-        bench="benchmarks/{dataset}/cluster.seed_{seed}.mod.txt"
+        bench="benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
+        div="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.mod.summary"
     benchmark:
         "benchmarks/{dataset}/reformat_opticlust_results.cluster.seed_{seed}.txt"
     params:
@@ -203,17 +234,20 @@ rule reformat_opticlust_results:  # to make compatible with optifit sensspec & p
     script:
         "../../code/R/reformat_opticlust_results.R"
 
-rule merge_results1:
+rule rbind_results:
     input:
-        sensspec=expand('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
-                dataset=datasets, seed=seeds),
-        bench=expand("benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
-            dataset=datasets, seed=seeds),
-        code='../../code/R/merge_results.R'
+        sensspec=expand('results/{{dataset}}/cluster/seed_{seed}/{{dataset}}.opti_mcc.mod.sensspec',
+                         seed=seeds),
+        bench=expand("benchmarks/{{dataset}}/cluster.seed_{seed}.mod.txt",
+                      seed=seeds),
+        div=expand("results/{{dataset}}/cluster/seed_{seed}/{{dataset}}.opti_mcc.pick.group.mod.summary",
+                    seed=seeds),
+        code='../../code/R/rbind_results.R'
     output:
-        sensspec="results/sensspec.tsv",
-        bench="results/benchmarks.tsv"
+        sensspec="results/{dataset}/sensspec.tsv",
+        bench="results/{dataset}/benchmarks.tsv",
+        div='results/{dataset}/diversity.tsv'
     benchmark:
-        "benchmarks/merge_results.txt"
+        "benchmarks/{dataset}/rbind_results.txt"
     script:
-        '../../code/R/merge_results.R'
+        '../../code/R/rbind_results.R'
