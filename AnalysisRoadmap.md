@@ -46,13 +46,10 @@
     - [x] OptiFit
         - [x] Open reference clustering
         - [x] Closed reference clustering
-    - [ ] VSEARCH / QIIME2 against representative sequences from each OTU
-        - [ ] Open
-        - [ ] Closed
-    - [ ] VSEARCH / QIIME2 against core_gg_97 collection
-        - [ ] Open
-        - [ ] Closed   
-    - [ ] Find % of sequences that map to references for all closed methods.
+    - [x] VSEARCH / QIIME2 against core_gg_97 collection
+        - [x] Open
+        - [x] Closed   
+    - [x] Find % of sequences that map to references for all closed methods.
 
 ## 2. Importance of database
 * Questions:
@@ -79,34 +76,34 @@
     - How does OptiFit perform on fraction of dataset relative to entire dataset?
     - How sensitive is OptiFit to random variation?
 * For each dataset (human, marine, mouse, soil):
-    - [ ] Use of 10, 20, 30... 90% of data to create reference databases (R)
+    - [x] Use of 10, 20, 30... 90% of data to create reference databases (R)
         - [x] Subset with different weighted methods:
             - none
             - abundance
             - distances (connectivity)
         - [x] Cluster reference sequences using OptiClust
         - [x] Get MCC
-        - [ ] Run 10 times to get the seed that gives the best clustering for each set of references
-    - [ ] On remaining fraction of data (U)
-        - [ ] OptiClust on its own
+        - [x] Run 10 times to get the seed that gives the best clustering for each set of references
+    - [x] On remaining fraction of data (U)
+        - [x] OptiClust on its own
         - [x] Use OptiFit/open to fit U sequences into R OTUs
-            - [ ] Capture MCC values for U sequences with and without R sequences included
-            - [ ] Run 10 times to see level of variation
+            - [x] Capture MCC values for U sequences with and without R sequences included
+            - [x] Run 10 times to see level of variation
         - [x] Use OptiFit/closed to fit U sequences into R OTUs
-            - [ ] Capture MCC values for U sequences with and without R sequences included
-            - [ ] % of sequences that map to references
-            - [ ] Run 10 times to see level of variation
+            - [x] Capture MCC values for U sequences with and without R sequences included
+            - [x] % of sequences that map to references
+            - [x] Run 10 times to see level of variation
 
 ## 4. Deploy (separate paper)
 * Questions:
     - Can we use OptiFit to fit new data to existing data and model to predict presence of lesion?
 * Use Baxter dataset
-    - [ ] Cluster all samples (N~490) using OptiClust
-    - [ ] Train RF model to differentiate normals from lesions
-    - [ ] Get AUC, sens/spec
+    - Cluster all samples (N~490) using OptiClust
+    - Train RF model to differentiate normals from lesions
+    - Get AUC, sens/spec
 * Generate N references that each lack one sample
-    - [ ] Use OptiClust to generate N reference clusterings
-    - [ ] Train RF model to differentiate normals from lesions
-    - [ ] OptiFit sequences from missing sample to respective reference
-    - [ ] Classify sample against model
-    - [ ] Get AUC, sens/spec
+    - Use OptiClust to generate N reference clusterings
+    - Train RF model to differentiate normals from lesions
+    - OptiFit sequences from missing sample to respective reference
+    - Classify sample against model
+    - Get AUC, sens/spec
