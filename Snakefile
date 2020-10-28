@@ -1,7 +1,6 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
 
 configfile: 'config/config.yaml'
-print(config)
 
 subworkflow prep_db:
     workdir:

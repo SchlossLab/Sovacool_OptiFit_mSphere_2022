@@ -122,28 +122,19 @@ rule cluster_db:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule get_otu_reps_db:
+
+rule pick_best_cluster_seed2:
     input:
-        list=rules.cluster_db.output.list,
-        count=rules.preclust_db.output.count,
-        tax=rules.preclust_db.output.tax,
-        dist=rules.preclust_db.output.dist
+        sensspec=expand("results/{{dataset}}_{{ref}}_{{region}}/cluster_db/seed_{seed}/{{ref}}.{{region}}.filter.unique.precluster.opti_mcc.sensspec",
+            seed=seeds),
+        list=expand("results/{{dataset}}_{{ref}}_{{region}}/cluster_db/seed_{seed}/{{ref}}.{{region}}.filter.unique.precluster.opti_mcc.list",
+            seed=seeds),
+        code='../../code/R/pick_best_cluster_seed.R',
+        fcns='../../code/R/functions.R'
     output:
-        tax="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.taxonomy",
-        sum="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.cons.tax.summary",
-        count="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.seed_{seed}.opti_mcc.0.03.rep.count_table"
-    params:
-        outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
-    log:
-        "log/get_otu_reps.{dataset}_{ref}_{region}.seed_{seed}.log"
-    benchmark:
-        "benchmarks/get_otu_reps.{dataset}_{ref}_{region}.seed_{seed}.txt"
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-        classify.otu(list={input.list}, count={input.count}, taxonomy={input.tax}, label=0.03);
-        get.oturep(column={input.dist}, list={input.list}, count={input.count}, method=abundance) '
-        """
+        list="results/{dataset}_{ref}_{region}/cluster_db/best_seed.opti_mcc.list"
+    script:
+        '../../code/R/pick_best_cluster_seed.R'
 
 rule mutate_ref_count:
     input:
@@ -201,36 +192,12 @@ rule calc_dists_combined:
             dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
         """
 
-rule cluster_combined:
-    input:
-        dist=rules.calc_dists_combined.output.column,
-        count=rules.combine_seqs.output.count_all
-    output:
-        list="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.list",
-        steps="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.steps",
-        sensspec='results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/{dataset}_{ref}.{region}.all.opti_mcc.sensspec'
-    params:
-        outdir="results/{dataset}_{ref}_{region}/cluster_combined/seed_{seed}/"
-    log:
-        "log/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/cluster_combined.seed_{seed}.txt"
-    resources:
-        procs=8
-    shell:
-        """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-        set.seed(seed={wildcards.seed});
-        set.current(processors={resources.procs});
-        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
-        """
-
 rule fit_to_ref_db:
     input:
         fasta=rules.combine_seqs.output.fasta_all,
         count=rules.combine_seqs.output.count_all,
         column=rules.calc_dists_combined.output.column,
-        reflist=rules.cluster_db.output.list
+        reflist=rules.pick_best_cluster_seed2.output.list
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.sensspec',
         list='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.list',
