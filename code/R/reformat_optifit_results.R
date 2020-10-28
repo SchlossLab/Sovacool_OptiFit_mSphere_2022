@@ -34,4 +34,4 @@ if (!is.null(snakemake@log)) {
 }
 reformat("sensspec")
 reformat("bench")
-reformat('div')
+reformat("div")
