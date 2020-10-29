@@ -30,7 +30,7 @@ rule rbind_opticlust:
         R='../../code/R/full_join_tsvs.R',
         tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
                     dataset = datasets,
-                    seed = seeds) + ['results/dataset_sizes.tsv']
+                    seed = seeds)
     output:
         tsv='results/opticlust_results.tsv'
     log:
