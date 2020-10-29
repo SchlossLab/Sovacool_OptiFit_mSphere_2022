@@ -1,5 +1,5 @@
-library(dplyr)
-library(readr)
+source(snakemake@input[['fcns']])
+log_smk()
 
 mutate_columns <- function(df_orig) {
   df_new <- df_orig %>% mutate(
@@ -27,14 +27,6 @@ reformat <- function(key) {
     write_tsv(snakemake@output[[key]])
 }
 
-if (exists('snakemake') & !is.null(snakemake@log)) {
-  log_filepath <- snakemake@log[1][[1]]
-  if (!rlang::is_bare_character(log_filepath)) {
-    log <- file(log_filepath, open = "wt")
-    sink(log, append = TRUE)
-    sink(log, append = TRUE, type = "message")
-  }
-}
 reformat("sensspec")
 reformat("bench")
 reformat("div")

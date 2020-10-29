@@ -205,7 +205,8 @@ rule reformat_opticlust_results:  # to make compatible with optifit sensspec & p
         sensspec=rules.cluster_dataset.output.sensspec,
         bench=rules.cluster_dataset.benchmark,
         div=rules.calc_diversity1.output.tsv,
-        code="../../code/R/reformat_opticlust_results.R"
+        code="../../code/R/reformat_opticlust_results.R",
+        fcns='../../code/R/functions.R'
     output:
         sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
         bench="benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",

@@ -241,7 +241,8 @@ rule reformat_optifit_results2:  # for plotting
         sensspec=rules.fit_to_ref_db.output.sensspec,
         bench=rules.fit_to_ref_db.benchmark,
         div=rules.calc_diversity2.output.tsv,
-        code="../../code/R/reformat_optifit_results.R"
+        code="../../code/R/reformat_optifit_results.R",
+        fcns='../../code/R/functions.R'
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
         bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',

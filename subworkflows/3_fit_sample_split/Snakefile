@@ -202,7 +202,8 @@ rule reformat_optifit_results3:  # for plotting
         sensspec=rules.fit_subsample.output.sensspec,
         bench=rules.fit_subsample.benchmark,
         div=rules.calc_diversity3.output.tsv,
-        code="../../code/R/reformat_optifit_results.R"
+        code="../../code/R/reformat_optifit_results.R",
+        fcns='../../code/R/functions.R'
     output:
         sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
         bench="benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt",
