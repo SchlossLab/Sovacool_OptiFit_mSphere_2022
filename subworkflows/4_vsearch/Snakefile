@@ -142,22 +142,22 @@ rule vsearch_open_ref:
 
 rule biom_to_list:
     input:
-        code="code/biom_to_list.R",
+        code="../../code/R/biom_to_list.R",
         biom="results/{dataset}/{method}/{dataset_step}.biom"
     output:
         list="results/{dataset}/{method}/{dataset_step}.list"
     script:
-        "code/biom_to_list.R"
+        "../../code/R/biom_to_list.R"
 
 rule combine_open_lists:
     input:
         l1='results/{dataset}/open/{dataset}.closed.list',
         l2='results/{dataset}/open/{dataset}.denovo.list',
-        py='code/combine_open_lists.py'
+        py='../../code/py/combine_open_lists.py'
     output:
         list='results/{dataset}/open/{dataset}.list'
     script:
-        'code/combine_open_lists.py'
+        '../../code/py/combine_open_lists.py'
 
 # vsearch doesn't support dots or hyphens in sequence names.
 rule prep_count_table:
@@ -222,17 +222,17 @@ rule calc_diversity4:
 
 rule fraction_reads_mapped4:
     input:
-        code="code/fraction_mapped_vsearch.py",
+        code="../../code/py/fraction_mapped_vsearch.py",
         list="results/{dataset}/{method}/{dataset}.list",
         count=rules.prep_count_table.output.count
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
     script:
-        "code/fraction_mapped_vsearch.py"
+        "../../code/py/fraction_mapped_vsearch.py"
 
 rule reformat_vsearch_results:
     input:
-        R="code/reformat_vsearch_results.R",
+        R="../../code/R/reformat_vsearch_results.R",
         fcns='../../code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
@@ -241,5 +241,5 @@ rule reformat_vsearch_results:
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
-        "code/reformat_vsearch_results.R"
+        "../../code/R/reformat_vsearch_results.R"
 
