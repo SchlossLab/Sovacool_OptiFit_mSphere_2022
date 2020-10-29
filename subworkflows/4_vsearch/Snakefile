@@ -25,11 +25,11 @@ rule aggregate_vsearch_results:
                     dataset=datasets,
                     method=methods + ['de_novo']),
         fcns='../../code/R/functions.R',
-        R='../../code/R/merge_results.R'
+        R='../../code/R/rbind_tsv.R'
     output:
         tsv='results/vsearch_results.tsv'
     script:
-        '../../code/R/merge_results.R'
+        '../../code/R/rbind_tsv.R'
 
 rule remove_gaps_query:
     input:
