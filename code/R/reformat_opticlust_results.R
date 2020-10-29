@@ -1,4 +1,4 @@
-source(snakemake@input[['fcns']])
+source(snakemake@input[["fcns"]])
 log_smk()
 
 mutate_columns <- function(df_orig) {
