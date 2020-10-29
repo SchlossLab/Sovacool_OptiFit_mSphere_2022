@@ -60,12 +60,28 @@ rule download_most:
         bash {input.sh} {params.sra} {params.outdir}
         """
 
-rule preprocess:
+rule copy_refs:
     input:
-        file="data/{dataset}/{dataset}.files",
         align_db=prep_db("data/silva/silva.bact_v4.fasta"),
         rdp_fasta=prep_db("data/rdp/rdp.fasta"),
         rdp_tax=prep_db("data/rdp/rdp.tax")
+    output:
+        align_db='data/refs/silva.bact_v4.fasta',
+        rdp_fasta='data/refs/rdp.fasta',
+        rdp_tax='data/refs/rdp.tax'
+    shell:
+        """
+        cp {input.align_db} {output.align_db}
+        cp {input.rdp_fasta} {output.rdp_fasta}
+        cp {input.rdp_tax} {output.rdp_tax}
+        """
+
+rule preprocess:
+    input:
+        file="data/{dataset}/{dataset}.files",
+        align_db=rules.copy_refs.output.align_db,
+        rdp_fasta=rules.copy_refs.output.rdp_fasta,
+        rdp_tax=rules.copy_refs.output.rdp_tax
     output:
         filter="data/{dataset}/processed/{dataset}.filter",
         count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
