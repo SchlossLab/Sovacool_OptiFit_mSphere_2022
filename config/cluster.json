@@ -35,7 +35,8 @@
   "walltime": "24:00:00"
  },
  "preprocess": {
-  "procs": "{resources.procs}"
+  "procs": "{resources.procs}",
+  "pmem": "{resources.pmem}"
  },
  "download_most": {
   "pmem": "1GB"
