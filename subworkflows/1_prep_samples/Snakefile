@@ -221,9 +221,7 @@ rule reformat_opticlust_results:  # to make compatible with optifit sensspec & p
 
 rule join_seed_results:
     input:
-        tsv=['results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
-            "benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
-            "results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.mod.summary"],
+        tsv=rules.reformat_opticlust_results.output,
         code='../../code/R/full_join_tsvs.R'
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
