@@ -186,7 +186,7 @@ rule calc_diversity1:
         list=rules.cluster_dataset.output.list,
         count=rules.mutate_count1.output.count
     output:
-        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.group.summary")
+        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.groups.summary")
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
