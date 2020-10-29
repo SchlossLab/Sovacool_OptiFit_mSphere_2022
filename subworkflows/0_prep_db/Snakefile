@@ -12,18 +12,18 @@ rule targets:
 
 rule download_silva:
     output:
-        tar=temp("data/silva/silva.nr_v138.tgz"),
+        tar=temp("data/silva/silva.nr_v132.tgz"),
         fasta="data/silva/silva.fasta",
         tax="data/silva/silva.tax"
     params:
-        fasta="data/silva/silva.nr_v138.align",
-        tax="data/silva/silva.nr_v138.tax"
+        fasta="data/silva/silva.nr_v132.align",
+        tax="data/silva/silva.nr_v132.tax"
     benchmark:
         "benchmarks/silva/download.txt"
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
-        wget -N -P data/silva/ https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v138.tgz
+        wget -N -P data/silva/ https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.nr_v132.tgz
         tar xzvf {output.tar} -C data/silva/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
@@ -124,7 +124,7 @@ rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
     shell:
         "cp {input} {output}"
 
-rule subset_regions:  # TODO: find exact start/end positions for V4 region
+rule subset_regions:
     input:
         align="data/{ref}/{ref}.bacteria.align" # can't use rules.align.output b/c silva is the alignment template
     output:
