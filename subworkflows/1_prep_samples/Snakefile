@@ -200,32 +200,15 @@ rule calc_diversity1:
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
 
-rule reformat_opticlust_results:  # to make compatible with optifit sensspec & plotting
+rule cbind_opticlust_seed:
     input:
-        sensspec=rules.cluster_dataset.output.sensspec,
-        bench=rules.cluster_dataset.benchmark,
-        div=rules.calc_diversity1.output.tsv,
-        code="../../code/R/reformat_opticlust_results.R",
-        fcns='../../code/R/functions.R'
-    output:
-        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
-        bench="benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
-        div="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.mod.summary"
-    benchmark:
-        "benchmarks/{dataset}/reformat_opticlust_results.cluster.seed_{seed}.txt"
-    params:
-        dataset="{dataset}",
-        seed="{seed}"
-    script:
-        "../../code/R/reformat_opticlust_results.R"
-
-rule join_seed_results:
-    input:
-        tsv=rules.reformat_opticlust_results.output,
-        code='../../code/R/full_join_tsvs.R'
+        tsv=[rules.cluster_dataset.output.sensspec,
+            rules.cluster_dataset.benchmark,
+            rules.calc_diversity1.output.tsv],
+        code='../../code/R/cbind_opticlust_seed.R'
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
     benchmark:
-        "benchmarks/{dataset}/join_seed_results.seed_{seed}.txt"
+        "benchmarks/{dataset}/cbind_opticlust_seed.seed_{seed}.txt"
     script:
-        '../../code/R/full_join_tsvs.R'
+        '../../code/R/cbind_opticlust_seed.R'

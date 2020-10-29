@@ -21,12 +21,8 @@ mutate_columns <- function(df_orig) {
   return(df_new)
 }
 
-reformat <- function(key) {
-  read_tsv(snakemake@input[[key]]) %>%
-    mutate_columns() %>%
-    write_tsv(snakemake@output[[key]])
-}
-
-reformat("sensspec")
-reformat("bench")
-reformat("div")
+snakemake@input[["tsv"]] %>%
+  map(read_tsv) %>%
+  reduce(bind_cols) %>% 
+  mutate_columns() %>% 
+  write_tsv(snakemake@output[['tsv']])
