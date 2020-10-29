@@ -23,6 +23,6 @@ mutate_columns <- function(df_orig) {
 
 snakemake@input[["tsv"]] %>%
   map(read_tsv) %>%
-  reduce(bind_cols) %>% 
-  mutate_columns() %>% 
-  write_tsv(snakemake@output[['tsv']])
+  reduce(bind_cols) %>%
+  mutate_columns() %>%
+  write_tsv(snakemake@output[["tsv"]])
