@@ -84,7 +84,7 @@ rule preprocess:
         "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=12,
-        pmem=8
+        pmem=12
     shell:
         """
         mothur '#set.logfile(name={log});
