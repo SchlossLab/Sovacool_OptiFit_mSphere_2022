@@ -29,7 +29,7 @@ rule rbind_opticlust:
         fcns='../../code/R/functions.R',
         R='../../code/R/full_join_tsvs.R',
         tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
-                    datset = datasets,
+                    dataset = datasets,
                     seed = seeds) + ['results/dataset_sizes.tsv']
     output:
         tsv='results/opticlust_results.tsv'
@@ -228,6 +228,6 @@ rule join_seed_results:
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
     benchmark:
-        "benchmarks/{dataset}/join_seed_results.txt"
+        "benchmarks/{dataset}/join_seed_results.seed_{seed}.txt"
     script:
         '../../code/R/full_join_tsvs.R'
