@@ -27,7 +27,7 @@ reformat <- function(key) {
     write_tsv(snakemake@output[[key]])
 }
 
-if (exists('snakemake') & !is.null(snakemake@log)) {
+if (exists("snakemake") & !is.null(snakemake@log)) {
   log_filepath <- snakemake@log[1][[1]]
   if (!rlang::is_bare_character(log_filepath)) {
     log <- file(log_filepath, open = "wt")
