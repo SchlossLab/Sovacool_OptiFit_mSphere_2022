@@ -205,7 +205,8 @@ rule cbind_opticlust_seed:
         tsv=[rules.cluster_dataset.output.sensspec,
             rules.cluster_dataset.benchmark,
             rules.calc_diversity1.output.tsv],
-        code='../../code/R/cbind_opticlust_seed.R'
+        code='../../code/R/cbind_opticlust_seed.R',
+        fcns='../../code/R/functions.R'
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
     benchmark:
