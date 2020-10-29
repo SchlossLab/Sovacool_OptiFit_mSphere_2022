@@ -162,9 +162,9 @@ rule cluster_dataset:
         dist=rules.calc_dists_dataset.output.column,
         count=rules.mutate_count1.output.count
     output:
-        list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
-        steps=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps"),
-        sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec')
+        list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
+        steps="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps",
+        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
@@ -186,7 +186,7 @@ rule calc_diversity1:
         list=rules.cluster_dataset.output.list,
         count=rules.mutate_count1.output.count
     output:
-        tsv=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.groups.summary")
+        tsv="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.groups.summary"
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
