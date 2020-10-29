@@ -24,13 +24,13 @@ seeds = range(1, config['seeds']+1)
 for dataset in wildcards.dataset:
     include: f"code/{dataset}.smk"
 
-rule full_join_opticlust:
+rule rbind_opticlust:
     input:
         fcns='../../code/R/functions.R',
         R='../../code/R/full_join_tsvs.R',
-        tsv=expand("results/{subdir}/{fn}.tsv",
-                    subdir = datasets,
-                    fn = ['sensspec', 'benchmarks', 'diversity']) + ['results/dataset_sizes.tsv']
+        tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
+                    datset = datasets,
+                    seed = seeds) + ['results/dataset_sizes.tsv']
     output:
         tsv='results/opticlust_results.tsv'
     log:
@@ -219,20 +219,15 @@ rule reformat_opticlust_results:  # to make compatible with optifit sensspec & p
     script:
         "../../code/R/reformat_opticlust_results.R"
 
-rule rbind_results:
+rule join_seed_results:
     input:
-        sensspec=expand('results/{{dataset}}/cluster/seed_{seed}/{{dataset}}.opti_mcc.mod.sensspec',
-                         seed=seeds),
-        bench=expand("benchmarks/{{dataset}}/cluster.seed_{seed}.mod.txt",
-                      seed=seeds),
-        div=expand("results/{{dataset}}/cluster/seed_{seed}/{{dataset}}.opti_mcc.pick.group.mod.summary",
-                    seed=seeds),
-        code='../../code/R/rbind_results.R'
+        tsv=['results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.mod.sensspec',
+            "benchmarks/{dataset}/cluster.seed_{seed}.mod.txt",
+            "results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.pick.group.mod.summary"],
+        code='../../code/R/full_join_tsvs.R'
     output:
-        sensspec="results/{dataset}/sensspec.tsv",
-        bench="results/{dataset}/benchmarks.tsv",
-        div='results/{dataset}/diversity.tsv'
+        tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
     benchmark:
-        "benchmarks/{dataset}/rbind_results.txt"
+        "benchmarks/{dataset}/join_seed_results.txt"
     script:
-        '../../code/R/rbind_results.R'
+        '../../code/R/full_join_tsvs.R'

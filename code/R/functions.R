@@ -21,7 +21,7 @@ log_smk <- function() {
 #' @return (None) writes tsv file
 #' @export
 #'
-merge_results <- function(key) { ## probably shoulda called this rbind_results
+rbind_all <- function(key) {
   snakemake@input[[key]] %>%
     map(read_tsv) %>%
     bind_rows() %>%

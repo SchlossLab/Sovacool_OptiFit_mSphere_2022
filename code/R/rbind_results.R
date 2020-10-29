@@ -1,6 +1,6 @@
 source(snakemake@input[["fcns"]])
 
 log_smk()
-merge_results("benchmarks")
-merge_results("sensspec")
-merge_results("div")
+rbind_all("benchmarks")
+rbind_all("sensspec")
+rbind_all("div")
