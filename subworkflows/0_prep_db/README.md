@@ -6,4 +6,4 @@
 
 ## DAG
 
-![](dag/rulegraph_prep_db.png)
+![](../../figures/dag_prep_db.png)
