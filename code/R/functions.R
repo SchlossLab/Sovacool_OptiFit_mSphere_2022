@@ -1,6 +1,7 @@
 library(dplyr)
 library(purrr)
 library(readr)
+library(stringr)
 
 #' Write all messages to a log file if specified in the snakemake workflow
 #'
