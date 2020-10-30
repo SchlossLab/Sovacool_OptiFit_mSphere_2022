@@ -1,2 +1,0 @@
-label	group	nseqs	sobs	npshannon	invsimpson	invsimpson_lci	invsimpson_hci	dataset	ref	region	seed	method	printref	ref_weight	ref_frac	sample_frac
-0.03	NA	392747	12018	5.942517	41.972483	41.600019	42.351676	soil	NA	NA	1	closed	FALSE	simple	0.2	0.2

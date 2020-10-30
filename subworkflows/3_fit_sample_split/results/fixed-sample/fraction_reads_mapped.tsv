@@ -1,2 +1,0 @@
-dataset	seed	method	printref	fraction_mapped	sample_frac	ref_frac	ref_weight
-soil	1	closed	FALSE	0.641	0.2	0.2	simple
