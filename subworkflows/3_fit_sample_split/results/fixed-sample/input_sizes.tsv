@@ -1,2 +1,0 @@
-num_ref_seqs	num_sample_seqs	num_total_seqs	n_gaps	total_chars	dataset	ref_weight	ref_frac	sample_frac	seed
-43951	43951	87902	35684445	57927418	soil	simple	0.2	0.2	1

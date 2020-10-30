@@ -91,7 +91,7 @@ rule combine_for_fit:
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         dist=prep_samples("results/{dataset}/{dataset}.dist"),
-        py="code/check_fracs.py"
+        py="code/py/check_fracs.py"
     output:
         fasta_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.fasta"),
         count_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.count_table"),
