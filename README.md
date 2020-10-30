@@ -1,16 +1,16 @@
 # OptiFitAnalysis
 
-Benchmarking the OptiFit algorithm in the mothur software package.
+Benchmarking the OptiFit algorithm in [mothur](github.com/mothur/mothur).
 
 ## The Workflow
 
-The workflow is split into four subworkflows:
+The workflow is split into five subworkflows:
 
-- [0_prep_db](subworkflows/0_prep_db) - download & preprocess reference databases.
-- [1_prep_samples](subworkflows/1_prep_samples) - download, preprocess, & _de novo_ cluster the sample datasets.
-- [2_fit_reference_db](subworkflows/2_fit_reference_db) - fit datasets to reference databases.
-- [3_fit_sample_split](subworkflows/3_fit_sample_split) - split datasets; cluster one fraction _de novo_ and fit the remaining sequences to the _de novo_ OTUs.
-- [4_vsearch](subworkflows/4_vsearch) - run vsearch clustering for comparison.
+- **[0_prep_db](subworkflows/0_prep_db)** — download & preprocess reference databases.
+- **[1_prep_samples](subworkflows/1_prep_samples)** — download, preprocess, & _de novo_ cluster the sample datasets.
+- **[2_fit_reference_db](subworkflows/2_fit_reference_db)** — fit datasets to reference databases.
+- **[3_fit_sample_split](subworkflows/3_fit_sample_split)** — split datasets; cluster one fraction _de novo_ and fit the remaining sequences to the _de novo_ OTUs.
+- **[4_vsearch](subworkflows/4_vsearch)** — run vsearch clustering for comparison.
 
 The main workflow ([`Snakefile`](Snakefile)) creates plots from the results of
 the subworkflows and renders the [paper](paper).
@@ -27,15 +27,22 @@ the subworkflows and renders the [paper](paper).
     git clone https://github.com/SchlossLab/OptiFitAnalysis
     cd OptiFitAnalysis/
     ```
-1. Install the dependencies listed in `config/env.simple.yaml`.
+1. Install the dependencies.
+
+    Most are listed in the conda environment file.
     ```
     conda env create -f config/env.simple.yaml
     conda activate optifit
     ```
-1. Edit the config file as needed with your preferred text editor.
+
+    You will also need to compile the development version of mothur v1.45.0
     ```
-    vim config/config.yaml
+    git clone https://github.com/mothur/mothur
+    cd mothur
+    git checkout 1.45.0
+    make
     ```
+    Make sure this version is the first mothur binary in your shell path.
 1. Run the entire pipeline.
 
     Locally:

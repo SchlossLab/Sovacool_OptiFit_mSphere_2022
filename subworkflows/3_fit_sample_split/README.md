@@ -2,8 +2,10 @@
 
 ## Rulegraph
 
-![](figures/rulegraph_fit_split.png)
+![](../../figures/rulegraph_fit_split.png)
 
 ## DAG
 
-![](figures/dag_fit_split.png)
+Using config_test, because regular config is too big:
+
+![](../../figures/dag_fit_split.png)

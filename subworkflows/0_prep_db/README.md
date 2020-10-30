@@ -2,8 +2,8 @@
 
 ## Rulegraph
 
-![](figures/rulegraph_prep_db.png)
+![](../../figures/rulegraph_prep_db.png)
 
 ## DAG
 
-![](dag/rulegraph_prep_db.png)
+![](../../figures/dag_prep_db.png)

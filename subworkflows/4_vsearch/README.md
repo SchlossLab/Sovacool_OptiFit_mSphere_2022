@@ -2,8 +2,10 @@
 
 ## Rulegraph
 
-![](figures/rulegraph_vsearch.png)
+![](../../figures/rulegraph_vsearch.png)
 
 ## DAG
 
-![](figures/dag_vsearch.png)
+Using config_test, because regular config is too big:
+
+![](../../figures/dag_vsearch.png)
