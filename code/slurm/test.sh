@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=ofa
+#SBATCH --job-name=ofa-test
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
