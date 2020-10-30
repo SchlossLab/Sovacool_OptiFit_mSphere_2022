@@ -1,2 +1,0 @@
-s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load	dataset	ref	region	seed	method	printref
-137.1613	00:02:17	1028.81	1180.69	1024.41	1025.13	1035.28	527.12	0	mouse	silva	bact_v4	44	closed	f

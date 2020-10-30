@@ -1,2 +1,0 @@
-s	h:m:s	max_rss	max_vms	max_uss	max_pss	io_in	io_out	mean_load
-147.0995	0:02:27	1403.67	1555.16	1401.86	1401.95	1.46	530.34	0.00
