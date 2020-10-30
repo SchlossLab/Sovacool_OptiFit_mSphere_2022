@@ -2,8 +2,8 @@
 
 ## Rulegraph
 
-![](figures/rulegraph_vsearch.png)
+![](../../figures/rulegraph_vsearch.png)
 
 ## DAG
 
-![](figures/dag_vsearch.png)
+![](../../figures/dag_vsearch.png)
