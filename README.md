@@ -4,7 +4,7 @@ Benchmarking the OptiFit algorithm in the mothur software package.
 
 ## The Workflow
 
-The workflow is split into four subworkflows:
+The workflow is split into five subworkflows:
 
 - [0_prep_db](subworkflows/0_prep_db) - download & preprocess reference databases.
 - [1_prep_samples](subworkflows/1_prep_samples) - download, preprocess, & _de novo_ cluster the sample datasets.
