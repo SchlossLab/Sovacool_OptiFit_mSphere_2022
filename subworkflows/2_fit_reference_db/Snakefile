@@ -11,12 +11,12 @@ subworkflow prep_db:
     workdir:
         "../0_prep_db/"
     configfile:
-        config['configpath']
+        f"../../{config['configpath']}"
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
     configfile:
-        config['configpath']
+        f"../../{config['configpath']}"
 
 configfile: '../../config/config.yaml'
 
