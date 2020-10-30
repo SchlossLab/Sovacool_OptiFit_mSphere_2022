@@ -1,17 +1,18 @@
 import os
 
-configfile: '../../config/config.yaml'
+configfile: 'config/config.yaml'
+
+datasets = config['datasets']
+seeds = range(1, config['seeds']+1)
 
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
     configfile:
-        f"../../{config['configpath']}"
+        config['configpath']
 
 wildcard_constraints:
     seed='\d+'
-
-wildcards = glob_wildcards("data/{dataset}/SRR_Acc_List.txt")
 
 def get_sra_list(dataset):
     with open(f"data/{dataset}/SRR_Acc_List.txt", 'r') as file:
@@ -20,16 +21,15 @@ def get_sra_list(dataset):
 
 sra_list = {dataset: get_sra_list(dataset) for dataset in ['human', 'marine', 'soil']}
 
-datasets = config['datasets']
-seeds = range(1, config['seeds']+1)
+with open("data/mouse/SRR_Acc_List.txt", 'r') as file:
+    mouse_filenames = [f"data/mouse/raw/{line.strip()}" for line in file]
 
-for dataset in wildcards.dataset:
-    include: f"code/{dataset}.smk"
+
 
 rule rbind_opticlust:
     input:
-        fcns='../../code/R/functions.R',
-        R='../../code/R/full_join_tsvs.R',
+        fcns='code/R/functions.R',
+        R='code/R/full_join_tsvs.R',
         tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
                     dataset = datasets,
                     seed = seeds)
@@ -47,7 +47,7 @@ rule fastq_targets:
 rule download_most:
     input:
         list="data/{dataset}/SRR_Acc_List.txt",
-        sh="code/download.sh"
+        sh="code/bash/download.sh"
     output:
         fastq=expand("data/{{dataset}}/raw/{{SRA}}_{i}.fastq.gz", i=(1,2))
     benchmark:
@@ -61,6 +61,71 @@ rule download_most:
         """
         bash {input.sh} {params.sra} {params.outdir}
         """
+
+rule download_mouse:
+    input:
+        list="data/mouse/SRR_Acc_List.txt",
+        sh="code/bash/download.sh"
+    output:
+        files=mouse_filenames
+    params:
+        tar="data/mouse/StabilityNoMetaG.tar",
+        url="http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar"
+    benchmark:
+        "benchmarks/mouse/download.txt"
+    shell:
+        """
+        wget -N -P data/mouse/ {params.url}
+        tar -xvf {params.tar} -C data/mouse/raw/
+        rm {params.tar}
+        """
+
+
+rule names_file_human:
+    input:
+        R="code/R/human.R",
+        files=expand("data/human/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["human"], i=(1,2))
+    output:
+        file="data/human/human.files"
+    benchmark:
+        "benchmarks/human/names_file.txt"
+    shell:
+        "Rscript {input.R}"
+
+rule names_file_marine:
+    input:
+        R="code/R/marine.R",
+        files=expand("data/marine/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["marine"], i=(1,2))
+    output:
+        file="data/marine/marine.files"
+    benchmark:
+        "benchmarks/marine/names_file.txt"
+    shell:
+        "Rscript {input.R}"
+
+rule names_file_mouse:
+    input:
+        files=rules.download_mouse.output.files,
+        script="code/py/mouse.py"
+    output:
+        file="data/mouse/mouse.files"
+    params:
+        dir="data/mouse/raw"
+    benchmark:
+        "benchmarks/mouse/names_file.txt"
+    shell:
+        "python {input.script}"
+
+rule names_file_soil:
+    input:
+        R="code/R/soil.R",
+        files=expand("data/soil/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["soil"], i=(1,2))
+    output:
+        file="data/soil/soil.files"
+    benchmark:
+        "benchmarks/soil/names_file.txt"
+    shell:
+        "Rscript {input.R}"
 
 rule copy_refs:
     input:
@@ -129,11 +194,11 @@ rule preprocess:
 rule mutate_count1:
     input:
         count=rules.preprocess.output.count,
-        code="../../code/R/mutate_ref_count.R"
+        code="code/R/mutate_ref_count.R"
     output:
         count='data/{dataset}/processed/{dataset}.count_table'
     script:
-        "../../code/R/mutate_ref_count.R"
+        "code/R/mutate_ref_count.R"
 
 def count_seqs(filename):
     with open(filename, 'r') as infile:
@@ -223,11 +288,12 @@ rule cbind_opticlust_seed:
         tsv=[rules.cluster_dataset.output.sensspec,
             rules.cluster_dataset.benchmark,
             rules.calc_diversity1.output.tsv],
-        code='../../code/R/cbind_opticlust_seed.R',
-        fcns='../../code/R/functions.R'
+        code='code/R/cbind_opticlust_seed.R',
+        fcns='code/R/functions.R'
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
     benchmark:
         "benchmarks/{dataset}/cbind_opticlust_seed.seed_{seed}.txt"
     script:
-        '../../code/R/cbind_opticlust_seed.R'
+        'code/R/cbind_opticlust_seed.R'
+

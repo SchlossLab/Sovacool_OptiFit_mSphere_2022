@@ -1,14 +1,13 @@
 """ Benchmarking the OptiFit algorithm using subsets of datasets """
 import numpy
 
+configfile: 'config/config.yaml'
+
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
     configfile:
-        f"../../{config['configpath']}"
-
-
-configfile: '../../config/config.yaml'
+        f"{config['configpath']}"
 
 datasets = config['datasets']
 methods = config['methods']
@@ -27,12 +26,12 @@ n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seed
 wildcard_constraints:
     seed="\d+"
 
-include: "code/merges.smk"
+include: "merges.smk"
 
 rule full_join_optifit_split:
     input:
-        fcns='../../code/R/functions.R',
-        R='../../code/R/full_join_tsvs.R',
+        fcns='code/R/functions.R',
+        R='code/R/full_join_tsvs.R',
         tsv=expand("results/{subdir}/{fn}.tsv",
                     subdir = ['all-seqs'],#, 'fixed-sample'],
                     fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped', 'input_sizes', 'diversity'])
@@ -41,11 +40,11 @@ rule full_join_optifit_split:
     log:
         'log/full_join.txt'
     script:
-        '../../code/R/full_join_tsvs.R'
+        'code/R/full_join_tsvs.R'
 
 rule split_weighted_subsample:
     input:
-        code="../../code/py/split_weighted_subsample.py",
+        code="code/py/split_weighted_subsample.py",
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         dist=prep_samples("results/{dataset}/{dataset}.dist")
@@ -58,7 +57,7 @@ rule split_weighted_subsample:
     benchmark:
         "benchmarks/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     script:
-        "../../code/py/split_weighted_subsample.py"
+        "code/py/split_weighted_subsample.py"
 
 rule prep_subsample_ref:
     input:
@@ -148,12 +147,12 @@ rule pick_best_cluster_seed3:
             seed=seeds),
         list=expand("results/{{dataset}}/refweight_{{ref_weight}}/reffrac_{{ref_frac}}/samplefrac_{{sample_frac}}/seed_{seed}/cluster/{{dataset}}.pick.opti_mcc.list",
             seed=seeds),
-        code='../../code/R/pick_best_cluster_seed.R',
-        fcns='../../code/R/functions.R'
+        code='code/R/pick_best_cluster_seed.R',
+        fcns='code/R/functions.R'
     output:
         list="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/best_seed.opti_mcc.list"
     script:
-        '../../code/R/pick_best_cluster_seed.R'
+        'code/R/pick_best_cluster_seed.R'
 
 rule fit_subsample:
     input:
@@ -204,8 +203,8 @@ rule reformat_optifit_results3:  # for plotting
         sensspec=rules.fit_subsample.output.sensspec,
         bench=rules.fit_subsample.benchmark,
         div=rules.calc_diversity3.output.tsv,
-        code="../../code/R/reformat_optifit_results.R",
-        fcns='../../code/R/functions.R'
+        code="code/R/reformat_optifit_results.R",
+        fcns='code/R/functions.R'
     output:
         sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.mod.sensspec',
         bench="benchmarks/{dataset}/fit.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.mod.txt",
@@ -225,11 +224,11 @@ rule reformat_optifit_results3:  # for plotting
         ref_frac='{ref_frac}',
         sample_frac='{sample_frac}'
     script:
-        "../../code/R/reformat_optifit_results.R"
+        "code/R/reformat_optifit_results.R"
 
 rule fraction_reads_mapped3:
     input:
-        code="../../code/py/fraction_reads_mapped.py",
+        code="code/py/fraction_reads_mapped.py",
         list=rules.fit_subsample.output.list,
         count=rules.split_weighted_subsample.output.sample_accnos
     output:
@@ -239,11 +238,11 @@ rule fraction_reads_mapped3:
     wildcard_constraints:
         method='closed'
     script:
-        "../../code/py/fraction_reads_mapped.py"
+        "code/py/fraction_reads_mapped.py"
 
 rule count_input_sizes:
     input:
-        py='../../code/py/count_input_sizes.py',
+        py='code/py/count_input_sizes.py',
         fasta=rules.combine_for_fit.output.fasta_all,
         ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
         sample_accnos=rules.split_weighted_subsample.output.sample_accnos
@@ -252,5 +251,5 @@ rule count_input_sizes:
     benchmark:
         "benchmarks/{dataset}/count_input_sizes.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     script:
-        '../../code/py/count_input_sizes.py'
+        'code/py/count_input_sizes.py'
 

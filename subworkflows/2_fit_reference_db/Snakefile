@@ -6,19 +6,19 @@ wildcard_constraints:
     seed='\d+',
     region='bact_v4'
 
+configfile: 'config/config.yaml'
 
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
     configfile:
-        f"../../{config['configpath']}"
+        config['configpath']
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
     configfile:
-        f"../../{config['configpath']}"
+        config['configpath']
 
-configfile: '../../config/config.yaml'
 
 datasets = config['datasets']
 refs = config['references']
@@ -30,8 +30,8 @@ seeds = range(1, config['seeds']+1)
 
 rule full_join_optifit_dbs:
     input:
-        fcns='../../code/R/functions.R',
-        R='../../code/R/full_join_tsvs.R',
+        fcns='code/R/functions.R',
+        R='code/R/full_join_tsvs.R',
         tsv=expand("results/{subdir}/{fn}.tsv",
                     subdir = datasets,
                     fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped']) + [prep_samples('results/dataset_sizes.tsv')]
@@ -40,7 +40,7 @@ rule full_join_optifit_dbs:
     log:
         'log/full_join.txt'
     script:
-        '../../code/R/full_join_tsvs.R'
+        'code/R/full_join_tsvs.R'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -134,23 +134,23 @@ rule pick_best_cluster_seed2:
             seed=seeds),
         list=expand("results/{{dataset}}_{{ref}}_{{region}}/cluster_db/seed_{seed}/{{ref}}.{{region}}.filter.unique.precluster.opti_mcc.list",
             seed=seeds),
-        code='../../code/R/pick_best_cluster_seed.R',
-        fcns='../../code/R/functions.R'
+        code='code/R/pick_best_cluster_seed.R',
+        fcns='code/R/functions.R'
     output:
         list="results/{dataset}_{ref}_{region}/cluster_db/best_seed.opti_mcc.list"
     script:
-        '../../code/R/pick_best_cluster_seed.R'
+        'code/R/pick_best_cluster_seed.R'
 
 rule mutate_ref_count:
     input:
         count=rules.preclust_db.output.count,
-        code="../../code/R/mutate_ref_count.R"
+        code="code/R/mutate_ref_count.R"
     output:
         count="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.mod.count_table"
     benchmark:
         "benchmarks/{dataset}_{ref}_{region}/mutate_ref_count.txt"
     script:
-        "../../code/R/mutate_ref_count.R"
+        "code/R/mutate_ref_count.R"
 
 rule combine_seqs:
     input:
@@ -246,8 +246,8 @@ rule reformat_optifit_results2:  # for plotting
         sensspec=rules.fit_to_ref_db.output.sensspec,
         bench=rules.fit_to_ref_db.benchmark,
         div=rules.calc_diversity2.output.tsv,
-        code="../../code/R/reformat_optifit_results.R",
-        fcns='../../code/R/functions.R'
+        code="code/R/reformat_optifit_results.R",
+        fcns='code/R/functions.R'
     output:
         sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
         bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
@@ -262,11 +262,11 @@ rule reformat_optifit_results2:  # for plotting
         printref='{printref}',
         method='{method}'
     script:
-        "../../code/R/reformat_optifit_results.R"
+        "code/R/reformat_optifit_results.R"
 
 rule fraction_reads_mapped:
     input:
-        code="../../code/py/fraction_reads_mapped.py",
+        code="code/py/fraction_reads_mapped.py",
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
@@ -274,7 +274,7 @@ rule fraction_reads_mapped:
     wildcard_constraints:
         method='closed'
     script:
-        "../../code/py/fraction_reads_mapped.py"
+        "code/py/fraction_reads_mapped.py"
 
 rule rbind_results2:
     input:
@@ -284,8 +284,8 @@ rule rbind_results2:
             ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
         div=expand('results/{{dataset}}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{{dataset}}.pick.optifit_mcc.groups.mod.summary',
             ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        fcns='../../code/R/functions.R',
-        code='../../code/R/rbind_results.R'
+        fcns='code/R/functions.R',
+        code='code/R/rbind_results.R'
     output:
         sensspec="results/{dataset}/sensspec.tsv",
         bench="results/{dataset}/benchmarks.tsv",
@@ -293,18 +293,18 @@ rule rbind_results2:
     benchmark:
         "benchmarks/{dataset}/rbind_results.txt"
     script:
-        '../../code/R/rbind_results.R'
+        'code/R/rbind_results.R'
 
 rule merge_fraction_mapped2:
     input:
         tsv=expand('results/{{dataset}}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
             ref=refs, region=regions, printref=printrefs, seed=seeds),
-        code='../../code/R/rbind_tsv.R',
-        fcns='../../code/R/functions.R'
+        code='code/R/rbind_tsv.R',
+        fcns='code/R/functions.R'
     output:
         tsv='results/{dataset}/fraction_reads_mapped.tsv'
     script:
-        '../../code/R/rbind_tsv.R'
+        'code/R/rbind_tsv.R'
 
 def count_seqs(filename):
     with open(filename, 'r') as infile:

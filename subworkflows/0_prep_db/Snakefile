@@ -4,7 +4,7 @@ wildcard_constraints:
     region="bact_v4|bact_full",
     ref="silva|rdp|gg"
 
-configfile: '../../config/config.yaml'
+configfile: 'config/config.yaml'
 
 rule targets:
     input:
@@ -50,6 +50,8 @@ rule download_rdp:
         """
 
 rule download_gg:
+    input:
+        R='code/R/gg_tax.R'
     output:
         fasta="data/gg/gg.fasta",
         tax="data/gg/gg.tax",
@@ -68,7 +70,7 @@ rule download_gg:
         tar -xzvPf {output.tar_tax} -C data/gg/
         tar -xzvPf {output.tar_ref} -C data/gg/
         cp {params.fasta} {output.fasta}
-        Rscript code/gg_tax.R
+        Rscript {input.R}
         """
 
 rule get_bacteria:
