@@ -5,6 +5,8 @@ configfile: '../../config/config.yaml'
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
+    configfile:
+        f"../../{config['configpath']}"
 
 wildcard_constraints:
     seed='\d+'

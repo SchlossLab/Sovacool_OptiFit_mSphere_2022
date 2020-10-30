@@ -6,12 +6,17 @@ wildcard_constraints:
     seed='\d+',
     region='bact_v4'
 
+
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
+    configfile:
+        config['configpath']
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
+    configfile:
+        config['configpath']
 
 configfile: '../../config/config.yaml'
 

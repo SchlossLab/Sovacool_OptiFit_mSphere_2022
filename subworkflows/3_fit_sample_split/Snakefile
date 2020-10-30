@@ -4,6 +4,8 @@ import numpy
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
+    configfile:
+        f"../../{config['configpath']}"
 
 
 configfile: '../../config/config.yaml'

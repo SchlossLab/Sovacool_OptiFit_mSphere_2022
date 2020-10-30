@@ -13,9 +13,13 @@ wildcard_constraints:
 subworkflow prep_db:
     workdir:
         "../0_prep_db/"
+    configfile:
+        f"../../{config['configpath']}"
 subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
+    configfile:
+        f"../../{config['configpath']}"
 
 ruleorder: combine_open_lists > biom_to_list
 
