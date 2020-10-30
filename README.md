@@ -15,28 +15,6 @@ The workflow is split into four subworkflows:
 The main workflow ([`Snakefile`](Snakefile)) creates plots from the results of
 the subworkflows and renders the [paper](paper).
 
-### Subworkflows
-
-#### prep db
-
-![](figures/rulegraph_prep_db.png)
-
-#### prep samples
-
-![](figures/rulegraph_prep_samples.png)
-
-#### fit reference db
-
-![](figures/rulegraph_fit_db.png)
-
-#### fit sample split
-
-![](figures/rulegraph_fit_split.png)
-
-#### vsearch
-
-![](figures/rulegraph_vsearch.png)
-
 ## Quickstart
 
 1. Before cloning, configure git symlinks:
