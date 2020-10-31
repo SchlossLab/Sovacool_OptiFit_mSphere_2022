@@ -11,9 +11,9 @@ best_list_file <- tibble(
 ) %>%
   mutate(
     seed = unique(get_seed(list_file), get_seed(sensspec_file)), # should be identical
-    sensspec = read_tsv(sensspec_file) %>% pull(sensspec)
+    mcc = read_tsv(sensspec_file) %>% pull(mcc) %>% .[[1]] # should only be one row
   ) %>%
-  slice_max(sensspec) %>%
+  slice_max(mcc) %>%
   pull(list_file) %>%
   .[[1]] # in case there's a tie, just pick one
 
