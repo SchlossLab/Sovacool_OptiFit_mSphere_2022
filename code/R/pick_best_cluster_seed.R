@@ -13,7 +13,7 @@ best_list_file <- tibble(
     seed = unique(get_seed(list_file), get_seed(sensspec_file)), # should be identical
     mcc = read_tsv(sensspec_file) %>% pull(mcc) %>% .[[1]] # should only be one row
   ) %>%
-  slice_max(mcc) %>%
+  top_n(1, mcc) %>%
   pull(list_file) %>%
   .[[1]] # in case there's a tie, just pick one
 
