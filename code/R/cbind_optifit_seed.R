@@ -17,8 +17,8 @@ mutate_columns <- function(df_orig) {
     printref = na_if_not("printref"),
     ref_weight = na_if_not("ref_weight"),
     ref_frac = na_if_not("ref_frac"),
-    sample_frac = na_if_not("sample_frac")
-    tool = "mothur",
+    sample_frac = na_if_not("sample_frac"),
+    tool = "mothur"
     )
 }
 
