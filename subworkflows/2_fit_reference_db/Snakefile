@@ -227,7 +227,7 @@ rule calc_diversity2:
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
-        tsv=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}.pick.optifit_mcc.groups.summary')
+        tsv=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.groups.summary')
     params:
         outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
     log:
