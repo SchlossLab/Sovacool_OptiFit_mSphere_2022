@@ -1,24 +1,25 @@
 source(snakemake@input[["fcns"]])
 log_smk()
 
+na_if_not <- function(key) {
+    ifelse(key %in% names(snakemake@wildcards),
+           snakemake@wildcards[[key]],
+           NA)
+}
+
 mutate_columns <- function(df_orig) {
-  df_new <- df_orig %>% mutate(
-    dataset = snakemake@wildcards[["dataset"]],
-    ref = snakemake@wildcards[["ref"]],
-    region = snakemake@wildcards[["region"]],
-    seed = snakemake@wildcards[["seed"]],
-    method = snakemake@wildcards[["method"]],
-    printref = snakemake@wildcards[["printref"]],
-    tool = "mothur"
-  )
-  if (all(c("ref_weight", "ref_frac", "sample_frac") %in% names(snakemake@wildcards))) {
-    df_new <- df_new %>% mutate(
-      ref_weight = snakemake@wildcards[["ref_weight"]],
-      ref_frac = snakemake@wildcards[["ref_frac"]],
-      sample_frac = snakemake@wildcards[["sample_frac"]]
+  df_orig %>% mutate(
+    dataset = na_if_not("dataset"),
+    ref = na_if_not("ref"),
+    region = na_if_not("region"),
+    seed = na_if_not("seed"),
+    method = na_if_not("method"),
+    printref = na_if_not("printref"),
+    ref_weight = na_if_not("ref_weight"),
+    ref_frac = na_if_not("ref_frac"),
+    sample_frac = na_if_not("sample_frac")
+    tool = "mothur",
     )
-  }
-  return(df_new)
 }
 
 rbind_all('tsv')

@@ -24,7 +24,7 @@ refs = config['references']
 regions = ['bact_v4']
 methods = config['methods']
 printrefs = config['printrefs']
-seeds = range(1, config['seeds']+1)
+seeds = range(1, config['seeds'] + 1)
 
 rule rbind_optifit_dbs:
     input:
@@ -37,8 +37,7 @@ rule rbind_optifit_dbs:
                     method = methods,
                     printref = printrefs,
                     seed = seeds),
-        xtra=['results/fraction_reads_mapped.tsv', # because this is the target rule
-              'results/ref_sizes.tsv']
+        xtra='results/ref_sizes.tsv' # because this is the target rule
     output:
         tsv='results/optifit_dbs_results.tsv'
     log:
@@ -245,41 +244,15 @@ rule calc_diversity2:
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
 
-
-rule fraction_reads_mapped:
+rule fraction_reads_mapped2:
     input:
         code="code/py/fraction_reads_mapped.py",
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
         txt='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt'
-    wildcard_constraints:
-        method='closed'
     script:
         "code/py/fraction_reads_mapped.py"
-
-rule cbind_optifit_seed2:
-    input:
-        tsv=[rules.fit_to_ref_db.output.sensspec,
-            rules.fit_to_ref_db.benchmark,
-            rules.calc_diversity2.output.tsv],
-        code='code/R/cbind_optifit_seed.R',
-        fcns='code/R/functions.R'
-    output:
-        tsv='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/results.tsv'
-    script:
-        'code/R/cbind_optifit_seed.R'
-
-rule merge_fraction_mapped2:
-    input:
-        tsv=expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
-            dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds),
-        code='code/R/rbind_tsv.R',
-        fcns='code/R/functions.R'
-    output:
-        tsv='results/fraction_reads_mapped.tsv'
-    script:
-        'code/R/rbind_tsv.R'
 
 def count_seqs(filename):
     with open(filename, 'r') as infile:
@@ -303,3 +276,16 @@ rule count_ref_sizes:
                 ref = parameters[1]
                 region = parameters[3]
                 outfile.write(f"{ref}\t{region}\t{num_seqs}\t{dataset}\n")
+
+rule cbind_optifit_seed2:
+    input:
+        tsv=[rules.fit_to_ref_db.output.sensspec,
+            rules.fit_to_ref_db.benchmark,
+            rules.calc_diversity2.output.tsv,
+            rules.fraction_reads_mapped2.output.txt],
+        code='code/R/cbind_optifit_seed.R',
+        fcns='code/R/functions.R'
+    output:
+        tsv='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/results.tsv'
+    script:
+        'code/R/cbind_optifit_seed.R'
