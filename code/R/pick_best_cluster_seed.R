@@ -4,17 +4,23 @@ log_smk()
 get_seed <- function(x) {
   str_replace(x, ".*seed_(\\d+).*", "\\1")
 }
+read_sensspec <- function(filename) {
+  read_tsv(filename) %>% 
+    mutate(seed = get_seed(filename))
+}
 
-best_list_file <- tibble(
-  list_file = snakemake@input[["list"]],
-  sensspec_file = snakemake@input[["sensspec"]]
-) %>%
+best_seed <- snakemake@input[['sensspec']] %>% 
+  map_dfr(read_sensspec) %>% 
+  top_n(1, mcc) %>% 
+  pull(seed) %>% 
+  .[[1]]
+
+best_list_file <- tibble(list_file = snakemake@input[["list"]]) %>%
   mutate(
-    seed = unique(get_seed(list_file), get_seed(sensspec_file)), # should be identical
-    mcc = read_tsv(sensspec_file) %>% pull(mcc) %>% .[[1]] # should only be one row
+    seed = get_seed(list_file)
   ) %>%
-  top_n(1, mcc) %>%
-  pull(list_file) %>%
-  .[[1]] # in case there's a tie, just pick one
+  filter(seed == best_seed) %>% 
+  pull(list_file) %>% 
+  .[[1]]
 
 file.copy(best_list_file, snakemake@output[["list"]])
