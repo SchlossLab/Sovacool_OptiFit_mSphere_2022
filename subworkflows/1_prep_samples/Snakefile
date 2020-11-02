@@ -24,21 +24,20 @@ sra_list = {dataset: get_sra_list(dataset) for dataset in ['human', 'marine', 's
 with open("data/mouse/SRR_Acc_List.txt", 'r') as file:
     mouse_filenames = [f"data/mouse/raw/{line.strip()}" for line in file]
 
-
-
 rule rbind_opticlust:
     input:
         fcns='code/R/functions.R',
-        R='code/R/full_join_tsvs.R',
+        R='code/R/rbind_tsv.R',
         tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
                     dataset = datasets,
-                    seed = seeds)
+                    seed = seeds),
+        xtra='results/dataset_sizes.tsv' # because this is the target rule
     output:
         tsv='results/opticlust_results.tsv'
     log:
         'log/full_join.txt'
     script:
-        '../../code/R/full_join_tsvs.R'
+        '../../code/R/rbind_tsv.R'
 
 rule fastq_targets:
     input:

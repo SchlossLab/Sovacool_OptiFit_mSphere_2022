@@ -4,21 +4,21 @@ log_smk()
 mutate_columns <- function(df_orig) {
   df_new <- df_orig %>% mutate(
     dataset = snakemake@wildcards[["dataset"]],
-    ref = NA,
-    region = NA,
+    ref = snakemake@wildcards[["ref"]],
+    region = snakemake@wildcards[["region"]],
     seed = snakemake@wildcards[["seed"]],
-    method = "de_novo",
-    printref = NA,
+    method = snakemake@wildcards[["method"]],
+    printref = snakemake@wildcards[["printref"]],
     tool = "mothur"
   )
-  if (all(c("ref_weight", "ref_frac") %in% names(snakemake@wildcards))) {
+  if (all(c("ref_weight", "ref_frac", "sample_frac") %in% names(snakemake@wildcards))) {
     df_new <- df_new %>% mutate(
       ref_weight = snakemake@wildcards[["ref_weight"]],
       ref_frac = snakemake@wildcards[["ref_frac"]],
-      sample_frac = NA
+      sample_frac = snakemake@wildcards[["sample_frac"]]
     )
   }
   return(df_new)
 }
 
-cbind_all('tsv')
+rbind_all('tsv')

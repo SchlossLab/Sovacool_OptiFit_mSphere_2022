@@ -22,9 +22,22 @@ log_smk <- function() {
 #' @return (None) writes tsv file
 #' @export
 #'
-rbind_all <- function(key) {
+rbind_all <- function(key = 'tsv') {
   snakemake@input[[key]] %>%
-    map(read_tsv) %>%
-    bind_rows() %>%
+    map_dfr(read_tsv) %>%
+    write_tsv(snakemake@output[[key]])
+}
+
+#' Merge columns of all tsv files to one file
+#'
+#' @param key name of list of tsv files in snakemake input field
+#'
+#' @return (None) writes tsv file
+#' @export
+#'
+cbind_all <- function(key = 'tsv') {
+  snakemake@input[[key]] %>%
+    map_dfc(read_tsv) %>%
+    mutate_columns() %>%
     write_tsv(snakemake@output[[key]])
 }

@@ -19,7 +19,6 @@ subworkflow prep_samples:
     configfile:
         config['configpath']
 
-
 datasets = config['datasets']
 refs = config['references']
 regions = ['bact_v4']
@@ -27,20 +26,25 @@ methods = config['methods']
 printrefs = config['printrefs']
 seeds = range(1, config['seeds']+1)
 
-
-rule full_join_optifit_dbs:
+rule rbind_optifit_dbs:
     input:
         fcns='code/R/functions.R',
-        R='code/R/full_join_tsvs.R',
-        tsv=expand("results/{subdir}/{fn}.tsv",
-                    subdir = datasets,
-                    fn = ['sensspec', 'benchmarks', 'fraction_reads_mapped']) + [prep_samples('results/dataset_sizes.tsv')]
+        R='code/R/rbind_tsv.R',
+        tsv=expand('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/results.tsv',
+                    dataset = datasets,
+                    ref = refs,
+                    region = regions,
+                    method = methods,
+                    printref = printrefs,
+                    seed = seeds),
+        xtra=['results/fraction_reads_mapped.tsv', # because this is the target rule
+              'results/ref_sizes.tsv']
     output:
         tsv='results/optifit_dbs_results.tsv'
     log:
-        'log/full_join.txt'
+        'log/rbind_optifit_dbs.txt'
     script:
-        'code/R/full_join_tsvs.R'
+        'code/R/rbind_tsv.R'
 
 rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepaths
     input:
@@ -241,28 +245,6 @@ rule calc_diversity2:
         summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
         """
 
-rule reformat_optifit_results2:  # for plotting
-    input:
-        sensspec=rules.fit_to_ref_db.output.sensspec,
-        bench=rules.fit_to_ref_db.benchmark,
-        div=rules.calc_diversity2.output.tsv,
-        code="code/R/reformat_optifit_results.R",
-        fcns='code/R/functions.R'
-    output:
-        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
-        bench='benchmarks/{dataset}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
-        div='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}.pick.optifit_mcc.groups.mod.summary'
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/reformat_optifit_results.method_{method}.printref_{printref}.seed_{seed}.txt"
-    params:
-        dataset="{dataset}",
-        ref="{ref}",
-        region="{region}",
-        seed="{seed}",
-        printref='{printref}',
-        method='{method}'
-    script:
-        "code/R/reformat_optifit_results.R"
 
 rule fraction_reads_mapped:
     input:
@@ -276,33 +258,26 @@ rule fraction_reads_mapped:
     script:
         "code/py/fraction_reads_mapped.py"
 
-rule rbind_results2:
+rule cbind_optifit_seed2:
     input:
-        sensspec=expand('results/{{dataset}}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{{dataset}}_{ref}.{region}.all.optifit_mcc.mod.sensspec',
-            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        bench=expand('benchmarks/{{dataset}}_{ref}_{region}/optifit.method_{method}.printref_{printref}.seed_{seed}.mod.txt',
-            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        div=expand('results/{{dataset}}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{{dataset}}.pick.optifit_mcc.groups.mod.summary',
-            ref=refs, region=regions, seed=seeds, method=methods, printref=printrefs),
-        fcns='code/R/functions.R',
-        code='code/R/rbind_results.R'
+        tsv=[rules.fit_to_ref_db.output.sensspec,
+            rules.fit_to_ref_db.benchmark,
+            rules.calc_diversity2.output.tsv],
+        code='code/R/cbind_optifit_seed.R',
+        fcns='code/R/functions.R'
     output:
-        sensspec="results/{dataset}/sensspec.tsv",
-        bench="results/{dataset}/benchmarks.tsv",
-        div='results/{dataset}/diversity.tsv'
-    benchmark:
-        "benchmarks/{dataset}/rbind_results.txt"
+        tsv='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/results.tsv'
     script:
-        'code/R/rbind_results.R'
+        'code/R/cbind_optifit_seed.R'
 
 rule merge_fraction_mapped2:
     input:
-        tsv=expand('results/{{dataset}}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
-            ref=refs, region=regions, printref=printrefs, seed=seeds),
+        tsv=expand('results/{dataset}_{ref}_{region}/optifit/method_closed/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt',
+            dataset=datasets, ref=refs, region=regions, printref=printrefs, seed=seeds),
         code='code/R/rbind_tsv.R',
         fcns='code/R/functions.R'
     output:
-        tsv='results/{dataset}/fraction_reads_mapped.tsv'
+        tsv='results/fraction_reads_mapped.tsv'
     script:
         'code/R/rbind_tsv.R'
 
