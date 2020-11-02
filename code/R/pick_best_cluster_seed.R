@@ -17,4 +17,4 @@ best_list_file <- tibble(
   pull(list_file) %>%
   .[[1]] # in case there's a tie, just pick one
 
-file.copy(best_list_file, snakemake@output[["tsv"]])
+file.copy(best_list_file, snakemake@output[["list"]])
