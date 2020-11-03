@@ -49,8 +49,6 @@ rule download_most:
         sh="code/bash/download.sh"
     output:
         fastq=expand("data/{{dataset}}/raw/{{SRA}}_{i}.fastq.gz", i=(1,2))
-    benchmark:
-        "benchmarks/{dataset}/download_{SRA}.txt"
     params:
         sra="{SRA}",
         outdir="data/{dataset}/raw"
@@ -70,8 +68,6 @@ rule download_mouse:
     params:
         tar="data/mouse/StabilityNoMetaG.tar",
         url="http://www.mothur.org/MiSeqDevelopmentData/StabilityNoMetaG.tar"
-    benchmark:
-        "benchmarks/mouse/download.txt"
     shell:
         """
         wget -N -P data/mouse/ {params.url}
@@ -86,8 +82,6 @@ rule names_file_human:
         files=expand("data/human/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["human"], i=(1,2))
     output:
         file="data/human/human.files"
-    benchmark:
-        "benchmarks/human/names_file.txt"
     shell:
         "Rscript {input.R}"
 
@@ -97,8 +91,6 @@ rule names_file_marine:
         files=expand("data/marine/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["marine"], i=(1,2))
     output:
         file="data/marine/marine.files"
-    benchmark:
-        "benchmarks/marine/names_file.txt"
     shell:
         "Rscript {input.R}"
 
@@ -110,8 +102,6 @@ rule names_file_mouse:
         file="data/mouse/mouse.files"
     params:
         dir="data/mouse/raw"
-    benchmark:
-        "benchmarks/mouse/names_file.txt"
     shell:
         "python {input.script}"
 
@@ -121,8 +111,6 @@ rule names_file_soil:
         files=expand("data/soil/raw/{SRA}_{i}.fastq.gz", SRA=sra_list["soil"], i=(1,2))
     output:
         file="data/soil/soil.files"
-    benchmark:
-        "benchmarks/soil/names_file.txt"
     shell:
         "Rscript {input.R}"
 
@@ -150,7 +138,7 @@ rule preprocess:
         rdp_tax=rules.copy_refs.output.rdp_tax
     output:
         filter="data/{dataset}/processed/{dataset}.filter",
-        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
+        count=temp("data/{dataset}/processed/{dataset}.temp.count_table"),
         tax="data/{dataset}/processed/{dataset}.tax",
         fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
@@ -158,12 +146,11 @@ rule preprocess:
         filter="data/{dataset}/temp/{dataset}.filter",
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
         fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         trim_contigs='data/{dataset}/temp/{dataset}.trim.contigs.fasta',
         contigs_groups='data/{dataset}/temp/{dataset}.contigs.groups'
     log:
         "log/{dataset}/preprocess.log"
-    benchmark:
-        "benchmarks/{dataset}/preprocess.txt"
     resources:
         procs=12,
         pmem=12
@@ -185,9 +172,11 @@ rule preprocess:
             remove.seqs(fasta=current, accnos=current);
             classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
-        cp {params.filter} {output.filter}
-        cp {params.tax} {output.tax}
-        cp {params.fasta} {output.fasta}
+        mv {params.filter} {output.filter}
+        mv {params.tax} {output.tax}
+        mv {params.fasta} {output.fasta}
+        mv {params.count} {output.count}
+        rm -rf data/{wildcards.dataset}/temp/
         """
 
 rule mutate_count1:
@@ -209,8 +198,6 @@ rule count_dataset_sizes:
         fasta=expand('data/{dataset}/processed/{dataset}.fasta', dataset=datasets)
     output:
         txt='results/dataset_sizes.tsv'
-    benchmark:
-        "benchmarks/count_dataset_sizes.txt"
     run:
         with open(output.txt, 'w') as outfile:
             outfile.write('dataset\tnum_seqs\n')
@@ -229,8 +216,6 @@ rule calc_dists_dataset:
         outdir="results/{dataset}/"
     log:
         "log/{dataset}/calc_dists.log"
-    benchmark:
-        "benchmarks/{dataset}/calc_dists.txt"
     resources:
         procs=16
     shell:
@@ -245,7 +230,6 @@ rule cluster_dataset:
         count=rules.mutate_count1.output.count
     output:
         list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
-        steps="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps",
         sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
@@ -291,8 +275,6 @@ rule cbind_opticlust_seed:
         fcns='code/R/functions.R'
     output:
         tsv="results/{dataset}/cluster/seed_{seed}/results.tsv"
-    benchmark:
-        "benchmarks/{dataset}/cbind_opticlust_seed.seed_{seed}.txt"
     script:
         'code/R/cbind_opticlust_seed.R'
 

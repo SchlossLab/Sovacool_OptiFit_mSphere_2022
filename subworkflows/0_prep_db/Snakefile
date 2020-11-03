@@ -13,13 +13,11 @@ rule targets:
 rule download_silva:
     output:
         tar=temp("data/silva/silva.nr_v132.tgz"),
-        fasta="data/silva/silva.fasta",
-        tax="data/silva/silva.tax"
+        fasta=temp("data/silva/silva.fasta"),
+        tax=temp("data/silva/silva.tax")
     params:
         fasta="data/silva/silva.nr_v132.align",
         tax="data/silva/silva.nr_v132.tax"
-    benchmark:
-        "benchmarks/silva/download.txt"
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
@@ -37,8 +35,6 @@ rule download_rdp:
     params:
         fasta="data/rdp/trainset16_022016.pds/trainset16_022016.pds.fasta",
         tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax"
-    benchmark:
-        "benchmarks/rdp/download.txt"
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
@@ -60,8 +56,6 @@ rule download_gg:
     params:
         fasta="data/gg/gg_13_8_99.fasta",
         tax="data/gg/gg_13_8_99.gg.tax"
-    benchmark:
-        "benchmarks/gg/download.txt"
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
@@ -78,15 +72,13 @@ rule get_bacteria:
         fasta="data/{ref}/{ref}.fasta",
         tax="data/{ref}/{ref}.tax"
     output:
-        fasta="data/{ref}/{ref}.bacteria.fasta",
-        tax="data/{ref}/{ref}.bacteria.tax"
+        fasta=temp("data/{ref}/{ref}.bacteria.fasta"),
+        tax=temp("data/{ref}/{ref}.bacteria.tax")
     params:
-        fasta="data/{ref}/{ref}.pick.fasta",
-        tax="data/{ref}/{ref}.pick.tax"
+        fasta=temp("data/{ref}/{ref}.pick.fasta"),
+        tax=temp("data/{ref}/{ref}.pick.tax")
     log:
         "log/{ref}/get_bacteria.log"
-    benchmark:
-        "benchmarks/{ref}/get_bacteria.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -103,15 +95,13 @@ rule align:
         fasta=rules.get_bacteria.output.fasta,
         silva=rules.download_silva.output.fasta
     output:
-        align="data/{ref}/{ref}.bacteria.align"
+        align=temp("data/{ref}/{ref}.bacteria.align")
     wildcard_constraints:
         ref="rdp|gg"
     resources:
         procs=8
     log:
         "log/{ref}/align.log"
-    benchmark:
-        "benchmarks/{ref}/align.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
@@ -122,7 +112,7 @@ rule rename_silva_bact:  # needed b/c silva doesn't get aligned to itself
     input:
         "data/silva/silva.bacteria.fasta"
     output:
-        align="data/silva/silva.bacteria.align"
+        align=temp("data/silva/silva.bacteria.align")
     shell:
         "cp {input} {output}"
 
@@ -139,22 +129,16 @@ rule subset_regions:
         procs=8
     log:
         "log/{ref}/subset_regions.log"
-    benchmark:
-        "benchmarks/{ref}/subset_regions.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(input=data/{wildcards.ref}/);
         summary.seqs(fasta={input.align}, processors={resources.procs});
 
         screen.seqs(fasta={input.align}, maxambig=0, maxhomop=8, start=11894, end=25319);
-        summary.seqs();
         pcr.seqs(fasta=current, start=11894, end=25319, keepdots=F);
-        summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_v4});
 
         screen.seqs(fasta={input.align}, maxambig=0, maxhomop=8, start=1046, end=43116);
-        summary.seqs();
         pcr.seqs(fasta=current, start=1046, end=43116, keepdots=F);
-        summary.seqs();
         rename.file(input={params.screen}, new={output.fasta_full}) '
         """

@@ -88,8 +88,6 @@ rule preclust_db:
         walltime_hrs=48
     log:
         "log/{dataset}_{ref}_{region}/preclust_db.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/preclust_db.txt"
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
@@ -112,7 +110,6 @@ rule cluster_db:
         count=rules.preclust_db.output.count
     output:
         list="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
-        steps="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.steps",
         sensspec="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
     params:
         outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
@@ -150,8 +147,6 @@ rule mutate_ref_count:
         code="code/R/mutate_ref_count.R"
     output:
         count="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.mod.count_table"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/mutate_ref_count.txt"
     script:
         "code/R/mutate_ref_count.R"
 
@@ -169,8 +164,6 @@ rule combine_seqs:
         outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
         "log/{dataset}_{ref}_{region}/combine_seqs.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/combine_seqs.txt"
     shell:
         """
         cat {input.fasta_sample} {input.fasta_db} > {output.fasta_all}
@@ -190,8 +183,6 @@ rule calc_dists_combined:
         outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
         "log/{dataset}_{ref}_{region}/calc_dists_combined.log"
-    benchmark:
-        "benchmarks/{dataset}_{ref}_{region}/calc_dists_combined.txt"
     resources:
         procs=16
     shell:
@@ -207,8 +198,8 @@ rule fit_to_ref_db:
         column=rules.calc_dists_combined.output.column,
         reflist=rules.pick_best_cluster_seed2.output.list
     output:
-        sensspec='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.sensspec',
-        list='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.list',
+        sensspec=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.sensspec'),
+        list=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.list'),
     params:
         outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
     benchmark:
@@ -250,7 +241,7 @@ rule fraction_reads_mapped2:
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
-        txt='results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt'
+        txt=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt')
     script:
         "code/py/fraction_reads_mapped.py"
 
@@ -264,8 +255,6 @@ rule count_ref_sizes:
         fasta=expand("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta", dataset=datasets, ref=refs, region=regions)
     output:
         txt='results/ref_sizes.tsv'
-    benchmark:
-        'benchmarks/count_ref_sizes.txt'
     run:
         with open(output.txt, 'w') as outfile:
             outfile.write('reference\tregion\tnum_seqs\tdataset_filter\n')
