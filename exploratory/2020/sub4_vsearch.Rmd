@@ -1,5 +1,5 @@
 ---
-title: "VSEARCH clustering"
+title: "vsearch clustering"
 date: "Oct. 2020"
 output: 
   github_document:
@@ -130,3 +130,4 @@ pgrid <- plot_grid(mcc + theme(legend.position = 'none'),
 plot_grid(pgrid, legend, rel_widths = c(3, .4))
 ```
 
+TODO: compare diversity metrics

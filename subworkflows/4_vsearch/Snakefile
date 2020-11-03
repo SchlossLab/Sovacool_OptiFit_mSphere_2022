@@ -195,8 +195,6 @@ rule sensspec_vsearch:
         tsv='results/{dataset}/{method}/{dataset}.sensspec'
     params:
         outdir='results/{dataset}/{method}/'
-    benchmark:
-        'benchmarks/{dataset}/sensspec.method_{method}.{dataset}.txt'
     log:
         'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:
