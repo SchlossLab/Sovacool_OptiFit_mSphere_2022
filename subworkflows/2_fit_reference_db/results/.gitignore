@@ -1,0 +1,4 @@
+*
+!.gitignore
+!optifit_dbs_results.tsv
+!ref_sizes.tsv
