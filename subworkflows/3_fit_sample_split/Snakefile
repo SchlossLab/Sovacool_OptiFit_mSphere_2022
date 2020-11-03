@@ -20,7 +20,7 @@ ref_fracs = [i/10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
 sample_fracs_complement = [round(1 - ref_frac, 1) for ref_frac in ref_fracs]
 
 n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, sample_fracs_complement]])
-#print(f"Params will produce {n_runs} optifit runs")
+print(f"Params will produce {n_runs} optifit runs")
 
 wildcard_constraints:
     seed="\d+"
@@ -29,14 +29,13 @@ rule rbind_optifit_split:
     input:
         fcns='code/R/functions.R',
         R='code/R/rbind_tsv.R',
-        tsv=expand('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv',
-                    dataset=datasets,
-                    ref_weight=random_refweight_options,
-                    ref_frac=ref_fracs,
-                    sample_frac=sample_fracs_complement,
-                    seed=seeds,
-                    method=methods,
-                    printref=printrefs),
+        tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{round(1 - ref_frac, 1)}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
+            for dataset in datasets
+            for ref_weight in random_refweight_options
+            for ref_frac in ref_fracs
+            for seed in seeds
+            for method in methods
+            for printref in printrefs]
     output:
         tsv='results/optifit_split_results.tsv'
     log:
