@@ -19,6 +19,7 @@ def main():
     num_all_seqs = len(all_seqs)
     ref_frac = float(snakemake.wildcards.ref_frac)
     sample_frac = float(snakemake.wildcards.sample_frac)
+    assert ref_frac + sample_frac <= 1
     sample_size = round_subset_size(sample_frac, num_all_seqs)
     ref_size = round_subset_size(ref_frac, num_all_seqs)
 
