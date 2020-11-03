@@ -4,7 +4,7 @@ calculate the fraction of reads that mapped during closed-reference clustering
 """
 
 
-def main():  # TODO: write to log file
+def main():
     with open(snakemake.input.count, "r") as count_file:
         if not snakemake.input.count.endswith(".accnos"):
             next(count_file)  # drop header line if it's not an accnos file
