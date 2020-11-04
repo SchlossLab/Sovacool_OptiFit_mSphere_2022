@@ -33,4 +33,4 @@ uc_to_list <- function(unique_file_name, clustered_file_name, list_file_name){
 
 }
 
-uc_to_list(snakemake@input[['fna']], snakemake@input[['uc']], snakemake@output[['list']])
+uc_to_list(snakemake@input[['sorted']], snakemake@input[['clustered']], snakemake@output[['list']])
