@@ -70,6 +70,17 @@ dat_filt %>% pivot_longer(c(mcc, sec, mem_gb), names_to = 'metric') %>%
   theme(axis.title = element_blank())
 ```
 
+After updating vsearch calls with parameters from Pat's scripts,
+vsearch performance improves slightly:
+```{r vsearch_mcc_new-params}
+vsearch %>% 
+  select(dataset, method, mcc) %>% 
+  ggplot(aes(method, mcc, color = dataset)) + 
+  geom_point() +
+  ylim(0,1) + scale_color_manual(values = 
+                                   dataset_colors)
+```
+
 
 ## OTU Quality
 
