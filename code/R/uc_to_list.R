@@ -29,7 +29,10 @@ uc_to_list <- function(unique_file_name,
 	for(i in 1:nrow(hits)){
 		otus[hits[i,"V2"]+1] <- paste(otus[hits[i,"V2"]+1], names_second_column[hits[i,"sequence"]], sep=",")
 	}
-
+	
+	# storing this in memory as a giant string is a bad idea, 
+	# but I only have to run it once per vsearch cluster,
+	# so I don't really care.
 	num_otus <- length(otus)
 	otu_names <- sapply(seq(1, num_otus), function(x) {paste0('OTU_',x)})
 	list_data <- paste(paste(c("label", "numOTUs", otu_names),

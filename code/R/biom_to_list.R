@@ -14,10 +14,13 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
   otu_names <- biom_json$rows[["id"]]
 
   biom_json$data <- biom_json$data + 1
-  otu_assignments <- aggregate(seq_names[biom_json$data[, 2]], by = list(biom_json$data[, 1]), function(x) {
-    paste(x, collapse = ",")
-  })$x
+  otu_assignments <- aggregate(seq_names[biom_json$data[, 2]], 
+                               by = list(biom_json$data[, 1]), 
+                               function(x) {paste(x, collapse = ",")})$x
 
+  # storing this in memory as a giant string is a bad idea, 
+  # but I only have to run it once per vsearch cluster,
+  # so I don't really care.
   list_data <- paste(paste(c("label", "numOTUs", otu_names),
                            collapse = "\t"),
                      paste(c(label, n_otus, otu_assignments),
