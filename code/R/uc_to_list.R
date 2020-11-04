@@ -1,7 +1,10 @@
 # original source: https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/uc_to_list.R
 # Modified Nov. 2020 by KLS
 
-uc_to_list <- function(unique_file_name, clustered_file_name, list_file_name){
+uc_to_list <- function(unique_file_name, 
+                       clustered_file_name, 
+                       list_file_name, 
+                       label = 0.03){
 
 	uniqued <- read.table(file=unique_file_name, stringsAsFactors=FALSE)
 
@@ -27,10 +30,14 @@ uc_to_list <- function(unique_file_name, clustered_file_name, list_file_name){
 		otus[hits[i,"V2"]+1] <- paste(otus[hits[i,"V2"]+1], names_second_column[hits[i,"sequence"]], sep=",")
 	}
 
-	list_data <- paste(otus, collapse="\t")
-	list_data <- paste("userLabel", length(otus), list_data, sep="\t")
-	write.table(x=list_data, file=list_file_name, quote=F, row.names=F, col.names=F, sep="\t")
-
+	num_otus <- length(otus)
+	otu_names <- sapply(seq(1, num_otus), function(x) {paste0('OTU_',x)})
+	list_data <- paste(paste(c("label", "numOTUs", otu_names),
+	                         collapse = "\t"),
+	                   paste(c(label, num_otus, otus),
+	                         collapse = "\t"),
+	                   sep = "\n")
+	write(list_data, list_file_name)
 }
 
 uc_to_list(snakemake@input[['sorted']], snakemake@input[['clustered']], snakemake@output[['list']])

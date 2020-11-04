@@ -19,13 +19,10 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
   })$x
 
   list_data <- paste(paste(c("label", "numOTUs", otu_names),
-    collapse = "\t"
-  ),
-  paste(c(label, n_otus, otu_assignments), # revert seq names to originals with dots
-    collapse = "\t"
-  ),
-  sep = "\n"
-  )
+                           collapse = "\t"),
+                     paste(c(label, n_otus, otu_assignments),
+                           collapse = "\t"),
+                     sep = "\n")
 
   write(list_data, list_file_name)
 }
