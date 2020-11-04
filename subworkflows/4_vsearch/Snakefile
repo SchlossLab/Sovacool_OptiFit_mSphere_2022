@@ -132,7 +132,6 @@ rule vsearch_closed_ref:
     shell:
         """
         vsearch --usearch_global {input.query} \
-            --usersort \
             --db {input.ref} \
             --notmatched {output.unmatched} \
             --uc {output.uc} \
@@ -164,7 +163,6 @@ rule vsearch_open_ref:
     shell:
         """
         vsearch --usearch_global {input.query} \
-            --usersort \
             --db {input.ref} \
             --notmatched {output.unmatched} \
             --uc {output.closed} \
