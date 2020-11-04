@@ -87,7 +87,7 @@ rule vsearch_sort:
 
 rule vsearch_de_novo:
     input:
-        query=rules.remove_gaps_query.output.fna
+        query=rules.vsearch_sort.output.fna
     output:
         biom='results/{dataset}/de_novo/{dataset}.biom',
         uc='results/{dataset}/de_novo/{dataset}.uc'
@@ -103,7 +103,7 @@ rule vsearch_de_novo:
         vsearch --cluster_smallmem {input.query} \
             --usersort \
             --biomout {output.biom} \
-            --uc {output.uc}
+            --uc {output.uc} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \
