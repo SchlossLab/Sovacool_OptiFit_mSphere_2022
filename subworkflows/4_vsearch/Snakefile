@@ -111,7 +111,7 @@ rule vsearch_de_novo:
             --id {params.perc_identity} \
             --minseqlength {params.min_seq_length} \
             --maxaccepts {params.max_accepts} \
-            --maxrejects {params.max_rejects}
+            --maxrejects {params.max_rejects} \
             --strand both \
             --relabel OTU_
         """
