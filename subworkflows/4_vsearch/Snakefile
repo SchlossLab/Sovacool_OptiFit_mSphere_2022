@@ -2,21 +2,22 @@
 Running de novo, open-reference, and closed-reference clustering with vsearch.
 
 vsearch commands adapted from:
-- https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/run_vagc_clust.sh
 - https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/run_vdgc_clust.sh
 - https://github.com/qiime2/q2-vsearch/blob/master/q2_vsearch/_cluster_features.py
 """
 
-
+# config params
 configfile: 'config/config.yaml'
-
 datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
 
+# hard-coded params
 regions = ['bact_v4']
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
-min_seq_length = 30 # Pat
+min_seq_length = 30 # from Pat's vsearch script
+max_accepts = 16
+max_rejects = 64
 
 wildcard_constraints:
     region='bact_v4'
@@ -95,7 +96,9 @@ rule vsearch_de_novo:
         'benchmarks/{dataset}/vsearch.method_de_novo.{dataset}.txt'
     params:
         perc_identity=perc_identity,
-        minseqlength=min_seq_length
+        min_seq_length=min_seq_length,
+        max_accepts=max_accepts,
+        max_rejects=max_rejects
     resources:
         procs=8
     shell:
@@ -106,12 +109,11 @@ rule vsearch_de_novo:
             --uc {output.uc} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
-            --relabel OTU_ \
-            --qmask none \
-            --xsize \
-            --minseqlength {params.minseqlength} \
-            --fasta_width 0 \
-            --strand both
+            --minseqlength {params.min_seq_length} \
+            --maxaccepts {params.max_accepts} \
+            --maxrejects {params.max_rejects}
+            --strand both \
+            --relabel OTU_
         """
 
 rule vsearch_closed_ref:
