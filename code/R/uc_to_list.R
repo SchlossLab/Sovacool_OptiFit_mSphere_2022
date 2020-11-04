@@ -1,41 +1,27 @@
 # original source: https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/uc_to_list.R
 # Modified Nov. 2020 by KLS
-
-uc_to_list <- function(unique_file_name, 
-                       clustered_file_name, 
+library(tidyverse)
+uc_to_list <- function(clustered_file_name, 
                        list_file_name, 
                        label = 0.03){
 
-	uniqued <- read.table(file=unique_file_name, stringsAsFactors=FALSE)
-
-	names_first_column <- uniqued[uniqued$V1=="S", "V9"]
-	names_second_column <- names_first_column
-
-	hits <- uniqued[uniqued$V1=="H", ]
-
-	for(i in 0:(length(names_first_column)-1)){
-		dups <- paste(hits[hits$V2==i, "V9"], collapse=",")
-		names_second_column[i+1] <- paste(names_second_column[i+1], dups, sep=",")
-	}
-	names_second_column <- gsub(",$", "", names_second_column)
-
-
-	clustered <- read.table(file=clustered_file_name, stringsAsFactors=FALSE)
-	clustered$sequence <- 1:nrow(clustered)
-
-	otus <- names_second_column[clustered[clustered$V1=="S", "sequence"]]
-	hits <- clustered[clustered$V1=="H", ]
-
-	for(i in 1:nrow(hits)){
-		otus[hits[i,"V2"]+1] <- paste(otus[hits[i,"V2"]+1], names_second_column[hits[i,"sequence"]], sep=",")
-	}
-	
+	clustered <- read.table(file = clustered_file_name, 
+	                        stringsAsFactors = FALSE) %>% 
+	  mutate(seq_id = str_replace(V9, '(.*);size=\\d+$', '\\1'), 
+	         otu_id = paste0('OTU_', V2),
+	         record_type = V1) %>%
+	  filter(record_type %in% c('S', 'H')) %>% 
+	  select(seq_id, otu_id)
+	otu_ids <- clustered %>% pull(otu_id) %>% unique()
+	num_otus <- length(otu_ids)
+	otus <- sapply(otu_ids, function(x) { clustered %>% 
+	    filter(otu_id == x) %>% 
+	    pull(seq_id) %>% 
+	    paste(collapse = ',')})
 	# storing this in memory as a giant string is a bad idea, 
-	# but I only have to run it once per vsearch cluster,
+	# but I only have to run it once per vsearch clustering job,
 	# so I don't really care.
-	num_otus <- length(otus)
-	otu_names <- sapply(seq(1, num_otus), function(x) {paste0('OTU_',x)})
-	list_data <- paste(paste(c("label", "numOTUs", otu_names),
+	list_data <- paste(paste(c("label", "numOTUs", otu_ids),
 	                         collapse = "\t"),
 	                   paste(c(label, num_otus, otus),
 	                         collapse = "\t"),
@@ -43,4 +29,4 @@ uc_to_list <- function(unique_file_name,
 	write(list_data, list_file_name)
 }
 
-uc_to_list(snakemake@input[['sorted']], snakemake@input[['clustered']], snakemake@output[['list']])
+uc_to_list(snakemake@input[['clustered']], snakemake@output[['list']])

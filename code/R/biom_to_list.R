@@ -19,7 +19,7 @@ biom_to_list <- function(biom_file_name, list_file_name, label = 0.03) {
                                function(x) {paste(x, collapse = ",")})$x
 
   # storing this in memory as a giant string is a bad idea, 
-  # but I only have to run it once per vsearch cluster,
+  # but I only have to run it once per vsearch clustering job,
   # so I don't really care.
   list_data <- paste(paste(c("label", "numOTUs", otu_names),
                            collapse = "\t"),
