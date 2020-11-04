@@ -181,7 +181,7 @@ rule vsearch_open_ref:
 
 rule uc_to_list:
     input:
-        code='code/R/uc_to_list.R',,
+        code='code/R/uc_to_list.R',
         sorted=rules.vsearch_sort.output.uc,
         clustered='results/{dataset}/{method}/{dataset_step}.uc'
     output:
