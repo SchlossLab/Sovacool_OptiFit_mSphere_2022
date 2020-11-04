@@ -1,3 +1,13 @@
+"""
+Running de novo, open-reference, and closed-reference clustering with vsearch.
+
+vsearch commands adapted from:
+- https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/run_vagc_clust.sh
+- https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/run_vdgc_clust.sh
+- https://github.com/qiime2/q2-vsearch/blob/master/q2_vsearch/_cluster_features.py
+"""
+
+
 configfile: 'config/config.yaml'
 
 datasets = config['datasets']
@@ -6,6 +16,7 @@ methods = config['methods']
 
 regions = ['bact_v4']
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
+min_seq_length = 30 # Pat
 
 wildcard_constraints:
     region='bact_v4'
@@ -21,7 +32,8 @@ subworkflow prep_samples:
     configfile:
         config['configpath']
 
-ruleorder: combine_open_lists > biom_to_list
+ruleorder: combine_open_lists > uc_to_list > biom_to_list
+#ruleorder: biom_to_list
 
 rule aggregate_vsearch_results:
     input:
@@ -55,28 +67,51 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
+rule vsearch_sort:
+    input:
+        fna=rules.remove_gaps_query.output.fna
+    output:
+        fna="data/{dataset}/{dataset}.ng.sorted.fasta",
+        uc="data/{dataset}/{dataset}.ng.sorted.uc"
+    shell:
+        """
+        vsearch \
+            --derep_fulllength {input.fna} \
+            --sizeout \
+            --minseqlength 30 \
+            --threads 1 \
+            --uc {output.uc} \
+            --output {output.fna} \
+            --strand both
+        """
+
 rule vsearch_de_novo:
     input:
         query=rules.remove_gaps_query.output.fna
     output:
-        biom='results/{dataset}/de_novo/{dataset}.biom'
+        biom='results/{dataset}/de_novo/{dataset}.biom',
+        uc='results/{dataset}/de_novo/{dataset}.uc'
     benchmark:
         'benchmarks/{dataset}/vsearch.method_de_novo.{dataset}.txt'
     params:
-        perc_identity=perc_identity
+        perc_identity=perc_identity,
+        minseqlength=min_seq_length
     resources:
         procs=8
     shell:
         """
-        vsearch --cluster_size {input.query} \
+        vsearch --cluster_smallmem {input.query} \
+            --usersort \
             --biomout {output.biom} \
+            --uc {output.uc}
             --threads {resources.procs} \
             --id {params.perc_identity} \
             --relabel OTU_ \
             --qmask none \
             --xsize \
-            --minseqlength 1 \
+            --minseqlength {params.minseqlength} \
             --fasta_width 0 \
+            --strand both
         """
 
 rule vsearch_closed_ref:
@@ -134,7 +169,7 @@ rule vsearch_open_ref:
             --xsize \
             --minseqlength 1 \
             --fasta_width 0
-        vsearch --cluster_size {output.unmatched} \
+        vsearch --cluster_smallmem {output.unmatched} \
             --biomout {output.denovo} \
             --threads {resources.procs} \
             --id {params.perc_identity} \
@@ -143,6 +178,16 @@ rule vsearch_open_ref:
             --minseqlength 1 \
             --fasta_width 0
         """
+
+rule uc_to_list:
+    input:
+        code='code/R/uc_to_list.R',
+        clustered='results/{dataset}/{method}/{dataset_step}.uc',
+        sorted=rules.vsearch_sort.output.uc
+    output:
+        list='results/{dataset}/{method}/{dataset_step}.list'
+    script:
+        'code/R/uc_to_list.R'
 
 rule biom_to_list:
     input:
