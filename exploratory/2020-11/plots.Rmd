@@ -1,0 +1,41 @@
+---
+date: 'Nov. 2020'
+output: 
+  github_document:
+    html_preview: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      fig.path = "figures/"
+                      )
+```
+```{r lib}
+library(cowplot)
+library(ggtext)
+library(glue)
+library(here)
+library(knitr)
+library(tidyverse)
+theme_set(theme_classic())
+color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
+dataset_colors <- c(
+  human = color_palette[[3]],
+  marine = color_palette[[1]],
+  mouse = color_palette[[4]],
+  soil = color_palette[[2]]
+)
+set.seed(2018)
+```
+
+## Fit to reference databases
+
+```{r}
+ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
+optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv'))
+```
+
+```{r}
+optifit_dbs
+```
+
