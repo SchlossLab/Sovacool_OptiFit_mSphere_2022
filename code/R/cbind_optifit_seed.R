@@ -22,4 +22,4 @@ mutate_columns <- function(df_orig) {
     )
 }
 
-rbind_all('tsv')
+cbind_all('tsv')
