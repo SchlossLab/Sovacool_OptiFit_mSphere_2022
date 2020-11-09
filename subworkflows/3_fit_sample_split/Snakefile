@@ -27,7 +27,6 @@ wildcard_constraints:
 
 rule rbind_optifit_split:
     input:
-        fcns='code/R/functions.R',
         R='code/py/rbind_files.py',
         tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{round(1 - ref_frac, 1)}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
             for dataset in datasets
