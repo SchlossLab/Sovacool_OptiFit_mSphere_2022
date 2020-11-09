@@ -1,4 +1,4 @@
-""" Count gaps in aligned fasta files """
+""" Count sequences & characters in aligned fasta files """
 
 
 def main():
@@ -10,10 +10,10 @@ def main():
         num_samples = len(infile.readlines())
     with open(snakemake.output.tsv, "w") as outfile:
         outfile.write(
-            "num_ref_seqs\tnum_sample_seqs\tnum_total_seqs\tn_gaps\ttotal_chars\tdataset\tref_weight\tref_frac\tsample_frac\tseed\n"
+            "num_ref_seqs\tnum_sample_seqs\tnum_total_seqs\tn_gaps\ttotal_chars\n"
         )
         outfile.write(
-            f"{num_refs}\t{num_samples}\t{num_refs+num_samples}\t{n_gaps}\t{total_chars}\t{snakemake.wildcards.dataset}\t{snakemake.wildcards.ref_weight}\t{snakemake.wildcards.ref_frac}\t{snakemake.wildcards.sample_frac}\t{snakemake.wildcards.seed}\n"
+            f"{num_refs}\t{num_samples}\t{num_refs+num_samples}\t{n_gaps}\t{total_chars}\n"
         )
 
 
