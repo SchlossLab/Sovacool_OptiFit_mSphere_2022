@@ -91,8 +91,5 @@
     },
 "sensspec_vsearch": {
     "pmem": "16GB"
-    },
-"rbind_optifit_split": {
-    "pmem": 36GB"
     }
 }
