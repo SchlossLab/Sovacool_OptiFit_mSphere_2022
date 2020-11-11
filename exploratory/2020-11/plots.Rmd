@@ -11,12 +11,14 @@ knitr::opts_chunk$set(echo = TRUE,
                       )
 ```
 ```{r lib}
+set.seed(2018)
 library(cowplot)
 library(ggtext)
 library(glue)
 library(here)
 library(knitr)
 library(tidyverse)
+
 theme_set(theme_classic())
 color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
 dataset_colors <- c(
@@ -25,50 +27,135 @@ dataset_colors <- c(
   mouse = color_palette[[4]],
   soil = color_palette[[2]]
 )
-set.seed(2018)
+
+mutate_perf <- function(dat) {
+  dat %>% 
+    mutate(mem_mb = max_rss,
+           mem_gb = mem_mb / 1024) %>% 
+    rename(sec = s,
+           num_otus = sobs)
+}
 ```
 
 ## _de novo_ clustering
-```{r load_opticlust}
-dataset_sizes <- read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))
-opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv'))
-```
 
+```{r load_opticlust}
+opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>% 
+  full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>% 
+  mutate_perf()
+sum_opticlust <- opticlust %>% 
+  group_by(dataset) %>% 
+  summarize(mean_mcc = mean(mcc),
+            sd_mcc = sd(mcc),
+            mean_sec = mean(sec),
+            sd_sec = sd(sec),
+            mean_npshannon = mean(npshannon))
+```
+```{r mcc_opticlust}
+opticlust %>% 
+  ggplot(aes(dataset, mcc)) +
+  geom_jitter(alpha = 0.5) +
+  ylim(0.5, 1)
+```
+```{r runtime_opticlust}
+opticlust %>% 
+  ggplot(aes(num_seqs, sec, color = dataset)) +
+  geom_point(alpha = 0.5)
+opticlust %>% 
+  ggplot(aes(num_otus, sec, color = dataset)) +
+  geom_point(alpha = 0.5)
+opticlust %>% 
+  ggplot(aes(npshannon, sec, color = dataset)) +
+  geom_point(alpha = 0.5)
+```
 ## fit to reference databases
 
 ```{r load_fit-dbs}
 ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
-  mutate(mem_mb = max_rss,
-         mem_gb = mem_mb / 1024,
-         sec = s)
+  mutate_perf()
 head(optifit_dbs)
 ```
 
-```{r fit-db_mcc}
+```{r mcc_fit-db}
 optifit_dbs %>% 
   ggplot(aes(x=method, y=mcc, color=ref)) +
+  geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
   geom_jitter(alpha = 0.5) + 
   facet_wrap('dataset') +
-  ylim(0, 1)
+  ylim(0, 1) +
+  labs(title='OTU Quality: OptiFit with reference databases',
+       caption='Black line: _de novo_ clustering') +
+  theme(plot.caption = element_markdown())
 ```
 
 
-```{r fit-db_fraction-mapped}
+```{r fraction-mapped_fit-db}
 optifit_dbs %>% filter(method == 'closed') %>% 
   ggplot(aes(x=dataset, y=fraction_mapped, color=ref)) +
   geom_jitter(alpha = 0.5) + 
   ylim(0, 1) +
-  labs(title="Sequences mapped during closed-reference OptiFit")
+  labs(title="Sequences mapped during closed-reference OptiFit") +
+  theme(plot.caption = element_markdown())
 ```
-```{r fit-db_runtime}
+```{r runtime_fit-db}
 optifit_dbs %>% 
   ggplot(aes(x=method, y=sec, color=ref)) +
   geom_jitter(alpha = 0.5) +
-  facet_wrap('dataset', scales = 'free')
+  geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
+  facet_wrap('dataset', scales = 'free') +
+  labs(title='OptiFit runtime with reference databases',
+       caption='Black line: _de novo_ clustering on the whole dataset') +
+  theme(plot.caption = element_markdown())
 ```
 
-## fit to subsamples
+## fit split datasets
+
+```{r load_fit-split}
+optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>% 
+  mutate_perf()
+```
+
+```{r mcc_fit-split}
+optifit_split %>% 
+  ggplot(aes(x = ref_frac, y = mcc, color = ref_weight)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
+  facet_grid(dataset ~ method) +
+  ylim(0, 1) +
+  labs(title='OTU Quality: OptiFit with split datasets',
+       x='reference fraction',
+       caption='Black line: _de novo_ clustering on the whole dataset') +
+  theme(plot.caption = element_markdown())
+```
+
+```{r runtime_fit-split}
+optifit_split %>% 
+  ggplot(aes(x = ref_frac, y = sec, color = ref_weight)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
+  facet_grid(dataset ~ method, scales = 'free') +
+  labs(title='Runtime: OptiFit with split datasets',
+       x='reference fraction',
+       caption='Black line: _de novo_ clustering on the whole dataset') +
+  theme(plot.caption = element_markdown())
+```
+
+```{r diversity_fit-split}
+optifit_split %>% 
+  ggplot(aes(x = ref_frac, y = npshannon, color = ref_weight)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_npshannon), sum_opticlust) +
+  facet_grid(dataset ~ method, scales = 'free') +
+  labs(title='Diversity: OptiFit with split datasets',
+       x='reference fraction',
+       caption='Black line: _de novo_ clustering on the whole dataset') +
+  theme(plot.caption = element_markdown())
+```
+
 
 ## vsearch
 
@@ -76,18 +163,43 @@ For reference-based clustering, datasets were fit to the greengenes database.
 
 ```{r load_vsearch}
 vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>% 
-  mutate(mem_mb = max_rss,
-         mem_gb = mem_mb / 1024,
-         sec = s)
+  mutate_perf() %>% 
+  full_join(opticlust) %>% 
+  full_join(optifit_dbs %>% filter(ref == 'gg'))
 ```
 
-```{r vsearch_mcc}
+```{r mcc_vsearch}
 vsearch %>% 
-  pivot_longer(c(mcc, sec), names_to = 'metric') %>% 
-  ggplot(aes(x = dataset, y = value, color = method)) +
+  ggplot(aes(x = method, y = mcc, color = tool)) +
   geom_boxplot() +
-  facet_wrap('metric', scales = 'free', ncol = 1) + 
-  #scale_color_manual(values = dataset_colors) +
-  theme(axis.title = element_blank())
+  facet_wrap('dataset') +
+  ylim(0, 1) + 
+  labs(x = '')
+```
+
+```{r sec_vsearch}
+vsearch %>% 
+  ggplot(aes(x = method, y = sec, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('dataset') +
+  labs(x = '')
+```
+
+```{r diversity_vsearch}
+vsearch %>% 
+  ggplot(aes(x = method, y = npshannon, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('dataset') +
+  labs(x = '')
+```
+
+```{r fraction-mapped_vsearch}
+vsearch %>% filter(method == 'closed') %>% 
+  ggplot(aes(x = method, y = fraction_mapped, color = tool)) +
+  geom_boxplot() + 
+  facet_wrap('dataset') +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during closed-reference OptiFit") +
+  theme(plot.caption = element_markdown())
 ```
 
