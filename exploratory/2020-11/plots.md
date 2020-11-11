@@ -57,23 +57,7 @@ opticlust %>%
   geom_point(alpha = 0.5)
 ```
 
-![](figures/runtime_opticlust-1.png)<!-- -->
-
-``` r
-opticlust %>% 
-  ggplot(aes(num_otus, sec, color = dataset)) +
-  geom_point(alpha = 0.5)
-```
-
-![](figures/runtime_opticlust-2.png)<!-- -->
-
-``` r
-opticlust %>% 
-  ggplot(aes(npshannon, sec, color = dataset)) +
-  geom_point(alpha = 0.5)
-```
-
-![](figures/runtime_opticlust-3.png)<!-- --> \#\# fit to reference
+![](figures/runtime_opticlust-1.png)<!-- --> \#\# fit to reference
 databases
 
 ``` r
@@ -134,11 +118,24 @@ optifit_dbs %>%
   geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
   labs(title='OptiFit runtime with reference databases',
-       caption='Black line: _de novo_ clustering on the whole dataset') +
+       caption='Black line: _de novo_ clustering') +
   theme(plot.caption = element_markdown())
 ```
 
 ![](figures/runtime_fit-db-1.png)<!-- -->
+
+``` r
+optifit_dbs %>% 
+  ggplot(aes(x=method, y=npshannon, color=ref)) +
+  geom_jitter(alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_npshannon), sum_opticlust) +
+  facet_wrap('dataset', scales = 'free') +
+  labs(title='OptiFit runtime with reference databases',
+       caption='Black line: _de novo_ clustering') +
+  theme(plot.caption = element_markdown())
+```
+
+![](figures/diversity_fit-db-1.png)<!-- -->
 
 ## fit split datasets
 
@@ -238,9 +235,8 @@ vsearch %>%
 
 ``` r
 vsearch %>% filter(method == 'closed') %>% 
-  ggplot(aes(x = method, y = fraction_mapped, color = tool)) +
+  ggplot(aes(x = dataset, y = fraction_mapped, color = tool)) +
   geom_boxplot() + 
-  facet_wrap('dataset') +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit") +
   theme(plot.caption = element_markdown())
