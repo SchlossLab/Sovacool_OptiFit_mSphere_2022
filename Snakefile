@@ -34,7 +34,10 @@ subworkflow vsearch:
 
 rule targets:
     input:
-        'paper/paper.pdf',
+        'paper/paper.pdf'
+
+rule subtargets:
+    input:
         opticlust=prep_samples('results/opticlust_results.tsv'),
         optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
         optifit_split=fit_split('results/optifit_split_results.tsv'),
