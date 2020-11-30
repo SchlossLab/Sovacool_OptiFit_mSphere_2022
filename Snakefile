@@ -41,10 +41,10 @@ rule render_paper:
         R='code/R/render.R',
         fcns="code/R/functions.R"
     output:
-        pdf='paper/paper.pdf',
+        pdf='docs/paper.pdf',
         html='docs/index.html'
     params:
-        site_dir='docs/',
+        outdir='docs/',
     script:
         'code/R/render.R'
 
