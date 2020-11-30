@@ -52,8 +52,11 @@ rule render_paper:
         R='code/R/render.R',
         fcns="code/R/functions.R"
     output:
-        pdf='paper/paper.pdf'
-    log:
-        'log/render_paper.txt'
+        pdf='paper/paper.pdf',
+        html='docs/paper.html'
+    params:
+        site_dir='docs/',
     script:
         'code/R/render.R'
+
+
