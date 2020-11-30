@@ -32,17 +32,6 @@ subworkflow vsearch:
     configfile:
         config['configpath']
 
-rule targets:
-    input:
-        'paper/paper.pdf'
-
-rule subtargets:
-    input:
-        opticlust=prep_samples('results/opticlust_results.tsv'),
-        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        optifit_split=fit_split('results/optifit_split_results.tsv'),
-        vsearch=vsearch('results/vsearch_results.tsv')
-
 rule render_paper:
     input:
         Rmd="paper/paper.Rmd",
@@ -53,10 +42,15 @@ rule render_paper:
         fcns="code/R/functions.R"
     output:
         pdf='paper/paper.pdf',
-        html='docs/paper.html'
+        html='docs/index.html'
     params:
         site_dir='docs/',
     script:
         'code/R/render.R'
 
-
+rule subtargets:
+    input:
+        opticlust=prep_samples('results/opticlust_results.tsv'),
+        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        optifit_split=fit_split('results/optifit_split_results.tsv'),
+        vsearch=vsearch('results/vsearch_results.tsv')
