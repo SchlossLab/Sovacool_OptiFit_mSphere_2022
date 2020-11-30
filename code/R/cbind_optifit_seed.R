@@ -2,9 +2,10 @@ source(snakemake@input[["fcns"]])
 log_smk()
 
 na_if_not <- function(key) {
-    ifelse(key %in% names(snakemake@wildcards),
-           snakemake@wildcards[[key]],
-           NA)
+  ifelse(key %in% names(snakemake@wildcards),
+    snakemake@wildcards[[key]],
+    NA
+  )
 }
 
 mutate_columns <- function(df_orig) {
@@ -19,7 +20,7 @@ mutate_columns <- function(df_orig) {
     ref_frac = na_if_not("ref_frac"),
     sample_frac = na_if_not("sample_frac"),
     tool = "mothur"
-    )
+  )
 }
 
-cbind_all('tsv')
+cbind_all("tsv")
