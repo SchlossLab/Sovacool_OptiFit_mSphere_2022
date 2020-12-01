@@ -1,7 +1,7 @@
 ---
 title: "**OptiFit: a fast method for fitting amplicon sequences to existing OTUs**"
 date: '`r Sys.Date()`'
-author:
+authors:
   - name: "Kelly L. Sovacool"
     url: https://github.com/kelly-sovacool
     affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
@@ -24,6 +24,9 @@ output:
     keep_tex: false
     includes:
       in_header: header.tex
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
 csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
@@ -132,11 +135,13 @@ assignments.
 
 ## Materials and Methods
 
-## Acknowledgements
+## Acknowledgements {.appendix}
 
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
 
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
+
+## Author Contributions {.appendix}
 
 ## References
