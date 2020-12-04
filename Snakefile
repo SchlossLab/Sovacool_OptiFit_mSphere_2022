@@ -34,17 +34,35 @@ subworkflow vsearch:
 
 rule render_paper:
     input:
+        pdf='docs/paper.pdf',
+        html='docs/paper.html'
+
+rule render_pdf:
+    input:
         Rmd="paper/paper.Rmd",
-        pre='paper/header.tex',
+        pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
         bib='paper/references.bib',
         csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R"
     output:
-        pdf='docs/paper.pdf',
-        html='docs/index.html'
+        file='docs/paper.pdf'
     params:
-        outdir='docs/',
+        format='pdf_document'
+    script:
+        'code/R/render.R'
+
+rule render_html:
+    input:
+        Rmd="paper/paper.Rmd",
+        bib='paper/references.bib',
+        csl='paper/msystems.csl',
+        R='code/R/render.R',
+        fcns="code/R/functions.R"
+    output:
+        file='docs/paper.html'
+    params:
+        format="distill::distill_article"
     script:
         'code/R/render.R'
 
