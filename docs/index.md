@@ -1,4 +1,3 @@
-# OptiFit paper
 
-- [html](paper.html)
-- [pdf](paper.pdf)
+- [paper.html](paper.html)
+- [paper.pdf](paper.pdf)
