@@ -30,6 +30,8 @@ output:
       in_header: preamble.tex
       before_body: head.tex
       after_body: tail.tex
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
 csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
