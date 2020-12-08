@@ -2469,15 +2469,14 @@ distill-header .nav a {
 <ul>
 <li>Public reference databases were clustered <em>de novo</em> using OptiClust, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
 <ul>
-<li>In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust.</li>
+<li>In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust. This held true for all datasets and reference databases.</li>
 <li>However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.</li>
 <li>In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.</li>
-<li>These results held true for all four datasets and all three reference databases.</li>
 </ul></li>
 </ul>
 <h3 id="reference-clustering-with-split-datasets">Reference clustering with split datasets</h3>
 <ul>
-<li>Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered <em>de novo</em> with OptiClust. Query sequences were then fit to the <em>de novo</em> OTUs with OptiFit.
+<li>Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered <em>de novo</em> with OptiClust, then query sequences were fit to the <em>de novo</em> OTUs with OptiFit.
 <ul>
 <li>OTU quality from fitting split datasets was highly similar to that from <em>de novo</em> clustering the whole dataset.</li>
 <li>Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.

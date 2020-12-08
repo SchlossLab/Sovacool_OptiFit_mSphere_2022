@@ -63,14 +63,13 @@ mothuR::set_knitr_opts()
 ### Reference clustering with public databases
 
 - Public reference databases were clustered _de novo_ using OptiClust, then query datasets were fit to the _de novo_ OTUs using OptiFit.
-  - In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets _de novo_ with OptiClust. 
+  - In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets _de novo_ with OptiClust. This held true for all datasets and reference databases.
   - However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.
   - In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.
-  - These results held true for all four datasets and all three reference databases.
   
 ### Reference clustering with split datasets
 
-- Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust. Query sequences were then fit to the _de novo_ OTUs with OptiFit.
+- Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust, then query sequences were fit to the _de novo_ OTUs with OptiFit.
   - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
   - Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.
     - OptiClust performed faster than open-reference OptiFit only when the OptiFit reference fraction was 30% or less.
