@@ -56,6 +56,15 @@ mothuR::set_knitr_opts()
 
 ## Results
 
+- 16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were downloaded, processed with mothur, and clustered _de novo_ with OptiClust.
+- Independent reference databases (greengenes, silva, and RDP) were clustered _de novo_, then query datasets were fit to the _de novo_ OTUs using OptiFit.
+  - In open-reference mode, OTU quality as measured by the MCC score was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets _de novo_ with OptiClust. 
+  - However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.
+  - These results held true for all four datasets and all three reference databases.
+- Datasets were randomly split into a reference fraction and a query fraction.
+  - Reference sequences were clustered _de novo_ with OptiClust.
+  - Query sequences were then fit to the _de novo_ OTUs with OptiFit.
+- vsearch with greengenes
 
 ## Discussion
 
