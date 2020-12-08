@@ -60,17 +60,19 @@ mothuR::set_knitr_opts()
 - Independent reference databases (greengenes, silva, and RDP) were clustered _de novo_, then query datasets were fit to the _de novo_ OTUs using OptiFit.
   - In open-reference mode, OTU quality as measured by the MCC score was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets _de novo_ with OptiClust. 
   - However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.
+  - In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.
   - These results held true for all four datasets and all three reference databases.
-- Datasets were randomly split into a reference fraction and a query fraction.
-  - Reference sequences were clustered _de novo_ with OptiClust.
-  - Query sequences were then fit to the _de novo_ OTUs with OptiFit.
-  - Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query.
+- Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust. Query sequences were then fit to the _de novo_ OTUs with OptiFit.
   - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
   - Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.
     - OptiClust performed faster than open-reference OptiFit only when the OptiFit reference fraction was 30% or less.
-  - Different methods for selecting the sequences to be used as the reference were tested; simple random sample, weighting sequences by relative abundance, and weighting by similarity to other sequences in the dataset.
+  - Different methods for selecting the sequences to be used as the reference were tested; a simple random sample, weighting sequences by relative abundance, and weighting by similarity to other sequences in the dataset.
     - OTU quality was similar with the simple and abundance-weighted sampling, but slightly worse with similarity-weighted sampling.
-- vsearch with greengenes
+    - TODO: fraction mapped
+- To compare to existing software, vsearch was used to cluster OTUs _de novo_ or with reference-based clustering to the greengenes database.
+  - For all datasets and clustering methods (_de novo_, open reference, and closed reference), mothur's clustering algorithms produced higher quality OTUs than vsearch.
+  - When closed-reference clustering against the greengenes database, vsearch was able to map more query sequences to the reference than mothur's OptiFit algorithm.
+  - In terms of runtime, OptiFit genearlly performed faster than vsearch when reference clustering, while vsearch _de novo_ clustering outperformed OptiClust.
 
 ## Discussion
 
