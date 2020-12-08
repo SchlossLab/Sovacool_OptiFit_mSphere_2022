@@ -2445,9 +2445,6 @@ distill-header .nav a {
 <li><a href="#abstract">Abstract</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#results">Results</a></li>
-<li><a href="#reference-clustering-with-independent-databases">Reference clustering with independent databases</a></li>
-<li><a href="#reference-clustering-with-split-datasets">Reference clustering with split datasets</a></li>
-<li><a href="#comparison-to-vsearch">Comparison to vsearch</a></li>
 <li><a href="#discussion">Discussion</a></li>
 <li><a href="#materials-and-methods">Materials and Methods</a></li>
 <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -2466,7 +2463,7 @@ distill-header .nav a {
 <ul>
 <li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were downloaded, processed with mothur, and clustered <em>de novo</em> with OptiClust.</li>
 </ul>
-<h2 id="reference-clustering-with-independent-databases">Reference clustering with independent databases</h2>
+<h3 id="reference-clustering-with-independent-databases">Reference clustering with independent databases</h3>
 <ul>
 <li>Independent reference databases (greengenes, silva, and RDP) were clustered <em>de novo</em>, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
 <ul>
@@ -2476,7 +2473,7 @@ distill-header .nav a {
 <li>These results held true for all four datasets and all three reference databases.</li>
 </ul></li>
 </ul>
-<h2 id="reference-clustering-with-split-datasets">Reference clustering with split datasets</h2>
+<h3 id="reference-clustering-with-split-datasets">Reference clustering with split datasets</h3>
 <ul>
 <li>Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered <em>de novo</em> with OptiClust. Query sequences were then fit to the <em>de novo</em> OTUs with OptiFit.
 <ul>
@@ -2492,7 +2489,7 @@ distill-header .nav a {
 </ul></li>
 </ul></li>
 </ul>
-<h2 id="comparison-to-vsearch">Comparison to vsearch</h2>
+<h3 id="comparison-to-vsearch">Comparison to vsearch</h3>
 <ul>
 <li>To compare to existing software, vsearch was used to cluster OTUs <em>de novo</em> or with reference-based clustering to the greengenes database.
 <ul>
