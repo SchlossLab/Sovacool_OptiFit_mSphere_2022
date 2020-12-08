@@ -2461,13 +2461,13 @@ distill-header .nav a {
 <h2 id="introduction">Introduction</h2>
 <h2 id="results">Results</h2>
 <ul>
-<li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were processed with mothur and clustered <em>de novo</em> with mothur’s OptiClust algorithm.</li>
-<li>All clustering was performed as a distance threshold of 0.03.</li>
+<li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments as well as the greengenes, silva, and RDP public databases were processed with mothur and clustered <em>de novo</em> with mothur’s OptiClust algorithm.</li>
+<li>All clustering was performed at a distance threshold of 0.03 and repeated with 100 different random seeds.</li>
 <li>The Matthews Correlation Coefficient was calculated to serve as a measure of OTU quality.</li>
 </ul>
 <h3 id="reference-clustering-with-public-databases">Reference clustering with public databases</h3>
 <ul>
-<li>Public reference databases (greengenes, silva, and RDP) were clustered <em>de novo</em> using OptiClust, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
+<li>Public reference databases were clustered <em>de novo</em> using OptiClust, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
 <ul>
 <li>In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust.</li>
 <li>However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.</li>
