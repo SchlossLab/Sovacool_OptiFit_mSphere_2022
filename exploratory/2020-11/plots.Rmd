@@ -1,5 +1,5 @@
 ---
-date: 'Nov. 2020'
+date: 'Nov. - Dec. 2020'
 output: 
   github_document:
     html_preview: false
@@ -145,6 +145,18 @@ optifit_split %>%
        x='reference fraction',
        caption='Black line: _de novo_ clustering on the whole dataset') +
   theme(plot.caption = element_markdown())
+```
+```{r fraction-mapped_fit-split}
+optifit_split %>% 
+  filter(method == 'closed', tool == 'mothur', is.na(ref)) %>% 
+  #group_by(dataset, ref_weight, ref_frac) %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  facet_wrap("dataset", nrow=1) +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during closed-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
 ```
 
 ```{r diversity_fit-split}

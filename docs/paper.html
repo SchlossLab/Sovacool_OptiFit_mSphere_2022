@@ -2461,13 +2461,15 @@ distill-header .nav a {
 <h2 id="introduction">Introduction</h2>
 <h2 id="results">Results</h2>
 <ul>
-<li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were downloaded, processed with mothur, and clustered <em>de novo</em> with OptiClust.</li>
+<li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were processed with mothur and clustered <em>de novo</em> with mothur’s OptiClust algorithm.</li>
+<li>All clustering was performed as a distance threshold of 0.03.</li>
+<li>The Matthews Correlation Coefficient was calculated to serve as a measure of OTU quality.</li>
 </ul>
-<h3 id="reference-clustering-with-independent-databases">Reference clustering with independent databases</h3>
+<h3 id="reference-clustering-with-public-databases">Reference clustering with public databases</h3>
 <ul>
-<li>Independent reference databases (greengenes, silva, and RDP) were clustered <em>de novo</em>, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
+<li>Public reference databases (greengenes, silva, and RDP) were clustered <em>de novo</em> using OptiClust, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
 <ul>
-<li>In open-reference mode, OTU quality as measured by the MCC score was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust.</li>
+<li>In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust.</li>
 <li>However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.</li>
 <li>In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.</li>
 <li>These results held true for all four datasets and all three reference databases.</li>
@@ -2485,7 +2487,7 @@ distill-header .nav a {
 <li>Different methods for selecting the sequences to be used as the reference were tested; a simple random sample, weighting sequences by relative abundance, and weighting by similarity to other sequences in the dataset.
 <ul>
 <li>OTU quality was similar with the simple and abundance-weighted sampling, but slightly worse with similarity-weighted sampling.</li>
-<li>TODO: fraction mapped</li>
+<li>The fraction of query sequences that are able to be fit to the reference OTUs in closed-reference mode decreases as the reference fraction increases.</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -2500,6 +2502,8 @@ distill-header .nav a {
 </ul>
 <h2 id="discussion">Discussion</h2>
 <h2 id="materials-and-methods">Materials and Methods</h2>
+<h3 id="the-optifit-algorithm">The OptiFit Algorithm</h3>
+<h3 id="analysis-workflow">Analysis Workflow</h3>
 <h2 id="acknowledgements" class="appendix">Acknowledgements</h2>
 <p>KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).</p>
 <p>The funders had no role in study design, data collection and interpretation, or the decision to submit the work for publication.</p>
