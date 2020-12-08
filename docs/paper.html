@@ -2445,6 +2445,9 @@ distill-header .nav a {
 <li><a href="#abstract">Abstract</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#results">Results</a></li>
+<li><a href="#reference-clustering-with-independent-databases">Reference clustering with independent databases</a></li>
+<li><a href="#reference-clustering-with-split-datasets">Reference clustering with split datasets</a></li>
+<li><a href="#comparison-to-vsearch">Comparison to vsearch</a></li>
 <li><a href="#discussion">Discussion</a></li>
 <li><a href="#materials-and-methods">Materials and Methods</a></li>
 <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -2462,6 +2465,9 @@ distill-header .nav a {
 <h2 id="results">Results</h2>
 <ul>
 <li>16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments were downloaded, processed with mothur, and clustered <em>de novo</em> with OptiClust.</li>
+</ul>
+<h2 id="reference-clustering-with-independent-databases">Reference clustering with independent databases</h2>
+<ul>
 <li>Independent reference databases (greengenes, silva, and RDP) were clustered <em>de novo</em>, then query datasets were fit to the <em>de novo</em> OTUs using OptiFit.
 <ul>
 <li>In open-reference mode, OTU quality as measured by the MCC score was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets <em>de novo</em> with OptiClust.</li>
@@ -2469,6 +2475,9 @@ distill-header .nav a {
 <li>In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.</li>
 <li>These results held true for all four datasets and all three reference databases.</li>
 </ul></li>
+</ul>
+<h2 id="reference-clustering-with-split-datasets">Reference clustering with split datasets</h2>
+<ul>
 <li>Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered <em>de novo</em> with OptiClust. Query sequences were then fit to the <em>de novo</em> OTUs with OptiFit.
 <ul>
 <li>OTU quality from fitting split datasets was highly similar to that from <em>de novo</em> clustering the whole dataset.</li>
@@ -2482,6 +2491,9 @@ distill-header .nav a {
 <li>TODO: fraction mapped</li>
 </ul></li>
 </ul></li>
+</ul>
+<h2 id="comparison-to-vsearch">Comparison to vsearch</h2>
+<ul>
 <li>To compare to existing software, vsearch was used to cluster OTUs <em>de novo</em> or with reference-based clustering to the greengenes database.
 <ul>
 <li>For all datasets and clustering methods (<em>de novo</em>, open reference, and closed reference), mothur’s clustering algorithms produced higher quality OTUs than vsearch.</li>
