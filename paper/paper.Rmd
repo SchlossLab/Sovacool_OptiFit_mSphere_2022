@@ -64,6 +64,12 @@ mothuR::set_knitr_opts()
 - Datasets were randomly split into a reference fraction and a query fraction.
   - Reference sequences were clustered _de novo_ with OptiClust.
   - Query sequences were then fit to the _de novo_ OTUs with OptiFit.
+  - Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query.
+  - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
+  - Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.
+    - OptiClust performed faster than open-reference OptiFit only when the OptiFit reference fraction was 30% or less.
+  - Different methods for selecting the sequences to be used as the reference were tested; simple random sample, weighting sequences by relative abundance, and weighting by similarity to other sequences in the dataset.
+    - OTU quality was similar with the simple and abundance-weighted sampling, but slightly worse with similarity-weighted sampling.
 - vsearch with greengenes
 
 ## Discussion
