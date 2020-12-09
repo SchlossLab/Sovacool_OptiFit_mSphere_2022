@@ -54,7 +54,13 @@ mothuR::set_knitr_opts()
 
 ## Introduction
 
+TODO: Describe OptiClust and vsearch.
+
 ## Results
+
+TODO: brief description of OptiFit algorithm. the method we came up with is the result. OptiClust paper had toy example to walk through the algorithm. 
+
+TODO: Paragraph at beginning to describe datasets: why picked, how processed
 
 - 16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments as well as the greengenes, silva, and RDP public databases were processed with mothur and clustered _de novo_ with mothur's OptiClust algorithm.
 - All clustering was performed at a distance threshold of 0.03 and repeated with 100 different random seeds.
@@ -69,6 +75,10 @@ mothuR::set_knitr_opts()
   
 ### Reference clustering with split datasets
 
+TODO: compare optifit performance for split dataset vs public database
+TODO: double-check with Sarah that MCCs are from full OTU dataset or just query sequnce OTUs
+TODO: double-check reference fractions aren't flipped (fraction mapped plot looks weird)
+
 - Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust, then query sequences were fit to the _de novo_ OTUs with OptiFit.
   - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
   - Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.
@@ -78,6 +88,9 @@ mothuR::set_knitr_opts()
     - The fraction of query sequences that are able to be fit to the reference OTUs in closed-reference mode decreases as the reference fraction increases.
 
 ### Comparison to vsearch    
+
+TODO: move this into first section with public database.
+vsearch is more permissive than mothur (radius vs diameter with 0.03 dissimilarity threshold).
 
 - To compare to existing software, vsearch was used to cluster OTUs _de novo_ or with reference-based clustering to the greengenes database.
   - For all datasets and clustering methods (_de novo_, open reference, and closed reference), mothur's clustering algorithms produced higher quality OTUs than vsearch.
