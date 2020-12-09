@@ -20,7 +20,7 @@ ref_fracs = [i/10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
 sample_fracs_complement = [round(1 - ref_frac, 1) for ref_frac in ref_fracs]
 
 n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, sample_fracs_complement]])
-print(f"Params will produce {n_runs} optifit runs")
+#print(f"Params will produce {n_runs} optifit runs")
 
 wildcard_constraints:
     seed="\d+"
