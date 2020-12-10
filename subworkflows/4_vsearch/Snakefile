@@ -67,13 +67,25 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
+# some mothur commands use hyphens to separate a list of filenames,
+# so your filepaths cannot contain hyphens
+rule copy_ref:
+    input:
+        prep_db("data/gg/gg.fasta")
+    output:
+        fasta='data/ref/gg.fasta'
+    shell:
+        """
+        cp {input} {output}
+        """
+
 rule list_ref_seqs:
     input:
-        fasta=prep_db("data/gg/gg.fasta")
+        fasta=rules.copy_ref.output.fasta
     output:
-        accnos='data/gg.accnos'
+        accnos='data/ref/gg.accnos'
     params:
-        outdir='data/'
+        outdir='data/ref/'
     shell:
         """
         mothur '#set.dir(output={params.outdir});
@@ -129,7 +141,7 @@ rule vsearch_de_novo:
 rule vsearch_closed_ref:
     input:
         query=rules.vsearch_sort.output.fna,
-        ref=prep_db("data/gg/gg.fasta")
+        ref=rules.copy_ref.output.fasta
     output:
         uc='results/{dataset}/closed/{dataset}.uc',
         unmatched='results/{dataset}/closed/{dataset}.unmatched.fasta'
@@ -159,7 +171,7 @@ rule vsearch_closed_ref:
 rule vsearch_open_ref:
     input:
         query=rules.vsearch_sort.output.fna,
-        ref=prep_db("data/gg/gg.fasta")
+        ref=rules.copy_ref.output.fasta
     output:
         closed='results/{dataset}/open/{dataset}.closed.uc',
         unmatched='results/{dataset}/open/{dataset}.unmatched.fasta',
