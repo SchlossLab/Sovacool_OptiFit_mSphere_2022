@@ -18,16 +18,16 @@ def main():
     ref_seqs = parse_seqs(snakemake.input.ref)
     mapped_seqs = parse_seqs(snakemake.input.mapped)
 
-    print('map==ref',mapped_seqs == ref_seqs)
-    print('map==query',mapped_seqs == query_seqs)
+    print("map==ref", mapped_seqs == ref_seqs)
+    print("map==query", mapped_seqs == query_seqs)
 
-    print('len(ref)', len(ref_seqs))
-    print('len(query)', len(query_seqs))
-    print('len(map)', len(mapped_seqs))
+    print("len(ref)", len(ref_seqs))
+    print("len(query)", len(query_seqs))
+    print("len(map)", len(mapped_seqs))
 
-    print('ref int query', len(query_seqs.intersection(ref_seqs)))
-    print('map int query', len(mapped_seqs.intersection(query_seqs)))
-    print('map int ref', len(mapped_seqs.intersection(ref_seqs)))
+    print("ref int query", len(query_seqs.intersection(ref_seqs)))
+    print("map int query", len(mapped_seqs.intersection(query_seqs)))
+    print("map int ref", len(mapped_seqs.intersection(ref_seqs)))
 
     # remove reference seqs from mapped seqs
     mapped_seqs = mapped_seqs - ref_seqs
