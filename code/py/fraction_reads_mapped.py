@@ -27,8 +27,8 @@ def main():
     ref_seqs = parse_seqs(snakemake.input.ref)
     mapped_seqs = parse_list(snakemake.input.list)
 
-    # mapped reads should not contain reference reads
-    assert not mapped_seqs.intersection(ref_seqs)
+    # remove reference seqs from mapped seqs
+    mapped_seqs = mapped_seqs - ref_seqs
 
     # mapped reads should not contain reads not in query
     assert not (mapped_seqs - query_seqs)
