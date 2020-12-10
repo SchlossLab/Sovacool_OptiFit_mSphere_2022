@@ -221,6 +221,7 @@ rule calc_diversity2:
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
+        list_accnos=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.accnos'),
         tsv=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.groups.summary')
     params:
         outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
@@ -238,8 +239,9 @@ rule calc_diversity2:
 rule fraction_reads_mapped2:
     input:
         code="code/py/fraction_reads_mapped.py",
-        list=rules.fit_to_ref_db.output.list,
-        count=rules.copy_preclust_inputs.output.count
+        mapped=calc_diversity2.output.list_accnos,
+        query=rules.copy_preclust_inputs.output.count,
+        ref=rules.preclust_db.output.count_table
     output:
         txt=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/fraction_reads_mapped.txt')
     script:

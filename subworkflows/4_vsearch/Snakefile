@@ -67,6 +67,19 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
+ rule list_ref_seqs:
+    input:
+        fasta=ef=prep_db("data/gg/gg.fasta")
+    output:
+        accnos='data/gg.accnos'
+    params:
+        outdir='data/'
+    shell:
+        """
+        mothur '#set.dir(output={params.outdir});
+            list.seqs(fasta={input.fasta}) '
+        """
+
 rule vsearch_sort:
     input:
         fna=rules.remove_gaps_query.output.fna
@@ -258,6 +271,7 @@ rule calc_diversity4:
         list="results/{dataset}/{method}/{dataset}.list",
         count=rules.prep_count_table.output.count,
     output:
+        list_accnos="results/{dataset}/{method}/{dataset}.accnos",
         tsv='results/{dataset}/{method}/{dataset}.groups.summary'
     params:
         outdir="results/{dataset}/{method}/"
@@ -275,8 +289,9 @@ rule calc_diversity4:
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        list="results/{dataset}/{method}/{dataset}.list",
-        count=rules.prep_count_table.output.count
+        mapped=rules.calc_diversity4.output.list_accnos,
+        query=rules.prep_count_table.output.count,
+        ref=rules.list_ref_seqs.output.accnos
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
     script:
