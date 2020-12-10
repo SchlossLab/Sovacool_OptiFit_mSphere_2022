@@ -263,7 +263,7 @@ rule calc_diversity1:
         list.seqs(list={input.list});
         get.seqs(count={input.count}, accnos=current);
         make.shared(list={input.list}, count=current, label=0.03);
-        summary.single(shared=current, calc=nseqs-sobs-npshannon-invsimpson) "
+        summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
         """
 
 rule cbind_opticlust_seed:
