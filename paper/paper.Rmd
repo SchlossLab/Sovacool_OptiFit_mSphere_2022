@@ -54,17 +54,38 @@ mothuR::set_knitr_opts()
 
 ## Introduction
 
-TODO: Describe OptiClust and vsearch.
+Assigning amplicon sequences to Operational Taxonomic Units (OTUs) is an
+important step in characterizing the composition of microbial communities across
+large datasets. OptiClust, a _de novo_ OTU clustering method in the mothur
+program, has been shown to produce higher quality OTU assignments than other
+methods and at comparable or faster speeds [@westcott_opticlust_2017;
+@schloss_introducing_2009]. A notable difference between _de novo_ clustering
+and database-dependent methods is that OTU assignments clustered with _de novo_
+methods are not stable when new sequences are added to a dataset
+[@westcott_novo_2015]. However, in some cases one may wish to incorporate new
+samples into a previously clustered dataset without performing clustering again
+on all sequences, such as when deploying a machine learning model where OTUs are
+features [@topcuoglu_effective_2019]. To provide an efficient and robust method
+to fit amplicon sequence data to existing OTUs, we developed the OptiFit
+algorithm as a new component of the mothur program.
+
+- TODO: Describe OptiClust and vsearch.
 
 ## Results
 
-TODO: brief description of OptiFit algorithm. the method we came up with is the result. OptiClust paper had toy example to walk through the algorithm. 
+- TODO: brief description of OptiFit algorithm. the method we came up with is the result. OptiClust paper had toy example to walk through the algorithm. 
+- TODO: Paragraph at beginning to describe datasets: why picked, how processed.
 
-TODO: Paragraph at beginning to describe datasets: why picked, how processed
+We used four published datasets isolated from soil
+[@johnston_metagenomics_2016], marine [@henson_artificial_2016], mouse
+[@schloss_stabilization_2012], and human [@baxter_microbiota-based_2016]
+samples.
 
 - 16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments as well as the greengenes, silva, and RDP public databases were processed with mothur and clustered _de novo_ with mothur's OptiClust algorithm.
 - All clustering was performed at a distance threshold of 0.03 and repeated with 100 different random seeds.
-- The Matthews Correlation Coefficient was calculated to serve as a measure of OTU quality.
+- The Matthews Correlation Coefficient was calculated to serve as a measure of OTU quality. OTU quality was evaluated using the Matthews Correlation
+Coefficient (MCC) with a sequence dissimilarity threshold of 0.03% as described
+previously [@schloss_application_2016; @westcott_novo_2015].
 
 ### Reference clustering with public databases
 
@@ -75,9 +96,9 @@ TODO: Paragraph at beginning to describe datasets: why picked, how processed
   
 ### Reference clustering with split datasets
 
-TODO: compare optifit performance for split dataset vs public database
-TODO: double-check with Sarah that MCCs are from full OTU dataset or just query sequnce OTUs
-TODO: double-check reference fractions aren't flipped (fraction mapped plot looks weird)
+- TODO: compare optifit performance for split dataset vs public database
+- TODO: double-check with Sarah that MCCs are from full OTU dataset or just query sequnce OTUs
+- TODO: double-check reference fractions aren't flipped (fraction mapped plot looks weird)
 
 - Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust, then query sequences were fit to the _de novo_ OTUs with OptiFit.
   - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
@@ -89,8 +110,8 @@ TODO: double-check reference fractions aren't flipped (fraction mapped plot look
 
 ### Comparison to vsearch    
 
-TODO: move this into first section with public database.
-vsearch is more permissive than mothur (radius vs diameter with 0.03 dissimilarity threshold).
+- TODO: move this into first section with public database.
+- vsearch is more permissive than mothur (radius vs diameter with 0.03 dissimilarity threshold).
 
 - To compare to existing software, vsearch was used to cluster OTUs _de novo_ or with reference-based clustering to the greengenes database.
   - For all datasets and clustering methods (_de novo_, open reference, and closed reference), mothur's clustering algorithms produced higher quality OTUs than vsearch.
