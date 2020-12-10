@@ -26,8 +26,8 @@ def main():
     print('len(map)', len(mapped_seqs))
 
     print('ref int query', len(query_seqs.intersection(ref_seqs)))
-    print('map int query', len(map_seqs.intersection(query_seqs)))
-    print('map int ref', len(map_seqs.intersection(ref_seqs)))
+    print('map int query', len(mapped_seqs.intersection(query_seqs)))
+    print('map int ref', len(mapped_seqs.intersection(ref_seqs)))
 
     # remove reference seqs from mapped seqs
     mapped_seqs = mapped_seqs - ref_seqs
