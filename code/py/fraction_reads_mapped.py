@@ -31,6 +31,8 @@ def main():
     # remove reference seqs from mapped seqs
     mapped_seqs = mapped_seqs - ref_seqs
 
+    print('map=ref',mapped_seqs == ref_seqs)
+
     # mapped reads should not contain reads not in query
     assert not (mapped_seqs - query_seqs)
 
