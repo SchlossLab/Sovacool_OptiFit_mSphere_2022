@@ -67,7 +67,7 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
- rule list_ref_seqs:
+rule list_ref_seqs:
     input:
         fasta=ef=prep_db("data/gg/gg.fasta")
     output:
