@@ -17,7 +17,7 @@ def main():
     ref_seqs = parse_seqs(snakemake.input.ref)
     mapped_seqs = parse_seqs(snakemake.input.mapped)
 
-    print('map=ref',mapped_seqs == ref_seqs)
+    print('map==ref',mapped_seqs == ref_seqs)
     print('ref in map', len(ref_seqs.intersection(mapped_seqs)))
     print('len(map)', len(mapped_seqs))
     # remove reference seqs from mapped seqs
@@ -26,7 +26,7 @@ def main():
 
     # mapped reads should not contain reads not in query
     assert not (mapped_seqs - query_seqs)
-    
+
     fraction_mapped = round(
         len(mapped_seqs.intersection(query_seqs)) / len(query_seqs), 3
     )
