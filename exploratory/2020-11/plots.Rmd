@@ -183,8 +183,23 @@ optifit_split %>%
        y='fraction mapped')
 ```
 
-Did mothur's list file format change in the latest dev version?
+Did mothur's list file format change in the latest dev version? The fraction
+mapped values are the same as the reference fraction when the ref weight is
+simple.
 
+
+```{r fraction-mapped-open_fit-split}
+optifit_split %>% 
+  filter(method == 'open', tool == 'mothur', is.na(ref)) %>% 
+  mutate()
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  facet_wrap("dataset", nrow=1) +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during open-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
+```
 ```{r diversity_fit-split}
 optifit_split %>% 
   ggplot(aes(x = ref_frac, y = npshannon, color = ref_weight)) +

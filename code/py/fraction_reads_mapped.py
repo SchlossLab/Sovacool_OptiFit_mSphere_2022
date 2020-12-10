@@ -12,21 +12,10 @@ def parse_seqs(infilename):
         seqs = {line.split("\t")[0].strip() for line in count_file}
     return seqs
 
-
-def parse_list(infilename):
-    with open(infilename, "r") as list_file:
-        # third column onward of second line
-        # each seq in each OTU delimited by comma
-        next(list_file)
-        line = next(list_file)
-        mapped_seqs = {seq for column in line.split()[2:] for seq in column.split(",")}
-    return mapped_seqs
-
-
 def main():
-    query_seqs = parse_seqs(snakemake.input.count)
+    query_seqs = parse_seqs(snakemake.input.query)
     ref_seqs = parse_seqs(snakemake.input.ref)
-    mapped_seqs = parse_list(snakemake.input.list)
+    mapped_seqs = parse_seqs(snakemake.input.mapped)
 
     # remove reference seqs from mapped seqs
     mapped_seqs = mapped_seqs - ref_seqs

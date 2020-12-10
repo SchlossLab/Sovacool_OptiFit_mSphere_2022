@@ -180,6 +180,7 @@ rule calc_diversity3:
         list=rules.fit_subsample.output.list,
         count=rules.combine_for_fit.output.count_all
     output:
+        list_accnos='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list',
         tsv=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary')
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
@@ -208,8 +209,8 @@ rule count_input_sizes:
 rule fraction_reads_mapped3:
     input:
         code="code/py/fraction_reads_mapped.py",
-        list=rules.fit_subsample.output.list,
-        count=rules.split_weighted_subsample.output.sample_accnos,
+        mapped=rules.calc_diversity3.output.list_accnos,
+        query=rules.split_weighted_subsample.output.sample_accnos,
         ref=rules.split_weighted_subsample.output.sample_accnos
     output:
         txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
