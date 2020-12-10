@@ -211,7 +211,7 @@ rule fraction_reads_mapped3:
         code="code/py/fraction_reads_mapped.py",
         mapped=rules.calc_diversity3.output.list_accnos,
         query=rules.split_weighted_subsample.output.sample_accnos,
-        ref=rules.split_weighted_subsample.output.sample_accnos
+        ref=rules.split_weighted_subsample.output.ref_accnos
     output:
         txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'
     script:
