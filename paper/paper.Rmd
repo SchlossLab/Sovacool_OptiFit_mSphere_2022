@@ -1,101 +1,52 @@
 ---
 title: "**OptiFit: a fast method for fitting amplicon sequences to existing OTUs**"
+date: '`r Sys.Date()`'
+authors:
+  - name: "Kelly L. Sovacool"
+    url: https://github.com/kelly-sovacool
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+    orcid_id: 0000-0003-3283-829X
+  - name: "Sarah L. Westcott"
+    url: https://github.com/mothur-westcott
+    affiliation: Department of Microbiology and Immunology, University of Michigan, Ann Arbor, MI
+  - name: "M. Brodie Mumphrey"
+    url: https://github.com/MBMumphrey
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+  - name: "Gabrielle A. Dotson"
+    url: https://github.com/dotsonga
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+  - name: "Patrick D. Schloss"
+    url: https://github.com/pschloss
+    affiliation: Department of Microbiology and Immunology, University of Michigan, Ann Arbor, MI
 bibliography: references.bib
 output:
+  distill::distill_article:
+    toc: true
+    toc_float: true
+    toc_depth: 2
   pdf_document:
-    keep_tex: true
+    keep_tex: false
     includes:
-      in_header: header.tex
+      in_header: preamble.tex
+      before_body: head.tex
+      after_body: tail.tex
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
 csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
+repository_url: https://github.com/SchlossLab/OptiFitAnalysis
+creative_commons: CC BY-SA
+twitter:
+  creator: "@kelly_sovacool"
+  site: "@PatSchloss"
 ---
 
-
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
-knitr::opts_chunk$set(
-  tidy = TRUE,
-  echo = FALSE,
-  eval = TRUE,
-  warning = FALSE,
-  cache = FALSE
-)
-
-inline_hook <- function(x){
-	print(x)
-	if(is.numeric(x)){
-		if(abs(x - round(x)) < .Machine$double.eps^0.5){
-			paste(format(x,big.mark=',', digits=0, scientific=FALSE))
-		} else {
-			paste(format(x,big.mark=',', digits=2, nsmall=2, scientific=FALSE))
-		}
-
-	} else {
-    	paste(x)      
-	}
-}
-knitr::knit_hooks$set(inline=inline_hook)
+mothuR::set_knitr_opts()
 ```
 
-\begin{center}
-\vspace{25mm}
-
-Kelly L. Sovacool${^1}$, Sarah L. Westcott${^2}$, M. Brodie Mumphrey${^1}$,
-Gabrielle A. Dotson${^1}$, Patrick D. Schloss${^2\dagger}$
-
-$1$ Department of Computational Medicine and Bioinformatics,
-University of Michigan, Ann Arbor, MI 48109
-
-$2$ Department of Microbiology and Immunology,
-University of Michigan, Ann Arbor, MI 48109
-
-\vspace{30mm}
-
-$\dagger$ To whom correspondence should be addressed: pschloss@umich.edu
-
-\end{center}
-
-
-\newpage
-\linenumbers
-
 ## Abstract
-
-Assigning amplicon sequences to Operational Taxonomic Units (OTUs) is an
-important step in characterizing the composition of microbial communities across
-large datasets. OptiClust, a _de novo_ OTU clustering method in the mothur
-program, has been shown to produce higher quality OTU assignments than other
-methods and at comparable or faster speeds [@westcott_opticlust_2017;
-@schloss_introducing_2009]. A notable difference between _de novo_ clustering
-and database-dependent methods is that OTU assignments clustered with _de novo_
-methods are not stable when new sequences are added to a dataset
-[@westcott_novo_2015]. However, in some cases one may wish to incorporate new
-samples into a previously clustered dataset without performing clustering again
-on all sequences, such as when deploying a machine learning model where OTUs are
-features [@topcuoglu_framework_2020]. To provide an efficient and robust method
-to fit amplicon sequence data to existing OTUs, we developed the OptiFit
-algorithm as a new component of the mothur program. To benchmark the OptiFit
-algorithm against _de novo_ clustering with the OptiClust algorithm, we used
-four published datasets isolated from soil [@johnston_metagenomics_2016], marine
-[@henson_artificial_2016], mouse [@schloss_stabilization_2012], and human
-[@baxter_microbiota-based_2016] samples. For each dataset, a subset of sequences
-was randomly selected and clustered into OTUs with OptiClust, then the remaining
-sequences were fit to the existing OTUs using the OptiFit algorithm. This was
-repeated with subsets of varying sizes ranging from 10 to 90% of sequences in
-order to evaluate the bounds of the dataset size required for OptiFit.
-Separately, all sequences were clustered with OptiClust to provide a baseline of
-OTU assignment quality and runtime performance. Each of these routines was
-repeated 10 times with different random seeds to produce results that are robust
-to random variation. OTU quality was evaluated using the Matthews Correlation
-Coefficient (MCC) with a sequence similarity threshold of 97% as described
-previously [@schloss_application_2016; @westcott_novo_2015]. On average, fitting
-sequences into existing OTUs with OptiFit performed 10 times faster than _de
-novo_ clustering with OptiClust, while the average MCC scores produced were
-nearly indistinguishable across each dataset. The OptiFit results across subset
-sizes ranging from 10 to 90% of sequences were also very similar, with slightly
-higher MCC scores for larger subset sizes. Thus, OptiFit is an efficient way to
-fit new sequences to existing OTUs yet without sacrificing the quality of OTU
-assignments.
 
 ### Importance
 
@@ -103,17 +54,62 @@ assignments.
 
 ## Introduction
 
+TODO: Describe OptiClust and vsearch.
+
 ## Results
+
+TODO: brief description of OptiFit algorithm. the method we came up with is the result. OptiClust paper had toy example to walk through the algorithm. 
+
+TODO: Paragraph at beginning to describe datasets: why picked, how processed
+
+- 16S rRNA gene sequence datasets from human gut, mouse gut, marine, and soil environments as well as the greengenes, silva, and RDP public databases were processed with mothur and clustered _de novo_ with mothur's OptiClust algorithm.
+- All clustering was performed at a distance threshold of 0.03 and repeated with 100 different random seeds.
+- The Matthews Correlation Coefficient was calculated to serve as a measure of OTU quality.
+
+### Reference clustering with public databases
+
+- Public reference databases were clustered _de novo_ using OptiClust, then query datasets were fit to the _de novo_ OTUs using OptiFit.
+  - In open-reference mode, OTU quality was similar between fitting the datasets to reference OTUs with OptiFit and clustering the datasets _de novo_ with OptiClust. This held true for all datasets and reference databases.
+  - However, in closed-reference mode, OTU quality was slightly worse when fitting to greengenes and silva, and much worse when fitting to RDP as compared to OptiClust. OptiFit was able to map more query sequences to reference OTUs created with the greengenes and silva databases than with RDP.
+  - In terms of runtime, closed-reference OptiFit outperformed OptiClust, while OptiClust out-performed open-reference OptiFit.
+  
+### Reference clustering with split datasets
+
+TODO: compare optifit performance for split dataset vs public database
+TODO: double-check with Sarah that MCCs are from full OTU dataset or just query sequnce OTUs
+TODO: double-check reference fractions aren't flipped (fraction mapped plot looks weird)
+
+- Datasets were randomly split into a reference fraction and a query fraction. Reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query. Reference sequences were clustered _de novo_ with OptiClust, then query sequences were fit to the _de novo_ OTUs with OptiFit.
+  - OTU quality from fitting split datasets was highly similar to that from _de novo_ clustering the whole dataset.
+  - Closed-reference OptiFit with split datasets was faster than OptiClust on whole datasets.
+    - OptiClust performed faster than open-reference OptiFit only when the OptiFit reference fraction was 30% or less.
+  - Different methods for selecting the sequences to be used as the reference were tested; a simple random sample, weighting sequences by relative abundance, and weighting by similarity to other sequences in the dataset.
+    - OTU quality was similar with the simple and abundance-weighted sampling, but slightly worse with similarity-weighted sampling.
+    - The fraction of query sequences that are able to be fit to the reference OTUs in closed-reference mode decreases as the reference fraction increases.
+
+### Comparison to vsearch    
+
+TODO: move this into first section with public database.
+vsearch is more permissive than mothur (radius vs diameter with 0.03 dissimilarity threshold).
+
+- To compare to existing software, vsearch was used to cluster OTUs _de novo_ or with reference-based clustering to the greengenes database.
+  - For all datasets and clustering methods (_de novo_, open reference, and closed reference), mothur's clustering algorithms produced higher quality OTUs than vsearch.
+  - When closed-reference clustering against the greengenes database, vsearch was able to map more query sequences to the reference than mothur's OptiFit algorithm.
+  - In terms of runtime, OptiFit genearlly performed faster than vsearch when reference clustering, while vsearch _de novo_ clustering outperformed OptiClust.
 
 ## Discussion
 
 ## Materials and Methods
 
-## Acknowledgements
+### The OptiFit Algorithm
+
+### Analysis Workflow
+
+## Acknowledgements {.appendix}
 
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
 
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
 
-## References
+## Author Contributions {.appendix}

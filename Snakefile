@@ -32,9 +32,39 @@ subworkflow vsearch:
     configfile:
         config['configpath']
 
-rule targets:
+rule render_paper:
     input:
-        'paper/paper.pdf'
+        pdf='docs/paper.pdf',
+        html='docs/paper.html'
+
+rule render_pdf:
+    input:
+        Rmd="paper/paper.Rmd",
+        pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
+        bib='paper/references.bib',
+        csl='paper/msystems.csl',
+        R='code/R/render.R',
+        fcns="code/R/functions.R"
+    output:
+        file='docs/paper.pdf'
+    params:
+        format='pdf_document'
+    script:
+        'code/R/render.R'
+
+rule render_html:
+    input:
+        Rmd="paper/paper.Rmd",
+        bib='paper/references.bib',
+        csl='paper/msystems.csl',
+        R='code/R/render.R',
+        fcns="code/R/functions.R"
+    output:
+        file='docs/paper.html'
+    params:
+        format="distill::distill_article"
+    script:
+        'code/R/render.R'
 
 rule subtargets:
     input:
@@ -42,18 +72,3 @@ rule subtargets:
         optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
         optifit_split=fit_split('results/optifit_split_results.tsv'),
         vsearch=vsearch('results/vsearch_results.tsv')
-
-rule render_paper:
-    input:
-        Rmd="paper/paper.Rmd",
-        pre='paper/header.tex',
-        bib='paper/references.bib',
-        csl='paper/msystems.csl',
-        R='code/R/render.R',
-        fcns="code/R/functions.R"
-    output:
-        pdf='paper/paper.pdf'
-    log:
-        'log/render_paper.txt'
-    script:
-        'code/R/render.R'

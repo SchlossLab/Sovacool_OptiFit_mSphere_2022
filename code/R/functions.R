@@ -22,7 +22,7 @@ log_smk <- function() {
 #' @return (None) writes tsv file
 #' @export
 #'
-rbind_all <- function(key = 'tsv') {
+rbind_all <- function(key = "tsv") {
   snakemake@input[[key]] %>%
     map_dfr(read_tsv) %>%
     write_tsv(snakemake@output[[key]])
@@ -35,7 +35,7 @@ rbind_all <- function(key = 'tsv') {
 #' @return (None) writes tsv file
 #' @export
 #'
-cbind_all <- function(key = 'tsv') {
+cbind_all <- function(key = "tsv") {
   snakemake@input[[key]] %>%
     map_dfc(read_tsv) %>%
     mutate_columns() %>%

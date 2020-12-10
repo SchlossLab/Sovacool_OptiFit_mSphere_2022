@@ -1,4 +1,4 @@
-Nov. 2020
+Nov. - Dec. 2020
 
 ``` r
 set.seed(2018)
@@ -174,6 +174,51 @@ optifit_split %>%
 ```
 
 ![](figures/runtime_fit-split-1.png)<!-- -->
+
+### fraction mapped
+
+``` r
+optifit_split %>% 
+  filter(method == 'closed', tool == 'mothur', is.na(ref)) %>% 
+  #group_by(dataset, ref_weight, ref_frac) %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  facet_wrap("dataset", nrow=1) +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during closed-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
+```
+
+![](figures/fraction-mapped_fit-split-1.png)<!-- -->
+
+It looks like one result per parameter set is left over from before I
+re-ran everything after reverting to the older silva version. [Here’s
+what the plot looked like with the newest (buggy)
+silva](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/exploratory/2020-05/sub3_fit_all-seqs.md#fraction-of-sequences-that-map-to-the-reference).
+Need to go back and figure out why those files didn’t get
+removed/overwritten by Snakemake when I re-ran everything.
+
+Let’s try a sanity check with open-reference – should all be 1.
+
+``` r
+optifit_split %>% 
+  filter(method == 'open', tool == 'mothur', is.na(ref)) %>% 
+  #group_by(dataset, ref_weight, ref_frac) %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  facet_wrap("dataset", nrow=1) +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during open-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
+```
+
+    ## Warning: Removed 46 rows containing missing values (geom_point).
+
+![](figures/fraction-mapped-open_fit-split-1.png)<!-- -->
+
+Did mothur’s list file format change in the latest dev version?
 
 ``` r
 optifit_split %>% 
