@@ -12,6 +12,7 @@ def parse_seqs(infilename):
         seqs = {line.split("\t")[0].strip() for line in count_file}
     return seqs
 
+
 def main():
     query_seqs = parse_seqs(snakemake.input.query)
     ref_seqs = parse_seqs(snakemake.input.ref)
@@ -30,7 +31,7 @@ def main():
 
     # remove reference seqs from mapped seqs
     mapped_seqs = mapped_seqs - ref_seqs
-    print('len(map) after remove ref seqs', len(mapped_seqs))
+    print("len(map) after remove ref seqs", len(mapped_seqs))
 
     # mapped reads should not contain reads not in query
     assert not (mapped_seqs - query_seqs)
