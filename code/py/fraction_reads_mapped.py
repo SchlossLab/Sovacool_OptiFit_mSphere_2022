@@ -3,6 +3,7 @@
 calculate the fraction of reads that mapped during closed-reference clustering
 """
 
+
 def parse_seqs(infilename):
     with open(infilename, "r") as count_file:
         if not infilename.endswith(".accnos"):
