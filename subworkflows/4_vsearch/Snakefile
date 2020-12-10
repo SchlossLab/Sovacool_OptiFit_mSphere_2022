@@ -69,7 +69,7 @@ rule remove_gaps_query:
 
 rule list_ref_seqs:
     input:
-        fasta=ef=prep_db("data/gg/gg.fasta")
+        fasta=prep_db("data/gg/gg.fasta")
     output:
         accnos='data/gg.accnos'
     params:
