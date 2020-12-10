@@ -122,9 +122,19 @@ previously [@schloss_application_2016; @westcott_novo_2015].
 
 ## Materials and Methods
 
-### The OptiFit Algorithm
+### Sequence Data Processing Steps 
 
-### Analysis Workflow
+### Benchmarking
+
+### Data and Code Availability
+
+TODO: cite all these dependencies
+
+We implemented the analysis workflow in Snakemake and relied on Python, R, and
+GNU bash. Dependencies include mothur v1.45.0, vsearch v2.13.3, numpy, R
+Markdown, the Tidyverse metapackage, and the conda environment manager. A
+reproducible version of the workflow, manuscript, and conda environment is
+available at **TODO: UPDATED REPO LINK**.
 
 ## Acknowledgements {.appendix}
 
