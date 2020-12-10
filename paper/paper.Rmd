@@ -23,7 +23,7 @@ output:
   distill::distill_article:
     toc: true
     toc_float: true
-    toc_depth: 2
+    toc_depth: 3
   pdf_document:
     keep_tex: false
     includes:
