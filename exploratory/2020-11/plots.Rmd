@@ -95,7 +95,7 @@ optifit_dbs %>% filter(method == 'closed') %>%
 ```{r runtime_fit-db}
 optifit_dbs %>% 
   ggplot(aes(x=method, y=sec, color=ref)) +
-  geom_jitter(alpha = 0.5) +
+  geom_boxplot(alpha = 0.5) +
   geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
   labs(title='OptiFit runtime with reference databases',
@@ -187,19 +187,6 @@ Did mothur's list file format change in the latest dev version? The fraction
 mapped values are the same as the reference fraction when the ref weight is
 simple.
 
-
-```{r fraction-mapped-open_fit-split}
-optifit_split %>% 
-  filter(method == 'open', tool == 'mothur', is.na(ref)) %>% 
-  mutate()
-  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
-  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
-  facet_wrap("dataset", nrow=1) +
-  ylim(0, 1) +
-  labs(title="Sequences mapped during open-reference OptiFit",
-       x='reference fraction',
-       y='fraction mapped')
-```
 ```{r diversity_fit-split}
 optifit_split %>% 
   ggplot(aes(x = ref_frac, y = npshannon, color = ref_weight)) +
@@ -244,7 +231,7 @@ vsearch %>%
 
 ```{r diversity_vsearch}
 vsearch %>% 
-  ggplot(aes(x = method, y = npshannon, color = tool)) +
+  ggplot(aes(x = method, y = shannon, color = tool)) +
   geom_boxplot() +
   facet_wrap('dataset') +
   labs(x = '')
