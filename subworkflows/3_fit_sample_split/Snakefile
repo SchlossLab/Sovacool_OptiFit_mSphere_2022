@@ -224,9 +224,9 @@ rule cbind_optifit_seed3:
             rules.calc_diversity3.output.tsv,
             rules.count_input_sizes.output.tsv,
             rules.fraction_reads_mapped3.output.txt],
-        code='code/R/cbind_optifit_seed.R',
+        code='code/R/full_join_tsvs.R',
         fcns='code/R/functions.R'
     output:
         tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
     script:
-        'code/R/cbind_optifit_seed.R'
+        'code/R/full_join_tsvs.R'
