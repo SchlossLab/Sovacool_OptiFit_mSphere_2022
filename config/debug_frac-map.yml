@@ -1,0 +1,17 @@
+datasets:
+- soil
+references:
+- silva
+weights:
+- simple
+methods:
+- open
+- closed
+printrefs:
+- f
+ref_fracs:
+    start: 8
+    stop: 10
+    step: 2
+seeds: 10
+configpath: 'config/debug_frac-map.yml'
