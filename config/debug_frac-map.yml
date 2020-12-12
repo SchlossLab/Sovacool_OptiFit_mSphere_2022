@@ -10,8 +10,8 @@ methods:
 printrefs:
 - f
 ref_fracs:
-    start: 8
-    stop: 10
+    start: 1
+    stop: 9 
     step: 2
-seeds: 10
+seeds: 4
 configpath: 'config/debug_frac-map.yml'
