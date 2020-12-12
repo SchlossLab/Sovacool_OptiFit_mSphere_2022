@@ -59,6 +59,17 @@ rule split_weighted_subsample:
     script:
         "code/py/split_weighted_subsample.py"
 
+rule check_split:
+    input:
+        code="code/py/check_split.py",
+        ref=rules.split_weighted_subsample.output.ref_accnos,
+        query=rules.split_weighted_subsample.output.sample_accnos,
+        all=rules.split_weighted_subsample.output.all_accnos
+    output:
+        txt="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/check_split.txt"
+    script:
+        'code/py/check_split.py'
+
 rule prep_subsample_ref:
     input:
         accnos=rules.split_weighted_subsample.output.ref_accnos,
@@ -223,7 +234,8 @@ rule cbind_optifit_seed3:
             rules.fit_subsample.benchmark,
             rules.calc_diversity3.output.tsv,
             rules.count_input_sizes.output.tsv,
-            rules.fraction_reads_mapped3.output.txt],
+            rules.fraction_reads_mapped3.output.txt,
+            rules.check_split.output.txt],
         code='code/R/cbind_optifit_seed.R',
         fcns='code/R/functions.R'
     output:
