@@ -35,4 +35,4 @@
 #SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yaml --forcerun cbind_optifit_seed3
+time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yaml --forcerun cbind_optifit_seed3 --forcerun fit_subsample
