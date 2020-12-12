@@ -112,12 +112,12 @@ rule combine_for_fit:
     shell:
         """
         if $(python3 {input.py} {wildcards.ref_frac} {wildcards.sample_frac}); then
-            echo "Copying input files to output files"
+            echo "Copying input files to output files" > {log}
             cp {input.fasta} {output.fasta_all}
             cp {input.dist} {output.dist_all}
             cp {input.count} {output.count_all}
         else
-            echo "Running mothur to extract sequences"
+            echo "Running mothur to extract sequences" > {log}
             mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
                 get.seqs(accnos={input.accnos_all}, fasta={input.fasta});
                 get.seqs(accnos=current, count={input.count});
