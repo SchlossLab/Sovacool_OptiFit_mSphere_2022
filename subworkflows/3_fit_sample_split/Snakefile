@@ -148,26 +148,12 @@ rule cluster_ref:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule pick_best_cluster_seed3:
-    input:
-        sensspec=expand('results/{{dataset}}/refweight_{{ref_weight}}/reffrac_{{ref_frac}}/samplefrac_{{sample_frac}}/seed_{seed}/cluster/{{dataset}}.pick.opti_mcc.sensspec',
-            seed=seeds),
-        list=expand("results/{{dataset}}/refweight_{{ref_weight}}/reffrac_{{ref_frac}}/samplefrac_{{sample_frac}}/seed_{seed}/cluster/{{dataset}}.pick.opti_mcc.list",
-            seed=seeds),
-        code='code/R/pick_best_cluster_seed.R',
-        fcns='code/R/functions.R'
-    output:
-        list="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/best_seed.opti_mcc.list"
-    script:
-        'code/R/pick_best_cluster_seed.R'
-
 rule fit_subsample:
     input:
         fasta=rules.combine_for_fit.output.fasta_all,
         count=rules.combine_for_fit.output.count_all,
         column=rules.combine_for_fit.output.dist_all,
-        reflist="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/{dataset}.pick.opti_mcc.list"
-        #reflist=rules.pick_best_cluster_seed3.output.list
+        reflist=rules.cluster_ref.output.list
     output:
         sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec',
         list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list'
