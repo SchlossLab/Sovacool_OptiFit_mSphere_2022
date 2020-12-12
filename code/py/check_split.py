@@ -1,5 +1,5 @@
 
-parse_accnos(filename):
+def parse_accnos(filename):
     with open(filename, 'r') as file:
         seqs = {line.strip() for line in file}
     return seqs
