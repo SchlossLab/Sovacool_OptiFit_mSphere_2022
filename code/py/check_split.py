@@ -8,7 +8,7 @@ def parse_accnos(filename):
 def main():
     ref = parse_accnos(snakemake.input.ref)
     query = parse_accnos(snakemake.input.query)
-    all = parse_accnos(snakemake.intput.all)
+    all = parse_accnos(snakemake.input.all)
 
     assert not ref.intersection(query)
     assert all - ref.intersection(all)
