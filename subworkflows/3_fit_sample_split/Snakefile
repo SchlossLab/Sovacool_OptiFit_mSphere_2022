@@ -166,7 +166,8 @@ rule fit_subsample:
         fasta=rules.combine_for_fit.output.fasta_all,
         count=rules.combine_for_fit.output.count_all,
         column=rules.combine_for_fit.output.dist_all,
-        reflist=rules.pick_best_cluster_seed3.output.list
+        reflist="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/cluster/{dataset}.pick.opti_mcc.list"
+        #reflist=rules.pick_best_cluster_seed3.output.list
     output:
         sensspec='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec',
         list='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.list'
