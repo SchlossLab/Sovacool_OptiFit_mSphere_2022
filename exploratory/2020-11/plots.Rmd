@@ -206,8 +206,8 @@ debug_dat <- optifit_split %>%
 debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
 debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
 
-debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
-debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
+debug_dat %>% filter(seed ==1, ref_weight == 'simple', dataset == 'human') %>% pull(is_correct)
+debug_dat %>% filter(seed ==2, ref_weight == 'simple', dataset == 'human') %>% pull(is_correct)
   
 ```
 
