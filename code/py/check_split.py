@@ -16,7 +16,7 @@ def main():
 
     with open(snakemake.output.txt, "w") as file:
         file.write("check_split_passed\n")
-        file.write(True)
+        file.write("True")
 
 
 main()
