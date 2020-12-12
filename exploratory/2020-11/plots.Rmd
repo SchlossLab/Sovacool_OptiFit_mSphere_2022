@@ -160,7 +160,7 @@ optifit_split %>%
   filter(method == 'closed', tool == 'mothur', is.na(ref)) %>% 
   #group_by(dataset, ref_weight, ref_frac) %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
-  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  geom_point(alpha = 0.5, size=1) +
   facet_wrap("dataset", nrow=1) +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit",
@@ -181,7 +181,7 @@ optifit_split %>%
   filter(tool == 'mothur', is.na(ref)) %>% 
   filter(dataset == 'soil') %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
-  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  geom_point(alpha = 0.5, size=1) +
   facet_grid(dataset ~ method) +
   ylim(0, 1) +
   labs(title="Sequences mapped during open-reference OptiFit",
@@ -203,14 +203,16 @@ debug_dat <- optifit_split %>%
          sample_frac, ref_frac, ref_weight) %>%
   group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
 
-debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
-debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+for (s in 1:10) {
+  debug_dat %>% 
+    filter(seed == s, ref_weight == 'simple', dataset == 'soil') %>% 
+    pull(is_correct) %>% 
+    print()
+}
 
-debug_dat %>% filter(seed ==1, ref_weight == 'simple', dataset == 'human') %>% pull(is_correct)
-debug_dat %>% filter(seed ==2, ref_weight == 'simple', dataset == 'human') %>% pull(is_correct)
-  
 ```
 
+Pattern of correctness among ref fracs is flipped between seed 1 and 2
 
 ## diversity
 

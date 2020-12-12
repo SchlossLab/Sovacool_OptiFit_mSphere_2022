@@ -67,24 +67,24 @@ optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_db
 head(optifit_dbs)
 ```
 
-    ## # A tibble: 6 x 46
+    ## # A tibble: 6 x 47
     ##   label...1 cutoff numotus     tp      tn     fp     fn sensitivity specificity
     ##       <dbl>  <dbl>   <dbl>  <dbl>   <dbl>  <dbl>  <dbl>       <dbl>       <dbl>
-    ## 1      0.03   0.03   35104 4.14e7 3.23e10 6.16e6 1.39e7       0.748        1.00
-    ## 2      0.03   0.03   35084 4.22e7 3.23e10 6.37e6 1.31e7       0.763        1.00
-    ## 3      0.03   0.03   35116 4.22e7 3.23e10 6.37e6 1.31e7       0.762        1.00
-    ## 4      0.03   0.03   35075 4.22e7 3.23e10 6.39e6 1.31e7       0.763        1.00
-    ## 5      0.03   0.03   34653 4.21e7 3.23e10 6.33e6 1.33e7       0.76         1.00
-    ## 6      0.03   0.03   35119 4.22e7 3.23e10 6.40e6 1.31e7       0.763        1.00
-    ## # … with 37 more variables: ppv <dbl>, npv <dbl>, fdr <dbl>, accuracy <dbl>,
+    ## 1      0.03   0.03   35119 4.15e7 3.23e10 6.15e6 1.38e7       0.750        1.00
+    ## 2      0.03   0.03   34648 4.24e7 3.23e10 6.44e6 1.30e7       0.765        1.00
+    ## 3      0.03   0.03   35060 4.22e7 3.23e10 6.30e6 1.32e7       0.762        1.00
+    ## 4      0.03   0.03   35065 4.24e7 3.23e10 6.43e6 1.30e7       0.765        1.00
+    ## 5      0.03   0.03   34570 4.23e7 3.23e10 7.34e6 1.30e7       0.764        1.00
+    ## 6      0.03   0.03   35048 4.23e7 3.23e10 6.37e6 1.30e7       0.764        1.00
+    ## # … with 38 more variables: ppv <dbl>, npv <dbl>, fdr <dbl>, accuracy <dbl>,
     ## #   mcc <dbl>, f1score <dbl>, sec <dbl>, `h:m:s` <time>, max_rss <dbl>,
     ## #   max_vms <dbl>, max_uss <dbl>, max_pss <dbl>, io_in <dbl>, io_out <dbl>,
     ## #   mean_load <dbl>, label...25 <dbl>, group <lgl>, nseqs <dbl>,
-    ## #   num_otus <dbl>, npshannon <dbl>, invsimpson <dbl>, invsimpson_lci <dbl>,
-    ## #   invsimpson_hci <dbl>, dataset <chr>, ref <chr>, region <chr>, seed <dbl>,
-    ## #   method <chr>, printref <lgl>, fraction_mapped <dbl>, ref_weight <lgl>,
-    ## #   ref_frac <lgl>, sample_frac <lgl>, tool <chr>, label...24 <dbl>,
-    ## #   mem_mb <dbl>, mem_gb <dbl>
+    ## #   num_otus <dbl>, shannon <dbl>, shannon_lci <dbl>, shannon_hci <dbl>,
+    ## #   invsimpson <dbl>, invsimpson_lci <dbl>, invsimpson_hci <dbl>,
+    ## #   dataset <chr>, ref <chr>, region <chr>, seed <dbl>, method <chr>,
+    ## #   printref <lgl>, fraction_mapped <dbl>, ref_weight <lgl>, ref_frac <lgl>,
+    ## #   sample_frac <lgl>, tool <chr>, mem_mb <dbl>, mem_gb <dbl>
 
 ``` r
 optifit_dbs %>% 
@@ -187,7 +187,7 @@ optifit_split %>%
   filter(method == 'closed', tool == 'mothur', is.na(ref)) %>% 
   #group_by(dataset, ref_weight, ref_frac) %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
-  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  geom_point(alpha = 0.5, size=1) +
   facet_wrap("dataset", nrow=1) +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit",
@@ -211,15 +211,13 @@ optifit_split %>%
   filter(tool == 'mothur', is.na(ref)) %>% 
   filter(dataset == 'soil') %>% 
   ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
-  geom_jitter(alpha = 0.5, width = 0.01, size=1) +
+  geom_point(alpha = 0.5, size=1) +
   facet_grid(dataset ~ method) +
   ylim(0, 1) +
   labs(title="Sequences mapped during open-reference OptiFit",
        x='reference fraction',
        y='fraction mapped')
 ```
-
-    ## Warning: Removed 11 rows containing missing values (geom_point).
 
 ![](figures/fraction-mapped-grid_fit-split-1.png)<!-- -->
 
@@ -237,28 +235,26 @@ debug_dat <- optifit_split %>%
          sample_frac, ref_frac, ref_weight) %>%
   group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
 
-debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+for (s in 1:10) {
+  debug_dat %>% 
+    filter(seed == s, ref_weight == 'simple', dataset == 'soil') %>% 
+    pull(is_correct) %>% 
+    print()
+}
 ```
 
-    ## [1] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+    ## [1] TRUE TRUE TRUE TRUE
+    ## [1] TRUE TRUE TRUE TRUE
+    ## [1] TRUE TRUE TRUE TRUE
+    ## [1] TRUE TRUE TRUE TRUE
+    ## logical(0)
+    ## logical(0)
+    ## logical(0)
+    ## logical(0)
+    ## logical(0)
+    ## logical(0)
 
-``` r
-debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
-```
-
-    ## [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
-
-``` r
-debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
-```
-
-    ## [1]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
-
-``` r
-debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
-```
-
-    ## [1] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE
+Pattern of correctness among ref fracs is flipped between seed 1 and 2
 
 ## diversity
 
@@ -297,12 +293,12 @@ head(sum_opti_all)
     ## # Groups:   dataset, strategy [3]
     ##   dataset strategy method     n mcc_median sec_median mem_gb_median
     ##   <chr>   <glue>   <chr>  <int>      <dbl>      <dbl>         <dbl>
-    ## 1 human   databas… closed   100      0.800       594.          5.38
-    ## 2 human   databas… open     100      0.815       894.         20.2 
-    ## 3 human   databas… closed   100      0.555       468.          5.09
-    ## 4 human   databas… open     100      0.809      1060.         20.0 
-    ## 5 human   databas… closed   100      0.775       540.          5.22
-    ## 6 human   databas… open     100      0.813       885.         18.8 
+    ## 1 human   databas… closed   100      0.800       576.          5.38
+    ## 2 human   databas… open     100      0.815       856.         18.9 
+    ## 3 human   databas… closed   100      0.555       451.          5.09
+    ## 4 human   databas… open     100      0.809      1003.         18.4 
+    ## 5 human   databas… closed   100      0.776       527.          5.22
+    ## 6 human   databas… open     100      0.814       857.         20.1 
     ## # … with 1 more variable: frac_map_median <dbl>
 
 ``` r
@@ -391,7 +387,7 @@ vsearch %>%
   labs(x = '')
 ```
 
-    ## Warning: Removed 1200 rows containing non-finite values (stat_boxplot).
+    ## Warning: Removed 400 rows containing non-finite values (stat_boxplot).
 
 ![](figures/diversity_vsearch-1.png)<!-- -->
 
