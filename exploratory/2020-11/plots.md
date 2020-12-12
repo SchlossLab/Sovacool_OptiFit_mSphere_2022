@@ -219,11 +219,48 @@ optifit_split %>%
        y='fraction mapped')
 ```
 
+    ## Warning: Removed 11 rows containing missing values (geom_point).
+
 ![](figures/fraction-mapped-grid_fit-split-1.png)<!-- -->
 
 Did mothur’s list file format change in the latest dev version? The
 fraction mapped values are the same as the reference fraction when the
 ref weight is simple.
+
+### is there a pattern?
+
+``` r
+debug_dat <- optifit_split %>% 
+  filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, method, fraction_mapped, is_correct, 
+         sample_frac, ref_frac, ref_weight) %>%
+  group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
+
+debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+```
+
+    ## [1] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+
+``` r
+debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+```
+
+    ## [1]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+
+``` r
+debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
+```
+
+    ## [1]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+
+``` r
+debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
+```
+
+    ## [1] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE
+
+## diversity
 
 ``` r
 optifit_split %>% 

@@ -193,6 +193,27 @@ Did mothur's list file format change in the latest dev version? The fraction
 mapped values are the same as the reference fraction when the ref weight is
 simple.
 
+### is there a pattern?
+
+```{r debug_frac_map}
+debug_dat <- optifit_split %>% 
+  filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, method, fraction_mapped, is_correct, 
+         sample_frac, ref_frac, ref_weight) %>%
+  group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
+
+debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'soil') %>% pull(is_correct)
+
+debug_dat %>% filter(seed ==1, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
+debug_dat %>% filter(seed ==2, ref_weight == 'distance', dataset == 'human') %>% pull(is_correct)
+  
+```
+
+
+## diversity
+
 ```{r diversity_fit-split, eval = FALSE}
 optifit_split %>% 
   ggplot(aes(x = ref_frac, y = shannon, color = ref_weight)) +
