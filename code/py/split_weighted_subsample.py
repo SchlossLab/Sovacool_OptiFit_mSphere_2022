@@ -13,13 +13,14 @@ def main():
     np.random.seed(int(snakemake.wildcards.seed))
 
     all_seqs = SeqList.from_files(
-        snakemake.input.fasta, snakemake.input.count, snakemake.input.dist
+        snakemake.input.fasta, snakemake.input.count, snakemake.input.dist,
+        threshold = snakemake.params.dissim_thresh
     )
     num_all_seqs = len(all_seqs)
     ref_frac = float(snakemake.wildcards.ref_frac)
-    sample_frac = float(snakemake.wildcards.sample_frac)
-    assert ref_frac + sample_frac <= 1
-    sample_size = round_subset_size(sample_frac, num_all_seqs)
+    query_frac = float(snakemake.wildcards.sample_frac)
+    assert ref_frac + query_frac <= 1
+    sample_size = round_subset_size(query_frac, num_all_seqs)
     ref_size = round_subset_size(ref_frac, num_all_seqs)
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
@@ -29,10 +30,10 @@ def main():
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     sample_list = (
         remaining_seqs
-        if ref_frac + sample_frac == 1
+        if ref_frac + query_frac == 1
         else remaining_seqs.get_sample(sample_size, "simple")
     )
-    assert check_subsample(sample_frac, len(sample_list), num_all_seqs)
+    assert check_subsample(query_frac, len(sample_list), num_all_seqs)
     sample_list.write_ids(snakemake.output.sample_accnos)
 
     all_seqs = SeqList(
@@ -87,7 +88,7 @@ class SeqList:
         return [seq.sum_sim / total_sim for seq in self.seqs]
 
     @classmethod
-    def from_files(cls, fasta_fn, count_fn, dist_fn, threshold=0.3):
+    def from_files(cls, fasta_fn, count_fn, dist_fn, threshold=0.03):
         with open(dist_fn, "r") as dist_file:
             line = next(dist_file)
             sum_sims = defaultdict(int)
