@@ -75,8 +75,9 @@ head(optifit_dbs)
 optifit_dbs %>% 
   ggplot(aes(x=method, y=mcc, color=ref)) +
   geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
-  geom_jitter(alpha = 0.5) + 
+  geom_boxplot() + 
   facet_wrap('dataset') +
+  scale_color_manual(values=tri_colors) +
   ylim(0, 1) +
   labs(title='OTU Quality: OptiFit with reference databases',
        caption='Black line: _de novo_ clustering') +
@@ -85,9 +86,9 @@ optifit_dbs %>%
 
 
 ```{r fraction-mapped_fit-db}
-optifit_dbs %>% #filter(method == 'closed') %>% 
+optifit_dbs %>% filter(method == 'closed') %>% 
   ggplot(aes(x=dataset, y=fraction_mapped, color=ref)) +
-  geom_jitter(alpha = 0.5) + 
+  geom_boxplot() + 
   facet_wrap('method') +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit") +
@@ -242,7 +243,7 @@ vsearch_join <- vsearch %>%
 ```
 
 ```{r mcc_vsearch}
-vsearch_join 
+vsearch_join %>% 
   ggplot(aes(x = method, y = mcc, color = tool)) +
   geom_boxplot() +
   facet_wrap('dataset') +
@@ -251,7 +252,7 @@ vsearch_join
 ```
 
 ```{r sec_vsearch}
-vsearch_join 
+vsearch_join %>% 
   ggplot(aes(x = method, y = sec, color = tool)) +
   geom_boxplot() +
   facet_wrap('dataset') +
@@ -259,7 +260,7 @@ vsearch_join
 ```
 
 ```{r diversity_vsearch}
-vsearch_join 
+vsearch_join %>% 
   ggplot(aes(x = method, y = shannon, color = tool)) +
   geom_boxplot() +
   facet_wrap('dataset') +
@@ -267,7 +268,7 @@ vsearch_join
 ```
 
 ```{r fraction-mapped_vsearch}
-vsearch_join #filter(method == 'closed') %>% 
+vsearch_join %>% #filter(method == 'closed') %>% 
   ggplot(aes(x = dataset, y = fraction_mapped, color = tool)) +
   geom_boxplot() + 
   ylim(0, 1) +
@@ -385,7 +386,6 @@ all_human %>%
   ggplot(aes(strategy, value, color = tool)) +
   geom_boxplot() +
   facet_wrap('metric', scales = 'free') +
-  labs(x='', y='', 
-       title="mothur vs. vsearch", 
-       caption = 'The human dataset is shown here. The patterns are similar with other datasets.')
+  labs(x='', y='',  
+       caption = 'Only the human dataset is shown here. The patterns are similar with other datasets.')
 ```

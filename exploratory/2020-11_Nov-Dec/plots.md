@@ -90,8 +90,9 @@ head(optifit_dbs)
 optifit_dbs %>% 
   ggplot(aes(x=method, y=mcc, color=ref)) +
   geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
-  geom_jitter(alpha = 0.5) + 
+  geom_boxplot() + 
   facet_wrap('dataset') +
+  scale_color_manual(values=tri_colors) +
   ylim(0, 1) +
   labs(title='OTU Quality: OptiFit with reference databases',
        caption='Black line: _de novo_ clustering') +
@@ -101,16 +102,14 @@ optifit_dbs %>%
 ![](figures/mcc_fit-db-1.png)<!-- -->
 
 ``` r
-optifit_dbs %>% #filter(method == 'closed') %>% 
+optifit_dbs %>% filter(method == 'closed') %>% 
   ggplot(aes(x=dataset, y=fraction_mapped, color=ref)) +
-  geom_jitter(alpha = 0.5) + 
+  geom_boxplot() + 
   facet_wrap('method') +
   ylim(0, 1) +
   labs(title="Sequences mapped during closed-reference OptiFit") +
   theme(plot.caption = element_markdown())
 ```
-
-    ## Warning: Removed 616 rows containing missing values (geom_point).
 
 ![](figures/fraction-mapped_fit-db-1.png)<!-- -->
 
@@ -235,7 +234,7 @@ debug_dat <- optifit_split %>%
          sample_frac, ref_frac, ref_weight) %>%
   group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
 
-for (s in 1:10) {
+for (s in 1:2) {
   debug_dat %>% 
     filter(seed == s, ref_weight == 'simple', dataset == 'soil') %>% 
     pull(is_correct) %>% 
@@ -245,18 +244,10 @@ for (s in 1:10) {
 
     ## [1] TRUE TRUE TRUE TRUE
     ## [1] TRUE TRUE TRUE TRUE
-    ## [1] TRUE TRUE TRUE TRUE
-    ## [1] TRUE TRUE TRUE TRUE
-    ## logical(0)
-    ## logical(0)
-    ## logical(0)
-    ## logical(0)
-    ## logical(0)
-    ## logical(0)
 
 Pattern of correctness among ref fracs is flipped between seed 1 and 2
 
-## diversity
+### diversity
 
 ``` r
 optifit_split %>% 
@@ -270,6 +261,69 @@ optifit_split %>%
        caption='Black line: _de novo_ clustering on the whole dataset') +
   theme(plot.caption = element_markdown())
 ```
+
+## vsearch
+
+For reference-based clustering, datasets were fit to the greengenes
+database.
+
+``` r
+vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>% 
+  mutate_perf()
+vsearch_join <- vsearch %>% 
+  full_join(opticlust) %>% 
+  full_join(optifit_dbs %>% filter(ref == 'gg'))
+```
+
+``` r
+vsearch_join %>% 
+  ggplot(aes(x = method, y = mcc, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('dataset') +
+  ylim(0, 1) + 
+  labs(x = '')
+```
+
+![](figures/mcc_vsearch-1.png)<!-- -->
+
+``` r
+vsearch_join %>% 
+  ggplot(aes(x = method, y = sec, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('dataset') +
+  labs(x = '')
+```
+
+![](figures/sec_vsearch-1.png)<!-- -->
+
+``` r
+vsearch_join %>% 
+  ggplot(aes(x = method, y = shannon, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('dataset') +
+  labs(x = '')
+```
+
+    ## Warning: Removed 400 rows containing non-finite values (stat_boxplot).
+
+![](figures/diversity_vsearch-1.png)<!-- -->
+
+``` r
+vsearch_join %>% #filter(method == 'closed') %>% 
+  ggplot(aes(x = dataset, y = fraction_mapped, color = tool)) +
+  geom_boxplot() + 
+  ylim(0, 1) +
+  facet_wrap('method') +
+  labs(title="Sequences mapped during closed-reference OptiFit") +
+  theme(plot.caption = element_markdown())
+```
+
+    ## Warning: Removed 400 rows containing non-finite values (stat_boxplot).
+
+![](figures/fraction-mapped_vsearch-1.png)<!-- -->
+
+The fraction mapped for *de novo* open-reference is shown here as a
+sanity check. Final plots will only include closed-reference.
 
 ## compare all mothur clustering strategies
 
@@ -307,7 +361,10 @@ sum_opti_all %>%
   geom_point() +
   facet_wrap(dataset ~ .) +
   scale_color_manual(values = tri_colors) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  ylim(0, 1) +
+  #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+  coord_flip() +
+  labs(title = 'OTU Quality', x = '', y = 'Median MCC')
 ```
 
 ![](figures/mcc_all-opti-1.png)<!-- -->
@@ -316,9 +373,9 @@ sum_opti_all %>%
 sum_opti_all %>% 
   ggplot(aes(strategy, sec_median, color = method)) +
   geom_point() +
-  facet_wrap(dataset ~ .) +
+  facet_wrap(dataset ~ ., scales = 'free_y') +
   scale_color_manual(values = tri_colors) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
 ![](figures/runtime_all-opti-1.png)<!-- -->
@@ -327,7 +384,7 @@ sum_opti_all %>%
 sum_opti_all %>% 
   ggplot(aes(strategy, mem_gb_median, color = method)) +
   geom_point() +
-  facet_wrap(dataset ~ .) +
+  facet_wrap(dataset ~ ., scales = 'free_y') +
   scale_color_manual(values = tri_colors) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
@@ -346,64 +403,76 @@ sum_opti_all %>%
 
 ![](figures/fraction-mapped_all-opti-1.png)<!-- -->
 
-## vsearch
-
-For reference-based clustering, datasets were fit to the greengenes
-database.
+## compare mothur & vsearch with just the human dataset
 
 ``` r
-vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>% 
-  mutate_perf() %>% 
-  full_join(opticlust) %>% 
-  full_join(optifit_dbs %>% filter(ref == 'gg'))
+all_human <- list(opti_all %>% 
+                    filter(dataset == 'human', 
+                           ref == 'gg' | method == 'de_novo'),
+                 vsearch %>% filter(dataset == 'human')
+                 ) %>% 
+  reduce(full_join) %>% 
+  mutate(strategy = case_when(
+    method == 'de_novo' ~ method,
+    TRUE ~ as.character(glue('{method}_ref_{ref}'))))
+
+sum_all_human <- all_human %>% 
+  group_by(tool, strategy, method) %>% 
+  summarize(n = n(),
+            mcc_median = median(mcc),  # TODO: tidy way to avoid this repetitiveness?
+            sec_median = median(sec),
+            mem_gb_median = median(mem_gb),
+            frac_map_median = median(fraction_mapped))
+head(sum_all_human)
 ```
 
-``` r
-vsearch %>% 
-  ggplot(aes(x = method, y = mcc, color = tool)) +
-  geom_boxplot() +
-  facet_wrap('dataset') +
-  ylim(0, 1) + 
-  labs(x = '')
-```
-
-![](figures/mcc_vsearch-1.png)<!-- -->
-
-``` r
-vsearch %>% 
-  ggplot(aes(x = method, y = sec, color = tool)) +
-  geom_boxplot() +
-  facet_wrap('dataset') +
-  labs(x = '')
-```
-
-![](figures/sec_vsearch-1.png)<!-- -->
+    ## # A tibble: 6 x 8
+    ## # Groups:   tool, strategy [6]
+    ##   tool  strategy method     n mcc_median sec_median mem_gb_median
+    ##   <chr> <chr>    <chr>  <int>      <dbl>      <dbl>         <dbl>
+    ## 1 moth… closed_… closed   100      0.800       576.         5.38 
+    ## 2 moth… de_novo  de_no…   100      0.821       718.         5.05 
+    ## 3 moth… open_re… open     100      0.815       856.        18.9  
+    ## 4 vsea… closed_… closed     1      0.385       784.         1.01 
+    ## 5 vsea… de_novo  de_no…     1      0.547       138.         0.164
+    ## 6 vsea… open_re… open       1      0.390       761.         0.999
+    ## # … with 1 more variable: frac_map_median <dbl>
 
 ``` r
-vsearch %>% 
-  ggplot(aes(x = method, y = shannon, color = tool)) +
-  geom_boxplot() +
-  facet_wrap('dataset') +
-  labs(x = '')
-```
-
-    ## Warning: Removed 400 rows containing non-finite values (stat_boxplot).
-
-![](figures/diversity_vsearch-1.png)<!-- -->
-
-``` r
-vsearch %>% #filter(method == 'closed') %>% 
-  ggplot(aes(x = dataset, y = fraction_mapped, color = tool)) +
-  geom_boxplot() + 
+sum_all_human %>% 
+  ggplot(aes(strategy, mcc_median, color = tool)) +
+  geom_point() +
+  #facet_wrap(tool ~ .) +
   ylim(0, 1) +
-  facet_wrap('method') +
-  labs(title="Sequences mapped during closed-reference OptiFit") +
-  theme(plot.caption = element_markdown())
+  scale_color_manual(values = tri_colors) +
+  #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+  coord_flip()
 ```
 
-    ## Warning: Removed 400 rows containing non-finite values (stat_boxplot).
+![](figures/mcc_all-human-1.png)<!-- -->
 
-![](figures/fraction-mapped_vsearch-1.png)<!-- -->
+``` r
+sum_all_human %>% 
+  pivot_longer(c(mcc_median, sec_median, mem_gb_median, frac_map_median), names_to = 'metric') %>% 
+  ggplot(aes(strategy, value, color = tool)) +
+  geom_point() +
+  facet_wrap('metric', scales = 'free')
+```
 
-The fraction mapped for *de novo* open-reference is shown here as a
-sanity check. Final plots will only include closed-reference.
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](figures/sum_all-human-1.png)<!-- -->
+
+``` r
+all_human %>% 
+  pivot_longer(c(mcc, sec, mem_gb, fraction_mapped), names_to = 'metric') %>% 
+  ggplot(aes(strategy, value, color = tool)) +
+  geom_boxplot() +
+  facet_wrap('metric', scales = 'free') +
+  labs(x='', y='',  
+       caption = 'Only the human dataset is shown here. The patterns are similar with other datasets.')
+```
+
+    ## Warning: Removed 100 rows containing non-finite values (stat_boxplot).
+
+![](figures/metrics_all-human-1.png)<!-- -->
