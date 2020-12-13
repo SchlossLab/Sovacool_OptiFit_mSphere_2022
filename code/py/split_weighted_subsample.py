@@ -13,8 +13,10 @@ def main():
     np.random.seed(int(snakemake.wildcards.seed))
 
     all_seqs = SeqList.from_files(
-        snakemake.input.fasta, snakemake.input.count, snakemake.input.dist,
-        threshold = snakemake.params.dissim_thresh
+        snakemake.input.fasta,
+        snakemake.input.count,
+        snakemake.input.dist,
+        threshold=snakemake.params.dissim_thresh,
     )
     num_all_seqs = len(all_seqs)
     ref_frac = float(snakemake.wildcards.ref_frac)
