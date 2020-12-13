@@ -20,7 +20,7 @@ def main():
     ref_frac = float(snakemake.wildcards.ref_frac)
     query_frac = float(snakemake.wildcards.sample_frac)
     assert ref_frac + query_frac <= 1
-    sample_size = round_subset_size(query_frac, num_all_seqs)
+    query_size = round_subset_size(query_frac, num_all_seqs)
     ref_size = round_subset_size(ref_frac, num_all_seqs)
 
     ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
@@ -28,16 +28,16 @@ def main():
     ref_list.write_ids(snakemake.output.ref_accnos)
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
-    sample_list = (
+    query_list = (
         remaining_seqs
         if ref_frac + query_frac == 1
-        else remaining_seqs.get_sample(sample_size, "simple")
+        else remaining_seqs.get_sample(query_size, "simple")
     )
-    assert check_subsample(query_frac, len(sample_list), num_all_seqs)
-    sample_list.write_ids(snakemake.output.sample_accnos)
+    assert check_subsample(query_frac, len(query_list), num_all_seqs)
+    query_list.write_ids(snakemake.output.query_accnos)
 
     all_seqs = SeqList(
-        [seq for seqlist in [ref_list, sample_list] for seq in seqlist.seqs]
+        [seq for seqlist in [ref_list, query_list] for seq in seqlist.seqs]
     )
     all_seqs.write_ids(snakemake.output.all_accnos)
 
@@ -115,7 +115,7 @@ class SeqList:
     def set_diff(cls, lhs, rhs):
         return cls(list(set(lhs.seqs) - set(rhs.seqs)))
 
-    def get_sample(self, sample_size, weight_method):
+    def get_sample(self, query_size, weight_method):
         random_weight_probs = {
             "simple": None,
             "abundance": self.rel_abuns,
@@ -124,7 +124,7 @@ class SeqList:
         sample_seqs = np.random.choice(
             self.seqs,
             replace=False,
-            size=sample_size,
+            size=query_size,
             p=random_weight_probs[weight_method],
         )
         return SeqList(sample_seqs)
