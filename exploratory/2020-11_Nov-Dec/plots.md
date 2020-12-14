@@ -38,7 +38,8 @@ sum_opticlust <- opticlust %>%
   summarize(mean_mcc = mean(mcc),
             sd_mcc = sd(mcc),
             mean_sec = mean(sec),
-            sd_sec = sd(sec))#,
+            sd_sec = sd(sec),
+            mean_mem_gb = mean(mem_gb))#,
             #mean_shannon = mean(shannon))
 ```
 
@@ -107,15 +108,12 @@ optifit_dbs %>% filter(method == 'closed') %>%
   geom_boxplot() + 
   facet_wrap('method') +
   ylim(0, 1) +
+  scale_color_manual(values=tri_colors) +
   labs(title="Sequences mapped during closed-reference OptiFit") +
   theme(plot.caption = element_markdown())
 ```
 
 ![](figures/fraction-mapped_fit-db-1.png)<!-- -->
-
-Plotted the fraction mapped for open-reference clustering too as a
-sanity check. Final plots to be included in the paper won’t include
-open-ref.
 
 ``` r
 optifit_dbs %>% 
@@ -123,6 +121,7 @@ optifit_dbs %>%
   geom_boxplot(alpha = 0.5) +
   geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
+  scale_color_manual(values=tri_colors) +
   labs(title='OptiFit runtime with reference databases',
        caption='Black line: _de novo_ clustering') +
   theme(plot.caption = element_markdown())
@@ -132,10 +131,25 @@ optifit_dbs %>%
 
 ``` r
 optifit_dbs %>% 
+  ggplot(aes(x=method, y=mem_gb, color=ref)) +
+  geom_boxplot(alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_mem_gb), sum_opticlust) +
+  facet_wrap('dataset', scales = 'free') +
+  scale_color_manual(values=tri_colors) +
+  labs(title='OptiFit runtime with reference databases',
+       caption='Black line: _de novo_ clustering') +
+  theme(plot.caption = element_markdown())
+```
+
+![](figures/memory_fit-db-1.png)<!-- -->
+
+``` r
+optifit_dbs %>% 
   ggplot(aes(x=method, y=shannon, color=ref)) +
   geom_jitter(alpha = 0.5) +
   geom_hline(aes(yintercept = mean_shannon), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
+  scale_color_manual(values=tri_colors) +
   labs(title='OptiFit runtime with reference databases',
        caption='Black line: _de novo_ clustering') +
   theme(plot.caption = element_markdown())
@@ -213,9 +227,10 @@ optifit_split %>%
   geom_point(alpha = 0.5, size=1) +
   facet_grid(dataset ~ method) +
   ylim(0, 1) +
-  labs(title="Sequences mapped during open-reference OptiFit",
+  labs(title="Sequences mapped during OptiFit",
        x='reference fraction',
-       y='fraction mapped')
+       y='fraction mapped',
+       caption=glue("Ran with {optifit_split %>% pull(seed) %>% unique() %>% length()} seeds"))
 ```
 
 ![](figures/fraction-mapped-grid_fit-split-1.png)<!-- -->
@@ -359,7 +374,7 @@ head(sum_opti_all)
 sum_opti_all %>% 
   ggplot(aes(strategy, mcc_median, color = method)) +
   geom_point() +
-  facet_wrap(dataset ~ .) +
+  facet_wrap(dataset ~ ., nrow=1) +
   scale_color_manual(values = tri_colors) +
   ylim(0, 1) +
   #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
@@ -468,9 +483,10 @@ all_human %>%
   pivot_longer(c(mcc, sec, mem_gb, fraction_mapped), names_to = 'metric') %>% 
   ggplot(aes(strategy, value, color = tool)) +
   geom_boxplot() +
-  facet_wrap('metric', scales = 'free') +
+  facet_wrap('metric', scales = 'free_y', nrow=1) +
   labs(x='', y='',  
-       caption = 'Only the human dataset is shown here. The patterns are similar with other datasets.')
+       caption = 'Only the human dataset is shown here. The patterns are similar with other datasets.') +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
     ## Warning: Removed 100 rows containing non-finite values (stat_boxplot).
