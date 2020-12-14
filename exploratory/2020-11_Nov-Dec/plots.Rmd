@@ -299,9 +299,12 @@ Final plots will only include closed-reference.
 ## compare all mothur clustering strategies
 
 ```{r join_all-opti}
-opti_all <- list(optifit_dbs %>% mutate(strategy = glue('database_{ref}')),
-                 optifit_split %>% mutate(strategy = 'self-split'),
-                 opticlust %>% mutate(strategy = 'de_novo')) %>% 
+opti_all <- list(optifit_dbs %>% 
+                   mutate(strategy = glue('database_{ref}')),
+                 optifit_split %>% 
+                   mutate(strategy = 'self-split'),
+                 opticlust %>% 
+                   mutate(strategy = 'de_novo')) %>% 
   reduce(full_join)
 
 sum_opti_all <- opti_all %>% 
