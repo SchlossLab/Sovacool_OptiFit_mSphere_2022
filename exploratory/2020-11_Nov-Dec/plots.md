@@ -35,12 +35,10 @@ opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_result
   mutate_perf()
 sum_opticlust <- opticlust %>% 
   group_by(dataset) %>% 
-  summarize(mean_mcc = mean(mcc),
-            sd_mcc = sd(mcc),
-            mean_sec = mean(sec),
-            sd_sec = sd(sec),
-            mean_mem_gb = mean(mem_gb))#,
-            #mean_shannon = mean(shannon))
+  summarize(mcc_median = median(mcc),
+            sec_median = median(sec),
+            mem_gb_median = median(mem_gb))#,
+            #median_shannon = median(shannon))
 ```
 
 ``` r
@@ -90,7 +88,7 @@ head(optifit_dbs)
 ``` r
 optifit_dbs %>% 
   ggplot(aes(x=method, y=mcc, color=ref)) +
-  geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
+  geom_hline(aes(yintercept = mcc_median), sum_opticlust) +
   geom_boxplot() + 
   facet_wrap('dataset') +
   scale_color_manual(values=tri_colors) +
@@ -119,7 +117,7 @@ optifit_dbs %>% filter(method == 'closed') %>%
 optifit_dbs %>% 
   ggplot(aes(x=method, y=sec, color=ref)) +
   geom_boxplot(alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
+  geom_hline(aes(yintercept = sec_median), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
   scale_color_manual(values=tri_colors) +
   labs(title='OptiFit runtime with reference databases',
@@ -133,7 +131,7 @@ optifit_dbs %>%
 optifit_dbs %>% 
   ggplot(aes(x=method, y=mem_gb, color=ref)) +
   geom_boxplot(alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_mem_gb), sum_opticlust) +
+  geom_hline(aes(yintercept = mem_gb_median), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
   scale_color_manual(values=tri_colors) +
   labs(title='OptiFit runtime with reference databases',
@@ -147,7 +145,7 @@ optifit_dbs %>%
 optifit_dbs %>% 
   ggplot(aes(x=method, y=shannon, color=ref)) +
   geom_jitter(alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_shannon), sum_opticlust) +
+  geom_hline(aes(yintercept = median_shannon), sum_opticlust) +
   facet_wrap('dataset', scales = 'free') +
   scale_color_manual(values=tri_colors) +
   labs(title='OptiFit runtime with reference databases',
@@ -167,7 +165,7 @@ optifit_split %>%
   ggplot(aes(x = ref_frac, y = mcc, color = ref_weight)) +
   geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
   stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
+  geom_hline(aes(yintercept = mcc_median), sum_opticlust) +
   facet_grid(dataset ~ method) +
   ylim(0, 1) +
   labs(title='OTU Quality: OptiFit with split datasets',
@@ -183,7 +181,7 @@ optifit_split %>%
   ggplot(aes(x = ref_frac, y = sec, color = ref_weight)) +
   geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
   stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_sec), sum_opticlust) +
+  geom_hline(aes(yintercept = sec_median), sum_opticlust) +
   facet_grid(dataset ~ method, scales = 'free') +
   labs(title='Runtime: OptiFit with split datasets',
        x='reference fraction',
@@ -269,7 +267,7 @@ optifit_split %>%
   ggplot(aes(x = ref_frac, y = shannon, color = ref_weight)) +
   geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
   stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
-  geom_hline(aes(yintercept = mean_shannon), sum_opticlust) +
+  geom_hline(aes(yintercept = median_shannon), sum_opticlust) +
   facet_grid(dataset ~ method, scales = 'free') +
   labs(title='Diversity: OptiFit with split datasets',
        x='reference fraction',
@@ -343,19 +341,27 @@ sanity check. Final plots will only include closed-reference.
 ## compare all mothur clustering strategies
 
 ``` r
-opti_all <- list(optifit_dbs %>% mutate(strategy = glue('database_{ref}')),
-                 optifit_split %>% mutate(strategy = 'self-split'),
-                 opticlust %>% mutate(strategy = 'de_novo')) %>% 
+plot_denovo_hline <- function(yint, dat = sum_opticlust) {
+  list(geom_hline(data = dat, aes(yintercept = {{yint}})),
+       labs(caption = "Black line: _de novo_ clustering0"),
+       theme(plot.caption = element_markdown())
+  )
+}
+
+optifit_all <- list(optifit_dbs %>% 
+                   mutate(strategy = glue('database_{ref}')),
+                 optifit_split %>% 
+                   mutate(strategy = 'self-split')) %>% 
   reduce(full_join)
 
-sum_opti_all <- opti_all %>% 
+sum_optifit <- optifit_all %>% 
   group_by(dataset, strategy, method) %>% 
   summarize(n = n(),
             mcc_median = median(mcc),  # TODO: tidy way to avoid this repetitiveness?
             sec_median = median(sec),
             mem_gb_median = median(mem_gb),
             frac_map_median = median(fraction_mapped))
-head(sum_opti_all)
+head(sum_optifit)
 ```
 
     ## # A tibble: 6 x 8
@@ -371,7 +377,7 @@ head(sum_opti_all)
     ## # … with 1 more variable: frac_map_median <dbl>
 
 ``` r
-sum_opti_all %>% 
+sum_optifit %>% 
   ggplot(aes(strategy, mcc_median, color = method)) +
   geom_point() +
   facet_wrap(dataset ~ ., nrow=1) +
@@ -379,36 +385,38 @@ sum_opti_all %>%
   ylim(0, 1) +
   #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
   coord_flip() +
-  labs(title = 'OTU Quality', x = '', y = 'Median MCC')
+  labs(title = 'OTU Quality', x = '', y = 'Median MCC') + 
+  plot_denovo_hline(yint = mcc_median)
 ```
 
 ![](figures/mcc_all-opti-1.png)<!-- -->
 
 ``` r
-sum_opti_all %>% 
+sum_optifit %>% 
   ggplot(aes(strategy, sec_median, color = method)) +
   geom_point() +
   facet_wrap(dataset ~ ., scales = 'free_y') +
   scale_color_manual(values = tri_colors) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  plot_denovo_hline(sec_median)
 ```
 
 ![](figures/runtime_all-opti-1.png)<!-- -->
 
 ``` r
-sum_opti_all %>% 
+sum_optifit %>% 
   ggplot(aes(strategy, mem_gb_median, color = method)) +
   geom_point() +
   facet_wrap(dataset ~ ., scales = 'free_y') +
   scale_color_manual(values = tri_colors) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  plot_denovo_hline(mem_gb_median)
 ```
 
 ![](figures/memory_all-opti-1.png)<!-- -->
 
 ``` r
-sum_opti_all %>% 
-  filter(strategy != 'de_novo') %>% 
+sum_optifit %>% 
   ggplot(aes(strategy, frac_map_median, color = method)) +
   geom_point() +
   facet_wrap(dataset ~ .) +
@@ -421,10 +429,11 @@ sum_opti_all %>%
 ## compare mothur & vsearch with just the human dataset
 
 ``` r
-all_human <- list(opti_all %>% 
+all_human <- list(optifit_all %>% 
                     filter(dataset == 'human', 
                            ref == 'gg' | method == 'de_novo'),
-                 vsearch %>% filter(dataset == 'human')
+                  opticlust %>% filter(dataset == 'human'),
+                  vsearch %>% filter(dataset == 'human')
                  ) %>% 
   reduce(full_join) %>% 
   mutate(strategy = case_when(
