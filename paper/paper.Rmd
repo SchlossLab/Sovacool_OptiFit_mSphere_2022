@@ -1,5 +1,5 @@
 ---
-title: "**OptiFit: a fast method for fitting amplicon sequences to existing OTUs**"
+title: "OptiFit: a fast method for fitting amplicon sequences to existing OTUs"
 date: '`r Sys.Date()`'
 authors:
   - name: "Kelly L. Sovacool"
@@ -128,17 +128,20 @@ previously [@schloss_application_2016; @westcott_novo_2015].
 
 ### Data and Code Availability
 
-TODO: cite all these dependencies
-
-We implemented the analysis workflow in Snakemake and relied on Python, R, and
-GNU bash. Dependencies include mothur v1.45.0, vsearch v2.13.3, numpy, R
-Markdown, the Tidyverse metapackage, and the conda environment manager. A
-reproducible version of the workflow, manuscript, and conda environment is
-available at **TODO: UPDATED REPO LINK**.
+We implemented the analysis workflow in Snakemake [@koster_snakemake_2012] and
+relied on Python [@van_rossum_python_2009], R [@r_core_team_r_2020], and GNU
+bash. Dependencies include mothur v1.45.0 [@schloss_introducing_2009], vsearch
+v2.13.3 [@rognes_vsearch_2016], numpy [@harris_array_2020], the Tidyverse
+metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], and the conda
+environment manager [@noauthor_anaconda_2016]. A reproducible version of the
+workflow, manuscript, and conda environment is available at 
+**TODO: UPDATED REPO LINK**.
 
 ## Acknowledgements {.appendix}
 
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
+
+PDS received support from **TODO: Pat's grant(s)**.
 
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
