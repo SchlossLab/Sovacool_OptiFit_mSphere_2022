@@ -5,18 +5,24 @@ import numpy as np
 import shutil
 
 
-
-def main(seed, fasta_file, count_file, dist_file, dissim_thresh,
-         ref_frac, query_frac, ref_weight,
-         ref_accnos_file, query_accnos_file, all_accnos_file):
+def main(
+    seed,
+    fasta_file,
+    count_file,
+    dist_file,
+    dissim_thresh,
+    ref_frac,
+    query_frac,
+    ref_weight,
+    ref_accnos_file,
+    query_accnos_file,
+    all_accnos_file,
+):
 
     np.random.seed(int(seed))
 
     all_seqs = SeqList.from_files(
-        fasta_file,
-        count_file,
-        dist_file,
-        threshold=dissim_thresh,
+        fasta_file, count_file, dist_file, threshold=dissim_thresh,
     )
     num_all_seqs = len(all_seqs)
     ref_frac = float(ref_frac)
@@ -135,15 +141,18 @@ class SeqList:
             for seq_id in self.ids:
                 outfile.write(f"{seq_id}\n")
 
+
 if __name__ == "__main__":
-    main(snakemake.wildcards.seed,
-         snakemake.input.fasta,
-         snakemake.input.count,
-         snakemake.input.dist,
-         snakemake.params.dissim_thresh,
-         snakemake.wildcards.ref_frac,
-         snakemake.wildcards.sample_frac,
-         snakemake.wildcards.ref_weight,
-         snakemake.output.ref_accnos,
-         snakemake.output.query_accnos,
-         snakemake.output.all_accnos)
+    main(
+        snakemake.wildcards.seed,
+        snakemake.input.fasta,
+        snakemake.input.count,
+        snakemake.input.dist,
+        snakemake.params.dissim_thresh,
+        snakemake.wildcards.ref_frac,
+        snakemake.wildcards.sample_frac,
+        snakemake.wildcards.ref_weight,
+        snakemake.output.ref_accnos,
+        snakemake.output.query_accnos,
+        snakemake.output.all_accnos,
+    )
