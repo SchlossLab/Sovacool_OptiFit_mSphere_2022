@@ -1,33 +1,33 @@
 #!/usr/local/bin/python3
 """ Select weighted subsets of sequences to be used as references and samples for OptiFit """
 from collections import defaultdict
-import logging
 import numpy as np
 import shutil
 
 
-def main():
-    fh = logging.FileHandler(str(snakemake.log))
-    fh.setLevel(logging.DEBUG)
 
-    np.random.seed(int(snakemake.wildcards.seed))
+def main(seed, fasta_file, count_file, dist_file, dissim_thresh,
+         ref_frac, query_frac, ref_weight,
+         ref_accnos_file, query_accnos_file, all_accnos_file):
+
+    np.random.seed(int(seed))
 
     all_seqs = SeqList.from_files(
-        snakemake.input.fasta,
-        snakemake.input.count,
-        snakemake.input.dist,
-        threshold=snakemake.params.dissim_thresh,
+        fasta_file,
+        count_file,
+        dist_file,
+        threshold=dissim_thresh,
     )
     num_all_seqs = len(all_seqs)
-    ref_frac = float(snakemake.wildcards.ref_frac)
-    query_frac = float(snakemake.wildcards.sample_frac)
+    ref_frac = float(ref_frac)
+    query_frac = float(query_frac)
     assert ref_frac + query_frac <= 1
     query_size = round_subset_size(query_frac, num_all_seqs)
     ref_size = round_subset_size(ref_frac, num_all_seqs)
 
-    ref_list = all_seqs.get_sample(ref_size, snakemake.wildcards.ref_weight)
+    ref_list = all_seqs.get_sample(ref_size, ref_weight)
     assert check_subsample(ref_frac, len(ref_list), num_all_seqs)
-    ref_list.write_ids(snakemake.output.ref_accnos)
+    ref_list.write_ids(ref_accnos_file)
 
     remaining_seqs = SeqList.set_diff(all_seqs, ref_list)
     query_list = (
@@ -36,12 +36,12 @@ def main():
         else remaining_seqs.get_sample(query_size, "simple")
     )
     assert check_subsample(query_frac, len(query_list), num_all_seqs)
-    query_list.write_ids(snakemake.output.query_accnos)
+    query_list.write_ids(query_accnos_file)
 
     all_seqs = SeqList(
         [seq for seqlist in [ref_list, query_list] for seq in seqlist.seqs]
     )
-    all_seqs.write_ids(snakemake.output.all_accnos)
+    all_seqs.write_ids(all_accnos_file)
 
 
 def round_subset_size(fraction, total_size):
@@ -92,7 +92,6 @@ class SeqList:
     @classmethod
     def from_files(cls, fasta_fn, count_fn, dist_fn, threshold=0.03):
         with open(dist_fn, "r") as dist_file:
-            line = next(dist_file)
             sum_sims = defaultdict(int)
             for line in dist_file:
                 line = line.strip().split()
@@ -136,5 +135,15 @@ class SeqList:
             for seq_id in self.ids:
                 outfile.write(f"{seq_id}\n")
 
-
-main()
+if __name__ == "__main__":
+    main(snakemake.wildcards.seed,
+         snakemake.input.fasta,
+         snakemake.input.count,
+         snakemake.input.dist,
+         snakemake.params.dissim_thresh,
+         snakemake.wildcards.ref_frac,
+         snakemake.wildcards.sample_frac,
+         snakemake.wildcards.ref_weight,
+         snakemake.output.ref_accnos,
+         snakemake.output.query_accnos,
+         snakemake.output.all_accnos)
