@@ -18,7 +18,7 @@ printrefs:
 - f
 ref_fracs:
     start: 1
-    stop: 10
+    stop: 9
     step: 1
 seeds: 100
 configpath: 'config/config.yaml'
