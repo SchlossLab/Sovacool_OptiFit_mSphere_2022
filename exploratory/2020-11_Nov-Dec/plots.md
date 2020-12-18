@@ -208,13 +208,6 @@ optifit_split %>%
 
 ![](figures/fraction-mapped_fit-split-1.png)<!-- -->
 
-It looks like one result per parameter set is left over from before I
-re-ran everything after reverting to the older silva version. [Here’s
-what the plot looked like with the newest (buggy)
-silva](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/exploratory/2020-05/sub3_fit_all-seqs.md#fraction-of-sequences-that-map-to-the-reference).
-Need to go back and figure out why those files didn’t get
-removed/overwritten by Snakemake when I re-ran everything.
-
 Let’s try a sanity check with open-reference – should all be 1.
 
 ``` r
@@ -232,33 +225,6 @@ optifit_split %>%
 ```
 
 ![](figures/fraction-mapped-grid_fit-split-1.png)<!-- -->
-
-Did mothur’s list file format change in the latest dev version? The
-fraction mapped values are the same as the reference fraction when the
-ref weight is simple.
-
-### is there a pattern?
-
-``` r
-debug_dat <- optifit_split %>% 
-  filter(method == 'open') %>% 
-  mutate(is_correct = fraction_mapped == 1) %>% 
-  select(dataset, seed, method, fraction_mapped, is_correct, 
-         sample_frac, ref_frac, ref_weight) %>%
-  group_by(dataset, seed, ref_frac, ref_weight, is_correct) 
-
-for (s in 1:2) {
-  debug_dat %>% 
-    filter(seed == s, ref_weight == 'simple', dataset == 'soil') %>% 
-    pull(is_correct) %>% 
-    print()
-}
-```
-
-    ## [1] TRUE TRUE TRUE TRUE
-    ## [1] TRUE TRUE TRUE TRUE
-
-Pattern of correctness among ref fracs is flipped between seed 1 and 2
 
 ### diversity
 
