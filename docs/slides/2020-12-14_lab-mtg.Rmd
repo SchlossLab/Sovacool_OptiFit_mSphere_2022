@@ -1,0 +1,335 @@
+---
+title: "OptiFit project update"
+subtitle: "+ a case study in debugging"
+author: "Kelly Sovacool"
+date: "2020-12-14 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: [default, default-fonts]
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      #titleSlideClass: ['center', 'middle', 'title-slide']
+    chakra: libs/remark-latest.min.js
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                  message = FALSE
+                  )
+```
+
+```{r chakra, eval = FALSE}
+# run once to download remark-lastest
+xaringan::summon_remark(to = 'docs/slides/libs')
+```
+
+
+```{r libs}
+library(here)
+library(knitr)
+library(tidyverse)
+xaringanExtra::use_share_again()
+```
+
+## OTU Clustering methods
+
+- _De novo_ (OptiClust)
+  - Cluster sequences based on their similarity.
+  - OTU's aren't stable; you'll get different OTU assignments with different random seeds.
+- Reference-based (OptiFit)
+  - First cluster reference sequences _de novo_, then fit query sequences to those OTUs.
+
+.footnote[
+  [Westcott & Schloss (2015) _PeerJ_ ](https://doi.org/10.7717%2Fpeerj.1487);
+  [Schloss (2016) _mSystems_ ](https://doi.org/10.1128%2FmSystems.00027-16);
+  [Westcott & Schloss (2017) _mSphere_](10.1128/mSphereDirect.00073-17)
+]
+
+--
+
+### Reference-based strategies
+
+- Modes
+  - Open - sequences that can't be fit to the reference are then clustered _de novo_ to create additional OTUs.
+  - Closed - sequences that can't be fit to the reference are thrown out.
+- Reference choice
+  - External database (Silva, greengenes, RDP).
+  - Split the dataset into a reference & query set.
+
+---
+
+# Changes since a couple months ago
+
+- Sarah Westcott fixed some bugs in mothur & made OptiFit faster.
+- I re-ran everything with silva v132.
+- Ran vsearch on all the datasets
+- Discovered a bug in my workflow code (last week!)
+
+---
+
+# Reference clustering against a database
+
+.pull-left[
+```{r mcc_fit-db}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 'mcc_fit-db-1.png'))
+```
+]
+
+--
+
+.pull-right[
+```{r fraction-mapped_fit-db}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 'fraction-mapped_fit-db-1.png'))
+```
+]
+
+???
+- _De novo_ and open-reference perform equally well.
+- Closed reference performs slightly worse.
+- RDP doesn't perform well.
+- Prior to switching to silva v132 & updating mothur, closed-reference artificially outperformed open-reference.
+
+---
+
+# Reference clustering against a database
+
+.pull-left[
+```{r runtime_fit-db}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 
+                      'runtime_fit-db-1.png'))
+```
+]
+
+--
+
+.pull-right[
+```{r memory_fit-db}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 
+                      'memory_fit-db-1.png'))
+```
+]
+
+---
+
+
+## Summarizing mothur results
+
+Whenever there's virtually no variation in the metric.
+
+```{r sum_all_mothur}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 
+                      'mcc_all-opti-1.png'))
+```
+
+
+---
+
+## mothur vs. vsearch
+
+```{r vsearch}
+include_graphics(here('exploratory', '2020-11_Nov-Dec', 'figures', 
+                      'metrics_all-human-1.png'))
+```
+
+???
+- Just showing the human dataset here because results patterns were basically the same across all datasets.
+- Only used greengenes for reference because that's what
+QIIME does.
+
+---
+
+# Splitting datasets into reference & query sets
+
+.pull-left[
+Before reverting to Silva v132
+
+```{r frac-map-old}
+include_graphics(here('exploratory', '2020-05_May-Oct', 'figures', 
+                      'fraction_mapped_complement-2.png'))
+```
+]
+--
+.pull-right[
+After reverting to Silva v132:
+
+```{r frac-map-new}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures', 
+                      'debug-fraction-mapped_fit-split-1.png'))
+```
+]
+
+???
+- 1 seed out of every parameter set has the same pattern as the old results
+- I thought maybe my snakemake workflow somehow kept one result file from before reverting to silva. Like maybe it accidentally didn't overwrite with the new results?
+  - But I checked the timestamps of the results files and they were updated after re-doing with silva v132.
+---
+
+## Sanity check: open-ref should have fraction mapped = 1
+
+.pull-left[
+```{r}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures',
+                      'debug-fraction-mapped-open_fit-split-1.png'))
+```
+]
+
+???
+- Now that is really weird. For weight=simple, the fraction mapped is equal to the sample frac most of the time. So the fraction mapped is incorrect most of the time.
+- Next I thought; maybe there's a bug in mothur where the open-ref output files have one less column than the closed-ref.
+  - I brought this up to Sarah W before and she said she fixed it. Maybe I forgot to recompile mothur?
+  - Bingo! I hadn't pulled the latest changes. So I recompiled and re-ran with one parameter set & one seed, and it worked! Problem solved! Well, not quite. When re-running with more than one seed, the problem persisted.
+---
+
+## is there a pattern?
+
+```{r}
+dat_100 <- read_tsv(here('exploratory',
+                               '2020-11_Nov-Dec',
+                               'debug-split_100-seeds.tsv'))
+dat_100 %>% filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, is_correct, fraction_mapped,
+         sample_frac, ref_frac, ref_weight) %>% 
+  filter(is_correct, dataset == 'soil')
+```
+
+???
+- is there a bug in my code to calculate the fraction mapped? let's check results from fitting to databases
+
+---
+
+## Sanity check: results from fitting to databases
+
+.pull-left[
+```{r}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures',
+                      'debug-fraction-mapped-open_fit-split-1.png'))
+```
+]
+.pull-right[
+```{r}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures',
+                      'fraction-mapped-open_fit-db-1.png'))
+```
+]
+???
+- so there isn't a bug in my fraction mapped code and there isn't a bug in mothur, otherwise these would be wrong too.
+- is there a bug in my code to split the datasets into reference & query fractions?
+  - I had written assertion statements throughout that code to make sure the query + reference fraction were correct.
+  - Double-checked the resulting accnos files anyway just to be safe. They were all correct.
+---
+
+## WHAT?!
+
+```{r}
+split_2 <- read_tsv(here('exploratory',
+                          '2020-11_Nov-Dec',
+                          'debug-split_2-seeds.tsv')) %>%
+  filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, method, fraction_mapped, is_correct, 
+         sample_frac, ref_frac, ref_weight)
+
+split_2 %>% 
+  filter(dataset == 'soil', ref_weight == 'simple') %>% 
+  select(sample_frac, ref_frac, seed, is_correct) %>% 
+  pivot_wider(names_from = seed, 
+              values_from = is_correct,
+              names_glue = 'seed_{seed}_is_correct')
+```
+
+
+Re-ran with only 2 seeds.
+
+---
+
+```{bash, eval = FALSE}
+wget https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/c900c5fa5f3081b73536a4e568f66817a66b3d0c/figures/rulegraph_fit_split.png?token=AEHR6TPEQM4HG6GCTVOUSTK74DIXK -O exploratory/2020-11_Nov-Dec/figures/rulegraph1.png
+```
+.pull-left[
+Workflow
+
+```{r rulegraph_old, out.width='60%'}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures',
+                      'rulegraph1.png'))
+```
+]
+--
+.pull-right[
+So far:
+- Code shared with  workflow that fits to databases must be correct.
+- Code that didn't change between previous and most recent results must be correct.
+  - What code did I change between then and now? Did I change anything?
+]
+???
+- Browsed my commit history on github and realized that I had done a little refactoring to clean up the workflow a bit. 
+- I also added the rule pick_best_cluster_seed to check off a TODO in the analysis plan. I forgot about that, thought that had been there much longer.
+- So I removed that rule and tried re-running the workflow with one parameter set and 2 seeds to check whether that was the problem.
+
+---
+
+## Fixed it!
+.pull-left[
+```{r rulegraph_new, out.width='60%'}
+include_graphics(here('figures',
+                      'rulegraph_fit_split.png'))
+```
+]
+.pull-right[
+```{r}
+include_graphics(here('exploratory', 
+                      '2020-11_Nov-Dec', 
+                      'figures',
+                      'fraction-mapped-grid_fit-split-1.png'))
+```
+]
+
+---
+
+## What happened here?
+
+.pull-left[
+- With `pick_best_cluster_seed`, the OptiClust results from the best seed were used for downstream OptiFit runs with _all seeds_.
+  - Same seed variable used to create the data splits.
+- When seeds mismatched, query sets were being fit to reference OTUs from different data splits.
+- Results were correct whenever the OptiFit seed corresponded to the best OptiClust seed, and incorrect in all other cases.
+]
+
+---
+
+## Conclusions
+
+- Don't change more than one thing at a time, even if you think it's "just refactoring".
+- Start debugging from the easiest step to fix.
+- Have config files with different parameter sets to make debugging quick & easy.
+  - default: all datasets & parameters & 100 seeds.
+  - debug: one dataset & only one of each parameter choice & 2 seeds.
+- Make many small commits to make it easy to figure out where you introduced a bug.
+- Test your assumptions
+  - Use `assertthat` pkg in R.
+  
+
+---
+
+# Useful links
+
+- [these slides (R Markdown)](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/docs/slides/2020-12-14_lab-mtg.Rmd)
+- [these slides (HTML)](http://www.schlosslab.org/OptiFitAnalysis/slides/2020-12-14_lab-mtg.html#1)
+- [my code club on unit testing in R](https://github.com/SchlossLab/intro-testing-r)
+- [`assertthat` R package](https://github.com/hadley/assertthat)
+- [Jenny Bryan’s talk on debugging R code](https://rstudio.com/resources/rstudioconf-2020/object-of-type-closure-is-not-subsettable/)

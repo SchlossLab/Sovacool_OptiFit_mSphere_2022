@@ -1,0 +1,196 @@
+---
+date: 'Nov. - Dec. 2020'
+output: 
+  github_document:
+    html_preview: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      fig.path = "figures/"
+                      )
+```
+```{r lib}
+set.seed(2018)
+library(cowplot)
+library(ggtext)
+library(glue)
+library(here)
+library(knitr)
+library(tidyverse)
+
+theme_set(theme_classic())
+color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
+dataset_colors <- c(
+  human = color_palette[[3]],
+  marine = color_palette[[1]],
+  mouse = color_palette[[4]],
+  soil = color_palette[[2]]
+)
+tri_colors <-  c("darkorange","darkorchid","cyan4") # https://allisonhorst.github.io/palmerpenguins/articles/intro.html
+mutate_perf <- function(dat) {
+  dat %>% 
+    mutate(mem_mb = max_rss,
+           mem_gb = mem_mb / 1024) %>% 
+    rename(sec = s,
+           num_otus = sobs)
+}
+```
+
+## _de novo_ clustering
+
+```{r load_opticlust}
+opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>% 
+  full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>% 
+  mutate_perf()
+sum_opticlust <- opticlust %>% 
+  group_by(dataset) %>% 
+  summarize(mean_mcc = mean(mcc),
+            sd_mcc = sd(mcc),
+            mean_sec = mean(sec),
+            sd_sec = sd(sec),
+            mean_mem_gb = mean(mem_gb))#,
+            #mean_shannon = mean(shannon))
+```
+
+## fit to reference databases
+
+```{r load_fit-dbs}
+ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
+optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
+  mutate_perf()
+head(optifit_dbs)
+```
+
+Plotted the fraction mapped for open-reference clustering too as a sanity check.
+Final plots to be included in the paper won't include open-ref.
+```{r fraction-mapped-open_fit-db}
+
+optifit_dbs %>% #filter(method == 'closed') %>% 
+  ggplot(aes(x=dataset, y=fraction_mapped, color=ref)) +
+  geom_boxplot() + 
+  facet_wrap('method') +
+  ylim(0, 1) +
+  scale_color_manual(values=tri_colors) +
+  labs(title="Fit to reference database") +
+  theme(plot.caption = element_markdown())
+```
+
+## fit split datasets
+
+Using buggy data from commit `824c1306eb464349f9d331f85550d539f8c66c63`.
+
+```{bash, eval = FALSE}
+wget https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/824c1306eb464349f9d331f85550d539f8c66c63/subworkflows/3_fit_sample_split/results/optifit_split_results.tsv?token=AEHR6TKMLXIG57IGER2VXSS74C5WC -O exploratory/2020-11_Nov-Dec/debug-split_100-seeds.tsv
+```
+
+
+```{r load_fit-split}
+optifit_split <- read_tsv(here('exploratory',
+                               '2020-11_Nov-Dec',
+                               'debug-split_100-seeds.tsv')) %>% 
+  mutate_perf()
+```
+
+```{r debug-mcc_fit-split}
+optifit_split %>% 
+  ggplot(aes(x = ref_frac, y = mcc, color = ref_weight)) +
+  geom_jitter(size = 1, alpha = 0.3, width = 0.01) +
+  stat_summary(fun = mean, geom = 'crossbar', alpha = 0.5) +
+  geom_hline(aes(yintercept = mean_mcc), sum_opticlust) +
+  facet_grid(dataset ~ method) +
+  ylim(0, 1) +
+  labs(title='OTU Quality: OptiFit with split datasets',
+       x='reference fraction',
+       caption='Black line: _de novo_ clustering on the whole dataset') +
+  theme(plot.caption = element_markdown())
+```
+
+### fraction mapped
+
+```{r debug-fraction-mapped_fit-split}
+optifit_split %>% 
+  filter(method == 'closed', tool == 'mothur', is.na(ref)) %>% 
+  #group_by(dataset, ref_weight, ref_frac) %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_point(alpha = 0.5, size=1) +
+  facet_wrap("dataset", nrow=1) +
+  ylim(0, 1) +
+  labs(title="Sequences mapped during closed-reference OptiFit",
+       x='reference fraction',
+       y='fraction mapped')
+```
+
+It looks like one result per parameter set is left over from before I re-ran 
+everything after reverting to the older silva version.
+[Here's what the plot looked like with the newest (buggy) silva](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/exploratory/2020-05/sub3_fit_all-seqs.md#fraction-of-sequences-that-map-to-the-reference).
+Need to go back and figure out why those files didn't get removed/overwritten
+by Snakemake when I re-ran everything.
+
+Let's try a sanity check with open-reference -- should all be 1.
+
+```{r debug-fraction-mapped-open_fit-split}
+optifit_split %>% 
+  filter(tool == 'mothur', is.na(ref)) %>% 
+  #filter(dataset == 'soil') %>% 
+  ggplot(aes(x=ref_frac, y=fraction_mapped, color=ref_weight)) +
+  geom_point(alpha = 0.5, size=1) +
+  facet_grid(method ~ dataset) +
+  ylim(0, 1) +
+  labs(title="Fit dataset splits",
+       x='reference fraction',
+       y='fraction mapped')
+```
+
+Did mothur's list file format change in the latest dev version? The fraction
+mapped values are the same as the reference fraction when the ref weight is
+simple.
+
+### is there a pattern?
+
+```{r debug-pattern}
+debug_dat <- optifit_split %>% 
+  filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, method, fraction_mapped, is_correct, 
+         sample_frac, ref_frac, ref_weight)
+
+debug_dat %>% filter(is_correct)
+
+```
+
+Can't discern any pattern...
+
+## smaller dataset
+
+Using buggy data from commit `1de7b839eae9b222b66f15dd24b0bb54a8a35459`.
+
+```{bash, eval = FALSE}
+wget https://raw.githubusercontent.com/SchlossLab/OptiFitAnalysis/1de7b839eae9b222b66f15dd24b0bb54a8a35459/subworkflows/3_fit_sample_split/results/optifit_split_results.tsv?token=AEHR6TJQFZT4XT6XIYWOKNS74C7ME -O exploratory/2020-11_Nov-Dec/debug-split_2-seeds.tsv
+```
+
+```{r debug-2_fit-split}
+split_2 <- read_tsv(here('exploratory',
+                          '2020-11_Nov-Dec',
+                          'debug-split_2-seeds.tsv')) %>%
+  mutate_perf() %>% 
+  filter(method == 'open') %>% 
+  mutate(is_correct = fraction_mapped == 1) %>% 
+  select(dataset, seed, method, fraction_mapped, is_correct, 
+         sample_frac, ref_frac, ref_weight)
+
+split_2 %>% 
+  filter(dataset == 'soil', ref_weight == 'simple') %>% 
+  select(sample_frac, ref_frac, seed, is_correct) %>% 
+  pivot_wider(names_from = seed, 
+              values_from = is_correct,
+              names_glue = 'seed_{seed}_is_correct')
+
+```
+
+The pattern of correctness among ref fracs is flipped between seed 1 and 2
+
+Whenever the fit seed matches the best cluster seed,
+the fraction mapped results are correct.
+The bug disappears if you only use 1 seed, because then
+all fit runs will use the same seed as the data split.

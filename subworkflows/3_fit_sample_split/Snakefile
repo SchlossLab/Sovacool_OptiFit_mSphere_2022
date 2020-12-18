@@ -50,12 +50,14 @@ rule split_weighted_subsample:
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         ref_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/ref.accnos",
-        sample_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos",
+        query_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/sample.accnos",
         all_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos"
     log:
         "log/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     benchmark:
         "benchmarks/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+    params:
+        dissim_thresh=0.03
     script:
         "code/py/split_weighted_subsample.py"
 
@@ -63,7 +65,7 @@ rule check_split:
     input:
         code="code/py/check_split.py",
         ref=rules.split_weighted_subsample.output.ref_accnos,
-        query=rules.split_weighted_subsample.output.sample_accnos,
+        query=rules.split_weighted_subsample.output.query_accnos,
         all=rules.split_weighted_subsample.output.all_accnos
     output:
         txt="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/check_split.txt"
@@ -95,7 +97,7 @@ rule prep_subsample_ref:
 rule combine_for_fit:
     input:
         accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
-        accnos_sample=rules.split_weighted_subsample.output.sample_accnos,
+        accnos_sample=rules.split_weighted_subsample.output.query_accnos,
         accnos_all=rules.split_weighted_subsample.output.all_accnos,
         count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
         fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
@@ -198,7 +200,7 @@ rule count_input_sizes:
         py='code/py/count_input_sizes.py',
         fasta=rules.combine_for_fit.output.fasta_all,
         ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
-        sample_accnos=rules.split_weighted_subsample.output.sample_accnos
+        query_accnos=rules.split_weighted_subsample.output.query_accnos
     output:
         tsv=temp("results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/input_size.tsv")
     script:
@@ -208,7 +210,7 @@ rule fraction_reads_mapped3:
     input:
         code="code/py/fraction_reads_mapped.py",
         mapped=rules.calc_diversity3.output.list_accnos,
-        query=rules.split_weighted_subsample.output.sample_accnos,
+        query=rules.split_weighted_subsample.output.query_accnos,
         ref=rules.split_weighted_subsample.output.ref_accnos
     output:
         txt='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/fraction_reads_mapped.txt'

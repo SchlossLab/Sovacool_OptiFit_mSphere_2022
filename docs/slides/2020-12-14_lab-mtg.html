@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>OptiFit project update</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kelly Sovacool" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# OptiFit project update
+## + a case study in debugging
+### Kelly Sovacool
+### 2020-12-14 (updated: 2020-12-14)
+
+---
+
+
+
+
+
+
+
+
+
+
+## OTU Clustering methods
+
+- _De novo_ (OptiClust)
+  - Cluster sequences based on their similarity.
+  - OTU's aren't stable; you'll get different OTU assignments with different random seeds.
+- Reference-based (OptiFit)
+  - First cluster reference sequences _de novo_, then fit query sequences to those OTUs.
+
+.footnote[
+  [Westcott &amp; Schloss (2015) _PeerJ_ ](https://doi.org/10.7717%2Fpeerj.1487);
+  [Schloss (2016) _mSystems_ ](https://doi.org/10.1128%2FmSystems.00027-16);
+  [Westcott &amp; Schloss (2017) _mSphere_](10.1128/mSphereDirect.00073-17)
+]
+
+--
+
+### Reference-based strategies
+
+- Modes
+  - Open - sequences that can't be fit to the reference are then clustered _de novo_ to create additional OTUs.
+  - Closed - sequences that can't be fit to the reference are thrown out.
+- Reference choice
+  - External database (Silva, greengenes, RDP).
+  - Split the dataset into a reference &amp; query set.
+
+---
+
+# Changes since a couple months ago
+
+- Sarah Westcott fixed some bugs in mothur &amp; made OptiFit faster.
+- I re-ran everything with silva v132.
+- Ran vsearch on all the datasets
+- Discovered a bug in my workflow code (last week!)
+
+---
+
+# Reference clustering against a database
+
+.pull-left[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/mcc_fit-db-1.png" width="896" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/fraction-mapped_fit-db-1.png" width="896" /&gt;
+]
+
+???
+- _De novo_ and open-reference perform equally well.
+- Closed reference performs slightly worse.
+- RDP doesn't perform well.
+- Prior to switching to silva v132 &amp; updating mothur, closed-reference artificially outperformed open-reference.
+
+---
+
+# Reference clustering against a database
+
+.pull-left[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/runtime_fit-db-1.png" width="896" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/memory_fit-db-1.png" width="896" /&gt;
+]
+
+---
+
+
+## Summarizing mothur results
+
+Whenever there's virtually no variation in the metric.
+
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/mcc_all-opti-1.png" width="1280" /&gt;
+
+
+---
+
+## mothur vs. vsearch
+
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/metrics_all-human-1.png" width="1280" /&gt;
+
+???
+- Just showing the human dataset here because results patterns were basically the same across all datasets.
+- Only used greengenes for reference because that's what
+QIIME does.
+
+---
+
+# Splitting datasets into reference &amp; query sets
+
+.pull-left[
+Before reverting to Silva v132
+
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-05_May-Oct/figures/fraction_mapped_complement-2.png" width="896" /&gt;
+]
+--
+.pull-right[
+After reverting to Silva v132:
+
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/debug-fraction-mapped_fit-split-1.png" width="896" /&gt;
+]
+
+???
+- 1 seed out of every parameter set has the same pattern as the old results
+- I thought maybe my snakemake workflow somehow kept one result file from before reverting to silva. Like maybe it accidentally didn't overwrite with the new results?
+  - But I checked the timestamps of the results files and they were updated after re-doing with silva v132.
+---
+
+## Sanity check: open-ref should have fraction mapped = 1
+
+.pull-left[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/debug-fraction-mapped-open_fit-split-1.png" width="896" /&gt;
+]
+
+???
+- Now that is really weird. For weight=simple, the fraction mapped is equal to the sample frac most of the time. So the fraction mapped is incorrect most of the time.
+- Next I thought; maybe there's a bug in mothur where the open-ref output files have one less column than the closed-ref.
+  - I brought this up to Sarah W before and she said she fixed it. Maybe I forgot to recompile mothur?
+  - Bingo! I hadn't pulled the latest changes. So I recompiled and re-ran with one parameter set &amp; one seed, and it worked! Problem solved! Well, not quite. When re-running with more than one seed, the problem persisted.
+---
+
+## is there a pattern?
+
+
+```
+## # A tibble: 24 x 7
+##    dataset  seed is_correct fraction_mapped sample_frac ref_frac ref_weight
+##    &lt;chr&gt;   &lt;dbl&gt; &lt;lgl&gt;                &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     
+##  1 soil       89 TRUE                     1         0.9      0.1 simple    
+##  2 soil       94 TRUE                     1         0.8      0.2 simple    
+##  3 soil       23 TRUE                     1         0.7      0.3 simple    
+##  4 soil       62 TRUE                     1         0.6      0.4 simple    
+##  5 soil       12 TRUE                     1         0.5      0.5 simple    
+##  6 soil       16 TRUE                     1         0.4      0.6 simple    
+##  7 soil       13 TRUE                     1         0.3      0.7 simple    
+##  8 soil       95 TRUE                     1         0.2      0.8 simple    
+##  9 soil       84 TRUE                     1         0.9      0.1 abundance 
+## 10 soil       61 TRUE                     1         0.8      0.2 abundance 
+## # … with 14 more rows
+```
+
+???
+- is there a bug in my code to calculate the fraction mapped? let's check results from fitting to databases
+
+---
+
+## Sanity check: results from fitting to databases
+
+.pull-left[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/debug-fraction-mapped-open_fit-split-1.png" width="896" /&gt;
+]
+.pull-right[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/fraction-mapped-open_fit-db-1.png" width="896" /&gt;
+]
+???
+- so there isn't a bug in my fraction mapped code and there isn't a bug in mothur, otherwise these would be wrong too.
+- is there a bug in my code to split the datasets into reference &amp; query fractions?
+  - I had written assertion statements throughout that code to make sure the query + reference fraction were correct.
+  - Double-checked the resulting accnos files anyway just to be safe. They were all correct.
+---
+
+## WHAT?!
+
+
+```
+## # A tibble: 8 x 4
+##   sample_frac ref_frac seed_1_is_correct seed_2_is_correct
+##         &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;             &lt;lgl&gt;            
+## 1         0.9      0.1 TRUE              FALSE            
+## 2         0.8      0.2 FALSE             TRUE             
+## 3         0.7      0.3 TRUE              FALSE            
+## 4         0.6      0.4 FALSE             TRUE             
+## 5         0.5      0.5 TRUE              FALSE            
+## 6         0.4      0.6 TRUE              FALSE            
+## 7         0.3      0.7 TRUE              FALSE            
+## 8         0.2      0.8 TRUE              FALSE
+```
+
+
+Re-ran with only 2 seeds.
+
+---
+
+
+.pull-left[
+Workflow
+
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/rulegraph1.png" width="60%" /&gt;
+]
+--
+.pull-right[
+So far:
+- Code shared with  workflow that fits to databases must be correct.
+- Code that didn't change between previous and most recent results must be correct.
+  - What code did I change between then and now? Did I change anything?
+]
+???
+- Browsed my commit history on github and realized that I had done a little refactoring to clean up the workflow a bit. 
+- I also added the rule pick_best_cluster_seed to check off a TODO in the analysis plan. I forgot about that, thought that had been there much longer.
+- So I removed that rule and tried re-running the workflow with one parameter set and 2 seeds to check whether that was the problem.
+
+---
+
+## Fixed it!
+.pull-left[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/figures/rulegraph_fit_split.png" width="60%" /&gt;
+]
+.pull-right[
+&lt;img src="/Users/kelly/projects/schloss-lab/optiFit/exploratory/2020-11_Nov-Dec/figures/fraction-mapped-grid_fit-split-1.png" width="896" /&gt;
+]
+
+---
+
+## What happened here?
+
+.pull-left[
+- With `pick_best_cluster_seed`, the OptiClust results from the best seed were used for downstream OptiFit runs with _all seeds_.
+  - Same seed variable used to create the data splits.
+- When seeds mismatched, query sets were being fit to reference OTUs from different data splits.
+- Results were correct whenever the OptiFit seed corresponded to the best OptiClust seed, and incorrect in all other cases.
+]
+
+---
+
+## Conclusions
+
+- Don't change more than one thing at a time, even if you think it's "just refactoring".
+- Start debugging from the easiest step to fix.
+- Have config files with different parameter sets to make debugging quick &amp; easy.
+  - default: all datasets &amp; parameters &amp; 100 seeds.
+  - debug: one dataset &amp; only one of each parameter choice &amp; 2 seeds.
+- Make many small commits to make it easy to figure out where you introduced a bug.
+- Test your assumptions
+  - Use `assertthat` pkg in R.
+  
+
+---
+
+# Useful links
+
+- [these slides (R Markdown)](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/docs/slides/2020-12-14_lab-mtg.Rmd)
+- [these slides (HTML)](http://www.schlosslab.org/OptiFitAnalysis/slides/2020-12-14_lab-mtg.html#1)
+- [my code club on unit testing in R](https://github.com/SchlossLab/intro-testing-r)
+- [`assertthat` R package](https://github.com/hadley/assertthat)
+- [Jenny Bryan’s talk on debugging R code](https://rstudio.com/resources/rstudioconf-2020/object-of-type-closure-is-not-subsettable/)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
