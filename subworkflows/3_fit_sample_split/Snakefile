@@ -1,4 +1,4 @@
-""" Benchmarking the OptiFit algorithm using subsets of datasets """
+""" Benchmarking the OptiFit algorithm using datasets split into reference & query sets """
 import numpy
 
 configfile: 'config/config.yaml'
