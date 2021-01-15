@@ -53,6 +53,7 @@ the subworkflows and renders the [paper](paper).
     ```
     sbatch code/slurm/submit.sh
     ```
+    (You will need to first edit your email and account info in the slurm submission script and config files.)
 
 ## Developer Notes
 
