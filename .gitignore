@@ -19,3 +19,4 @@ core.*
 *.sensspec
 *.txt
 *benchmarks*
+*KLS*
