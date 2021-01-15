@@ -25,14 +25,14 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss1
+#SBATCH --account=YOUR_ACCOUNT
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
 
 ####  Your e-mail address and when you want e-mail
 
-#SBATCH --mail-user=sovacool@umich.edu
+#SBATCH --mail-user=YOUR_EMAIL
 #SBATCH --mail-type=BEGIN,END
 
 source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster

@@ -1,7 +1,7 @@
 {
  "__default__": {
-  "account_pbs": "YOUR_ACCOUNT",
-  "account_slurm": "YOUR_ACCOUNT",
+  "account_pbs": "pschloss_fluxod",
+  "account_slurm": "pschloss1",
   "queue": "fluxod",
   "qos": "flux",
   "partition": "standard",
@@ -10,7 +10,7 @@
   "procs": 1,
   "pmem": "4GB",
   "walltime": "24:00:00",
-  "email": "YOUR_EMAIL",
+  "email": "sovacool@umich.edu",
   "mailon": "a",
   "mail_type": "FAIL",
   "jobout": "oe",
