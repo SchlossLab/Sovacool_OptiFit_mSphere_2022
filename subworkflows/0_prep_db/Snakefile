@@ -29,12 +29,12 @@ rule download_silva:
 
 rule download_rdp:
     output:
-        tar=temp("data/rdp/trainset16_022016.pds.tgz"),
+        tar=temp("data/rdp/trainset18_062020.pds.tgz"),
         fasta="data/rdp/rdp.fasta",
         tax="data/rdp/rdp.tax"
     params:
-        fasta="data/rdp/trainset16_022016.pds/trainset16_022016.pds.fasta",
-        tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax",
+        fasta="data/rdp/trainset18_062020.pds/trainset18_062020.pds.fasta",
+        tax="data/rdp/trainset18_062020.pds/trainset18_062020.pds.tax",
         url='https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset18_062020.pds.tgz'
     shell:
         """
@@ -43,7 +43,7 @@ rule download_rdp:
         tar xvzf {output.tar} -C data/rdp/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
-        rm -rf data/rdp/trainset16_*.pds/
+        rm -rf data/rdp/trainset18_*.pds/
         """
 
 rule download_gg:
