@@ -34,15 +34,16 @@ rule download_rdp:
         tax="data/rdp/rdp.tax"
     params:
         fasta="data/rdp/trainset16_022016.pds/trainset16_022016.pds.fasta",
-        tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax"
+        tax="data/rdp/trainset16_022016.pds/trainset16_022016.pds.tax",
+        url='https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset18_062020.pds.tgz'
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
-        wget -N -P data/rdp/ https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
+        wget -N -P data/rdp/ {params.url}
         tar xvzf {output.tar} -C data/rdp/
         mv {params.fasta} {output.fasta}
         mv {params.tax} {output.tax}
-        rm -rf data/rdp/trainset16_022016.pds/
+        rm -rf data/rdp/trainset16_*.pds/
         """
 
 rule download_gg:
