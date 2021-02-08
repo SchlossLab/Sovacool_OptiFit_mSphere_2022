@@ -82,8 +82,9 @@ facilitate comparison of taxonomic composition between communities. A distance
 threshold of 3% (or sequence similarity of 97%) is commonly used to cluster
 sequences into OTUs based on either a reference database or pairwise comparisons
 of the sequences within the dataset. The method chosen for clustering affects
-the quality of OTU assignments and thus may impact downstream analyses of 
-community composition [@westcott_opticlust_2017; @schloss_application_2016; @westcott_novo_2015].
+the quality of OTU assignments and thus may impact downstream analyses of
+community composition [@westcott_opticlust_2017; @schloss_application_2016;
+@westcott_novo_2015].
 
 There are three main categories of OTU clustering algorithms: closed reference,
 open reference, and _de novo_ clustering. Closed reference methods assign
