@@ -61,13 +61,13 @@ opticlust %>%
   ggplot(aes(num_seqs, sec, color = dataset)) +
   geom_point(alpha = 0.5)
 ```
+
 ## fit to reference databases
 
 ```{r load_fit-dbs}
 ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
   mutate_perf()
-head(optifit_dbs)
 ```
 
 ```{r mcc_fit-db}

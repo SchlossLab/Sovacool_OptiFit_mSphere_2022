@@ -56,8 +56,9 @@ opticlust %>%
   geom_point(alpha = 0.5)
 ```
 
-![](figures/runtime_opticlust-1.png)<!-- --> \#\# fit to reference
-databases
+![](figures/runtime_opticlust-1.png)<!-- -->
+
+## fit to reference databases
 
 ``` r
 ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
