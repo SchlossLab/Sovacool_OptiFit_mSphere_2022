@@ -64,27 +64,7 @@ opticlust %>%
 ref_sizes <- read_tsv(here('subworkflows/2_fit_reference_db/results/ref_sizes.tsv'))
 optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
   mutate_perf()
-head(optifit_dbs)
 ```
-
-    ## # A tibble: 6 x 47
-    ##   label...1 cutoff numotus     tp      tn     fp     fn sensitivity specificity
-    ##       <dbl>  <dbl>   <dbl>  <dbl>   <dbl>  <dbl>  <dbl>       <dbl>       <dbl>
-    ## 1      0.03   0.03   34606 4.27e7 3.23e10 6.61e6 1.27e7       0.771        1.00
-    ## 2      0.03   0.03   35042 4.25e7 3.23e10 6.42e6 1.28e7       0.768        1.00
-    ## 3      0.03   0.03   35186 4.26e7 3.23e10 6.40e6 1.28e7       0.769        1.00
-    ## 4      0.03   0.03   34669 4.27e7 3.23e10 6.51e6 1.26e7       0.772        1.00
-    ## 5      0.03   0.03   34597 4.26e7 3.23e10 7.38e6 1.27e7       0.770        1.00
-    ## 6      0.03   0.03   34621 4.27e7 3.23e10 6.49e6 1.26e7       0.772        1.00
-    ## # … with 38 more variables: ppv <dbl>, npv <dbl>, fdr <dbl>, accuracy <dbl>,
-    ## #   mcc <dbl>, f1score <dbl>, sec <dbl>, `h:m:s` <time>, max_rss <dbl>,
-    ## #   max_vms <dbl>, max_uss <dbl>, max_pss <dbl>, io_in <dbl>, io_out <dbl>,
-    ## #   mean_load <dbl>, label...25 <dbl>, group <lgl>, nseqs <dbl>,
-    ## #   num_otus <dbl>, shannon <dbl>, shannon_lci <dbl>, shannon_hci <dbl>,
-    ## #   invsimpson <dbl>, invsimpson_lci <dbl>, invsimpson_hci <dbl>,
-    ## #   dataset <chr>, ref <chr>, region <chr>, seed <dbl>, method <chr>,
-    ## #   printref <lgl>, fraction_mapped <dbl>, ref_weight <lgl>, ref_frac <lgl>,
-    ## #   sample_frac <lgl>, tool <chr>, mem_mb <dbl>, mem_gb <dbl>
 
 ``` r
 optifit_dbs %>% 
