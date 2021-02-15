@@ -118,7 +118,7 @@ method for reference-based clustering.
 
 - **TODO: brief description of OptiFit algorithm**
 - **TODO: open & closed reference modes**
-- **TODO: mcc score; only considers query seqs (when printref=f)**
+- **TODO: MCC score; only considers query sequences (when printref=f)**
 
 To evaluate the OptiFit algorithm and compare to existing methods, we used four
 published datasets isolated from soil [@johnston_metagenomics_2016], marine
@@ -138,7 +138,7 @@ additional measure of quality for this mode.
 
 ### Reference clustering with public databases
 
-- TODO: separate paragraphs for closed & open reference clustering. weave in vsearch within those paragraphs. mention median mcc values.
+- TODO: separate paragraphs for closed & open reference clustering. weave in vsearch within those paragraphs. mention median MCC values.
 - TODO: avoid slightly/much -- use numbers, e.g. X% better/worse.
 - TODO: put the comparison at the beginning of the sentence, so you don't have to know what it is at the end.
 
@@ -149,12 +149,12 @@ Database Project (RDP; v16). In open reference mode, OTU quality was similar
 between fitting the datasets to reference OTUs with OptiFit and clustering the
 datasets _de novo_ with OptiClust. This held true for all datasets and reference
 databases. However, in closed reference mode, OTU quality was slightly worse
-when fitting to greengenes and silva, and much worse when fitting to RDP as
+when fitting to Greengenes and Silva, and much worse when fitting to RDP as
 compared to OptiClust. No more than half of query sequences were fit to
 reference OTUs in closed reference mode across any dataset/database combination.
 **TODO: specify exact numbers for fraction mapped.**
 OptiFit was able to fit more query sequences to reference OTUs created with the
-greengenes and silva databases than with RDP. In terms of runtime,
+Greengenes and Silva databases than with RDP. In terms of run time,
 closed reference OptiFit outperformed OptiClust, while OptiClust outperformed
 open reference OptiFit.
 
@@ -197,7 +197,7 @@ fraction increases.
 
 - **TODO:** for these data, we don't see a compelling reason to use reference-based clustering over _de novo_. it was supposed to speed things up. the reason to do reference-based is if you like the ref OTUs -- e.g. for ML or downstream tools e.g. PiCrust?
 - **TODO:** highlight difference between what we're doing and what previously was done.
-  others use single ref seq to define an otu, while we use all the ref & query seqs to define an otu. highlight why ours is better than previous methods.
+  others use single ref seq to define an OTU, while we use all the ref & query seqs to define an otu. highlight why ours is better than previous methods.
 
 We developed a new algorithm for fitting sequences to existing OTUs and have
 demonstrated its suitability for reference-based clustering. OptiFit makes the
