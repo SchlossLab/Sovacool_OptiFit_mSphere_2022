@@ -91,22 +91,29 @@ open reference, and _de novo_ clustering. Closed reference methods assign
 sequences to a set of pre-made OTUs generated from reference sequences. If a
 query sequence is not within the distance threshold to any of the reference
 sequences, it is discarded. While reference-based clustering is generally fast,
-it is limited by the diversity represented in the reference database. _De novo_
-methods cluster sequences based on their distance to each other, without the use
-of an external reference. open reference methods first perform closed reference
-clustering, then any sequences that cannot be assigned to reference OTUs are
-clustered _de novo_ to create additional OTUs.  _De novo_ clustering overcomes
+it is limited by the diversity represented in the reference database. Rare or
+novel sequences in the sample will be lost if they are not represented in the
+database. _De novo_ methods cluster sequences based on their distance to each
+other, without the use of an external reference ._De novo_ clustering overcomes
 the limitations of reference databases by considering only sequences in the
 dataset, but is more computationally intensive and generates different OTU
-assignments when new sequences are introduced. Previous studies found that _de
-novo_ clustering created the highest quality OTU assignments based on the
+assignments when new sequences are introduced.  Open reference methods take a
+hybrid approach, first performing closed reference clustering, then any
+sequences that cannot be assigned to reference OTUs are clustered _de novo_ to
+create additional OTUs. Previous studies found that the OptiClust _de novo_
+clustering algorithm created the highest quality OTU assignments based on the
 Matthews correlation coefficient (MCC) [@schloss_application_2016;
-@westcott_novo_2015].
+@westcott_novo_2015]. However, a disadvantage of _de novo_ clustering is that
+different input samples will result in different OTUs, making it difficult to
+compare taxonomic composition of communities between studies or to use machine
+learning models trained with _de novo_ OTUs to make predictions on new data.
 
-- **TODO: clustering methods. describe reference vs de novo clustering. trade-offs. machine learning use-case.**
-- **TODO: mention OptiClust and vsearch.**
-- **TODO:** gap in knowledge/ problem statement. acknowledge knock against OTUs, that they're not reproducible across studies. idea of ref-clustering is you can use existing OTUs to compare data across studies. can we make a ref-based method that's as good as _de novo_.
-- **TODO:** in this study, we fix that problem.
+To overcome the limitations of _de novo_ clustering while maintaining OTU
+quality, we developed OptiFit, a reference-based clustering algorithm in the
+mothur program which takes existing OTUs as the reference to fit new sequences
+to. Here, we tested the OptiFit algorithm with databases or _de novo_ OTUs as
+the reference and compared the performance to existing tools.
+
 
 ## Results
 
