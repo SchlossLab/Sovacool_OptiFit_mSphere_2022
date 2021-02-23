@@ -22,7 +22,10 @@ def main(
     np.random.seed(int(seed))
 
     all_seqs = SeqList.from_files(
-        fasta_file, count_file, dist_file, threshold=dissim_thresh,
+        fasta_file,
+        count_file,
+        dist_file,
+        threshold=dissim_thresh,
     )
     num_all_seqs = len(all_seqs)
     ref_frac = float(ref_frac)
