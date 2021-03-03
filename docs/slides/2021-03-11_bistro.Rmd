@@ -1,0 +1,89 @@
+---
+title: "OptiFit project update"
+subtitle: "+ a case study in debugging"
+author: "Kelly Sovacool"
+date: "2021-03-11 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: libs/xaringan-themer.css
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      #titleSlideClass: ['center', 'middle', 'title-slide']
+    chakra: libs/remark-latest.min.js
+    self_contained: true
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE
+                  )
+# prev slides:
+# - Oct 2020 research talk https://docs.google.com/presentation/d/1GbbCYmlF4jkrO5BGyCTgtFBOL4pfzPDIQLMZBND0Hzg/edit#slide=id.p
+# - Dec 2020 research talk https://github.com/SchlossLab/OptiFitAnalysis/blob/master/docs/slides/2020-12-14_lab-mtg.Rmd
+# - fall 2019 JC https://github.com/kelly-sovacool/bioinf603-fall2019
+
+# TODO: use http urls instead of here filepaths for figures
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_light(
+  header_font_google = google_font("Helvetica"),
+  text_font_google = google_font("Helvetica")
+)
+# style_mono_light(base_color = "#23395b")
+# style_mono_accent(
+#   base_color = "#1c5253",
+#   header_font_google = google_font("Josefin Sans"),
+#   text_font_google   = google_font("Montserrat", "300", "300i"),
+#   code_font_google   = google_font("Fira Mono")
+# )
+```
+
+```{r chakra, eval = FALSE}
+# run once to download remark-lastest
+xaringan::summon_remark(to = 'docs/slides/libs')
+```
+
+
+```{r libs}
+library(here)
+library(knitr)
+library(tidyverse)
+xaringanExtra::use_share_again()
+```
+
+## OTU Clustering methods
+
+- _De novo_ (OptiClust)
+  - Cluster sequences based on their similarity.
+  - OTU's aren't stable; you'll get different OTU assignments with different random seeds.
+- Reference-based (OptiFit)
+  - First cluster reference sequences _de novo_, then fit query sequences to those OTUs.
+
+.footnote[
+  [Westcott & Schloss (2015) _PeerJ_ ](https://doi.org/10.7717%2Fpeerj.1487);
+  [Schloss (2016) _mSystems_ ](https://doi.org/10.1128%2FmSystems.00027-16);
+  [Westcott & Schloss (2017) _mSphere_](10.1128/mSphereDirect.00073-17)
+]
+
+--
+
+### Reference-based strategies
+
+- Modes
+  - Open - sequences that can't be fit to the reference are then clustered _de novo_ to create additional OTUs.
+  - Closed - sequences that can't be fit to the reference are thrown out.
+- Reference choice
+  - External database (Silva, greengenes, RDP).
+  - Split the dataset into a reference & query set.
+
+---
+
+![](../../exploratory/2020-11_Nov-Dec/figures/mcc_fit-db-1.png)
+
