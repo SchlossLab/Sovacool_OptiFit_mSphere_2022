@@ -13,13 +13,14 @@ output:
       highlightLines: true
       #titleSlideClass: ['center', 'middle', 'title-slide']
     chakra: libs/remark-latest.min.js
+    self_contained: true
 ---
 
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(echo = FALSE,
-                  message = FALSE
+                      message = FALSE
                   )
 ```
 
