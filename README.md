@@ -2,6 +2,8 @@
 
 Benchmarking the OptiFit algorithm in [mothur](github.com/mothur/mothur).
 
+Find more details on how to use OptiFit and descriptions of the parameter options on the mothur wiki: https://mothur.org/wiki/cluster.fit/. 
+
 ## The Workflow
 
 The workflow is split into five subworkflows:
