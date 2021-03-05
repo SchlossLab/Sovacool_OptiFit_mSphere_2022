@@ -37,6 +37,27 @@ rule render_paper:
         pdf='docs/paper.pdf',
         html='docs/paper.html'
 
+rule subtargets:
+    input:
+        opticlust=prep_samples('results/opticlust_results.tsv'),
+        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        optifit_split=fit_split('results/optifit_split_results.tsv'),
+        vsearch=vsearch('results/vsearch_results.tsv')
+
+rule summarize_results:
+    input:
+        R='code/R/summarize_results.R',
+        opticlust=prep_samples('results/opticlust_results.tsv'),
+        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        optifit_split=fit_split('results/optifit_split_results.tsv'),
+        vsearch=vsearch('results/vsearch_results.tsv')
+    output:
+        agg='results/aggregated.tsv',
+        sum='results/summarized.tsv'
+    script:
+        'code/R/summarize_results.tsv'
+
+
 rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
@@ -44,7 +65,8 @@ rule render_pdf:
         bib='paper/references.bib',
         csl='paper/msystems.csl',
         R='code/R/render.R',
-        fcns="code/R/functions.R"
+        fcns="code/R/functions.R",
+        agg=rules.summarize_results.output.agg
     output:
         file='docs/paper.pdf'
     params:
@@ -66,9 +88,3 @@ rule render_html:
     script:
         'code/R/render.R'
 
-rule subtargets:
-    input:
-        opticlust=prep_samples('results/opticlust_results.tsv'),
-        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        optifit_split=fit_split('results/optifit_split_results.tsv'),
-        vsearch=vsearch('results/vsearch_results.tsv')
