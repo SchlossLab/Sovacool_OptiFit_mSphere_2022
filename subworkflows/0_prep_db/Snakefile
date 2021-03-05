@@ -70,7 +70,7 @@ rule download_gg:
 
 rule download_gg_97:
     output:
-        tar='gg_13_8_otus.tar.gz',
+        tar='data/gg/gg_13_8_otus.tar.gz',
         fasta='data/gg/gg_13_8_otus/rep_set_aligned/97_otus.fasta'
     shell:
         """
