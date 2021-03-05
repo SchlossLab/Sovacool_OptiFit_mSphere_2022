@@ -243,18 +243,18 @@ a database whenever stable OTUs are not required for the study at hand.
 The mothur algorithms produced higher quality OTUs than vsearch in open
 reference, closed reference, or _de novo_ modes. However, vsearch was able to
 fit more sequence into OTUs than OptiFit in closed reference mode. While both
-mothur and vsearch use a dissimilarity threshold for determining how to assign
-sequences into OTUs, vsearch is more permissive than mothur. Mothur's OptiFit
-and OptiClust use all of the sequences to define an OTU, requiring that all
-pairs of sequences (including reference and query sequences) in an OTU are
-within the distance threshold without penalizing the MCC. In contrast,
-vsearch only requires each query sequence to be similar to the single sequence
-that seeded the OTU. In this way, vsearch sacrifices OTU quality in order to
-allow more sequences to fit to OTUs. Users who require closed reference
-clustering to the greengenes database may prefer to use vsearch if they wish to
-maximize the fraction of sequences that can be fit at the cost of OTU quality.
-However, mothur's OptiClust or OptiFit are recommended for _de novo_ or open
-reference clustering to produce OTUs of the highest possible quality.
+mothur and vsearch use a distance or similarity threshold for determining how to
+assign sequences to OTUs, vsearch is more permissive than mothur. Mothur's
+OptiFit and OptiClust use all of the sequences to define an OTU, requiring that
+all pairs of sequences (including reference and query sequences) in an OTU are
+within the distance threshold without penalizing the MCC. In contrast, vsearch
+only requires each query sequence to be similar to the single sequence that
+seeded the OTU. In this way, vsearch sacrifices OTU quality in order to allow
+more sequences to fit to OTUs. Users who require closed reference clustering to
+the greengenes database may prefer to use vsearch if they wish to maximize the
+fraction of sequences that can be fit at the cost of OTU quality. However,
+mothur's OptiClust or OptiFit are recommended for _de novo_ or open reference
+clustering to produce OTUs of the highest possible quality.
 
 When fitting with the split dataset strategy, OTU quality was remarkably similar
 when reference sequences were selected by a simple random sample or weighted by
@@ -266,7 +266,8 @@ demonstrates the suitability of using OptiFit to fit sequences to existing OTUs,
 such as when using already-trained machine learning models to make predictions
 on new data or comparing OTUs across studies. However, when stable OTUs are not
 required, we recommend using OptiClust for _de novo_ clustering over the split
-strategy with OptiFit since OptiClust simpler to execute but performs similarly.
+strategy with OptiFit since OptiClust is simpler to execute but performs
+similarly in terms of both run time and OTU quality.
 
 - **TODO: big picture concluding paragraph**
 
