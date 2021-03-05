@@ -66,7 +66,7 @@ rule render_pdf:
         csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        agg=rules.summarize_results.output.agg
+        sum=rules.summarize_results.output.sum
     output:
         file='docs/paper.pdf'
     params:
@@ -80,7 +80,8 @@ rule render_html:
         bib='paper/references.bib',
         csl='paper/msystems.csl',
         R='code/R/render.R',
-        fcns="code/R/functions.R"
+        fcns="code/R/functions.R",
+        sum=rules.summarize_results.output.sum
     output:
         file='docs/paper.html'
     params:
