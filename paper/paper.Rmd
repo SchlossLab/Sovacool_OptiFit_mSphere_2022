@@ -172,8 +172,6 @@ All clustering was performed at a distance threshold of 0.03 and OTU quality was
 evaluated using the MCC as described previously [@westcott_opticlust_2017].
 We calculated the fraction of query sequences that were fit to existing OTUs in
 closed reference mode as an additional measure of quality for this mode.
-_De novo_ clustering with OptiClust produced **X%** higher quality OTUs than
-VSEARCH, but performed **Y%** slower than VSEARCH.
 
 ### Reference clustering with public databases
 
@@ -191,6 +189,8 @@ against the Greengenes database, with median MCC scores of **A** and **B%**
 (respectively).
 However, open reference VSEARCH and OptiClust respectively ran **X%** and **Y%**
 faster than OptiFit in open reference mode.
+_De novo_ clustering with OptiClust produced **X%** higher quality OTUs than
+VSEARCH, but performed **Y%** slower than VSEARCH.
 
 In closed reference mode, OptiFit produced lower quality OTUs than OptiClust by
 **X%** when fitting sequences to Greengenes and SILVA, and **Y%** worse when
