@@ -67,11 +67,9 @@ rule remove_gaps_query:
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         """
 
-# some mothur commands use hyphens to separate a list of filenames,
-# so your filepaths cannot contain hyphens
 rule copy_ref:
     input:
-        prep_db("data/gg/gg.fasta")
+        prep_db("data/gg/gg_13_8_otus/rep_set_aligned/97_otus.fasta")
     output:
         fasta='data/ref/gg.fasta'
     shell:

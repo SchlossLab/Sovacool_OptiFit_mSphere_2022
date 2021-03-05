@@ -68,6 +68,19 @@ rule download_gg:
         Rscript {input.R}
         """
 
+rule download_gg_97:
+    output:
+        tar='gg_13_8_otus.tar.gz',
+        fasta='data/gg/gg_13_8_otus/rep_set_aligned/97_otus.fasta'
+    shell:
+        """
+        source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
+        wget -N -P data/gg/ ftp://greengenes.microbio.me/greengenes_release/gg_13_5/gg_13_8_otus.tar.gz
+        tar -xzvf {output.tar} -C data/gg/
+        """
+
+# TODO: use gg 97 instead of 99 for vsearch.
+
 rule get_bacteria:
     input:
         fasta="data/{ref}/{ref}.fasta",
