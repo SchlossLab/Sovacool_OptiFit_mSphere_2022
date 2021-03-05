@@ -279,9 +279,9 @@ than half of query sequences were able to be fit to OTUs across any
 dataset/database combination. 
 This may reflect limitations of reference
 databases, which are unlikely to contain sequences from rare and novel microbes.
-This drop in quality was most notable with RDP, which has only about 16,000 V4
-16S sequences compared to about 170,000 in SILVA and Greengenes (**TODO: insert
-R code to generate these numbers**).
+This drop in quality was most notable with RDP, which contains only about 21,000
+sequences compared to over 200,000 sequences in SILVA and Greengenes each at the
+time of this writing.
 We recommend that users who require an independent reference database opt for
 large databases with good coverage of microbial diversity.
 Since OptiClust performs faster than open reference OptiFit and creates higher
