@@ -46,16 +46,16 @@ rule subtargets:
 
 rule summarize_results:
     input:
-        R='code/R/summarize_results.R',
-        opticlust=prep_samples('results/opticlust_results.tsv'),
-        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        optifit_split=fit_split('results/optifit_split_results.tsv'),
-        vsearch=vsearch('results/vsearch_results.tsv')
+        R='code/R/summarize_results.R'
+        #opticlust=prep_samples('results/opticlust_results.tsv'),
+        #optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        #optifit_split=fit_split('results/optifit_split_results.tsv'),
+        #vsearch=vsearch('results/vsearch_results.tsv')
     output:
         agg='results/aggregated.tsv',
         sum='results/summarized.tsv'
     script:
-        'code/R/summarize_results.tsv'
+        'code/R/summarize_results.R'
 
 
 rule render_pdf:
