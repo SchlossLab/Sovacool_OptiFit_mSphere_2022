@@ -290,7 +290,7 @@ sanity check. Final plots will only include closed-reference.
 ``` r
 plot_denovo_hline <- function(yint, dat = sum_opticlust) {
   list(geom_hline(data = dat, aes(yintercept = {{yint}})),
-       labs(caption = "Black line: _de novo_ clustering0"),
+       labs(caption = "Black line: _de novo_ clustering"),
        theme(plot.caption = element_markdown())
   )
 }
