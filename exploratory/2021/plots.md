@@ -1,4 +1,4 @@
-2021-02-08
+2021-03-07
 
 ``` r
 set.seed(2018)
@@ -404,9 +404,9 @@ head(sum_all_human)
     ## 1 moth… closed_… closed   100      0.800       606.         5.38 
     ## 2 moth… de_novo  de_no…   100      0.821       718.         5.05 
     ## 3 moth… open_re… open     100      0.815       899.        20.3  
-    ## 4 vsea… closed_… closed     1      0.385       784.         1.01 
-    ## 5 vsea… de_novo  de_no…     1      0.547       138.         0.164
-    ## 6 vsea… open_re… open       1      0.390       761.         0.999
+    ## 4 vsea… closed_… closed     1      0.464       684.         0.557
+    ## 5 vsea… de_novo  de_no…     1      0.554       153.         0.165
+    ## 6 vsea… open_re… open       1      0.469       715.         0.559
     ## # … with 1 more variable: frac_map_median <dbl>
 
 ``` r
