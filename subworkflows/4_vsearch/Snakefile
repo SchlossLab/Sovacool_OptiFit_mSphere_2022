@@ -84,11 +84,13 @@ rule list_ref_seqs:
         fasta=rules.copy_ref.output.fasta
     output:
         accnos='data/ref/gg.accnos'
+    log:
+        'log/list_ref_seqs.log'
     params:
         outdir='data/ref/'
     shell:
         """
-        mothur '#set.dir(output={params.outdir});
+        mothur '#set.dir(output={params.outdir}); set.logfile(name={log});
             list.seqs(fasta={input.fasta}) '
         """
 
