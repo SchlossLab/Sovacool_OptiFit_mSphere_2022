@@ -71,7 +71,7 @@ rule download_gg:
 rule download_gg_97:
     output:
         tar='data/gg/gg_13_8_otus.tar.gz',
-        fasta='data/gg/gg_13_8_otus/rep_set_aligned/97_otus.fasta'
+        fasta='data/gg/gg_13_8_otus/rep_set/97_otus.fasta'
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster

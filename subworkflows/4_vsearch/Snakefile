@@ -53,6 +53,8 @@ rule remove_gaps_query:
     output:
         degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
         fna="data/{dataset}/{dataset}.ng.fasta"
+    log:
+        'log/{dataset}/remove_gaps_query.log'
     params:
         outdir="data/{dataset}/",
         prefix='{dataset}.tmp'
@@ -60,7 +62,7 @@ rule remove_gaps_query:
         procs=2
     shell:
         """
-        mothur '#set.dir(output={params.outdir});
+        mothur '#set.dir(output={params.outdir}); set.logfile(name={log});
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots or hyphens in fasta headers
@@ -69,7 +71,7 @@ rule remove_gaps_query:
 
 rule copy_ref:
     input:
-        prep_db("data/gg/gg_13_8_otus/rep_set_aligned/97_otus.fasta")
+        prep_db("data/gg/gg_13_8_otus/rep_set/97_otus.fasta")
     output:
         fasta='data/ref/gg.fasta'
     shell:
