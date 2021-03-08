@@ -1,5 +1,5 @@
 
-# OptiFit: a fast method for fitting amplicon sequences to existing OTUs for microbial ecology
+# OptiFit: a fast method for fitting amplicon sequences to existing OTUs for comparing microbial communities
 
 Amplicon sequencing has become a mainstay of microbial ecology and
 host-associated microbiome research.
