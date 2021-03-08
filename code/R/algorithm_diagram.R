@@ -27,8 +27,8 @@ graph [layout = dot,
    3 [label = '@@3'] 
 }
 
-2 -> 3
 1 -> 3 [dir = back]
+2 -> 3 [dir = back]
 }
 
 [1]: get_otus(1)
