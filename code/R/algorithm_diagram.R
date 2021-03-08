@@ -1,21 +1,26 @@
 library(DiagrammeR)
 
-# Pat's MCC function 
+# Pat's MCC function
 # source: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/a8bc26855423bba85acc0b8e7cca075e5c94f533/submission/supplemental_text.Rmd#L26-L28
 mcc <- function(tp, tn, fp, fn) {
-   format(round((tp * tn - fp * fn) /	sqrt((tp + fp) * (tp + fn) * (tn + fp) *
-                                              (tn + fn)), digits = 2),
-          digits = 2,
-          nsmall = 2L)
+  format(round((tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) *
+    (tn + fn)), digits = 2),
+  digits = 2,
+  nsmall = 2L
+  )
 }
 
-dat <- data.frame(`Seq. 1` = c("D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q"), 
-                  `Seq. 2` = c("B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F"), 
-                  Distance = c(0.024, 0.028, 0.028, 0.027, 0.016, 0.024, 0.028, 0.024, 0.024, 0.024, 0.016, 0.027, 0.027, 0.024, 0.028))
+dat <- data.frame(
+  `Seq. 1` = c("D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q"),
+  `Seq. 2` = c("B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F"),
+  Distance = c(0.024, 0.028, 0.028, 0.027, 0.016, 0.024, 0.028, 0.024, 0.024, 0.024, 0.016, 0.027, 0.027, 0.024, 0.028)
+)
 
-otus <- list(c('A', 'B'),
-             c('C', 'D', 'E'),
-             c('F'))
+otus <- list(
+  c("A", "B"),
+  c("C", "D", "E"),
+  c("F")
+)
 
 get_otus <- function(idx) {
   x <- otus[[idx]]
