@@ -6,11 +6,14 @@ library(Matrix)
 library(tidyverse)
 set.seed(20200308)
 
+# Pat's MCC function
+# source: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/a8bc26855423bba85acc0b8e7cca075e5c94f533/submission/supplemental_text.Rmd#L26-L28
 mcc <- function(tp, tn, fp, fn) {
-   format(round((tp * tn - fp * fn) /	sqrt((tp + fp) * (tp + fn) * (tn + fp) *
-                                              (tn + fn)), digits = 2),
-          digits = 2,
-          nsmall = 2L)
+  format(round((tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) *
+    (tn + fn)), digits = 2),
+  digits = 2,
+  nsmall = 2L
+  )
 }
 
 calc_mcc_from_conf_mat <- function(conf_mat) {
@@ -31,6 +34,7 @@ get_seqs_to_otus <- function(otu_list) {
    }
    return(seqs_to_otus)
 }
+
 
 get_otu_label <- function(otus, idx) {
   x <- otus[[idx]]
