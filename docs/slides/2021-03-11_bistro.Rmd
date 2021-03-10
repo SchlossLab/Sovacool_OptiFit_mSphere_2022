@@ -5,7 +5,7 @@ author: "Kelly Sovacool"
 date: "2021-03-11 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
-    css: libs/xaringan-themer.css
+    css: xaringan-themer.css
     lib_dir: libs
     nature:
       ratio: '16:9'
@@ -27,12 +27,12 @@ knitr::opts_chunk$set(echo = FALSE,
 # - Dec 2020 research talk https://github.com/SchlossLab/OptiFitAnalysis/blob/master/docs/slides/2020-12-14_lab-mtg.Rmd
 # - fall 2019 JC https://github.com/kelly-sovacool/bioinf603-fall2019
 
-# TODO: use http urls instead of here filepaths for figures
 ```
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
-style_mono_light(
+style_mono_accent(
+  base_color = "#23395b",
   header_font_google = google_font("Helvetica"),
   text_font_google = google_font("Helvetica")
 )
@@ -65,6 +65,8 @@ xaringanExtra::use_share_again()
   - OTU's aren't stable; you'll get different OTU assignments with different random seeds.
 - Reference-based (OptiFit)
   - First cluster reference sequences _de novo_, then fit query sequences to those OTUs.
+  
+distance threshold: clumping vs splitting. some bacteria have multiple copies of rRNA gene.
 
 .footnote[
   [Westcott & Schloss (2015) _PeerJ_ ](https://doi.org/10.7717%2Fpeerj.1487);
