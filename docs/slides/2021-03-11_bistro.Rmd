@@ -33,7 +33,8 @@ knitr::opts_chunk$set(echo = FALSE,
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
 style_mono_accent(
-  base_color = "#23395b",
+  #base_color = "#23395b",
+  base_color = "#000000",
   header_font_google = google_font("Helvetica"),
   text_font_google = google_font("Helvetica")
 )
@@ -52,12 +53,19 @@ library(tidyverse)
 xaringanExtra::use_share_again()
 ```
 
+background-image: url("../../figures/SchlossLab.png") 
+background-size: contain
+background-color: "#000000"
+class: inverse
+
+---
 
 ## Role of the microbiome in human health
 
 .center[
 <img src="https://raw.githubusercontent.com/kelly-sovacool/bioinf603-fall2019/master/docs/figures/human_microbiome.gif" height="500"/>
 ]
+
 ---
 
 ## The gut microbiome changes in colorectal cancer
@@ -109,17 +117,20 @@ xaringanExtra::use_share_again()
 
 |   | Metagenomics | Amplicon Sequencing |
 |------|--------------|----------|
-| **Technique** | Whole-metagenome shotgun sequencing (every gene of every microbe) | Sequence just 250bp of the 16S rRNA gene |
+| **Technique** | Whole-metagenome shotgun sequencing: every gene of every microbe | Sequence just 250bp of the 16S rRNA gene |
+| **Cost** | 💲💲💲 | 💲 |
 | **Taxonomic resolution** | Species or strain | Genus |
 | **Organisms** | Bacteria, archaea, viruses, fungi | Bacteria & archaea; or fungi separately | 
 | **Purpose** | Identify which microbial genes are present; assemble microbial genomes | Identify which microbes are present and their abundances |
-| **Cost** | 💲💲💲 | 💲 |
+
+???
+metagenomics is prohibitively expensive for very large datasets
 
 ---
 
 ## Operational Taxonomic Units (OTUs)
 
-- Cluster similar sequences together into OTUs.
+- Cluster similar sequences together into OTUs as a proxy for genus/species.
 - OTUs clustered at 3% distance (97% sequence similarity) generally can be labelled at the genus level.
 
 .center[
@@ -151,6 +162,8 @@ Challenges:
 - Horizontal gene transfer
 
 Current classifications are far from perfect.
+
+Courtney's resolution figure?
 
 ---
 
@@ -216,8 +229,9 @@ _De novo_ methods out-perform reference-based methods.
 .center[
 <img src="../../figures/opticlust-supp-ex.png" width="700"/>
 ]
+.footnote[
 <img src="https://raw.githubusercontent.com/mothur/logo/master/mothur_RGB.png" width="200"/>
-
+]
 ???
 if equally good, pick one at random
 
@@ -389,16 +403,43 @@ Whenever there's virtually no variation in the metric across random seeds.
 
 ---
 
-## Reproducible Pipelines with Snakemake
+## Managing Bioinformatics Pipelines
 
 .center[
 <img src="https://snakemake2019.readthedocs.io/en/latest/_images/workflow_management.png" width="750"/>
 ]
 
+.footnote[
+[snakemake.readthedocs.io](snakemake.readthedocs.io)
+]
+
+???
+I ran about 20,000 jobs on the GreatLakes HPC
+
 ---
 
-.pull-right[
-<img src="../../figures/dag_fit_db.png" height="600" />
+## Pipelines with <img src="https://raw.githubusercontent.com/snakemake/snakemake/f55801bfabfb916f77fa4ec8f9eb0667e5c8a92e/images/biglogo.png" height="35"/> 
+
+.center[
+<img src="https://raw.githubusercontent.com/snakemake/snakemake/f55801bfabfb916f77fa4ec8f9eb0667e5c8a92e/docs/project_info/img/idea.png" width="900" />
+]
+
+.footnote[
+[snakemake.readthedocs.io](snakemake.readthedocs.io)
+]
+
+---
+
+## Tools for Reproducible Bioinformatics 
+
+| package mgmt | scripts | reports | workflow | version control |
+|---|---|---|---|---|
+|   <img src="https://docs.conda.io/en/latest/_images/conda_logo.svg" width="175"/> | <img src="https://longhowlam.files.wordpress.com/2017/04/rp.png" height="175"/> | <img src="https://ulyngs.github.io/rmarkdown-workshop-2019/slides/figures/rmarkdown.png" height="165"/> | <img src="https://avatars.githubusercontent.com/u/33450111?s=400&v=4" height="175"> |<img src="https://miro.medium.com/max/2625/1*8fPMdk2Cd5iJQ7dI7jXCbA.jpeg" height="175"/> |
+
+--
+
+.center[
+### ...and headache prevention!
 ]
 
 ---
