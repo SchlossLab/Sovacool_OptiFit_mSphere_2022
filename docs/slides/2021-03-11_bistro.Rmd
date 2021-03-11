@@ -1,5 +1,5 @@
 ---
-title: "Comparing microbial communities with OptiFit: a fast method for fitting sequences to existing OTUs"
+title: "OptiFit: a fast method for fitting sequences to existing OTUs for microbial ecology"
 subtitle: ""
 author: "Kelly Sovacool"
 date: "2021-03-11"
@@ -70,6 +70,12 @@ implemented algorithms I'm discussing today.
 <img src="https://raw.githubusercontent.com/kelly-sovacool/bioinf603-fall2019/master/docs/figures/human_microbiome.gif" height="500"/>
 ]
 
+???
+Human Microbes: The Power within (2018)
+
+[The Human Microbiome Project (2012) Nature](https://dx.doi.org/10.1038%2Fnature11234)
+
+
 ---
 
 ## The gut microbiome changes in colorectal cancer
@@ -129,6 +135,8 @@ implemented algorithms I'm discussing today.
 
 ???
 metagenomics is prohibitively expensive for very large datasets
+
+mothur: command line program for processing amplicon sequence data and comparing microbial communities
 
 ---
 
