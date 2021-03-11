@@ -58,6 +58,10 @@ background-size: contain
 background-color: "#000000"
 class: inverse
 
+???
+Sarah Westcott, software engineer.
+implemented algorithms I'm discussing today.
+
 ---
 
 ## Role of the microbiome in human health
@@ -220,7 +224,15 @@ _De novo_ methods out-perform reference-based methods.
 
 ## OptiClust: _de novo_ OTUs that optimize the MCC
 
-1. Calculate all pairwise sequence distance scores.
+1. Calculate all pairwise distance scores.
+
+  .center[
+```
+seqA AGGGTACG
+seqB ACG-TACG
+```
+$$distance = 1 - sequence\ similarity = 1 - \frac{number\ of\ matches}{sequence\  length}$$
+]
 
 1. Begin with each sequence assigned to its own OTU.
 
@@ -229,11 +241,15 @@ _De novo_ methods out-perform reference-based methods.
 .center[
 <img src="../../figures/opticlust-supp-ex.png" width="700"/>
 ]
+
 .footnote[
-<img src="https://raw.githubusercontent.com/mothur/logo/master/mothur_RGB.png" width="200"/>
+<img src="https://raw.githubusercontent.com/mothur/logo/master/mothur_RGB.png" height="150"/>
 ]
+
 ???
-if equally good, pick one at random
+if equally good, pick one at random.
+
+opticlust is great, but still has limitations of _de novo_ clustering: OTU assignments aren't stable when new sequences are added.
 
 ---
 
@@ -261,11 +277,11 @@ if equally good, pick one at random
 ## Reference-based strategies
 
 - Modes
-  - Open - sequences that can't be fit to the reference are then clustered _de novo_ to create additional OTUs.
   - Closed - sequences that can't be fit to the reference are thrown out.
+  - Open - sequences that can't be fit to the reference are then clustered _de novo_ to create additional OTUs.
   
 - Reference choice
-  - External, independent database (Silva, greengenes, RDP).
+  - External, independent database (SILVA, greengenes, RDP).
   - Split the dataset into a reference & query set.
 
 ---
@@ -444,34 +460,3 @@ I ran about 20,000 jobs on the GreatLakes HPC
 ### ...and headache prevention!
 ]
 
----
-
-## Sequence similarity / distance
-
-1. Calculate all pairwise sequence identity scores to create a distance matrix.
-2. Apply cutoff of 97% sequence identity to create an adjacency matrix.
-.center[
-```
-seqA AGGGTACG
-seqB ACG-TACG
-```
-$$ \%\ sequence\ identity =  100 * \frac{number\ of\ matches}{sequence\  length} $$
-]
-.pull-left[
-1) Distance matrix:
-
-| | Seq1 | Seq2 | Seq3 |
-|-|------|------|------|
-| Seq1 | - | 98 | 87 |
-| Seq2 | 98 | - | 76 |
-| Seq3 | 87 | 76 | - |
-]
-.pull-right[
-2) Adjacency matrix:
-
-| | Seq1 | Seq2 | Seq3 |
-|-|------|------|------|
-| Seq1 | - | 1 | 0 |
-| Seq2 | 1 | - | 0 |
-| Seq3 | 0 | 0 | - |
-]
