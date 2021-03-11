@@ -410,7 +410,7 @@ Whenever there's virtually no variation in the metric across random seeds.
 ]
 
 .footnote[
-[snakemake.readthedocs.io](snakemake.readthedocs.io)
+[snakemake.readthedocs.io](https://snakemake.readthedocs.io)
 ]
 
 ???
@@ -420,12 +420,14 @@ I ran about 20,000 jobs on the GreatLakes HPC
 
 ## Pipelines with <img src="https://raw.githubusercontent.com/snakemake/snakemake/f55801bfabfb916f77fa4ec8f9eb0667e5c8a92e/images/biglogo.png" height="35"/> 
 
+&nbsp;
+
 .center[
-<img src="https://raw.githubusercontent.com/snakemake/snakemake/f55801bfabfb916f77fa4ec8f9eb0667e5c8a92e/docs/project_info/img/idea.png" width="900" />
+<img src="https://raw.githubusercontent.com/snakemake/snakemake/f55801bfabfb916f77fa4ec8f9eb0667e5c8a92e/docs/project_info/img/idea.png" width="1000" />
 ]
 
 .footnote[
-[snakemake.readthedocs.io](snakemake.readthedocs.io)
+[snakemake.readthedocs.io](https://snakemake.readthedocs.io)
 ]
 
 ---
