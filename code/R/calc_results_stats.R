@@ -162,14 +162,14 @@ frac_fit_split_0.1 <- dat %>% filter(strategy == 'self-split',
                                      tool == 'mothur',
                                     method == 'closed',
                                      ref_frac == 0.1) %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 
 
 frac_fit_split_0.8 <- dat %>% filter(strategy == 'self-split', 
                                     tool == 'mothur',
                                     method == 'closed',
                                     ref_frac == 0.8) %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 
 
 # save results
