@@ -180,7 +180,14 @@ fit the query sequences to the reference OTUs.
 
 ### Reference clustering with public databases
 
-We performed _de novo_ clustering with OptiClust at distance threshold of 4%
+- TODO: start paragraph with question, end with why we should care. transitions to move the story along.
+- start:"In order to compare Optifit.."
+- end: "optifit performs better"
+- AND, BUT, THEREFORE, structure
+- order of importance: mcc, mapping, sec
+
+**TODO: lead with comparison of optifit vs current state of the art. give context at beginning.**
+We performed _de novo_ clustering with OptiClust at distance threshold of 3% (TODO R CODE HERE)
 using the Greengenes database, SILVA non-redundant database, or the Ribosomal
 Database Project (RDP) [@desantis_greengenes_2006; @quast_silva_2013;
 @cole_ribosomal_2014].
@@ -192,18 +199,6 @@ To compare to existing software, we also clustered each dataset into _de novo_
 OTUs  using OptiClust and VSEARCH, and with VSEARCH in reference-based mode
 against the Greengenes database.
 
-In open reference mode, fitting the datasets to reference OTUs with OptiFit
-produced OTUs of similar quality (`r mcc_open_fit_db_vs_clust`% difference in median
-MCC) as clustering the datasets _de novo_ with OptiClust  across all datasets
-and reference databases.
-OptiFit produced higher quality OTUs than VSEARCH when open reference clustering
-against the Greengenes database, with median MCC scores of `r open_fit_gg_mcc`
-and `r open_vsearch_mcc` (respectively).
-OptiFit ran faster than VSEARCH by `r sec_vsearch_vs_open_fit_db`%  in open
-reference mode, but slower than OptiClust by `r sec_opticlust_vs_open_fit_db`%.
-_De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
-higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
-slower than VSEARCH.
 
 In closed reference mode against databases, OptiFit produced lower quality OTUs
 than OptiClust by `r mcc_closed_fit_db_vs_clust` on average.
@@ -218,7 +213,29 @@ OptiFit to the Greengenes reference database.
 In terms of run time, closed reference OptiFit outperformed OptiClust by 
 `r sec_closed_fit_db_vs_clust`% and VSEARCH by `r sec_closed_fit_db_vs_vsearch`%.
 
+since closed ref threw out a lot of stuff, we performed open ref.
+
+In open reference mode, fitting the datasets to reference OTUs with OptiFit
+produced OTUs of similar quality (`r mcc_open_fit_db_vs_clust`% difference in median
+MCC) as clustering the datasets _de novo_ with OptiClust  across all datasets
+and reference databases.
+OptiFit produced higher quality OTUs than VSEARCH when open reference clustering
+against the Greengenes database, with median MCC scores of `r open_fit_gg_mcc`
+and `r open_vsearch_mcc` (respectively).
+OptiFit ran faster than VSEARCH by `r sec_vsearch_vs_open_fit_db`%  in open
+reference mode, but slower than OptiClust by `r sec_opticlust_vs_open_fit_db`%.
+_De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
+higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
+slower than VSEARCH.
+
+
 ### Reference clustering with split datasets
+
+- TODO; start with problem with current state of the art. 
+- tied to reference dbs taht may be unrelated to samples studying. can we use our own data as a reference?
+- lay out the use case and how this is a benefit over ref-db clustering.
+- we wanted ot use x% of data as ref, weren't sure what size to use and strategy for selecting.
+- important result: it works!
 
 A split dataset strategy was employed to assess how well OptiFit performs for
 tasks where new sequences are added to existing OTUs, such as when comparing
@@ -229,6 +246,7 @@ remaining sequences used for the query.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were fit to the _de novo_ OTUs with OptiFit.
 
+TODO; ref weight simple only here.
 OTU quality from the split dataset strategy with OptiFit was highly similar to
 that from _de novo_ clustering the whole dataset with OptiClust regardless of
 mode (`r mcc_opticlust_vs_fit_split`% difference in median MCC).
@@ -242,7 +260,9 @@ OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and
 The split dataset strategy performed `r sec_closed_fit_split_vs_db`% faster than
 the database strategy in closed reference mode and `r sec_open_fit_split_vs_db`%
 in open reference mode.
+TODO: fraction mapped.
 
+TODO: pick a fraction (e.g. 50%). this comparison would be supplemental if there's a figure.
 We also tested three methods for selecting the fraction of sequences to be used
 as the reference; a simple random sample, weighting sequences by relative
 abundance, and weighting by similarity to other sequences in the dataset.
