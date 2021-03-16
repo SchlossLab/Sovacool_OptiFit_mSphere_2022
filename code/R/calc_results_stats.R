@@ -12,6 +12,7 @@ coeff_var <- function(x) {
 
 dat <- read_tsv(here("results", "summarized.tsv"))
 
+################################################################################
 # de novo
 opticlust_mcc <- dat %>%
   filter(
@@ -40,6 +41,7 @@ dn_vsearch_sec <-
 mcc_opticlust_vs_vsearch <- rel_diff(opticlust_mcc, dn_vsearch_mcc)
 sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
 
+################################################################################
 # ref db open
 open_fit_db_mcc <- dat %>%
   filter(
@@ -49,6 +51,7 @@ open_fit_db_mcc <- dat %>%
   ) %>%
   pull(mcc_median) %>%
   median()
+
 mcc_open_fit_db_vs_clust <- rel_diff(opticlust_mcc, open_fit_db_mcc)
 
 open_fit_gg_mcc <- dat %>%
@@ -91,6 +94,7 @@ open_fit_db_sec <- dat %>%
 sec_vsearch_vs_open_fit_db <- rel_diff(open_vsearch_sec, open_fit_db_sec)
 sec_opticlust_vs_open_fit_db <- rel_diff(opticlust_sec, open_fit_db_sec) %>% abs()
 
+################################################################################
 # ref db closed
 closed_fit_db_mcc <- dat %>%
   filter(
@@ -196,6 +200,7 @@ closed_vsearch_sec <- dat %>%
 sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) %>% abs()
 
 
+################################################################################
 # fit split
 fit_split_mcc <- dat %>%
   filter(
@@ -287,5 +292,6 @@ frac_fit_split_0.8 <- dat %>%
   median() * 100
 
 
+################################################################################
 # save results
 save.image(file = here("results", "stats.RData"))
