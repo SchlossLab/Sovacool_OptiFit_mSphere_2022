@@ -57,6 +57,14 @@ rule summarize_results:
     script:
         'code/R/summarize_results.R'
 
+rule calc_results_stats:
+    input:
+        R='code/R/calc_results_stats.R',
+        tsv=rules.summarize_results.output.sum
+    output:
+        rda="results/stats.RData"
+    script:
+        'code/R/calc_results_stats.R'
 
 rule render_pdf:
     input:
@@ -66,7 +74,7 @@ rule render_pdf:
         csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        sum=rules.summarize_results.output.sum
+        rda=rules.calc_results_stats.output.rda
     output:
         file='docs/paper.pdf'
     params:
@@ -81,7 +89,7 @@ rule render_html:
         csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        sum=rules.summarize_results.output.sum
+        rda=rules.calc_results_stats.output.rda
     output:
         file='docs/paper.html'
     params:
