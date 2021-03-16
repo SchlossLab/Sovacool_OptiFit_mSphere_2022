@@ -5,6 +5,9 @@ rel_diff <- function(final, init, percent = TRUE) {
   mult <- if (isTRUE(percent)) 100 else 1
   return((final - init) / init * mult)
 }
+coeff_var <- function(x) {
+  return(sd(x) / mean(x))
+}
 
 
 dat <- read_tsv(here('results', 'summarized.tsv'))
@@ -26,11 +29,11 @@ mcc_opticlust_vs_vsearch <- rel_diff(opticlust_mcc, dn_vsearch_mcc)
 sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
 
 # ref db open 
-open_fit_mcc <- dat %>% filter(method == 'open', 
+open_fit_db_mcc <- dat %>% filter(method == 'open', 
                                strategy == 'database', 
                                tool == 'mothur') %>% 
   pull(mcc_median) %>% median()
-mcc_open_fit_db_vs_clust <- rel_diff(opticlust_mcc, open_fit_mcc)
+mcc_open_fit_db_vs_clust <- rel_diff(opticlust_mcc, open_fit_db_mcc)
 
 open_fit_gg_mcc <- dat %>% filter(method == 'open',
                                   strategy == 'database',
@@ -46,12 +49,12 @@ open_vsearch_sec <- dat %>% filter(method == 'open',
                                    strategy == 'database',
                                    tool == 'vsearch',
                                    ref == 'gg') %>% pull(sec_median) %>% median()
-open_fit_sec <- dat %>% filter(method == 'open', 
+open_fit_db_sec <- dat %>% filter(method == 'open', 
                                strategy == 'database', 
                                tool == 'mothur') %>%
   pull(sec_median) %>% median()
-sec_vsearch_vs_open_fit_db <- rel_diff(open_vsearch_sec, open_fit_sec)
-sec_opticlust_vs_open_fit_db <- rel_diff(open_fit_sec, opticlust_sec)
+sec_vsearch_vs_open_fit_db <- rel_diff(open_vsearch_sec, open_fit_db_sec)
+sec_opticlust_vs_open_fit_db <- rel_diff(opticlust_sec, open_fit_db_sec) %>% abs()
 
 # ref db closed
 closed_fit_db_mcc <- dat %>% filter(method == 'closed',
@@ -79,39 +82,95 @@ closed_fit_rdp_mcc <- dat %>% filter(method == 'closed',
 frac_fit_db <-  dat %>% filter(method == 'closed',
                                strategy == 'database',
                                tool == 'mothur') %>%
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 frac_fit_gg <-  dat %>% filter(method == 'closed',
                                strategy == 'database',
                                tool == 'mothur',
                                ref == 'gg') %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 frac_fit_silva <-  dat %>% filter(method == 'closed',
                                   strategy == 'database',
                                   tool == 'mothur',
                                   ref == 'silva') %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 frac_fit_rdp <-  dat %>% filter(method == 'closed',
                                 strategy == 'database',
                                 tool == 'mothur',
                                 ref == 'rdp') %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 frac_vsearch <-  dat %>% filter(method == 'closed',
                                 strategy == 'database',
                                 tool == 'vsearch',
                                 ref == 'gg') %>% 
-  pull(frac_map_median) %>% median()
+  pull(frac_map_median) %>% median() * 100
 frac_vsearch_vs_fit <- rel_diff(frac_vsearch, frac_fit_gg)
 
 closed_fit_db_sec <- dat %>% filter(method == 'closed',
                                     strategy == 'database',
                                     tool == 'mothur') %>% 
   pull(sec_median) %>% median()
-sec_closed_fit_db_vs_clust <- rel_diff(closed_fit_db_sec, opticlust_sec)
+sec_closed_fit_db_vs_clust <- rel_diff(closed_fit_db_sec, opticlust_sec) %>% abs()
 closed_vsearch_sec <- dat %>% filter(method == 'closed',
                                      strategy == 'database',
                                      tool == 'vsearch') %>% 
   pull(sec_median) %>% median()
-sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec)
+sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) %>% abs()
+
+
+# fit split
+fit_split_mcc <-  dat %>% filter(strategy == 'self-split', 
+                                 tool == 'mothur') %>% 
+  pull(mcc_median) %>% median()
+mcc_opticlust_vs_fit_split <- rel_diff(opticlust_mcc, fit_split_mcc)
+
+cv_fit_split_mcc <- coeff_var(dat %>% filter(strategy == 'self-split',
+                                             tool == 'mothur') %>% 
+                                pull(mcc_median))
+cv_fit_split_mcc_human <- coeff_var(dat %>% filter(strategy == 'self-split',
+                                                          tool == 'mothur',
+                                                          dataset == 'human') %>% 
+                                             pull(mcc_median))
+closed_fit_split_sec <- dat %>% filter(method == 'closed',
+                                    strategy == 'self-split',
+                                    tool == 'mothur') %>% 
+  pull(sec_median) %>% median()
+sec_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_sec, opticlust_sec) %>% abs()
+open_fit_split_sec <- dat %>% filter(method == 'open',
+                                    strategy == 'self-split',
+                                    tool == 'mothur') %>% 
+  pull(sec_median) %>% median()
+sec_open_fit_split_vs_clust <- rel_diff(open_fit_split_sec, opticlust_sec) %>% abs()
+sec_open_fit_split_vs_db <- rel_diff(open_fit_split_sec, open_fit_db_sec) %>% abs()
+sec_closed_fit_split_vs_db <- rel_diff(closed_fit_split_sec, closed_fit_db_sec) %>% abs()
+
+mcc_fit_split_simple <- dat %>% filter(strategy == 'self-split', 
+                                       tool == 'mothur',
+                                       ref_weight == 'simple') %>% 
+  pull(mcc_median) %>% median()
+
+mcc_fit_split_abun <- dat %>% filter(strategy == 'self-split', 
+                                       tool == 'mothur',
+                                       ref_weight == 'abundance') %>% 
+  pull(mcc_median) %>% median()
+
+mcc_fit_split_dist <- dat %>% filter(strategy == 'self-split', 
+                                     tool == 'mothur',
+                                     ref_weight == 'distance') %>% 
+  pull(mcc_median) %>% median()
+
+frac_fit_split_0.1 <- dat %>% filter(strategy == 'self-split', 
+                                     tool == 'mothur',
+                                    method == 'closed',
+                                     ref_frac == 0.1) %>% 
+  pull(frac_map_median) %>% median()
+
+
+frac_fit_split_0.8 <- dat %>% filter(strategy == 'self-split', 
+                                    tool == 'mothur',
+                                    method == 'closed',
+                                    ref_frac == 0.8) %>% 
+  pull(frac_map_median) %>% median()
+
 
 # save results
 save.image(file = here('results', 'stats.RData'))
