@@ -192,7 +192,7 @@ rule calc_diversity3:
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(list={input.list});
+        list.seqs(list={input.list})
         "
         """
         #get.seqs(count={input.count}, accnos=current);
