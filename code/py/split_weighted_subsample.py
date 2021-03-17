@@ -137,7 +137,7 @@ class SeqList:
         # Error with marine dataset when ref_frac=0.9 & weight=distance:
         #   ValueError: Fewer non-zero entries in p than size
         # Solution: select smaller number of seqs, then top off to the sample size with simple random sample
-        num_nonzeros = sum(1 for p in probs if p != 0)
+        num_nonzeros = sum(1 for p in probs if p != 0) if probs else sample_size
         if num_nonzeros < sample_size:
             print("Warning: fewer non-zero entries in p than size.")
             print(
