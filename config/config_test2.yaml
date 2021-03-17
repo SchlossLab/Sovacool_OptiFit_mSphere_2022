@@ -1,8 +1,5 @@
 datasets:
-- human
 - marine
-- mouse
-- soil
 references:
 - silva
 - rdp
@@ -17,8 +14,8 @@ methods:
 printrefs:
 - f
 ref_fracs:
-    start: 1
-    stop: 9
+    start: 9
+    stop: 10
     step: 1
 seeds: 2
 configpath: 'config/config_test2.yml'
