@@ -40,7 +40,7 @@ jobs:
           git diff-index --quiet HEAD \
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
-          -m '🎨 Style R code ⬡'
+          -m '🎨  Style R code'
       - name: Style Python code
         run: |
           black .
@@ -49,7 +49,7 @@ jobs:
           git diff-index --quiet HEAD \
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
-          -m '🎨 Style Python code 🐍'
+          -m '🎨  Style Python code 🐍'
       - name: Push
         uses: ad-m/github-push-action@v0.6.0
         with:
