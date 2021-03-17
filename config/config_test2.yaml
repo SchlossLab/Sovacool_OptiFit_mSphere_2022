@@ -18,4 +18,4 @@ ref_fracs:
     stop: 10
     step: 1
 seeds: 2
-configpath: 'config/config_test2.yml'
+configpath: 'config/config_test2.yaml'
