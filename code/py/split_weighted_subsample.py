@@ -153,7 +153,7 @@ class SeqList:
                 replace = False,
                 size = sample_size - num_nonzeros
             )
-            sample_seqs = sample_seqs_init + topoff
+            sample_seqs = list(sample_seqs_init) + list(topoff)
         else:
             sample_seqs = np.random.choice(
                 self.seqs,
