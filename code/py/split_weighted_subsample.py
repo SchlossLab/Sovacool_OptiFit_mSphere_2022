@@ -140,26 +140,26 @@ class SeqList:
         num_nonzeros = sum(1 for p in probs if p != 0)
         if num_nonzeros < sample_size:
             print("Warning: fewer non-zero entries in p than size.")
-            print("Selecting a sample size equal to the number of entries with non-zero probabilities, then topping off the sample size with a simple random sample of remaining sequences.")
+            print(
+                "Selecting a sample size equal to the number of entries with non-zero probabilities, then topping off the sample size with a simple random sample of remaining sequences."
+            )
             sample_seqs_init = np.random.choice(
                 self.seqs,
-                replace = False,
-                size = num_nonzeros,
-                p = probs,
+                replace=False,
+                size=num_nonzeros,
+                p=probs,
             )
             remaining_seqs = list(set(self.seqs) - set(sample_seqs_init))
-            topoff =  np.random.choice(
-                remaining_seqs,
-                replace = False,
-                size = sample_size - num_nonzeros
+            topoff = np.random.choice(
+                remaining_seqs, replace=False, size=sample_size - num_nonzeros
             )
             sample_seqs = list(sample_seqs_init) + list(topoff)
         else:
             sample_seqs = np.random.choice(
                 self.seqs,
-                replace = False,
-                size = sample_size,
-                p = probs,
+                replace=False,
+                size=sample_size,
+                p=probs,
             )
         return SeqList(sample_seqs)
 
