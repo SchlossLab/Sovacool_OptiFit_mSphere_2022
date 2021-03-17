@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 """ Select weighted subsets of sequences to be used as references and samples for OptiFit """
+from collections import Counter
 from collections import defaultdict
 import numpy as np
 import shutil
@@ -131,11 +132,22 @@ class SeqList:
             "abundance": self.rel_abuns,
             "distance": self.rel_sims,
         }
+        probs = random_weight_probs[weight_method]
+
+        # Error with marine dataset when ref_frac=0.9 & weight=distance:
+        #   ValueError: Fewer non-zero entries in p than size
+        # Solution: add 0.001 to all probabilities as long as max(p) < 1
+        num_nonzeros = sum(1 for p in probs if p != 0)
+        pseudocount = min(1 - max(probs), 0.001) # biggest p can't exceed 1
+        if num_nonzeros < query_size:
+            print(f"Adding a pseudocount of {pseudocount} to probabilities.")
+            probs = [p + pseudocount for p in probs]
+
         sample_seqs = np.random.choice(
             self.seqs,
-            replace=False,
-            size=query_size,
-            p=random_weight_probs[weight_method],
+            replace = False,
+            size = query_size,
+            p = probs,
         )
         return SeqList(sample_seqs)
 
