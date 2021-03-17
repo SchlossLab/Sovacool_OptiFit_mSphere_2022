@@ -126,7 +126,7 @@ class SeqList:
     def set_diff(cls, lhs, rhs):
         return cls(list(set(lhs.seqs) - set(rhs.seqs)))
 
-    def get_sample(self, query_size, weight_method):
+    def get_sample(self, sample_size, weight_method):
         random_weight_probs = {
             "simple": None,
             "abundance": self.rel_abuns,
@@ -136,19 +136,31 @@ class SeqList:
 
         # Error with marine dataset when ref_frac=0.9 & weight=distance:
         #   ValueError: Fewer non-zero entries in p than size
-        # Solution: add 0.001 to all probabilities as long as max(p) < 1
+        # Solution: select smaller number of seqs, then top off to the sample size with simple random sample
         num_nonzeros = sum(1 for p in probs if p != 0)
-        pseudocount = min(1 - max(probs), 0.001) # biggest p can't exceed 1
-        if num_nonzeros < query_size:
-            print(f"Adding a pseudocount of {pseudocount} to probabilities.")
-            probs = [p + pseudocount for p in probs]
-
-        sample_seqs = np.random.choice(
-            self.seqs,
-            replace = False,
-            size = query_size,
-            p = probs,
-        )
+        if num_nonzeros < sample_size:
+            print("Warning: fewer non-zero entries in p than size.")
+            print("Selecting a sample size equal to the number of entries with non-zero probabilities, then topping off the sample size with a simple random sample of remaining sequences.")
+            sample_seqs_init = np.random.choice(
+                self.seqs,
+                replace = False,
+                size = num_nonzeros,
+                p = probs,
+            )
+            remaining_seqs = list(set(self.seqs) - set(sample_seqs_init))
+            topoff =  np.random.choice(
+                remaining_seqs,
+                replace = False,
+                size = sample_size - num_nonzeros
+            )
+            sample_seqs = sample_seqs_init + topoff
+        else:
+            sample_seqs = np.random.choice(
+                self.seqs,
+                replace = False,
+                size = sample_size,
+                p = probs,
+            )
         return SeqList(sample_seqs)
 
     def write_ids(self, output_fn):
