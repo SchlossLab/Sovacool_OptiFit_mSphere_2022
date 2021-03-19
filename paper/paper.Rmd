@@ -148,20 +148,17 @@ gut [@baxter_microbiota-based_2016] samples.
 ### The OptiFit algorithm
 
 - **TODO: ask Sarah Westcott to check the accuracy of this description**.
-- **TODO: toy example like opticlust with figure**.
 
 OptiFit leverages the method employed by OptiClust of iteratively assigning
 sequences to OTUs to produce the highest quality OTUs possible, and extends this
 method for reference-based clustering.
-**TODO: more narrative, less documentation-like.**
-**TODO: extension of opticlust except ref otus are fixed. just like opticlust only query seqs can move otus.**
-OptiFit takes as input a list of reference OTUs and their sequences, a list of
-query sequences to assign to the reference OTUs, the sequence pairs that are
-within the distance threshold (e.g. 0.03), and the metric to assess clustering
-quality (default: MCC).
+OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
+their sequences, a list of query sequences to assign to the reference OTUs, and
+the sequence pairs that are within the distance threshold (e.g. 0.03).
 Query sequences are randomly seeded in reference OTUs, then for each sequence
-the algorithm calculates the quality metric based on whether the sequence stays
-in its current OTU, moves to each of the other OTUs, or is discarded.
+the algorithm calculates the quality metric (default: MCC) based on whether the
+sequence stays in its current OTU, moves to each of the other OTUs, or is
+discarded.
 If two or more OTU assignments are of equal quality, a random number generator
 is used to break the tie.
 This process is repeated until the quality metric stabilizes, changing by no
@@ -231,7 +228,7 @@ slower than VSEARCH.
 
 ### Reference clustering with split datasets
 
-- TODO; start with problem with current state of the art. 
+- **TODO**; start with problem with current state of the art. 
 - tied to reference dbs taht may be unrelated to samples studying. can we use our own data as a reference?
 - lay out the use case and how this is a benefit over ref-db clustering.
 - we wanted ot use x% of data as ref, weren't sure what size to use and strategy for selecting.
@@ -246,7 +243,7 @@ remaining sequences used for the query.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were fit to the _de novo_ OTUs with OptiFit.
 
-TODO; ref weight simple only here.
+**TODO; ref weight simple only here.**
 OTU quality from the split dataset strategy with OptiFit was highly similar to
 that from _de novo_ clustering the whole dataset with OptiClust regardless of
 mode (`r mcc_opticlust_vs_fit_split`% difference in median MCC).
@@ -262,7 +259,7 @@ the database strategy in closed reference mode and `r sec_open_fit_split_vs_db`%
 in open reference mode.
 TODO: fraction mapped.
 
-TODO: pick a fraction (e.g. 50%). this comparison would be supplemental if there's a figure.
+**TODO: pick a fraction (e.g. 50%). this part is less important. figure would be supplemental.**
 We also tested three methods for selecting the fraction of sequences to be used
 as the reference; a simple random sample, weighting sequences by relative
 abundance, and weighting by similarity to other sequences in the dataset.
