@@ -147,29 +147,26 @@ gut [@baxter_microbiota-based_2016] samples.
 
 ### The OptiFit algorithm
 
-- **TODO: ask Sarah Westcott to check the accuracy of this description**.
-
 OptiFit leverages the method employed by OptiClust of iteratively assigning
 sequences to OTUs to produce the highest quality OTUs possible, and extends this
 method for reference-based clustering.
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to assign to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03).
-Query sequences are randomly seeded in reference OTUs, then for each sequence
-the algorithm calculates the quality metric (default: MCC) based on whether the
-sequence stays in its current OTU, moves to each of the other OTUs, or is
-discarded.
-If two or more OTU assignments are of equal quality, a random number generator
-is used to break the tie.
-This process is repeated until the quality metric stabilizes, changing by no
-more than 0.0001 by default, or until a maximum number of iterations is reached
-(default: 100).
-In closed-reference mode, any query sequences that cannot be assigned are thrown
-out (**TODO: exactly what determines whether a seq can't be assigned?**), and
-the results only contain OTUs that exist in the original reference.
+Initially, query sequences are placed in singleton OTUs. 
+Then, the algorithm iteratively reassigns the query sequences to the reference 
+OTUs to optimize the Matthews correlation coefficient (MCC). 
+A sequence will remain unassigned if the MCC value is maximized when the
+sequence is a singleton rather than assigned to a reference OTU.
+This process is repeated until the MCC stabilizes, changing by no more than
+0.0001 by default, or until a maximum number of iterations is reached (default:
+100).
+In closed-reference mode, any query sequences that cannot be assigned to
+references OTUs are discarded, and the results will only contain OTUs that exist
+in the original reference.
 In open-reference mode, unassigned query sequences are clustered _de novo_ using
-OptiClust to generate additional OTUs. The final quality score is reported with
-the best OTU assignments.
+OptiClust to generate additional OTUs. 
+The final quality score is reported with the best OTU assignments.
 There are two strategies for generating OTUs with OptiFit: 1) fit sequences to
 reference OTUs of an independent database, or 2) split the dataset into a
 reference and query fraction, cluster the reference sequences _de novo_, then
@@ -181,10 +178,10 @@ fit the query sequences to the reference OTUs.
 - start:"In order to compare Optifit.."
 - end: "optifit performs better"
 - AND, BUT, THEREFORE, structure
-- order of importance: mcc, mapping, sec
+- order of importance: mcc, mapping, sec (1 paragraph each, in this order)
 
 **TODO: lead with comparison of optifit vs current state of the art. give context at beginning.**
-We performed _de novo_ clustering with OptiClust at distance threshold of 3% (TODO R CODE HERE)
+We performed _de novo_ clustering with OptiClust at distance threshold of 3%
 using the Greengenes database, SILVA non-redundant database, or the Ribosomal
 Database Project (RDP) [@desantis_greengenes_2006; @quast_silva_2013;
 @cole_ribosomal_2014].
