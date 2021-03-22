@@ -180,19 +180,18 @@ fit the query sequences to the reference OTUs.
 - AND, BUT, THEREFORE, structure
 - order of importance: mcc, mapping, sec (1 paragraph each, in this order)
 
-**TODO: lead with comparison of optifit vs current state of the art. give context at beginning.**
-We performed _de novo_ clustering with OptiClust at distance threshold of 3%
-using the Greengenes database, SILVA non-redundant database, or the Ribosomal
-Database Project (RDP) [@desantis_greengenes_2006; @quast_silva_2013;
-@cole_ribosomal_2014].
-We then performed refernce clustering with OptiFit, fitting each dataset to each 
-set of database OTUs repeated 100 times.
-We measured the algorithm run time and evaluated OTU quality using the MCC as
-described previously [@westcott_opticlust_2017].
+While _de novo_ clustering produces high quality OTUs, researchers may prefer to
+perform reference clustering to a public database because reference-based
+methods produce stable OTUs and are generally faster than _de novo_ methods.
+To test how OptiFit performs for this purpose, we fit each dataset to three
+databases of reference OTUs; the Greengenes database, the SILVA non-redundant
+database, and the Ribosomal Database Project (RDP) [@desantis_greengenes_2006;
+@quast_silva_2013; @cole_ribosomal_2014].
+Reference OTUs for each database were created by performing _de novo_ clustering
+with OptiClust at a distance threshold of 3%.
 To compare to existing software, we also clustered each dataset into _de novo_
-OTUs  using OptiClust and VSEARCH, and with VSEARCH in reference-based mode
-against the Greengenes database.
-
+OTUs using OptiClust and VSEARCH, and with VSEARCH in reference-based mode
+against the Greengenes database of OTUs clustered at 97% similarity.
 
 In closed reference mode against databases, OptiFit produced lower quality OTUs
 than OptiClust by `r mcc_closed_fit_db_vs_clust` on average.
