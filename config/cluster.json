@@ -68,6 +68,9 @@
 "fit_subsample": {
     "procs": "{resources.procs}"
     },
+"fit_subsample_criteria": {
+    "procs": "{resources.procs}"
+    },
 "fit_subsample_percent": {
     "procs": "{resources.procs}"
     },
