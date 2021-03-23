@@ -23,7 +23,9 @@ n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seed
 #print(f"Params will produce {n_runs} optifit runs")
 
 wildcard_constraints:
-    seed="\d+"
+    seed="\d+",
+    printref="t|f",
+    criteria="both|combo|fit"
 
 rule rbind_optifit_split:
     input:
@@ -39,6 +41,24 @@ rule rbind_optifit_split:
         tsv='results/optifit_split_results.tsv'
     log:
         'log/rbind_optifit_split.txt'
+    script:
+        'code/py/rbind_files.py'
+
+rule rbind_optifit_crit:
+    input:
+        code='code/py/rbind_files.py',
+        tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{round(1 - ref_frac, 1)}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/results.tsv'
+            for dataset in ['human']
+            for ref_weight in ['simple']
+            for ref_frac in [0.5]
+            for seed in range(1, 3)
+            for method in ['closed']
+            for printref in ['t', 'f']
+            for criteria in ['both', 'combo', 'fit']]
+    output:
+        tsv='results/optifit_crit_check.tsv'
+    log:
+        'log/rbind_optifit_crit.txt'
     script:
         'code/py/rbind_files.py'
 
@@ -177,6 +197,34 @@ rule fit_subsample:
         cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
+rule fit_subsample_criteria:
+    input:
+        fasta=rules.combine_for_fit.output.fasta_all,
+        count=rules.combine_for_fit.output.count_all,
+        column=rules.combine_for_fit.output.dist_all,
+        reflist=rules.cluster_ref.output.list
+    output:
+        sensspec=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/{dataset}.pick.optifit_mcc.sensspec'),
+        list=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/{dataset}.pick.optifit_mcc.list'),
+        list_accnos=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/{dataset}.pick.optifit_mcc.accnos')
+    params:
+        outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/"
+    log:
+        "log/{dataset}/fit.method_{method}.printref_{printref}.criteria_{criteria}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+    benchmark:
+        "benchmarks/{dataset}/fit.method_{method}.printref_{printref}.criteria_{criteria}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+    resources:
+        procs=8
+    priority: 2
+    shell:
+        """
+        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
+        set.seed(seed={wildcards.seed});
+        set.current(processors={resources.procs});
+        cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}, criteria={wildcards.criteria});
+        list.seqs(list=current) "
+        """
+
 rule calc_diversity3:
     input:
         list=rules.fit_subsample.output.list,
@@ -223,6 +271,19 @@ rule fraction_reads_mapped3:
     script:
         "code/py/fraction_reads_mapped.py"
 
+
+rule fraction_reads_mapped3_crit:
+    input:
+        code="code/py/fraction_reads_mapped.py",
+        mapped=rules.fit_subsample_criteria.output.list_accnos,
+        query=rules.split_weighted_subsample.output.query_accnos,
+        ref=rules.split_weighted_subsample.output.ref_accnos
+    output:
+        txt=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/fraction_reads_mapped.txt')
+    priority: 4
+    script:
+        "code/py/fraction_reads_mapped.py"
+
 rule cbind_optifit_seed3:
     input:
         tsv=[rules.fit_subsample.output.sensspec,
@@ -234,6 +295,20 @@ rule cbind_optifit_seed3:
         fcns='code/R/functions.R'
     output:
         tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
+    priority: 5
+    script:
+        'code/R/cbind_optifit_seed.R'
+
+rule cbind_optifit_seed3_crit:
+    input:
+        tsv=[rules.fit_subsample_criteria.output.sensspec,
+            rules.fit_subsample_criteria.benchmark,
+            rules.fraction_reads_mapped3_crit.output.txt,
+            rules.check_split.output.txt],
+        code='code/R/cbind_optifit_seed.R',
+        fcns='code/R/functions.R'
+    output:
+        tsv='results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/results.tsv'
     priority: 5
     script:
         'code/R/cbind_optifit_seed.R'
