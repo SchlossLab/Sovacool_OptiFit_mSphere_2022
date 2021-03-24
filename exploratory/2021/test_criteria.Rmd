@@ -45,6 +45,7 @@ dat %>%
   geom_point(alpha = 0.5) +
   ylim(0, 1)
 ```
+
 ## Fraction mapped
 
 ```{r crit_map}
