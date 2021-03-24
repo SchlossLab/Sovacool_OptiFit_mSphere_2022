@@ -51,7 +51,7 @@ rule rbind_optifit_crit:
             for dataset in ['human']
             for ref_weight in ['simple']
             for ref_frac in [0.5]
-            for seed in range(1, 3)
+            for seed in range(1, 21)
             for method in ['closed']
             for printref in ['t', 'f']
             for criteria in ['both', 'combo', 'fit']]
