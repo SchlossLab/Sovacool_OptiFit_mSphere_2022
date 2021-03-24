@@ -47,6 +47,12 @@ metric improves. The criteria parameter lets you indicate you only want to move
 if the one or the other improves. Options are “both” (default), “combo” or
 “fit”. In practice we found “both” gave the best overall results."
 
+My interpretation of the criteria parameter options:
+
+- `fit` = "query only mcc" - Move query sequence `X` to OTU `Y` if it improves the mcc calculated using **only the query seqs**.
+- `combo` = "query & ref mcc" - Move query sequence `X` to OTU `Y` if it improves the mcc calculated using **the query & reference seqs**.
+- `both` = "either" - Move query sequence `X` to OTU `Y` if **either** the `fit` mcc ("query only") or the `combo` mcc ("query & ref") score improves.
+
 I ran the 3 criteria options with the human dataset at 50/50 ref/query split
 chosen by simple random sample, method=closed, repeated for 20 seeds.
 
