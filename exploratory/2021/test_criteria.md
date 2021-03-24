@@ -23,16 +23,30 @@ mutate_perf <- function(dat) {
 dat <- read_tsv(here('subworkflows', '3_fit_sample_split', 'results', 
                      'optifit_crit_check.tsv')) %>% 
   mutate_perf() %>% 
-  select(dataset, printref, criteria, mcc, fraction_mapped, sec, mem_gb)
+  select(dataset, printref, criteria, mcc, fraction_mapped, sec, mem_gb) 
 ```
+
+Sarah W’s description of the criteria parameter:
+
+“We have a criteria parameter that indicates when the reads should be
+moved. We calculated two mcc coefficients. One for the query reads
+(ignoring the references) and one for the query reads and reference
+OTUs. The screen output shows this as “combo” and “fit” lines. By
+default we move a read if either metric improves. The criteria parameter
+lets you indicate you only want to move if the one or the other
+improves. Options are “both” (default), “combo” or “fit”. In practice we
+found “both” gave the best overall results."
+
+I ran the 3 criteria options with the human dataset at 50/50 ref/query
+split chosen by simple random sample, method=closed, repeated for 20
+seeds.
 
 ## OTU Quality
 
 ``` r
 dat %>% 
   ggplot(aes(x = criteria, y = mcc, color = printref)) +
-  geom_point(alpha = 0.5) +
-  ylim(0, 1)
+  geom_jitter(alpha = 0.5, width = 0.2) 
 ```
 
 ![](figures/crit_mcc-1.png)<!-- -->
@@ -42,8 +56,17 @@ dat %>%
 ``` r
 dat %>% 
   ggplot(aes(x = criteria, y = fraction_mapped, color = printref)) +
-  geom_point(alpha = 0.5) +
-  ylim(0, 1)
+  geom_jitter(alpha = 0.5, width = 0.2)
 ```
 
 ![](figures/crit_map-1.png)<!-- -->
+
+## Runtime
+
+``` r
+dat %>% 
+  ggplot(aes(x = criteria, y = sec, color = printref)) +
+  geom_jitter(alpha = 0.5, width = 0.2)
+```
+
+![](figures/crit_runtime-1.png)<!-- -->
