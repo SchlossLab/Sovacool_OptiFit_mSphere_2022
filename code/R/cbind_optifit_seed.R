@@ -19,7 +19,8 @@ mutate_columns <- function(df_orig) {
     ref_weight = na_if_not("ref_weight"),
     ref_frac = na_if_not("ref_frac"),
     sample_frac = na_if_not("sample_frac"),
-    tool = "mothur"
+    tool = "mothur",
+    criteria = na_if_not("criteria")
   )
 }
 
