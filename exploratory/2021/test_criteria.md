@@ -35,7 +35,9 @@ dat %>%
   ylim(0, 1)
 ```
 
-![](figures/crit_mcc-1.png)<!-- --> \#\# Fraction mapped
+![](figures/crit_mcc-1.png)<!-- -->
+
+## Fraction mapped
 
 ``` r
 dat %>% 
