@@ -39,19 +39,19 @@ dat <- read_tsv(here('subworkflows', '3_fit_sample_split', 'results',
 
 Sarah W's description of the criteria parameter:
 
-"We have a criteria parameter that indicates when the reads should be moved. We
+> We have a criteria parameter that indicates when the reads should be moved. We
 calculated two mcc coefficients. One for the query reads (ignoring the
 references) and one for the query reads and reference OTUs. The screen output
 shows this as “combo” and “fit” lines. By default we move a read if either
 metric improves. The criteria parameter lets you indicate you only want to move
 if the one or the other improves. Options are “both” (default), “combo” or
-“fit”. In practice we found “both” gave the best overall results."
+“fit”. In practice we found “both” gave the best overall results.
 
 My interpretation of the criteria parameter options:
 
-- `fit` = "query only mcc" - Move query sequence `X` to OTU `Y` if it improves the mcc calculated using **only the query seqs**.
-- `combo` = "query & ref mcc" - Move query sequence `X` to OTU `Y` if it improves the mcc calculated using **the query & reference seqs**.
-- `both` = "either" - Move query sequence `X` to OTU `Y` if **either** the `fit` mcc ("query only") or the `combo` mcc ("query & ref") score improves.
+- `fit` = "query only mcc" - Move query sequence X to OTU Y if it improves the mcc calculated using **only the query seqs**.
+- `combo` = "query & ref mcc" - Move query sequence X to OTU Y if it improves the mcc calculated using **the query & reference seqs**.
+- `both` = "either" - Move query sequence X to OTU Y if **either** the `fit` mcc ("query only") or the `combo` mcc ("query & ref") score improves.
 
 I ran the 3 criteria options with the human dataset at 50/50 ref/query split
 chosen by simple random sample, method=closed, repeated for 20 seeds.
