@@ -114,39 +114,6 @@ rule prep_subsample_ref:
             get.dists(accnos=current, column={input.dist}); '
         """
 
-rule combine_for_fit:
-    input:
-        accnos_ref=rules.split_weighted_subsample.output.ref_accnos,
-        accnos_sample=rules.split_weighted_subsample.output.query_accnos,
-        accnos_all=rules.split_weighted_subsample.output.all_accnos,
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        dist=prep_samples("results/{dataset}/{dataset}.dist"),
-        py="code/py/check_fracs.py"
-    output:
-        fasta_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.fasta"),
-        count_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.count_table"),
-        dist_all=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.pick.dist")
-    params:
-        outdir="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/"
-    log:
-        "log/{dataset}/combine_for_fit.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
-    shell:
-        """
-        if $(python3 {input.py} {wildcards.ref_frac} {wildcards.sample_frac}); then
-            echo "Copying input files to output files" > {log}
-            cp {input.fasta} {output.fasta_all}
-            cp {input.dist} {output.dist_all}
-            cp {input.count} {output.count_all}
-        else
-            echo "Running mothur to extract sequences" > {log}
-            mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-                get.seqs(accnos={input.accnos_all}, fasta={input.fasta});
-                get.seqs(accnos=current, count={input.count});
-                get.dists(accnos=current, column={input.dist}); '
-        fi
-        """
-
 rule cluster_ref:
     input:
         dist=rules.prep_subsample_ref.output.dist,
@@ -173,9 +140,9 @@ rule cluster_ref:
 
 rule fit_subsample:
     input:
-        fasta=rules.combine_for_fit.output.fasta_all,
-        count=rules.combine_for_fit.output.count_all,
-        column=rules.combine_for_fit.output.dist_all,
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        column=prep_samples("results/{dataset}/{dataset}.dist"),
         reflist=rules.cluster_ref.output.list
     output:
         sensspec=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.sensspec'),
@@ -199,9 +166,9 @@ rule fit_subsample:
 
 rule fit_subsample_criteria:
     input:
-        fasta=rules.combine_for_fit.output.fasta_all,
-        count=rules.combine_for_fit.output.count_all,
-        column=rules.combine_for_fit.output.dist_all,
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        column=prep_samples("results/{dataset}/{dataset}.dist"),
         reflist=rules.cluster_ref.output.list
     output:
         sensspec=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/criteria_{criteria}/{dataset}.pick.optifit_mcc.sensspec'),
@@ -225,17 +192,16 @@ rule fit_subsample_criteria:
         list.seqs(list=current) "
         """
 
-rule calc_diversity3:
+rule list_seqs:
     input:
         list=rules.fit_subsample.output.list,
-        count=rules.combine_for_fit.output.count_all
+        count=prep_samples("data/{dataset}/processed/{dataset}.count_table")
     output:
         list_accnos=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.accnos')
-        #tsv=temp('results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/{dataset}.pick.optifit_mcc.groups.summary')
     params:
         outdir="results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/fit/method_{method}/printref_{printref}/"
     log:
-        "log/{dataset}/calc_diversity.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
+        "log/{dataset}/list_seqs.method_{method}.printref_{printref}.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     priority: 3
     shell:
         """
@@ -243,15 +209,11 @@ rule calc_diversity3:
         list.seqs(list={input.list})
         "
         """
-        #get.seqs(count={input.count}, accnos=current);
-        #make.shared(list={input.list}, count=current, label=0.03);
-        #summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson)
-
 
 rule count_input_sizes:
     input:
         py='code/py/count_input_sizes.py',
-        fasta=rules.combine_for_fit.output.fasta_all,
+        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         ref_accnos=rules.split_weighted_subsample.output.ref_accnos,
         query_accnos=rules.split_weighted_subsample.output.query_accnos
     output:
@@ -262,7 +224,7 @@ rule count_input_sizes:
 rule fraction_reads_mapped3:
     input:
         code="code/py/fraction_reads_mapped.py",
-        mapped=rules.calc_diversity3.output.list_accnos,
+        mapped=rules.list_seqs.output.list_accnos,
         query=rules.split_weighted_subsample.output.query_accnos,
         ref=rules.split_weighted_subsample.output.ref_accnos
     output:
@@ -270,7 +232,6 @@ rule fraction_reads_mapped3:
     priority: 4
     script:
         "code/py/fraction_reads_mapped.py"
-
 
 rule fraction_reads_mapped3_crit:
     input:
