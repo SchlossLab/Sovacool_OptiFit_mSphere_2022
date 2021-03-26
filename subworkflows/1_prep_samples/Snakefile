@@ -229,8 +229,9 @@ rule cluster_dataset:
         dist=rules.calc_dists_dataset.output.column,
         count=rules.mutate_count1.output.count
     output:
-        list="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list",
-        sensspec='results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'
+        list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
+        sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'),
+        steps=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec')
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
@@ -247,30 +248,10 @@ rule cluster_dataset:
         cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
         """
 
-rule calc_diversity1:
-    input:
-        list=rules.cluster_dataset.output.list,
-        count=rules.mutate_count1.output.count
-    output:
-        tsv="results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.groups.summary"
-    params:
-        outdir="results/{dataset}/cluster/seed_{seed}/"
-    log:
-        "log/{dataset}/calc_diversity.seed_{seed}.txt"
-    shell:
-        """
-        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(list={input.list});
-        get.seqs(count={input.count}, accnos=current);
-        make.shared(list={input.list}, count=current, label=0.03);
-        summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
-        """
-
 rule cbind_opticlust_seed:
     input:
         tsv=[rules.cluster_dataset.output.sensspec,
-            rules.cluster_dataset.benchmark,
-            rules.calc_diversity1.output.tsv],
+            rules.cluster_dataset.benchmark],
         code='code/R/cbind_opticlust_seed.R',
         fcns='code/R/functions.R'
     output:
