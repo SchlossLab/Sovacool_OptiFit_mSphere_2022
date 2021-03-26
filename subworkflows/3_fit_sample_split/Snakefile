@@ -74,8 +74,6 @@ rule split_weighted_subsample:
         all_accnos="data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/combined/{dataset}.accnos"
     log:
         "log/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
-    benchmark:
-        "benchmarks/{dataset}/split_weighted_subsample.refweight_{ref_weight}.reffrac_{ref_frac}.samplefrac_{sample_frac}.seed_{seed}.txt"
     params:
         dissim_thresh=0.03
     script:

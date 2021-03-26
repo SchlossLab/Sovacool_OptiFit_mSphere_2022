@@ -53,11 +53,11 @@ rule copy_preclust_inputs:  # because filter.seqs doesn't like hyphens in filepa
         fasta_db=prep_db("data/{ref}/{ref}.{region}.fasta"),
         tax=prep_db("data/{ref}/{ref}.bacteria.tax")
     output:
-        filter="data/{dataset}_{ref}_{region}/inputs/{dataset}.filter",
-        fasta="data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta",
-        count="data/{dataset}_{ref}_{region}/inputs/{dataset}.count_table",
-        fasta_db="data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta",
-        tax="data/{dataset}_{ref}_{region}/inputs/{ref}.bacteria.tax"
+        filter=temp("data/{dataset}_{ref}_{region}/inputs/{dataset}.filter"),
+        fasta=temp("data/{dataset}_{ref}_{region}/inputs/{dataset}.fasta"),
+        count=temp("data/{dataset}_{ref}_{region}/inputs/{dataset}.count_table"),
+        fasta_db=temp("data/{dataset}_{ref}_{region}/inputs/{ref}.{region}.fasta"),
+        tax=temp("data/{dataset}_{ref}_{region}/inputs/{ref}.bacteria.tax")
     params:
         outdir="data/{dataset}_{ref}_{region}/inputs/"
     shell:
@@ -76,10 +76,10 @@ rule preclust_db:
         tax=rules.copy_preclust_inputs.output.tax,
         hard_filter=rules.copy_preclust_inputs.output.filter
     output:
-        fasta="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta",
-        count="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.count_table",
-        tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.pick.tax",
-        dist="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.dist"
+        fasta=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.fasta"),
+        count=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.count_table"),
+        tax=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.pick.tax"),
+        dist=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.dist")
     params:
         tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.bacteria.pick.tax",
         outdir="data/{dataset}_{ref}_{region}/preclust_db/"
@@ -109,8 +109,8 @@ rule cluster_db:
         dist=rules.preclust_db.output.dist,
         count=rules.preclust_db.output.count
     output:
-        list="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list",
-        sensspec="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec"
+        list=temp("results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list"),
+        sensspec=temp("results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec")
     params:
         outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
     log:
@@ -146,7 +146,7 @@ rule mutate_ref_count:
         count=rules.preclust_db.output.count,
         code="code/R/mutate_ref_count.R"
     output:
-        count="data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.mod.count_table"
+        count=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.pick.mod.count_table")
     script:
         "code/R/mutate_ref_count.R"
 
@@ -157,9 +157,9 @@ rule combine_seqs:
         count_sample=rules.copy_preclust_inputs.output.count,
         count_db=rules.mutate_ref_count.output.count
     output:
-        fasta_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.fasta",
-        count_all="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.count_table",
-        accnos_refs="data/{dataset}_{ref}_{region}/combined_seqs/{ref}.{region}.filter.unique.precluster.accnos"
+        fasta_all=temp("data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.fasta"),
+        count_all=temp("data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.count_table"),
+        accnos_refs=temp("data/{dataset}_{ref}_{region}/combined_seqs/{ref}.{region}.filter.unique.precluster.accnos")
     params:
         outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
@@ -178,7 +178,7 @@ rule calc_dists_combined:
     input:
         fasta=rules.combine_seqs.output.fasta_all
     output:
-        column="data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.dist"
+        column=temp("data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.dist")
     params:
         outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
     log:
@@ -216,30 +216,26 @@ rule fit_to_ref_db:
         cluster.fit(reflist={input.reflist}, fasta={input.fasta}, count={input.count}, column={input.column},  printref={wildcards.printref}, method={wildcards.method}) "
         """
 
-rule calc_diversity2:
+rule list_seqs2:
     input:
         list=rules.fit_to_ref_db.output.list,
         count=rules.copy_preclust_inputs.output.count
     output:
-        list_accnos=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.accnos'),
-        tsv=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.groups.summary')
+        list_accnos=temp('results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/{dataset}_{ref}.{region}.all.optifit_mcc.accnos')
     params:
         outdir="results/{dataset}_{ref}_{region}/optifit/method_{method}/printref_{printref}/seed_{seed}/"
     log:
-        "log/{dataset}_{ref}_{region}/calc_diversity.method_{method}.printref_{printref}.seed_{seed}.log"
+        "log/{dataset}_{ref}_{region}/list_seqs.method_{method}.printref_{printref}.seed_{seed}.log"
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(list={input.list});
-        get.seqs(count={input.count}, accnos=current);
-        make.shared(list={input.list}, count=current, label=0.03);
-        summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
+        list.seqs(list={input.list}) "
         """
 
 rule fraction_reads_mapped2:
     input:
         code="code/py/fraction_reads_mapped.py",
-        mapped=rules.calc_diversity2.output.list_accnos,
+        mapped=rules.list_seqs2.output.list_accnos,
         query=rules.copy_preclust_inputs.output.count,
         ref=rules.preclust_db.output.count
     output:
@@ -272,7 +268,6 @@ rule cbind_optifit_seed2:
     input:
         tsv=[rules.fit_to_ref_db.output.sensspec,
             rules.fit_to_ref_db.benchmark,
-            rules.calc_diversity2.output.tsv,
             rules.fraction_reads_mapped2.output.txt],
         code='code/R/cbind_optifit_seed.R',
         fcns='code/R/functions.R'
