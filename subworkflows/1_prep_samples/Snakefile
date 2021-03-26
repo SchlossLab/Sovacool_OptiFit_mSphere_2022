@@ -231,7 +231,7 @@ rule cluster_dataset:
     output:
         list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
         sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'),
-        steps=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec')
+        steps=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps')
     params:
         outdir="results/{dataset}/cluster/seed_{seed}/"
     log:
