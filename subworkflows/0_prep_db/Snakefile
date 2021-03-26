@@ -79,8 +79,6 @@ rule download_gg_97:
         tar -xzvf {output.tar} -C data/gg/
         """
 
-# TODO: use gg 97 instead of 99 for vsearch.
-
 rule get_bacteria:
     input:
         fasta="data/{ref}/{ref}.fasta",
