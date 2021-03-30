@@ -1,4 +1,4 @@
-2021-03-07
+2021-03-30
 
 ``` r
 set.seed(2018)
@@ -22,8 +22,7 @@ mutate_perf <- function(dat) {
   dat %>% 
     mutate(mem_mb = max_rss,
            mem_gb = mem_mb / 1024) %>% 
-    rename(sec = s,
-           num_otus = sobs)
+    rename(sec = s)
 }
 ```
 
@@ -402,7 +401,7 @@ head(sum_all_human)
     ##   tool  strategy method     n mcc_median sec_median mem_gb_median
     ##   <chr> <chr>    <chr>  <int>      <dbl>      <dbl>         <dbl>
     ## 1 moth… closed_… closed   100      0.800       606.         5.38 
-    ## 2 moth… de_novo  de_no…   100      0.821       718.         5.05 
+    ## 2 moth… de_novo  de_no…   100      0.821       800.         5.06 
     ## 3 moth… open_re… open     100      0.815       899.        20.3  
     ## 4 vsea… closed_… closed     1      0.464       684.         0.557
     ## 5 vsea… de_novo  de_no…     1      0.554       153.         0.165

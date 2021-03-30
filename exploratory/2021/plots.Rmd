@@ -32,8 +32,7 @@ mutate_perf <- function(dat) {
   dat %>% 
     mutate(mem_mb = max_rss,
            mem_gb = mem_mb / 1024) %>% 
-    rename(sec = s,
-           num_otus = sobs)
+    rename(sec = s)
 }
 ```
 
