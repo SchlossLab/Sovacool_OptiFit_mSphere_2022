@@ -1,4 +1,4 @@
-2021-03-24
+2021-04-05
 
 ``` r
 set.seed(2018)
@@ -23,7 +23,7 @@ mutate_perf <- function(dat) {
 dat <- read_tsv(here('subworkflows', '3_fit_sample_split', 'results', 
                      'optifit_crit_check.tsv')) %>% 
   mutate_perf() %>% 
-  select(dataset, printref, criteria, mcc, fraction_mapped, sec, mem_gb) 
+  select(dataset, printref, criteria, mcc, fraction_mapped, sec, mem_gb, seed) 
 ```
 
 Sarah W’s description of the criteria parameter:
@@ -51,32 +51,15 @@ I ran the 3 criteria options with the human dataset at 50/50 ref/query
 split chosen by simple random sample, method=closed, repeated for 20
 seeds.
 
-## OTU Quality
-
 ``` r
 dat %>% 
-  ggplot(aes(x = criteria, y = mcc, color = printref)) +
-  geom_jitter(alpha = 0.5, width = 0.2) 
+  pivot_longer(c(mcc, fraction_mapped, sec), 
+               names_to = "metric") %>% 
+  ggplot(aes(x = criteria, y = value, color = printref)) +
+  geom_jitter(alpha = 0.5, width = 0.2) +
+  scale_color_manual(values = c("darkorange", "cyan4")) +
+  facet_wrap("metric", scales = "free", nrow = 3) +
+  coord_flip()
 ```
 
-![](figures/crit_mcc-1.png)<!-- -->
-
-## Fraction mapped
-
-``` r
-dat %>% 
-  ggplot(aes(x = criteria, y = fraction_mapped, color = printref)) +
-  geom_jitter(alpha = 0.5, width = 0.2)
-```
-
-![](figures/crit_map-1.png)<!-- -->
-
-## Runtime
-
-``` r
-dat %>% 
-  ggplot(aes(x = criteria, y = sec, color = printref)) +
-  geom_jitter(alpha = 0.5, width = 0.2)
-```
-
-![](figures/crit_runtime-1.png)<!-- -->
+![](figures/crit_facet-1.png)<!-- -->
