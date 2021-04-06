@@ -21,3 +21,4 @@ core.*
 *.txt
 *benchmarks*
 *KLS*
+*.bak
