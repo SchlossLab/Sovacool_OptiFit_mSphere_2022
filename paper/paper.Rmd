@@ -218,11 +218,11 @@ Despite the drawbacks, closed reference methods have been used when fast
 execution speed is required such as when using very large datasets.
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
-Closed reference OptiFit outperformed OptiClust by 
-`r sec_closed_fit_db_vs_clust`% and VSEARCH by `r sec_closed_fit_db_vs_vsearch`%.
-In open reference mode, OptiFit ran faster than VSEARCH by 
-`r sec_vsearch_vs_open_fit_db`%, but slower than OptiClust by 
-`r sec_opticlust_vs_open_fit_db`%.
+Closed reference OptiFit outperformed both OptiClust and open reference OptiFit,
+with respective average run times of `r closed_fit_db_sec`, `r opticlust_sec`,
+and `r open_fit_db_sec` seconds.
+Thus, the OptiFit algorithm continues the precedent that closed reference
+clustering sacrifices OTU quality for execution speed.
 
 To compare to the reference clustering method used by QIIME2, we clustered each
 dataset with VSEARCH against the Greengenes database of OTUs previously 
