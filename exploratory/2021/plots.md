@@ -1,4 +1,4 @@
-2021-03-30
+2021-04-06
 
 ``` r
 set.seed(2018)
@@ -153,6 +153,8 @@ optifit_split %>%
        caption='Black line: _de novo_ clustering on the whole dataset') +
   theme(plot.caption = element_markdown())
 ```
+
+    ## Warning: Removed 194 rows containing missing values (geom_point).
 
 ![](figures/mcc_fit-split-1.png)<!-- -->
 
