@@ -63,6 +63,27 @@ open_fit_gg_mcc <- dat %>%
   ) %>%
   pull(mcc_median) %>%
   median()
+
+open_fit_silva_mcc <- dat %>%
+  filter(
+    method == "open",
+    strategy == "database",
+    tool == "mothur",
+    ref == "silva"
+  ) %>%
+  pull(mcc_median) %>%
+  median()
+
+open_fit_rdp_mcc <- dat %>%
+  filter(
+    method == "open",
+    strategy == "database",
+    tool == "mothur",
+    ref == "rdp"
+  ) %>%
+  pull(mcc_median) %>%
+  median()
+
 open_vsearch_mcc <- dat %>%
   filter(
     method == "open",

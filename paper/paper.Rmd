@@ -53,6 +53,9 @@ library(tidyverse)
 load(here('results', 'stats.RData'))
 ```
 
+- **start paragraph with question, end with why we should care. transitions to move the story along.**
+- **AND, BUT, THEREFORE, structure**
+
 ## Abstract
 
 Assigning amplicon sequences to Operational Taxonomic Units (OTUs) is an
@@ -174,52 +177,65 @@ fit the query sequences to the reference OTUs.
 
 ### Reference clustering with public databases
 
-- TODO: start paragraph with question, end with why we should care. transitions to move the story along.
-- start:"In order to compare Optifit.."
-- end: "optifit performs better"
-- AND, BUT, THEREFORE, structure
-- order of importance: mcc, mapping, sec (1 paragraph each, in this order)
-
 While _de novo_ clustering produces high quality OTUs, researchers may prefer to
 perform reference clustering to a public database because reference-based
 methods produce stable OTUs and are generally faster than _de novo_ methods.
+In closed reference mode, sequences that cannot be assigned to reference OTUs
+are thrown out, so that the final clustering contains only OTUs that exist in
+the reference.
 To test how OptiFit performs for this purpose, we fit each dataset to three
 databases of reference OTUs; the Greengenes database, the SILVA non-redundant
 database, and the Ribosomal Database Project (RDP) [@desantis_greengenes_2006;
 @quast_silva_2013; @cole_ribosomal_2014].
 Reference OTUs for each database were created by performing _de novo_ clustering
 with OptiClust at a distance threshold of 3%.
-To compare to existing software, we also clustered each dataset into _de novo_
-OTUs using OptiClust and VSEARCH, and with VSEARCH in reference-based mode
-against the Greengenes database of OTUs clustered at 97% similarity.
-
-In closed reference mode against databases, OptiFit produced lower quality OTUs
-than OptiClust by `r mcc_closed_fit_db_vs_clust` on average.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
-similarly with median MCC scores of `r closed_fit_gg_mcc` and 
+similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while when fitting to RDP the median MCC 
 dropped to `r closed_fit_rdp_mcc`.
-An average of only `r frac_fit_db`% of query sequences were fit to reference
-database OTUs in closed reference mode across all dataset/database combinations.
-VSEARCH was able to map `r frac_vsearch_vs_fit`% more query sequences than
-OptiFit to the Greengenes reference database.
-In terms of run time, closed reference OptiFit outperformed OptiClust by 
+For comparison to the state of the art, clustering datasets _de novo_ with
+OptiClust produced an average MCC score of `r opticlust_mcc`.
+This gap in OTU quality mostly disappears when clustering in open reference
+mode, which produced median MCCs of `r open_fit_gg_mcc` with greengenes, 
+`r open_fit_silva_mcc` with Silva, and `r open_fit_rdp_mcc` with RDP.
+Thus, open reference OptiFit produces OTUs of very similar quality as _de novo_
+clustering, and closed reference OptiFit follows closely behind as long as a
+suitable reference database is chosen.
+
+Since closed reference clustering throws out query sequences that cannot be
+assigned to reference OTUs, an additional measure of clustering performance to
+consider is the fraction of query sequences that were able to be assigned.
+On average, more sequences were assigned with Greengenes as the reference 
+(`r frac_fit_gg`%) than with Silva (`r frac_fit_silva`%) or RDP (`r frac_fit_rdp`%).
+This mirrors the result reported above that Greengenes produced better OTUs in
+terms of MCC score than either Silva or RDP.
+Note that _De novo_ and open reference clustering methods always assign 100% of
+sequences to OTUs.
+The database chosen affects the final OTU assignments considerably in terms of 
+both MCC score and fraction of query sequences fit.
+
+Despite the drawbacks, closed reference methods have been used when fast
+execution speed is required such as when using very large datasets.
+To compare performance in terms of speed, we repeated each OptiFit and OptiClust
+run 100 times and measured the execution time.
+Closed reference OptiFit outperformed OptiClust by 
 `r sec_closed_fit_db_vs_clust`% and VSEARCH by `r sec_closed_fit_db_vs_vsearch`%.
+In open reference mode, OptiFit ran faster than VSEARCH by 
+`r sec_vsearch_vs_open_fit_db`%, but slower than OptiClust by 
+`r sec_opticlust_vs_open_fit_db`%.
 
-since closed ref threw out a lot of stuff, we performed open ref.
-
-In open reference mode, fitting the datasets to reference OTUs with OptiFit
-produced OTUs of similar quality (`r mcc_open_fit_db_vs_clust`% difference in median
-MCC) as clustering the datasets _de novo_ with OptiClust  across all datasets
-and reference databases.
-OptiFit produced higher quality OTUs than VSEARCH when open reference clustering
-against the Greengenes database, with median MCC scores of `r open_fit_gg_mcc`
-and `r open_vsearch_mcc` (respectively).
-OptiFit ran faster than VSEARCH by `r sec_vsearch_vs_open_fit_db`%  in open
-reference mode, but slower than OptiClust by `r sec_opticlust_vs_open_fit_db`%.
+To compare to the reference clustering method used by QIIME2, we clustered each
+dataset with VSEARCH against the Greengenes database of OTUs previously 
+clustered at 97% sequence similarity.
+**TODO note vsearch otu definition vs. ours.**
 _De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
 higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
 slower than VSEARCH.
+VSEARCH was able to map `r frac_vsearch_vs_fit`% more query sequences than
+OptiFit to the Greengenes reference database in closed reference mode.
+OptiFit produced higher quality OTUs than VSEARCH when open reference clustering
+against the Greengenes database, with median MCC scores of `r open_fit_gg_mcc`
+and `r open_vsearch_mcc` (respectively).
 
 
 ### Reference clustering with split datasets
