@@ -227,24 +227,36 @@ In open reference mode, OptiFit ran faster than VSEARCH by
 To compare to the reference clustering method used by QIIME2, we clustered each
 dataset with VSEARCH against the Greengenes database of OTUs previously 
 clustered at 97% sequence similarity.
-**TODO note vsearch otu definition vs. ours.**
+Each reference OTU from the Greengenes 97% database contains one reference
+sequence, and VSEARCH maps sequences to the reference based on each individual
+sequence's similarity to the single reference OTU.
+In contrast, OptiFit accepts reference OTUs which each contain multiple
+sequences, and the sequence similarity between all query and reference sequences
+is considered when assign sequences to OTUs.
 _De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
 higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
 slower than VSEARCH.
-VSEARCH was able to map `r frac_vsearch_vs_fit`% more query sequences than
-OptiFit to the Greengenes reference database in closed reference mode.
-OptiFit produced higher quality OTUs than VSEARCH when open reference clustering
-against the Greengenes database, with median MCC scores of `r open_fit_gg_mcc`
-and `r open_vsearch_mcc` (respectively).
-
+In closed reference mode, VSEARCH was able to map `r frac_vsearch_vs_fit`% more
+query sequences than OptiFit to the Greengenes reference database.
+When open reference clustering, OptiFit produced higher quality OTUs than
+VSEARCH against the Greengenes database, with median MCC scores of 
+`r open_fit_gg_mcc` and `r open_vsearch_mcc` (respectively).
+In terms of run time, OptiFit outperformed VSEARCH in both closed and open
+reference mode by `r sec_closed_fit_db_vs_vsearch`% and 
+`r sec_vsearch_vs_open_fit_db`% on average respectively.
+**TODO:** The stark difference in OTU definitions between mothur and VSEARCH resulted in...
 
 ### Reference clustering with split datasets
 
-- **TODO**; start with problem with current state of the art. 
-- tied to reference dbs taht may be unrelated to samples studying. can we use our own data as a reference?
-- lay out the use case and how this is a benefit over ref-db clustering.
 - we wanted ot use x% of data as ref, weren't sure what size to use and strategy for selecting.
 - important result: it works!
+
+When performing reference clustering against public databases, the database 
+chosen greatly affects the quality of OTUs produced.
+OTUs may be of poor quality when the reference database is too unrelated to the 
+samples of interest, such as when samples contain new and rapidly evolving microbes.
+For this reason, we were interested in whether we could use the samples themselves
+as the reference to cluster against.
 
 A split dataset strategy was employed to assess how well OptiFit performs for
 tasks where new sequences are added to existing OTUs, such as when comparing
