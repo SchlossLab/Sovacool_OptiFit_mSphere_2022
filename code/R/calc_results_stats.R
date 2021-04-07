@@ -223,31 +223,28 @@ sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) 
 
 ################################################################################
 # fit split
-fit_split_mcc <- dat %>%
-  filter(
-    strategy == "self-split",
-    tool == "mothur"
-  ) %>%
-  pull(mcc_median) %>%
-  median()
-mcc_opticlust_vs_fit_split <- rel_diff(opticlust_mcc, fit_split_mcc)
-
 cv_fit_split_mcc <- coeff_var(dat %>% filter(
   strategy == "self-split",
-  tool == "mothur"
+  tool == "mothur",
+  ref_weight == 'simple',
+  ref_frac == 0.5
 ) %>%
   pull(mcc_median))
 cv_fit_split_mcc_human <- coeff_var(dat %>% filter(
   strategy == "self-split",
   tool == "mothur",
-  dataset == "human"
+  dataset == "human",
+  ref_weight == 'simple',
+  ref_frac == 0.5
 ) %>%
   pull(mcc_median))
 closed_fit_split_sec <- dat %>%
   filter(
     method == "closed",
     strategy == "self-split",
-    tool == "mothur"
+    tool == "mothur",
+    ref_weight == 'simple',
+    ref_frac == 0.5
   ) %>%
   pull(sec_median) %>%
   median()
@@ -256,7 +253,9 @@ open_fit_split_sec <- dat %>%
   filter(
     method == "open",
     strategy == "self-split",
-    tool == "mothur"
+    tool == "mothur",
+    ref_weight == 'simple',
+    ref_frac == 0.5
   ) %>%
   pull(sec_median) %>%
   median()
@@ -268,16 +267,19 @@ mcc_fit_split_simple <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == "simple"
+    ref_weight == "simple",
+    ref_frac == 0.5
   ) %>%
   pull(mcc_median) %>%
   median()
+mcc_opticlust_vs_fit_split_simple <- rel_diff(opticlust_mcc, mcc_fit_split_simple)
 
 mcc_fit_split_abun <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == "abundance"
+    ref_weight == "abundance",
+    ref_frac == 0.5
   ) %>%
   pull(mcc_median) %>%
   median()
@@ -286,7 +288,8 @@ mcc_fit_split_dist <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == "distance"
+    ref_weight == "distance",
+    ref_frac == 0.5
   ) %>%
   pull(mcc_median) %>%
   median()
