@@ -226,7 +226,7 @@ sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) 
 cv_fit_split_mcc <- coeff_var(dat %>% filter(
   strategy == "self-split",
   tool == "mothur",
-  ref_weight == 'simple',
+  ref_weight == "simple",
   ref_frac == 0.5
 ) %>%
   pull(mcc_median))
@@ -235,7 +235,7 @@ frac_fit_split <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == 'simple',
+    ref_weight == "simple",
     method == "closed",
     ref_frac == 0.5
   ) %>%
@@ -247,7 +247,7 @@ closed_fit_split_sec <- dat %>%
     method == "closed",
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == 'simple',
+    ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
   pull(sec_median) %>%
@@ -257,7 +257,7 @@ open_fit_split_sec <- dat %>%
     method == "open",
     strategy == "self-split",
     tool == "mothur",
-    ref_weight == 'simple',
+    ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
   pull(sec_median) %>%
@@ -272,7 +272,7 @@ cv_fit_split_mcc_human <- coeff_var(dat %>% filter(
   strategy == "self-split",
   tool == "mothur",
   dataset == "human",
-  ref_weight == 'simple'
+  ref_weight == "simple"
 ) %>%
   pull(mcc_median))
 
