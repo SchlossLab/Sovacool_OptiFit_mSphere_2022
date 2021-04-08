@@ -248,9 +248,6 @@ reference mode by `r sec_closed_fit_db_vs_vsearch`% and
 
 ### Reference clustering with split datasets
 
-- we wanted to use x% of data as ref, weren't sure what size to use and strategy for selecting.
-- important result: it works!
-
 When performing reference clustering against public databases, the database 
 chosen greatly affects the quality of OTUs produced.
 OTUs quality may be poor when the reference database is too unrelated to the
@@ -267,24 +264,30 @@ split into a reference fraction and a query fraction.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were fit to the _de novo_ OTUs with OptiFit.
 
-**TODO; ref weight simple only here. First we wanted to know; does this strategy perform as well as de novo with 50% split?**
-OTU quality from the split dataset strategy with OptiFit was highly similar to
-that from _de novo_ clustering the whole dataset with OptiClust regardless of
+First, we tested whether OptiFit performed as well as _de novo_ clustering when
+using the split dataset strategy with half of the sequences selected for
+the reference by a simple random sample.
+OTU quality was highly similar to that from OptiClust regardless of
 mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC).
-OTU quality was remarkably stable across reference fraction sizes within
-parameter sets.
-For example, splitting the human dataset 100 times yielded a coefficient of
-variation of `r cv_fit_split_mcc_human` for the MCC score.
+In closed reference mode, OptiFit was able to fit `r frac_fit_split`% of query
+sequences to reference OTUs with the split strategy, a great improvement over
+the average `r frac_fit_gg`% of sequences fit to the greengenes database.
 In terms of runtime, closed and open reference OptiFit performed faster than
 OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and 
 `r sec_open_fit_split_vs_clust` respectively.
-The split dataset strategy performed `r sec_closed_fit_split_vs_db`% faster than
-the database strategy in closed reference mode and `r sec_open_fit_split_vs_db`%
-faster in open reference mode.
-**TODO: fraction mapped.**
+The split dataset strategy also performed `r sec_closed_fit_split_vs_db`% faster
+than the database strategy in closed reference mode and 
+`r sec_open_fit_split_vs_db`% faster in open reference mode.
+Thus, reference clustering with the split dataset strategy creates as high
+quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
+query sequences than the database strategy.
 
 **Then we wanted to know; what fraction of sequences should be in the reference?**
-To test the best reference size, reference sizes from 10% to 80% of the sequences were created, with the remaining sequences used for the query.
+To test the best reference size, reference sizes from 10% to 80% of the
+sequences were created, with the remaining sequences used for the query.
+OTU quality was remarkably stable across reference fraction sizes.
+For example, splitting the human dataset 100 times yielded a coefficient of
+variation of `r cv_fit_split_mcc_human` for the MCC score across all fractions. **TODO: revisit how to report this**
 
 **Finally, we wanted to know the best way to select the reference sequences.**
 **TODO: pick a fraction (e.g. 50%). this part is less important. figure would be supplemental.**

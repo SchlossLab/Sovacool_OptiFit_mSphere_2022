@@ -230,14 +230,18 @@ cv_fit_split_mcc <- coeff_var(dat %>% filter(
   ref_frac == 0.5
 ) %>%
   pull(mcc_median))
-cv_fit_split_mcc_human <- coeff_var(dat %>% filter(
-  strategy == "self-split",
-  tool == "mothur",
-  dataset == "human",
-  ref_weight == 'simple',
-  ref_frac == 0.5
-) %>%
-  pull(mcc_median))
+
+frac_fit_split <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == 'simple',
+    method == "closed",
+    ref_frac == 0.5
+  ) %>%
+  pull(frac_map_median) %>%
+  median() * 100
+
 closed_fit_split_sec <- dat %>%
   filter(
     method == "closed",
@@ -248,7 +252,6 @@ closed_fit_split_sec <- dat %>%
   ) %>%
   pull(sec_median) %>%
   median()
-sec_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_sec, opticlust_sec) %>% abs()
 open_fit_split_sec <- dat %>%
   filter(
     method == "open",
@@ -259,9 +262,19 @@ open_fit_split_sec <- dat %>%
   ) %>%
   pull(sec_median) %>%
   median()
+
+sec_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_sec, opticlust_sec) %>% abs()
 sec_open_fit_split_vs_clust <- rel_diff(open_fit_split_sec, opticlust_sec) %>% abs()
 sec_open_fit_split_vs_db <- rel_diff(open_fit_split_sec, open_fit_db_sec) %>% abs()
 sec_closed_fit_split_vs_db <- rel_diff(closed_fit_split_sec, closed_fit_db_sec) %>% abs()
+
+cv_fit_split_mcc_human <- coeff_var(dat %>% filter(
+  strategy == "self-split",
+  tool == "mothur",
+  dataset == "human",
+  ref_weight == 'simple'
+) %>%
+  pull(mcc_median))
 
 mcc_fit_split_simple <- dat %>%
   filter(
@@ -303,7 +316,6 @@ frac_fit_split_0.1 <- dat %>%
   ) %>%
   pull(frac_map_median) %>%
   median() * 100
-
 
 frac_fit_split_0.8 <- dat %>%
   filter(
