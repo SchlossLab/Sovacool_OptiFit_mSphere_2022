@@ -153,13 +153,20 @@ gut [@baxter_microbiota-based_2016] samples.
 OptiFit leverages the method employed by OptiClust of iteratively assigning
 sequences to OTUs to produce the highest quality OTUs possible, and extends this
 method for reference-based clustering.
-**TODO: brief description of the opticlust algorithm.**
+OptiClust first seeds each sequence into its own OTU as a singleton. 
+Then for each sequence, OptiClust considers whether the sequence should move to a
+different OTU or remain in its current OTU, choosing the option that results in
+a better Matthews correlation coefficient (MCC).
+Iterations continue until the MCC stabilizes or until a maximum number of
+iterations is reached.
+This process produces _de novo_ OTU assignments with the most optimal MCC given
+the input sequences.
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to assign to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03).
 Initially, query sequences are placed in singleton OTUs. 
 Then, the algorithm iteratively reassigns the query sequences to the reference 
-OTUs to optimize the Matthews correlation coefficient (MCC). 
+OTUs to optimize the MCC. 
 Alternatively, a sequence will remain unassigned if the MCC value is maximized
 when the sequence is a singleton rather than assigned to a reference OTU.
 This process is repeated until the MCC changes by no more than 0.0001 (default)
@@ -175,7 +182,10 @@ There are two strategies for generating OTUs with OptiFit:
 independent database, or
 2) split the dataset into a reference and query fraction, cluster the reference
 sequences _de novo_, then fit the query sequences to the reference OTUs.
-**TODO: describe data sets here**
+We clustered sequences from four datasets isolated from soil
+[@johnston_metagenomics_2016], marine [@henson_artificial_2016], mouse gut
+[@schloss_stabilization_2012], and human gut [@baxter_microbiota-based_2016]
+samples to test the performance of OptiFit with both of these strategies.
 
 ### Reference clustering with public databases
 
