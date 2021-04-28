@@ -19,6 +19,6 @@ mutate_columns <- function(df_orig) {
   )
 }
 
-read_tsv(snakemake@input[['tsv']]) %>%
-    mutate_colums() %>%
-    write_tsv(snakemake@output[['tsv']])
+read_tsv(snakemake@input[["tsv"]]) %>%
+  mutate_colums() %>%
+  write_tsv(snakemake@output[["tsv"]])
