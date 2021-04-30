@@ -171,7 +171,7 @@ rule preprocess:
             chimera.uchime(fasta=current, count=current, dereplicate=T);
             remove.seqs(fasta=current, accnos=current);
             classify.seqs(fasta=current, count=current, reference={input.rdp_fasta}, taxonomy={input.rdp_tax}, cutoff=80);
-            remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota); '
+            remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota) '
         mv {params.filter} {output.filter}
         mv {params.tax} {output.tax}
         mv {params.fasta} {output.fasta}

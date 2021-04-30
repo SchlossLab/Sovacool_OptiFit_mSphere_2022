@@ -109,7 +109,7 @@ rule prep_subsample_ref:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             get.seqs(accnos={input.accnos}, fasta={input.fasta});
             get.seqs(accnos=current, count={input.count});
-            get.dists(accnos=current, column={input.dist}); '
+            get.dists(accnos=current, column={input.dist}) '
         """
 
 rule cluster_ref:
