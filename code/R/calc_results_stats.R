@@ -44,9 +44,9 @@ sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
 ################################################################################
 # de novo ref dbs
 
-dn_dbs_mcc <- read_tsv('subworkflows/2_fit_reference_db/results/denovo_dbs.tsv') %>% 
-  group_by(ref) %>% 
-  summarize(med_mcc = median(mcc)) %>% 
+dn_dbs_mcc <- read_tsv("subworkflows/2_fit_reference_db/results/denovo_dbs.tsv") %>%
+  group_by(ref) %>%
+  summarize(med_mcc = median(mcc)) %>%
   deframe()
 
 ################################################################################
