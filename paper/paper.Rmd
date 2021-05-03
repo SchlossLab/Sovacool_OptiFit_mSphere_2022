@@ -44,6 +44,7 @@ twitter:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 mothuR::set_knitr_opts()
+knitr::knit_hooks$set(inline = mothuR::paste_oxford_list)
 ```
 
 ```{r deps, message = FALSE}
@@ -201,7 +202,8 @@ database, and the Ribosomal Database Project (RDP) [@desantis_greengenes_2006;
 @quast_silva_2013; @cole_ribosomal_2014].
 Reference OTUs for each database were created by performing _de novo_ clustering
 with OptiClust at a distance threshold of 3%.
-The _de novo_ MCC scores for the three databases were **TODO**.
+The _de novo_ MCC scores were `r dn_dbs_mcc` for `r names(dn_dbs_mcc)`, 
+respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 

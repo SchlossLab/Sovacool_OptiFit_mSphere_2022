@@ -60,7 +60,8 @@ rule summarize_results:
 rule calc_results_stats:
     input:
         R='code/R/calc_results_stats.R',
-        tsv=rules.summarize_results.output.sum
+        tsv_sum=rules.summarize_results.output.sum,
+        tsv2='subworkflows/2_fit_reference_db/results/denovo_dbs.tsv'
     output:
         rda="results/stats.RData"
     script:

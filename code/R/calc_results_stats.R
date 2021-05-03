@@ -13,7 +13,7 @@ coeff_var <- function(x) {
 dat <- read_tsv(here("results", "summarized.tsv"))
 
 ################################################################################
-# de novo
+# de novo datasets
 opticlust_mcc <- dat %>%
   filter(
     method == "de_novo",
@@ -40,6 +40,14 @@ dn_vsearch_sec <-
   median()
 mcc_opticlust_vs_vsearch <- rel_diff(opticlust_mcc, dn_vsearch_mcc)
 sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
+
+################################################################################
+# de novo ref dbs
+
+dn_dbs_mcc <- read_tsv('subworkflows/2_fit_reference_db/results/denovo_dbs.tsv') %>% 
+  group_by(ref) %>% 
+  summarize(med_mcc = median(mcc)) %>% 
+  deframe()
 
 ################################################################################
 # ref db open
