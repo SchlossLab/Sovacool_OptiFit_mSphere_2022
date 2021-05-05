@@ -258,6 +258,15 @@ closed_vsearch_sec <- dat %>%
   median()
 sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) %>% abs()
 
+closed_vsearch_mcc <- dat %>%
+  filter(
+    method == "closed",
+    strategy == "database",
+    tool == "vsearch"
+  ) %>%
+  pull(mcc_median) %>%
+  median()
+mcc_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_mcc, closed_vsearch_mcc) %>% abs()
 
 ################################################################################
 # fit split

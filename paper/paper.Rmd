@@ -232,7 +232,7 @@ both MCC score and fraction of query sequences that could be fit to the
 reference OTUs.
 
 Despite the drawbacks, closed reference methods have been used when fast
-execution speed is required such as when using very large datasets.
+execution speed is required, such as when using very large datasets.
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
 Across all dataset and database combinations, closed reference OptiFit
@@ -249,15 +249,17 @@ dataset with VSEARCH against the Greengenes database of OTUs previously
 clustered at 97% sequence similarity.
 Each reference OTU from the Greengenes 97% database contains one reference
 sequence, and VSEARCH maps sequences to the reference based on each individual
-sequence's similarity to the single reference OTU.
-In contrast, OptiFit accepts reference OTUs, which each may contain multiple
+query sequence's similarity to the single reference sequence.
+In contrast, OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference sequences
 is considered when assigning sequences to OTUs.
 _De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
-higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
-slower than VSEARCH.
-In closed reference mode, VSEARCH was able to map `r frac_vsearch_vs_fit`% more
-query sequences than OptiFit to the Greengenes reference database.
+higher quality OTUs than VSEARCH in terms of MCC, but performed 
+`r sec_opticlust_vs_vsearch`% slower than VSEARCH.
+In closed reference mode, OptiFit produced `r mcc_closed_fit_db_vs_vsearch`%
+higher quality OTUs than VSEARCH, but VSEARCH was able to map 
+`r frac_vsearch_vs_fit`% more query sequences than OptiFit to the Greengenes
+reference database.
 This is because VSEARCH only considers the distances between each query sequence
 to the single reference sequence, while OptiFit considers the distances between
 all pairs of sequences in an OTU. <!-- VSEARCH "diameter" vs OptiFit "radius"
@@ -268,7 +270,9 @@ VSEARCH against the Greengenes database, with median MCC scores of
 In terms of run time, OptiFit outperformed VSEARCH in both closed and open
 reference mode by `r sec_closed_fit_db_vs_vsearch`% and 
 `r sec_vsearch_vs_open_fit_db`% on average respectively.
-**TODO: conclude:** The stark difference in OTU definitions between mothur and VSEARCH resulted in...
+Thus, the more stringent OTU definition employed by OptiFit resulted in fewer
+sequences being fit to reference OTUs than when using VSEARCH, but caused
+OptiFit to outperform VSEARCH in terms of both OTU quality and execution time.
 
 ### Reference clustering with split datasets
 
