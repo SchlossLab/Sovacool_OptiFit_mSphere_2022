@@ -235,10 +235,12 @@ Despite the drawbacks, closed reference methods have been used when fast
 execution speed is required such as when using very large datasets.
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
-Closed reference OptiFit outperformed both OptiClust and open reference OptiFit,
-with average run times of `r closed_fit_db_sec`, `r opticlust_sec`,
-and `r open_fit_db_sec` seconds, respectively.
-**TODO: don't average by all datasets & datasets?.**
+Across all dataset and database combinations, closed reference OptiFit
+outperformed both OptiClust and open reference OptiFit.
+For example, with the human dataset fit to SILVA reference OTUs, the average run
+times in seconds were `r closed_fit_silva_human_sec` for closed reference
+OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and 
+`r open_fit_silva_human_sec` for open reference OptiFit. 
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
@@ -250,7 +252,7 @@ sequence, and VSEARCH maps sequences to the reference based on each individual
 sequence's similarity to the single reference OTU.
 In contrast, OptiFit accepts reference OTUs, which each may contain multiple
 sequences, and the sequence similarity between all query and reference sequences
-is considered when assign sequences to OTUs.
+is considered when assigning sequences to OTUs.
 _De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
 higher quality OTUs than VSEARCH, but performed `r sec_opticlust_vs_vsearch`% 
 slower than VSEARCH.

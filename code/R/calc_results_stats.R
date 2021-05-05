@@ -123,6 +123,36 @@ open_fit_db_sec <- dat %>%
 sec_vsearch_vs_open_fit_db <- rel_diff(open_vsearch_sec, open_fit_db_sec)
 sec_opticlust_vs_open_fit_db <- rel_diff(opticlust_sec, open_fit_db_sec) %>% abs()
 
+# human dataset to silva 
+open_fit_silva_human_sec <- dat %>%
+  filter(
+    method == "open",
+    strategy == "database",
+    tool == "mothur",
+    ref == "silva",
+    dataset == 'human'
+  ) %>%
+  pull(sec_median) %>%
+  median()
+closed_fit_silva_human_sec <- dat %>%
+  filter(
+    method == "closed",
+    strategy == "database",
+    tool == "mothur",
+    ref == "silva",
+    dataset == 'human'
+  ) %>%
+  pull(sec_median) %>%
+  median()
+opticlust_human_sec <- dat %>%
+  filter(
+    method == "de_novo",
+    tool == "mothur",
+    dataset == 'human'
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
 ################################################################################
 # ref db closed
 closed_fit_db_mcc <- dat %>%
