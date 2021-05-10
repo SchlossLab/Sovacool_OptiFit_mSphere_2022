@@ -148,3 +148,60 @@ TODO:
 -   Remove excess whitespace around the legend.
     <https://wilkelab.org/cowplot/articles/shared_legends.html>
 -   Adjust figure dimensions.
+
+### Feedback from lab meeting
+
+-   [x] vertical jitter
+-   [x] frac map only makes sense for closed
+-   [x] dotted line for *de novo*
+-   [x] filled/unfilled for closed/open
+-   [x] box around facets
+-   [x] bigger points
+-   [ ] set theme elements to add space between facets:
+    `+ theme(panel.spacing = unit(c(3,3),'lines'))`
+-   generally: build for the dimensions required by the journal
+
+``` r
+plot_quality <- function(dat, y_val, title = '') {
+  dat %>% 
+    ggplot(aes(strategy, {{ y_val }}, 
+               #color = method, 
+               shape = method)) + 
+    geom_point(size = 3,
+               position = position_jitter(width = 0.3, height = 0)) +
+    facet_wrap(dataset ~ ., nrow=1) +
+    scale_shape_manual(values = list(open = 1, closed = 19)) +
+    #scale_color_manual(values = tri_colors) +
+    scale_y_continuous(labels = c('0', '0.5', '1'), 
+                       breaks = c(0, 0.5, 1),
+                       limits = c(0, 1)) +
+    coord_flip() +
+    labs(x = '', y = '', title = title) +
+    theme_bw()
+}
+mcc_plot <- sum_optifit %>% 
+  plot_quality(mcc_median, title = 'Median MCC') +
+    geom_hline(data = sum_opticlust, 
+               aes(yintercept = mcc_median), 
+               linetype = 'dashed', color = 'red')
+frac_plot <- sum_optifit %>% filter(method == 'closed') %>% 
+  plot_quality(frac_map_median, title = 'Median fraction mapped')  + 
+  labs(caption = "dashed line: _de novo_ clustering") +
+  theme(plot.caption = element_markdown(hjust = 0),
+        plot.caption.position = 'plot')
+
+shared_legend <- get_legend(mcc_plot + 
+                              guides(color = guide_legend(nrow = 1)) +
+                              theme(legend.position = "bottom")
+                            )
+
+main_plot <- plot_grid(mcc_plot + 
+    theme(legend.position="none"), frac_plot + 
+    theme(legend.position="none"), 
+                       ncol = 1, align = 'v', labels = 'AUTO')
+
+plot_grid(main_plot, shared_legend, 
+          ncol = 1, rel_heights = c(1, 0.1))
+```
+
+![](figures/otu-quality_cowplot-revised-1.png)<!-- -->
