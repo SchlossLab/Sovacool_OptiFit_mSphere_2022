@@ -167,8 +167,6 @@ plot_quality <- function(dat, y_val, title = '') {
     ggplot(aes(strategy, {{ y_val }}, 
                #color = method, 
                shape = method)) + 
-    geom_point(size = 3,
-               position = position_jitter(width = 0.3, height = 0)) +
     facet_wrap(dataset ~ ., nrow=1) +
     scale_shape_manual(values = list(open = 1, closed = 19)) +
     #scale_color_manual(values = tri_colors) +
@@ -181,11 +179,14 @@ plot_quality <- function(dat, y_val, title = '') {
 }
 mcc_plot <- sum_optifit %>% 
   plot_quality(mcc_median, title = 'Median MCC') +
+    geom_point(size = 3,
+               position = position_jitter(width = 0.3, height = 0)) +
     geom_hline(data = sum_opticlust, 
                aes(yintercept = mcc_median), 
                linetype = 'dashed', color = 'red')
 frac_plot <- sum_optifit %>% filter(method == 'closed') %>% 
   plot_quality(frac_map_median, title = 'Median fraction mapped')  + 
+    geom_point(size = 3) +
   labs(caption = "dashed line: _de novo_ clustering") +
   theme(plot.caption = element_markdown(hjust = 0),
         plot.caption.position = 'plot')
