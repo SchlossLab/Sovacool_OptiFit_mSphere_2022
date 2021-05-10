@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       )
 ```
 
+### data prep
+
 ```{r lib}
 set.seed(2018)
 library(cowplot)
@@ -76,7 +78,7 @@ head(sum_optifit)
 ```
 
 
-# with facet_grid()
+# using facet_grid()
 
 ```{r otu-quality_facet}
 sum_optifit %>% 
@@ -99,9 +101,9 @@ Problems:
 - The sideways grid labels are hard to read.
 - There's too much whitespace around the legend.
 
-## with cowplot
+## using cowplot
 
-```{r otu-quality_cowplot, fig.width=4, fig.height=2}
+```{r otu-quality_cowplot}
 plot_quality <- function(dat, y_val, title = '') {
   dat %>% 
     ggplot(aes(strategy, {{ y_val }}, color = method)) + 

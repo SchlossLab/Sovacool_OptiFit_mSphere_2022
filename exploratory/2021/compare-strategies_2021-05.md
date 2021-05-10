@@ -2,6 +2,8 @@ Comparing OTU quality across clustering strategies
 ================
 2021-05-10
 
+### data prep
+
 ``` r
 set.seed(2018)
 library(cowplot)
@@ -77,7 +79,7 @@ head(sum_optifit)
     ## 6 human   database_silva open     100      0.817       886.         20.1 
     ## # … with 1 more variable: frac_map_median <dbl>
 
-# with facet\_grid()
+# using facet\_grid()
 
 ``` r
 sum_optifit %>% 
@@ -102,7 +104,7 @@ Problems:
 -   The sideways grid labels are hard to read.
 -   There’s too much whitespace around the legend.
 
-## with cowplot
+## using cowplot
 
 ``` r
 plot_quality <- function(dat, y_val, title = '') {
