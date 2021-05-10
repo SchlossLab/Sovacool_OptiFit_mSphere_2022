@@ -147,3 +147,4 @@ TODO:
     `labs(caption)` to accomplish this?
 -   Remove excess whitespace around the legend.
     <https://wilkelab.org/cowplot/articles/shared_legends.html>
+-   Adjust figure dimensions.

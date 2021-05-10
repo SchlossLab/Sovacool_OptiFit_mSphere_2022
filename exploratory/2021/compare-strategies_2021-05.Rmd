@@ -103,7 +103,7 @@ Problems:
 
 ## using cowplot
 
-```{r otu-quality_cowplot}
+```{r otu-quality_cowplot, fig.width = 9, fig.height = 5}
 plot_quality <- function(dat, y_val, title = '') {
   dat %>% 
     ggplot(aes(strategy, {{ y_val }}, color = method)) + 
@@ -141,3 +141,4 @@ TODO:
 
 - Get caption & legend side-by-side. Maybe use `ggannotate` instead of `labs(caption)` to accomplish this?
 - Remove excess whitespace around the legend. https://wilkelab.org/cowplot/articles/shared_legends.html
+- Adjust figure dimensions.
