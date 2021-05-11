@@ -1,11 +1,11 @@
 Comparing OTU quality across clustering strategies
 ================
-2021-05-10
+2021-05-11
 
 ### data prep
 
 ``` r
-set.seed(2018)
+set.seed(20210509)
 library(cowplot)
 library(ggtext)
 library(glue)
@@ -180,7 +180,7 @@ plot_quality <- function(dat, y_val, title = '') {
 mcc_plot <- sum_optifit %>% 
   plot_quality(mcc_median, title = 'Median MCC') +
     geom_point(size = 3,
-               position = position_jitter(width = 0.3, height = 0)) +
+               position = position_dodge(width = 0.2)) +
     geom_hline(data = sum_opticlust, 
                aes(yintercept = mcc_median), 
                linetype = 'dashed', color = 'red')
