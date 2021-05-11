@@ -179,11 +179,11 @@ plot_quality <- function(dat, y_val, title = '') {
 }
 mcc_plot <- sum_optifit %>% 
   plot_quality(mcc_median, title = 'Median MCC') +
-    geom_point(size = 3,
-               position = position_dodge(width = 0.2)) +
     geom_hline(data = sum_opticlust, 
                aes(yintercept = mcc_median), 
-               linetype = 'dashed', color = 'red')
+               linetype = 'dashed', color = 'red') +
+    geom_point(size = 3,
+               position = position_dodge(width = 0.4))
 frac_plot <- sum_optifit %>% filter(method == 'closed') %>% 
   plot_quality(frac_map_median, title = 'Median fraction mapped')  + 
     geom_point(size = 3) +

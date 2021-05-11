@@ -176,7 +176,7 @@ mcc_plot <- sum_optifit %>%
                aes(yintercept = mcc_median), 
                linetype = 'dashed', color = 'red') +
     geom_point(size = 3,
-               position = position_dodge(width = 0.3))
+               position = position_dodge(width = 0.4))
 frac_plot <- sum_optifit %>% filter(method == 'closed') %>% 
   plot_quality(frac_map_median, title = 'Median fraction mapped')  + 
     geom_point(size = 3) +
