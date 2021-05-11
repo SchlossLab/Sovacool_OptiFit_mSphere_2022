@@ -175,31 +175,31 @@ plot_quality <- function(dat, y_val, title = '') {
                        limits = c(0, 1)) +
     coord_flip() +
     labs(x = '', y = '', title = title) +
-    theme_bw()
+    theme_bw() + 
+    theme(legend.position="none")
 }
-mcc_plot <- sum_optifit %>% 
+
+mcc_plot <- sum_optifit %>%
   plot_quality(mcc_median, title = 'Median MCC') +
-    geom_hline(data = sum_opticlust, 
-               aes(yintercept = mcc_median), 
-               linetype = 'dashed', color = 'red') +
-    geom_point(size = 3,
-               position = position_dodge(width = 0.4))
+  geom_hline(data = sum_opticlust, aes(yintercept = mcc_median),
+             linetype = 'dashed', color = 'red') +
+  geom_point(size = 3, position = position_dodge(width = 0.4))
+
 frac_plot <- sum_optifit %>% filter(method == 'closed') %>% 
   plot_quality(frac_map_median, title = 'Median fraction mapped')  + 
-    geom_point(size = 3) +
-  labs(caption = "dashed line: _de novo_ clustering") +
-  theme(plot.caption = element_markdown(hjust = 0),
-        plot.caption.position = 'plot')
+    geom_point(size = 3)
 
 shared_legend <- get_legend(mcc_plot + 
                               guides(color = guide_legend(nrow = 1)) +
                               theme(legend.position = "bottom")
                             )
 
-main_plot <- plot_grid(mcc_plot + 
-    theme(legend.position="none"), frac_plot + 
-    theme(legend.position="none"), 
-                       ncol = 1, align = 'v', labels = 'AUTO')
+
+main_plot <- plot_grid(mcc_plot, frac_plot,
+                       ncol = 1, align = 'v', labels = 'AUTO'
+                       ) +
+  labs(caption = "dashed line: _de novo_ clustering") +
+  theme(plot.caption = element_markdown(size = rel(0.8)))
 
 plot_grid(main_plot, shared_legend, 
           ncol = 1, rel_heights = c(1, 0.1))
