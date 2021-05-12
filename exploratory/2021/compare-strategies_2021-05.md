@@ -1,6 +1,6 @@
 Comparing OTU quality across clustering strategies
 ================
-2021-05-11
+2021-05-12
 
 ### data prep
 
@@ -79,7 +79,7 @@ head(sum_optifit)
     ## 6 human   database_silva open     100      0.817       886.         20.1 
     ## # … with 1 more variable: frac_map_median <dbl>
 
-# using facet\_grid()
+## facet\_grid()
 
 ``` r
 sum_optifit %>% 
@@ -104,7 +104,7 @@ Problems:
 -   The sideways grid labels are hard to read.
 -   There’s too much whitespace around the legend.
 
-## using cowplot
+## cowplot
 
 ``` r
 plot_quality <- function(dat, y_val, title = '') {
@@ -206,3 +206,28 @@ plot_grid(main_plot, shared_legend,
 ```
 
 ![](figures/otu-quality_cowplot-revised-1.png)<!-- -->
+
+Idea: add vsearch *de novo* & gg to the plot?
+
+## patchwork
+
+``` r
+library(patchwork)
+
+(mcc_plot  + 
+  guides(color = guide_legend(nrow = 1)) +
+  theme(legend.position = "bottom")) / 
+frac_plot / 
+  guide_area() + 
+  plot_layout(guides = 'collect') +
+  plot_annotation(caption = "dashed line: _de novo_ clustering",
+                  tag_levels = 'A',
+                  theme = theme(plot.caption = element_markdown()))
+```
+
+![](figures/otu-quality_patchwork-1.png)<!-- -->
+
+TODO:
+
+-   [ ] reduce the whitespace
+-   [ ] figure out how to get the caption & legend side-by-side

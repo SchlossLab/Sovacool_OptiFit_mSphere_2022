@@ -78,7 +78,7 @@ head(sum_optifit)
 ```
 
 
-# using facet_grid()
+## facet_grid()
 
 ```{r otu-quality_facet}
 sum_optifit %>% 
@@ -101,7 +101,7 @@ Problems:
 - The sideways grid labels are hard to read.
 - There's too much whitespace around the legend.
 
-## using cowplot
+## cowplot
 
 ```{r otu-quality_cowplot, fig.width = 9, fig.height = 4.5}
 plot_quality <- function(dat, y_val, title = '') {
@@ -197,3 +197,26 @@ main_plot <- plot_grid(mcc_plot, frac_plot,
 plot_grid(main_plot, shared_legend, 
           ncol = 1, rel_heights = c(1, 0.1))
 ```
+
+Idea: add vsearch _de novo_ & gg to the plot?
+
+## patchwork
+
+```{r otu-quality_patchwork}
+library(patchwork)
+
+(mcc_plot  + 
+  guides(color = guide_legend(nrow = 1)) +
+  theme(legend.position = "bottom")) / 
+frac_plot / 
+  guide_area() + 
+  plot_layout(guides = 'collect') +
+  plot_annotation(caption = "dashed line: _de novo_ clustering",
+                  tag_levels = 'A',
+                  theme = theme(plot.caption = element_markdown()))
+```
+
+TODO:
+
+- [ ] reduce the whitespace
+- [ ] figure out how to get the caption & legend side-by-side
