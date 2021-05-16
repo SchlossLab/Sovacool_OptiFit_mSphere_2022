@@ -1,6 +1,6 @@
 Comparing OTU quality across clustering strategies
 ================
-2021-05-12
+2021-05-16
 
 ### data prep
 
@@ -13,7 +13,6 @@ library(here)
 library(knitr)
 library(tidyverse)
 
-theme_set(theme_classic())
 color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
 dataset_colors <- c(
   human = color_palette[[3]],
@@ -34,19 +33,25 @@ plot_denovo_hline <- function(yint, dat = sum_opticlust) {
        theme(plot.caption = element_markdown())
   )
 }
+select_cols <- function(dat) {
+  dat %>% 
+    select(dataset, strategy, method, tool, mcc, sec, mem_gb, fraction_mapped)
+}
+group_sum <- function(dat) {
+  dat %>% 
+  group_by(dataset, tool, method, strategy) %>% 
+  summarize(mcc_median = median(mcc),  # TODO: tidy way to avoid this repetitiveness?
+            sec_median = median(sec),
+            mem_gb_median = median(mem_gb),
+            frac_map_median = median(fraction_mapped))
+}
 ```
 
 ``` r
 opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>% 
   full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>% 
-  mutate_perf()
-sum_opticlust <- opticlust %>% 
-  group_by(dataset) %>% 
-  summarize(mcc_median = median(mcc),
-            sec_median = median(sec),
-            mem_gb_median = median(mem_gb)) %>% 
-  mutate(frac_map_median = 1)
-
+  mutate_perf() %>% mutate(fraction_mapped = 1, strategy = method)
+sum_opticlust <- opticlust %>% group_sum()
 optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
   mutate_perf()
 optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>% 
@@ -56,27 +61,31 @@ optifit_all <- list(optifit_dbs %>%
                  optifit_split %>% 
                    mutate(strategy = 'self-split')) %>% 
   reduce(full_join)
-
-sum_optifit <- optifit_all %>% 
-  group_by(dataset, strategy, method) %>% 
-  summarize(n = n(),
-            mcc_median = median(mcc),  # TODO: tidy way to avoid this repetitiveness?
-            sec_median = median(sec),
-            mem_gb_median = median(mem_gb),
-            frac_map_median = median(fraction_mapped))
-head(sum_optifit)
+sum_optifit <- optifit_all %>% group_sum()
+vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>% 
+  mutate_perf() %>% 
+  mutate(strategy = case_when(
+    method == 'de_novo' ~ method,
+    TRUE ~ as.character(glue('database_{ref}')))) 
+mothur_vsearch <- list(optifit_all, opticlust, vsearch) %>% 
+  lapply(select_cols) %>% 
+  reduce(bind_rows) %>% 
+  mutate(strategy = factor(strategy, levels = c('database_rdp', 'database_silva', 'database_gg', 'self-split', 'de_novo')),
+         method = factor(method, levels = c('open', 'closed', 'de_novo')))
+sum_all <- mothur_vsearch %>% group_sum()
+head(sum_all)
 ```
 
     ## # A tibble: 6 x 8
-    ## # Groups:   dataset, strategy [3]
-    ##   dataset strategy       method     n mcc_median sec_median mem_gb_median
-    ##   <chr>   <glue>         <chr>  <int>      <dbl>      <dbl>         <dbl>
-    ## 1 human   database_gg    closed   100      0.800       606.          5.38
-    ## 2 human   database_gg    open     100      0.815       899.         20.3 
-    ## 3 human   database_rdp   closed   100      0.597       476.          5.10
-    ## 4 human   database_rdp   open     100      0.819       991.         20.0 
-    ## 5 human   database_silva closed   100      0.780       549.          5.22
-    ## 6 human   database_silva open     100      0.817       886.         20.1 
+    ## # Groups:   dataset, tool, method [2]
+    ##   dataset tool   method strategy       mcc_median sec_median mem_gb_median
+    ##   <chr>   <chr>  <fct>  <fct>               <dbl>      <dbl>         <dbl>
+    ## 1 human   mothur open   database_rdp        0.819       991.         20.0 
+    ## 2 human   mothur open   database_silva      0.817       886.         20.1 
+    ## 3 human   mothur open   database_gg         0.815       899.         20.3 
+    ## 4 human   mothur open   self-split          0.820       611.          5.61
+    ## 5 human   mothur closed database_rdp        0.597       476.          5.10
+    ## 6 human   mothur closed database_silva      0.780       549.          5.22
     ## # … with 1 more variable: frac_map_median <dbl>
 
 ## facet\_grid()
@@ -94,6 +103,7 @@ sum_optifit %>%
   coord_flip() +
   labs(x = '', y = '')  + 
   guides(color = guide_legend(nrow = 1)) +
+  theme_classic() +
   theme(legend.position = "bottom")
 ```
 
@@ -117,6 +127,7 @@ plot_quality <- function(dat, y_val, title = '') {
     ylim(0, 1) +
     coord_flip() +
     labs(x = '', y = '', title = title) + 
+    theme_classic() +
     theme(legend.position="none")
 }
 mcc_plot <- sum_optifit %>% 
@@ -231,3 +242,88 @@ TODO:
 
 -   [ ] reduce the whitespace
 -   [ ] figure out how to get the caption & legend side-by-side
+
+## mothur vs vsearch
+
+-   color: mothur or vsearch
+-   shape: open, closed, or *de novo*
+-   sort by mcc?
+
+``` r
+plot_quality <- function(dat, y_val, title = '') {
+  dat %>% 
+    ggplot(aes(strategy, {{ y_val }}, 
+               color = tool, 
+               shape = method)) + 
+    geom_point(size = 3, position = position_dodge(width = 0.4)) +
+    facet_wrap(dataset ~ ., nrow=1) +
+    scale_shape_manual(values = list(open = 1, closed = 19, de_novo = 17)) +
+    #scale_color_manual(values = tri_colors) +
+    scale_y_continuous(labels = c('0', '0.5', '1'), 
+                       breaks = c(0, 0.5, 1),
+                       limits = c(0, 1)) +
+    coord_flip() +
+    labs(x = '', y = '', title = title) +
+    theme_bw() +
+    theme(legend.position="none")
+}
+
+mcc_plot <- sum_all %>% 
+  plot_quality(mcc_median, title = "MCC")
+frac_plot <- sum_all %>% filter(method == 'closed') %>% 
+  plot_quality(frac_map_median, title = "Fraction Mapped")
+
+shared_legend <- get_legend(mcc_plot + 
+                              guides(color = guide_legend(nrow = 1)) +
+                              theme(legend.position = "bottom",
+                                    legend.title = element_blank())
+                            )
+
+main_plot <- plot_grid(mcc_plot, frac_plot,
+                       ncol = 1, align = 'v', labels = 'AUTO'
+                       ) 
+
+plot_grid(main_plot, shared_legend, 
+          ncol = 1, rel_heights = c(1, 0.1))
+```
+
+![](figures/otu-quality_mothur-vs-vsearch-1.png)<!-- -->
+
+## Runtime
+
+``` r
+plot_runtime <- function(dat, yval, title = '') {
+  dat %>% 
+    ggplot(aes(strategy, {{ yval }}, 
+               color = tool, 
+               shape = method
+               )) + 
+    geom_point(size = 3, position = position_dodge(width = 0.4)) +
+    facet_wrap(dataset ~ ., nrow = 1, scales = 'free_x') +
+    scale_shape_manual(values = list(open = 1, closed = 19, de_novo = 17)) +
+    scale_y_log10() +
+    #scale_color_manual(values = tri_colors) +
+    coord_flip() +
+    labs(x = '', y = '', title = title) +
+    theme_bw() +
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "none")
+}
+runtime_plot <- sum_all %>% plot_runtime(sec_median) + labs(title = 'Runtime (sec)')
+runtime_plot
+```
+
+![](figures/runtime_mothur-vs-vsearch-1.png)<!-- -->
+
+## Performance combined
+
+``` r
+main_plot <- plot_grid(mcc_plot, frac_plot, runtime_plot,
+                       ncol = 1, align = 'v', labels = 'AUTO'
+                       ) 
+
+plot_grid(main_plot, shared_legend, 
+          ncol = 1, rel_heights = c(1, 0.1))
+```
+
+![](figures/combined_mothur-vs-vsearch-1.png)<!-- -->
