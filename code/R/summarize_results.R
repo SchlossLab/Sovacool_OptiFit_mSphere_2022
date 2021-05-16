@@ -9,8 +9,7 @@ mutate_perf <- function(dat) {
       mem_gb = mem_mb / 1024
     ) %>%
     rename(
-      sec = s,
-      num_otus = sobs
+      sec = s
     )
 }
 #
@@ -24,7 +23,7 @@ opticlust <- read_tsv(here("subworkflows/1_prep_samples/results/opticlust_result
   mutate(strategy = method)
 optifit_db <- read_tsv(here("subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv")) %>%
   mutate_perf() %>%
-  mutate(strategy = glue("database"))
+  mutate(strategy = glue("database_{ref}"))
 optifit_split <- read_tsv(here("subworkflows/3_fit_sample_split/results/optifit_split_results.tsv")) %>%
   mutate_perf() %>%
   mutate(strategy = "self-split")
@@ -32,7 +31,7 @@ vsearch <- read_tsv(here("subworkflows/4_vsearch/results/vsearch_results.tsv")) 
   mutate_perf() %>%
   mutate(strategy = case_when(
     method == "de_novo" ~ method,
-    TRUE ~ as.character(glue("database"))
+    TRUE ~ as.character(glue("database_{ref}"))
   ))
 results_agg <- list(opticlust, optifit_db, optifit_split, vsearch) %>%
   reduce(full_join)
