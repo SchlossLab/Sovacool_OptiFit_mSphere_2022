@@ -1,6 +1,6 @@
 # OptiFitAnalysis
 
-Benchmarking the OptiFit algorithm in [mothur](github.com/mothur/mothur).
+Benchmarking the OptiFit algorithm in [mothur](https://github.com/mothur/mothur).
 
 Find more details on how to use OptiFit and descriptions of the parameter options on the mothur wiki: https://mothur.org/wiki/cluster.fit/. 
 
