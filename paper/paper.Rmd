@@ -43,19 +43,19 @@ twitter:
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
-mothuR::set_knitr_opts()
-knitr::knit_hooks$set(inline = mothuR::paste_oxford_list)
+schtools::set_knitr_opts()
 ```
 
 ```{r deps, message = FALSE}
 library(here)
-library(mothuR)
+library(schtools)
 library(tidyverse)
 load(here('results', 'stats.RData'))
 ```
-
+<!--
 - **"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
 - From Pat: "briefly looking through the Discussion and Intro, one point that we may have forgotten is that a benefit of our approach is that it is much easier to customize to a specific region. The greengenes reference OTUs are based on full length sequences. This causes problems when considering shorter (e.g. V4) sequences since reference OTUs may be more similar  than the full length and even identical to each other in the subregion. Because we can easily spin up a subregion specific set of reference OTUs from a public database or the reference fraction this isn't a problem. This is described in one of my earlier papers looking at open/closed reference clustering and was part of the reason that the order of the database was important."
+-->
 
 ## Abstract
 
@@ -300,7 +300,7 @@ mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC).
 In closed reference mode, OptiFit was able to fit `r frac_fit_split`% of query
 sequences to reference OTUs with the split strategy, a great improvement over
 the average `r frac_fit_gg`% of sequences fit to the greengenes database.
-In terms of runtime, closed and open reference OptiFit performed faster than
+In terms of run time, closed and open reference OptiFit performed faster than
 OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and 
 `r sec_open_fit_split_vs_clust` respectively.
 The split dataset strategy also performed `r sec_closed_fit_split_vs_db`% faster
@@ -317,8 +317,18 @@ To test the best reference size, reference sizes from 10% to 80% of the
 sequences were created, with the remaining sequences used for the query.
 OTU quality was remarkably stable across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
-variation of `r cv_fit_split_mcc_human` for the MCC score across all fractions. **TODO: revisit how to report this**
-**TODO: runtime & fraction mapped across sizes.**
+variation of `r cv_fit_split_mcc_human_simple` for the MCC score across all fractions.
+Run time generally decreased as the reference fraction increased; for the human
+dataset, the median run time was `r sec_fit_split_human_simple_1` with 10% of
+sequences in the reference and `r sec_fit_split_human_simple_9` with 90% of
+sequences in the reference.
+In closed reference mode, the fraction of sequences that mapped increased as the
+reference size increased; for the human dataset, the median fraction mapped was
+`r frac_fit_split_human_simple_1` with 10% of sequences in the reference and 
+`r frac_fit_split_human_simple_9` with 90% of sequences in the reference.
+These trends hold for the other datasets as well (see supplemental figure **TODO**).
+Thus, the reference fraction does not affect OTU quality in terms of MCC score,
+but does affect the run time and the fraction of sequences that map during closed reference mode.
 
 **TODO: pick a fraction (e.g. 50%). this part is less important. figure would be supplemental.**
 After testing the split strategy using a simple random sample to select the reference sequences, we then investigated other methods of splitting the data.
@@ -330,8 +340,8 @@ MCCs `r mcc_fit_split_simple` and `r mcc_fit_split_abun` respectively), but
 worse for similarity-weighted sampling with a median MCC of `r mcc_fit_split_dist`.
 In closed reference mode, the fraction of query sequences that can be fit to the
 reference OTUs increases as the reference fraction increases; from 
-`r frac_fit_split_0.1`% of query sequences fit when using 10% of the dataset as 
-the reference, to `r frac_fit_split_0.8`% of query sequences fit when using 80% 
+`r frac_fit_split_1`% of query sequences fit when using 10% of the dataset as 
+the reference, to `r frac_fit_split_9`% of query sequences fit when using 90% 
 of the dataset as the reference. **TODO: report up to 90% fraction**
 
 ## Discussion
