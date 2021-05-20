@@ -315,13 +315,57 @@ sec_open_fit_split_vs_clust <- rel_diff(open_fit_split_sec, opticlust_sec) %>% a
 sec_open_fit_split_vs_db <- rel_diff(open_fit_split_sec, open_fit_db_sec) %>% abs()
 sec_closed_fit_split_vs_db <- rel_diff(closed_fit_split_sec, closed_fit_db_sec) %>% abs()
 
-cv_fit_split_mcc_human <- coeff_var(dat %>% filter(
+cv_fit_split_mcc_human_simple <- coeff_var(dat %>% filter(
   strategy == "self-split",
   tool == "mothur",
   dataset == "human",
   ref_weight == "simple"
 ) %>%
   pull(mcc_median))
+
+sec_fit_split_human_simple_1 <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == 'human',
+    ref_weight == "simple",
+    ref_frac == 0.1
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
+sec_fit_split_human_simple_9 <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == 'human',
+    ref_weight == "simple",
+    ref_frac == 0.9
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
+frac_fit_split_human_simple_1 <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == 'human',
+    ref_weight == "simple",
+    ref_frac == 0.1
+  ) %>%
+  pull(frac_map_median) %>%
+  median()
+
+frac_fit_split_human_simple_9 <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == 'human',
+    ref_weight == "simple",
+    ref_frac == 0.9
+  ) %>%
+  pull(frac_map_median) %>%
+  median()
 
 mcc_fit_split_simple <- dat %>%
   filter(
@@ -354,22 +398,22 @@ mcc_fit_split_dist <- dat %>%
   pull(mcc_median) %>%
   median()
 
-frac_fit_split_0.1 <- dat %>%
+frac_fit_split_1 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     method == "closed",
-    ref_frac == 0.1
+    ref_frac == 1
   ) %>%
   pull(frac_map_median) %>%
   median() * 100
 
-frac_fit_split_0.8 <- dat %>%
+frac_fit_split_9 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     method == "closed",
-    ref_frac == 0.8
+    ref_frac == 0.9
   ) %>%
   pull(frac_map_median) %>%
   median() * 100
