@@ -31,8 +31,8 @@ vsearch <- read_tsv(here("subworkflows/4_vsearch/results/vsearch_results.tsv")) 
   mutate_perf() %>%
   mutate(strategy = case_when(
     method == "de_novo" ~ method,
-    TRUE ~ "database")
-    )
+    TRUE ~ "database"
+  ))
 results_agg <- list(opticlust, optifit_db, optifit_split, vsearch) %>%
   reduce(full_join)
 
