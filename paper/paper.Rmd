@@ -155,9 +155,9 @@ OptiFit leverages the method employed by OptiClust of iteratively assigning
 sequences to OTUs to produce the highest quality OTUs possible, and extends this
 method for reference-based clustering.
 OptiClust first seeds each sequence into its own OTU as a singleton. 
-Then for each sequence, OptiClust considers whether the sequence should move to a
-different OTU or remain in its current OTU, choosing the option that results in
-a better Matthews correlation coefficient (MCC).
+Then for each sequence, OptiClust considers whether the sequence should move to
+a different OTU or remain in its current OTU, choosing the option that results
+in a better Matthews correlation coefficient (MCC).
 Iterations continue until the MCC stabilizes or until a maximum number of
 iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
@@ -317,7 +317,8 @@ To test the best reference size, reference sizes from 10% to 80% of the
 sequences were created, with the remaining sequences used for the query.
 OTU quality was remarkably stable across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
-variation of `r cv_fit_split_mcc_human_simple` for the MCC score across all fractions.
+variation of `r cv_fit_split_mcc_human_simple` for the MCC score across all
+fractions.
 Run time generally decreased as the reference fraction increased; for the human
 dataset, the median run time was `r sec_fit_split_human_simple_1` with 10% of
 sequences in the reference and `r sec_fit_split_human_simple_9` with 90% of
@@ -328,21 +329,32 @@ reference size increased; for the human dataset, the median fraction mapped was
 `r frac_fit_split_human_simple_9` with 90% of sequences in the reference.
 These trends hold for the other datasets as well (see supplemental figure **TODO**).
 Thus, the reference fraction does not affect OTU quality in terms of MCC score,
-but does affect the run time and the fraction of sequences that map during closed reference mode.
+but does affect the run time and the fraction of sequences that map during
+closed reference mode.
 
-**TODO: pick a fraction (e.g. 50%). this part is less important. figure would be supplemental.**
-After testing the split strategy using a simple random sample to select the reference sequences, we then investigated other methods of splitting the data.
-We tested three methods for selecting the fraction of sequences to be used
-as the reference; a simple random sample, weighting sequences by relative
-abundance, and weighting by similarity to other sequences in the dataset.
-OTU quality was similar with the simple and abundance-weighted sampling (median
-MCCs `r mcc_fit_split_simple` and `r mcc_fit_split_abun` respectively), but
-worse for similarity-weighted sampling with a median MCC of `r mcc_fit_split_dist`.
-In closed reference mode, the fraction of query sequences that can be fit to the
-reference OTUs increases as the reference fraction increases; from 
-`r frac_fit_split_1`% of query sequences fit when using 10% of the dataset as 
-the reference, to `r frac_fit_split_9`% of query sequences fit when using 90% 
-of the dataset as the reference. **TODO: report up to 90% fraction**
+After testing the split strategy using a simple random sample to select the
+reference sequences, we then investigated other methods of splitting the data.
+We tested three methods for selecting the fraction of sequences to be used as
+the reference at a size of 50%; a simple random sample, weighting sequences by
+relative abundance, and weighting by similarity to other sequences in the
+dataset.
+OTU quality in terms of MCC was similar with the simple and abundance-weighted
+sampling (median MCCs of `r mcc_fit_split_simple` and `r mcc_fit_split_abun`
+respectively), but worse for similarity-weighted sampling (median MCC of
+`r mcc_fit_split_dist`).
+In closed-reference clustering mode, the fraction of sequences that mapped were
+similar for simple and abundance-weighted sampling (median fraction mapped of 
+`r frac_fit_split_simple` and `r frac_fit_split_abun` respectively), but worse 
+for similarity-weighted sampling (median fraction mapped of `r frac_fit_split_dist`).
+While simple and abundance-weighted sampling produced better quality OTUs than
+similarity-weighted sampling, OptiFit performed faster on
+similarity-weighted samples with a median runtime of `r sec_fit_split_dist`
+seconds compared to `r sec_fit_split_simple` and `r sec_fit_split_abun` seconds
+for simple and abundance-weighted sampling (respectively).
+Thus, employing more complicated sampling strategies such as abundance-weighted
+and similarity-weighted sampling did not confer any advantages over selecting
+the reference via a simple random sample, and in fact decreased OTU quality in
+the case of similarity-weighted sampling.
 
 ## Discussion
 

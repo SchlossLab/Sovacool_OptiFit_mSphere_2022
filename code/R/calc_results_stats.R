@@ -378,6 +378,9 @@ mcc_fit_split_simple <- dat %>%
   median()
 mcc_opticlust_vs_fit_split_simple <- rel_diff(opticlust_mcc, mcc_fit_split_simple)
 
+#####
+# fit split at ref_frac 0.5
+
 mcc_fit_split_abun <- dat %>%
   filter(
     strategy == "self-split",
@@ -397,6 +400,68 @@ mcc_fit_split_dist <- dat %>%
   ) %>%
   pull(mcc_median) %>%
   median()
+
+frac_fit_split_simple <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "simple",
+    ref_frac == 0.5
+  ) %>%
+  pull(frac_map_median) %>%
+  median()
+
+frac_fit_split_abun <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "abundance",
+    ref_frac == 0.5
+  ) %>%
+  pull(frac_map_median) %>%
+  median()
+
+frac_fit_split_dist <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "distance",
+    ref_frac == 0.5
+  ) %>%
+  pull(frac_map_median) %>%
+  median()
+
+sec_fit_split_simple <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "simple",
+    ref_frac == 0.5
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
+sec_fit_split_abun <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "abundance",
+    ref_frac == 0.5
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
+sec_fit_split_dist <- dat %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "distance",
+    ref_frac == 0.5
+  ) %>%
+  pull(sec_median) %>%
+  median()
+
+##########
 
 frac_fit_split_1 <- dat %>%
   filter(
