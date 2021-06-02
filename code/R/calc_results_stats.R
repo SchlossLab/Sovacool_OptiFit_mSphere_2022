@@ -327,7 +327,7 @@ sec_fit_split_human_simple_1 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    dataset == 'human',
+    dataset == "human",
     ref_weight == "simple",
     ref_frac == 0.1
   ) %>%
@@ -338,7 +338,7 @@ sec_fit_split_human_simple_9 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    dataset == 'human',
+    dataset == "human",
     ref_weight == "simple",
     ref_frac == 0.9
   ) %>%
@@ -349,7 +349,7 @@ frac_fit_split_human_simple_1 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    dataset == 'human',
+    dataset == "human",
     ref_weight == "simple",
     ref_frac == 0.1
   ) %>%
@@ -360,7 +360,7 @@ frac_fit_split_human_simple_9 <- dat %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
-    dataset == 'human',
+    dataset == "human",
     ref_weight == "simple",
     ref_frac == 0.9
   ) %>%
