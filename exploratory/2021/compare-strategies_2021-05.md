@@ -1,6 +1,6 @@
 Comparing OTU quality across clustering strategies
 ================
-2021-05-16
+2021-06-08
 
 ### data prep
 
@@ -70,22 +70,59 @@ vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) 
 mothur_vsearch <- list(optifit_all, opticlust, vsearch) %>% 
   lapply(select_cols) %>% 
   reduce(bind_rows) %>% 
-  mutate(strategy = factor(strategy, levels = c('database_rdp', 'database_silva', 'database_gg', 'self-split', 'de_novo')),
-         method = factor(method, levels = c('open', 'closed', 'de_novo')))
+  mutate(method = as.character(method),
+         strategy = as.character(strategy))
 sum_all <- mothur_vsearch %>% group_sum()
 head(sum_all)
 ```
 
     ## # A tibble: 6 x 8
-    ## # Groups:   dataset, tool, method [2]
-    ##   dataset tool   method strategy       mcc_median sec_median mem_gb_median
-    ##   <chr>   <chr>  <fct>  <fct>               <dbl>      <dbl>         <dbl>
-    ## 1 human   mothur open   database_rdp        0.819       991.         20.0 
-    ## 2 human   mothur open   database_silva      0.817       886.         20.1 
-    ## 3 human   mothur open   database_gg         0.815       899.         20.3 
-    ## 4 human   mothur open   self-split          0.820       611.          5.61
-    ## 5 human   mothur closed database_rdp        0.597       476.          5.10
-    ## 6 human   mothur closed database_silva      0.780       549.          5.22
+    ## # Groups:   dataset, tool, method [3]
+    ##   dataset tool   method  strategy       mcc_median sec_median mem_gb_median
+    ##   <chr>   <chr>  <chr>   <chr>               <dbl>      <dbl>         <dbl>
+    ## 1 human   mothur closed  database_gg         0.800       606.          5.38
+    ## 2 human   mothur closed  database_rdp        0.597       476.          5.10
+    ## 3 human   mothur closed  database_silva      0.780       549.          5.22
+    ## 4 human   mothur closed  self-split          0.819       556.          5.09
+    ## 5 human   mothur de_novo de_novo             0.821       800.          5.06
+    ## 6 human   mothur open    database_gg         0.815       899.         20.3 
+    ## # … with 1 more variable: frac_map_median <dbl>
+
+### make the strategy & method labels prettier
+
+``` r
+sum_all <- sum_all %>%
+  mutate(
+    strategy = factor(
+      case_when(
+        strategy == "de_novo"        ~ "_de novo_",
+        strategy == 'database_rdp'   ~ "db: RDP",
+        strategy == 'database_silva' ~ "db: SILVA",
+        strategy == 'database_gg'    ~ "db: Greengenes",
+        TRUE                         ~ strategy
+      ),
+      levels = c('db: RDP', 'db: SILVA', 'db: Greengenes', 
+                 'self-split',  '_de novo_')
+    ),
+    method = factor(
+      case_when(method == "de_novo" ~ "_de novo_",
+                TRUE                ~ method),
+      levels = c('open', 'closed', '_de novo_')
+    )
+  )
+head(sum_all)
+```
+
+    ## # A tibble: 6 x 8
+    ## # Groups:   dataset, tool, method [3]
+    ##   dataset tool   method    strategy       mcc_median sec_median mem_gb_median
+    ##   <chr>   <chr>  <fct>     <fct>               <dbl>      <dbl>         <dbl>
+    ## 1 human   mothur closed    db: Greengenes      0.800       606.          5.38
+    ## 2 human   mothur closed    db: RDP             0.597       476.          5.10
+    ## 3 human   mothur closed    db: SILVA           0.780       549.          5.22
+    ## 4 human   mothur closed    self-split          0.819       556.          5.09
+    ## 5 human   mothur _de novo_ _de novo_           0.821       800.          5.06
+    ## 6 human   mothur open      db: Greengenes      0.815       899.         20.3 
     ## # … with 1 more variable: frac_map_median <dbl>
 
 ## facet\_grid()
@@ -171,6 +208,7 @@ TODO:
 -   [ ] set theme elements to add space between facets:
     `+ theme(panel.spacing = unit(c(3,3),'lines'))`
 -   generally: build for the dimensions required by the journal
+-   [ ] fix strategy labels (remove underscores, italicize *de novo*)
 
 ``` r
 plot_quality <- function(dat, y_val, title = '') {
@@ -257,7 +295,7 @@ plot_quality <- function(dat, y_val, title = '') {
                shape = method)) + 
     geom_point(size = 3, position = position_dodge(width = 0.4)) +
     facet_wrap(dataset ~ ., nrow=1) +
-    scale_shape_manual(values = list(open = 1, closed = 19, de_novo = 17)) +
+    scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
     #scale_color_manual(values = tri_colors) +
     scale_y_continuous(labels = c('0', '0.5', '1'), 
                        breaks = c(0, 0.5, 1),
@@ -265,7 +303,8 @@ plot_quality <- function(dat, y_val, title = '') {
     coord_flip() +
     labs(x = '', y = '', title = title) +
     theme_bw() +
-    theme(legend.position="none")
+    theme(legend.position="none",
+          axis.text.y = element_markdown())
 }
 
 mcc_plot <- sum_all %>% 
@@ -273,10 +312,11 @@ mcc_plot <- sum_all %>%
 frac_plot <- sum_all %>% filter(method == 'closed') %>% 
   plot_quality(frac_map_median, title = "Fraction Mapped")
 
-shared_legend <- get_legend(mcc_plot + 
+shared_legend <- get_legend(mcc_plot +
                               guides(color = guide_legend(nrow = 1)) +
                               theme(legend.position = "bottom",
-                                    legend.title = element_blank())
+                                    legend.title = element_blank(),
+                                    legend.text = element_markdown())
                             )
 
 main_plot <- plot_grid(mcc_plot, frac_plot,
@@ -300,16 +340,18 @@ plot_runtime <- function(dat, yval, title = '') {
                )) + 
     geom_point(size = 3, position = position_dodge(width = 0.4)) +
     facet_wrap(dataset ~ ., nrow = 1, scales = 'free_x') +
-    scale_shape_manual(values = list(open = 1, closed = 19, de_novo = 17)) +
+    scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
     scale_y_log10() +
     #scale_color_manual(values = tri_colors) +
     coord_flip() +
     labs(x = '', y = '', title = title) +
     theme_bw() +
     guides(color = guide_legend(nrow = 1)) +
-    theme(legend.position = "none")
+    theme(legend.position = "none",
+          axis.text.y = element_markdown())
 }
-runtime_plot <- sum_all %>% plot_runtime(sec_median) + labs(title = 'Runtime (sec)')
+runtime_plot <- sum_all %>% plot_runtime(sec_median) + 
+  labs(title = 'Runtime (sec)')
 runtime_plot
 ```
 
