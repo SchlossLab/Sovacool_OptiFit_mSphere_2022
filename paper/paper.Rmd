@@ -91,9 +91,10 @@ Amplicon sequencing has become a mainstay of microbial ecology and
 host-associated microbiome research.
 Researchers can affordably generate millions of sequences to characterize the
 composition of hundreds of samples from culture-independent microbial
-communities. In a typical analysis pipeline,
-16S rRNA gene sequences are assigned to Operational Taxonomic Units (OTUs) to
-facilitate comparison of taxonomic composition between communities.
+communities. 
+In a typical analysis pipeline, 16S rRNA gene sequences are assigned to
+Operational Taxonomic Units (OTUs) to facilitate comparison of taxonomic
+composition between communities.
 A distance threshold of 3% (or sequence similarity of 97%) is commonly used to
 cluster sequences into OTUs based on either a reference database or pairwise
 comparisons of the sequences within the dataset.
@@ -102,44 +103,50 @@ may impact downstream analyses of community composition
 [@westcott_opticlust_2017; @schloss_application_2016;
 @westcott_novo_2015].
 
-There are three main categories of OTU clustering algorithms: closed reference,
-open reference, and _de novo_ clustering. 
-Closed reference methods assign sequences to a set of pre-made OTUs generated
-from reference sequences.
-If a query sequence is not within the distance threshold to any of the reference
-sequences, it is discarded.
+There are two main categories of OTU clustering algorithms: _de novo_ and
+reference-based.
+OptiClust, the _de novo_ clustering method provided by the mothur software
+program, uses the distance score between all pairs of sequences in the dataset
+to cluster them into OTUs by maximizing the Matthews correlation coefficient
+(MCC) [@westcott_opticlust_2017].
+This approach takes into account the distances between all pairs of sequences
+when assigning query sequences to OTUs, in contrast to other tools such as
+VSEARCH which only considers the distance between the query sequence and a
+representative centroid sequence in the OTU.
+A limitation of _de novo_ clustering is that different OTU assignments will be
+produced when new sequences are added to a dataset, making it difficult to use
+_de novo_ clustering to compare OTUs between different studies.
+Furthermore, since _de novo_ clustering requires distance calculations between all
+sequences in a dataset, the execution time can be slow for very large datasets.
+
+Reference clustering attempts to overcome the limitations of _de novo_
+clustering methods by using a representative set of sequences from a database,
+with each reference sequence seeding an OTU.
+Commonly, the Greengenes set of representative full length sequences clustered
+at 97% similarity is used as the reference with VSEARCH
+[@desantis_greengenes_2006].
+Query sequences are then assigned to OTUs based on their similarity to the
+reference sequences.
+Any query sequences that are not within the distance threshold to any of the
+reference sequences are either thrown out (closed reference mode) or clustered
+_de novo_ to create additional OTUs (open reference mode).
 While reference-based clustering is generally fast, it is limited by the
 diversity of the reference database.
-Rare or novel sequences in the sample will be lost if they are not represented
-by a similar sequence in the database.
-_De novo_ methods cluster sequences based on their distance to each other,
-without the use of an external reference.
-_De novo_ clustering overcomes the limitations of reference databases by
-considering only sequences in the dataset, but is more computationally intensive
-and generates different OTU assignments when new sequences are introduced.
-Unstable OTU assignments make it difficult to use _de novo_ clustering to
-compare taxonomic composition of communities between studies or to use machine
-learning models trained with _de novo_ OTUs to make predictions on new data.
-Open reference methods take a hybrid approach, first performing closed reference
-clustering, then any sequences that cannot be assigned to reference OTUs are
-clustered _de novo_ to create additional OTUs.
+Rare or novel sequences in the sample will be lost in closed reference mode if
+they are not represented by a similar sequence in the database.
 Previous studies found that the OptiClust _de novo_ clustering algorithm created
 the highest quality OTU assignments of all clustering methods based on the
 Matthews correlation coefficient (MCC) [@westcott_opticlust_2017].
 As a result, we have recommended OptiClust as the preferred method for OTU
 clustering whenever OTU stability is not required.
 
-- **TODO: current method for open/closed is vsearch against greengenes.**
-- **TODO: use word "map" for what vsearch does, "fit" for what optifit does.**
-- **TODO**: 2 categories of clustering: _de novo_ and reference based. separate paragraphs. describe opticlust first in de novo paragraph. 2nd paragraph: ref methods are good cause they're fast and don't use much ram. dependent on order of db. people use greengenes, which are rep seqs from 3% otus from full length.
-- reader should know what opticlust is, closed & open ref clustering is, strengths & weakness are of each. then we solve these problems.
-- **TODO:** note that greengenes is defunct now?!
-
 To overcome the limitations of _de novo_ clustering while maintaining OTU
 quality, we developed OptiFit, a reference-based clustering algorithm in the
 mothur program which takes existing OTUs as the reference to fit new sequences
 to. 
-**TODO: more words here?** 
+In contrast to other tools, OptiFit considers all pairwise distance scores
+between reference and query sequences when assigning sequences to OTUs in order
+to produce OTUs of the highest possible quality.
 Here, we tested the OptiFit algorithm with the reference as a database or _de
 novo_ OTUs and compared the performance to existing tools.
 To evaluate the OptiFit algorithm and compare to existing methods, we used four
@@ -377,6 +384,7 @@ databases, which are unlikely to contain sequences from rare and novel microbes.
 This drop in quality was most notable with RDP, which contains only about 21,000
 sequences compared to over 200,000 sequences in SILVA and Greengenes each at the
 time of this writing.
+**TODO:** note that greengenes is defunct now?!
 We recommend that users who require an independent reference database opt for
 large databases with good coverage of microbial diversity.
 Since OptiClust performs faster than open reference OptiFit and creates higher
