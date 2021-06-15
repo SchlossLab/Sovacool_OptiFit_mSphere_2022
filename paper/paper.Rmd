@@ -76,8 +76,14 @@ when deploying a machine learning model where OTUs are features
 To provide an efficient and robust method to fit amplicon sequence data to
 existing OTUs, we developed the OptiFit algorithm as a new component of the
 mothur program.
-
-**TODO: summarize results & conclusion**
+We tested OptiFit using four microbiome datasets with two different strategies;
+by fitting to an external reference database, or by splitting the dataset into a 
+reference and query set and fitting the query sequences to the reference set.
+OptiFit produces OTUs of similar quality as OptiClust and at faster speeds when
+using the split dataset strategy, while the OTU quality and speed depends on the
+database chosen when using the external database strategy.
+OptiFit provides a suitable option for users who require stable reference-based
+OTU assignments at the same quality afforded by _de novo_ clustering methods.
 
 ### Importance
 
