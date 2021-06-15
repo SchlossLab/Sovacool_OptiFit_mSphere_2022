@@ -422,16 +422,22 @@ We recommend using a simple random sample since the more
 sophisticated reference selection methods do not offer any benefit. 
 The similarity in OTU quality between OptiClust and OptiFit with this strategy
 demonstrates the suitability of using OptiFit to fit sequences to existing OTUs,
-such as when using already-trained machine learning models to make predictions
-on new data or comparing OTUs across studies.
+such as when comparing OTUs across studies.
 However, when stable OTUs are not required, we recommend using OptiClust for _de
 novo_ clustering over the split strategy with OptiFit since OptiClust is simpler
 to execute but performs similarly in terms of both run time and OTU quality.
 
-**TODO: big picture concluding paragraph.**
 We have developed a new clustering algorithm that allows users to produce high
 quality OTUs using already existing OTUs as a reference.
-**TODO: Point to courtney's paper metaphorically. wow what a cool application someone should do _wink wink_.**
+Unlike existing reference-based methods which map query sequences to a single
+centroid sequence in each reference OTU, OptiFit considers all sequences in each
+reference OTU when fitting query sequences, resulting in OTUs of a similar high
+quality as those produced by the _de novo_ OptiClust algorithm.
+Potential applications include fitting sequences to reference databases,
+comparing taxonomic composition of microbiomes across different studies, 
+or using OTU-based machine learning models to make predictions on new data.
+OptiFit fills the missing option for fitting query sequences to existing OTUs
+that does not sacrifice OTU quality for stability of OTU assignments.
 
 ## Materials and Methods
 
