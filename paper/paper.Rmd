@@ -382,11 +382,12 @@ dataset/database combination.
 This may reflect limitations of reference
 databases, which are unlikely to contain sequences from rare and novel microbes.
 This drop in quality was most notable with RDP, which contains only about 21,000
-sequences compared to over 200,000 sequences in SILVA and Greengenes each at the
-time of this writing.
-**TODO:** note that greengenes is defunct now?!
+sequences compared to over 200,000 sequences in SILVA and Greengenes each.
+Note that Greengenes has not been updated since 2013 at the time of this
+writing, while SILVA is updated every one to two years with the most recent
+release in 2019.
 We recommend that users who require an independent reference database opt for
-large databases with good coverage of microbial diversity.
+large databases with regular updates and good coverage of microbial diversity.
 Since OptiClust performs faster than open reference OptiFit and creates higher
 quality OTUs than closed reference OptiFit with the database strategy, we
 recommend using OptiClust rather than fitting to a database whenever stable OTUs
