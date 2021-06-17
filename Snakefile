@@ -77,17 +77,26 @@ rule plot_workflow:
         dot -T tiff -Gsize=4,3\! -Gdpi=300 {input.gv} > {output}
         """
 
+rule plot_results:
+    input:
+        R='code/R/plot_results.R'
+    output:
+        'figures/results.tiff'
+    script:
+        'code/R/plot_results.R'
+
 deps = ['paper/references.bib',
         'paper/msystems.csl',
         rules.calc_results_stats.output.rda,
-        rules.plot_workflow.output]
+        rules.plot_workflow.output,
+        rules.plot_results.output]
 
 rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
-        pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
         R='code/R/render.R',
         fcns="code/R/functions.R",
+        pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
         deps=deps
     output:
         file='docs/paper.pdf'

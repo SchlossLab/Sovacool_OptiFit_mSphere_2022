@@ -225,7 +225,8 @@ respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
-dropped to `r closed_fit_rdp_mcc` when fitting to RDP.
+dropped to `r closed_fit_rdp_mcc` when fitting to RDP 
+(see Figure \@ref(fig:workflow)).
 For comparison, clustering datasets _de novo_ with
 OptiClust produced an average MCC score of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference
@@ -236,7 +237,9 @@ clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
 ```{r workflow, dpi=300, fig.dim=c(4,3), fig.cap="The Analysis Workflow"}
-tiff::readTIFF(here('figures', 'workflow.tiff')) %>% 
+# TODO: write caption
+here('figures', 'workflow.tiff') %>% 
+  tiff::readTIFF() %>% 
   grid::grid.raster() 
 ```
 
@@ -266,6 +269,14 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 `r open_fit_silva_human_sec` for open reference OptiFit. 
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
+
+```{r results, dpi=100, fig.dim=c(6,6), fig.cap="Benchmarking results"}
+# TODO: write caption
+here('figures', 'results.tiff') %>% 
+  tiff::readTIFF() %>% 
+  grid::grid.raster() 
+```
+
 
 To compare to the reference clustering method used by QIIME2, we clustered each
 dataset with VSEARCH against the Greengenes database of OTUs previously 
