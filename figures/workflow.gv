@@ -1,0 +1,36 @@
+digraph snakemake_dag {
+    graph[bgcolor=white];
+    node[shape=box, style=rounded, 
+         fontname=helvetica, fontsize=10, penwidth=2];
+    edge[penwidth=2, color=grey];
+    
+	1[label = "Preprocess\ndatasets", color = "0.44 0.6 0.85", style="rounded"];
+	2[label = "OptiClust\ndatasets", color = "0.44 0.6 0.85", style="rounded"];
+	
+	11[label = "Preprocess\ndatabases", color = "0.62 0.6 0.85", style="rounded"];
+	12[label = "OptiClust\ndatabases", color = "0.62 0.6 0.85", style="rounded"];
+	13[label = "OptiFit datasets\nto databases", 
+	   color = "0.62 0.6 0.85", style="rounded"];
+	
+	20[label = "Split dataset into\nreference & query", 
+	   color = "0.13 0.6 0.85", style="rounded"];
+	21[label = "OptiFit query\nto reference", 
+	   color = "0.13 0.6 0.85", style="rounded"];
+	
+	30[label = "Calculate\nMCC scores", style="rounded"];
+	
+	1 -> 2
+	2 -> 2 [label = "x100"]
+	2 -> 30
+	
+	11 -> 12 -> 13
+	12 -> 12 [label = "x100"]
+	1 -> 13
+	13 -> 13 [label = "x100"]
+	13 -> 30
+	
+	20 -> 21
+	20 -> 20 [label = "x100"]
+	1 -> 20
+	21 -> 30
+}

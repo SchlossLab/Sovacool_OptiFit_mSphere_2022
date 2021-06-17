@@ -67,15 +67,28 @@ rule calc_results_stats:
     script:
         'code/R/calc_results_stats.R'
 
+rule plot_workflow:
+    input:
+        gv='figures/workflow.gv'
+    output:
+        'figures/workflow.tiff'
+    shell:
+        """
+        dot -T tiff -Gsize=6,9\! -Gdpi=300 {input.gv} > {output}
+        """
+
+deps = ['paper/references.bib',
+        'paper/msystems.csl',
+        rules.calc_results_stats.output.rda,
+        rules.plot_workflow.output]
+
 rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
         pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
-        bib='paper/references.bib',
-        csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        rda=rules.calc_results_stats.output.rda
+        deps=deps
     output:
         file='docs/paper.pdf'
     params:
@@ -86,11 +99,9 @@ rule render_pdf:
 rule render_html:
     input:
         Rmd="paper/paper.Rmd",
-        bib='paper/references.bib',
-        csl='paper/msystems.csl',
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        rda=rules.calc_results_stats.output.rda
+        deps=deps
     output:
         file='docs/paper.html'
     params:
