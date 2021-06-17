@@ -74,7 +74,7 @@ rule plot_workflow:
         'figures/workflow.tiff'
     shell:
         """
-        dot -T tiff -Gsize=6,9\! -Gdpi=300 {input.gv} > {output}
+        dot -T tiff -Gsize=4,3\! -Gdpi=300 {input.gv} > {output}
         """
 
 deps = ['paper/references.bib',
