@@ -4,32 +4,34 @@ date: '`r Sys.Date()`'
 authors:
   - name: "Kelly L. Sovacool"
     url: https://github.com/kelly-sovacool
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
     orcid_id: 0000-0003-3283-829X
   - name: "Sarah L. Westcott"
     url: https://github.com/mothur-westcott
-    affiliation: Department of Microbiology and Immunology, University of Michigan, Ann Arbor, MI
+    affiliation: Department of Microbiology and Immunology, University of Michigan
   - name: "M. Brodie Mumphrey"
     url: https://github.com/MBMumphrey
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
   - name: "Gabrielle A. Dotson"
     url: https://github.com/dotsonga
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan, Ann Arbor, MI
+    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
   - name: "Patrick D. Schloss"
     url: https://github.com/pschloss
-    affiliation: Department of Microbiology and Immunology, University of Michigan, Ann Arbor, MI
+    affiliation: Department of Microbiology and Immunology, University of Michigan
 bibliography: references.bib
 output:
   distill::distill_article:
     toc: true
     toc_float: true
     toc_depth: 3
-  pdf_document:
+  bookdown::pdf_document2:
     keep_tex: false
     includes:
       in_header: preamble.tex
       before_body: head.tex
       after_body: tail.tex
+    number_sections: false
+    toc: false
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
 csl: msystems.csl
