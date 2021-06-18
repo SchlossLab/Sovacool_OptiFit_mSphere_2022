@@ -126,7 +126,7 @@ plot_runtime <- function(dat, yval, title = '') {
     geom_point(size = 3, position = position_dodge(width = 0.4)) +
     facet_wrap(dataset ~ ., nrow = 1, scales = 'free_x') +
     scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-    scale_y_log10() +
+    scale_y_reverse() +
     scale_color_manual(values = dual_colors) +
     coord_flip() +
     labs(x = '', y = '', title = title) +
@@ -158,4 +158,3 @@ ggsave(here('figures', 'results.tiff'),
 
 # TODO: reduce panel gaps/margins
 # TODO: jitter only needed for some points, e.g. de novo doesn't need jitter. 
-# TODO: reverse runtime x scale
