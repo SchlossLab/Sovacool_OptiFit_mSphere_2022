@@ -17,6 +17,7 @@ dataset_colors <- c(
   soil = color_palette[[2]]
 )
 tri_colors <-  c("darkorange","darkorchid","cyan4") # https://allisonhorst.github.io/palmerpenguins/articles/intro.html
+dual_colors <- RColorBrewer::brewer.pal(3, 'Set1')[1:2]
 mutate_perf <- function(dat) {
   dat %>% 
     mutate(mem_mb = max_rss,
@@ -100,7 +101,7 @@ plot_quality <- function(dat, y_val, title = '') {
     geom_point(size = 3, position = position_dodge(width = 0.4)) +
     facet_wrap(dataset ~ ., nrow=1) +
     scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-    #scale_color_manual(values = tri_colors) +
+    scale_color_manual(values = dual_colors) +
     scale_y_continuous(labels = c('0', '0.5', '1'), 
                        breaks = c(0, 0.5, 1),
                        limits = c(0, 1)) +
@@ -126,7 +127,7 @@ plot_runtime <- function(dat, yval, title = '') {
     facet_wrap(dataset ~ ., nrow = 1, scales = 'free_x') +
     scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
     scale_y_log10() +
-    #scale_color_manual(values = tri_colors) +
+    scale_color_manual(values = dual_colors) +
     coord_flip() +
     labs(x = '', y = '', title = title) +
     theme_bw() +
@@ -156,6 +157,5 @@ ggsave(here('figures', 'results.tiff'),
        width=6, height=6, units='in')
 
 # TODO: reduce panel gaps/margins
-# TODO: pick better colors
 # TODO: jitter only needed for some points, e.g. de novo doesn't need jitter. 
 # TODO: reverse runtime x scale
