@@ -109,7 +109,9 @@ plot_quality <- function(dat, y_val, title = '') {
     labs(x = '', y = '', title = title) +
     theme_bw() +
     theme(legend.position="none",
-          axis.text.y = element_markdown())
+          axis.text.y = element_markdown(),
+          plot.margin = unit(c(1,1,1,1), 
+                             "points"))
 }
 
 mcc_plot <- sum_all %>% 
@@ -133,7 +135,9 @@ plot_runtime <- function(dat, yval, title = '') {
     theme_bw() +
     guides(color = guide_legend(nrow = 1)) +
     theme(legend.position = "none",
-          axis.text.y = element_markdown())
+          axis.text.y = element_markdown(),
+          plot.margin = unit(c(1,1,1,10), 
+                             "points"))
 }
 runtime_plot <- sum_all %>% plot_runtime(sec_median) + 
   labs(title = 'Runtime (sec)')
@@ -142,10 +146,14 @@ shared_legend <- get_legend(mcc_plot +
                               guides(color = guide_legend(nrow = 1)) +
                               theme(legend.position = "bottom",
                                     legend.title = element_blank(),
-                                    legend.text = element_markdown())
+                                    legend.text = element_markdown(),
+                                    plot.margin = unit(c(1,1,1,1), 
+                                                       "points"))
 )
 
-main_plot <- plot_grid(mcc_plot, frac_plot, runtime_plot,
+main_plot <- plot_grid(mcc_plot , 
+                       frac_plot, 
+                       runtime_plot,
                        ncol = 1, align = 'v', labels = 'AUTO'
 ) 
 
