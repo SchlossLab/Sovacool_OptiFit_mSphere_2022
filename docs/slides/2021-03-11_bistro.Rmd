@@ -53,7 +53,7 @@ library(tidyverse)
 xaringanExtra::use_share_again()
 ```
 
-background-image: url("../../figures/SchlossLab.png") 
+background-image: url("../../figures/for_slides/SchlossLab.png") 
 background-size: contain
 background-color: "#000000"
 class: inverse
@@ -89,7 +89,7 @@ Human Microbes: The Power within (2018)
 ]
 
 .pull-right[
-![](../../figures/zackular-3a.jpg)
+![](../../figures/for_slides/zackular-3a.jpg)
 ]
 
 .footnote[
@@ -214,7 +214,7 @@ Range of MCC:
   - Limitation: novel sequences won't be represented. OTUs are limited by the diversity represented in the database.
 
 .center[
-<img src="../../figures/schloss-2016-msystems_all-method-comparison.png"  height="350"/>
+<img src="../../figures/for_slides/schloss-2016-msystems_all-method-comparison.png"  height="350"/>
 ]
 
 ???
@@ -247,7 +247,7 @@ $$distance = 1 - sequence\ similarity = 1 - \frac{number\ of\ matches}{sequence\
 1. For each sequence, consider whether to move it to a different OTU or not. Do whichever option results in the best MCC score. Repeat until the MCC doesn't change.
 
 .center[
-<img src="../../figures/opticlust-supp-ex.png" width="700"/>
+<img src="../../figures/for_slides/opticlust-supp-ex.png" width="700"/>
 ]
 
 .footnote[
