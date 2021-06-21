@@ -59,7 +59,11 @@ load(here('results', 'stats.RData'))
 ```
 <!--
 - **"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
-- From Pat: "briefly looking through the Discussion and Intro, one point that we may have forgotten is that a benefit of our approach is that it is much easier to customize to a specific region. The greengenes reference OTUs are based on full length sequences. This causes problems when considering shorter (e.g. V4) sequences since reference OTUs may be more similar  than the full length and even identical to each other in the subregion. Because we can easily spin up a subregion specific set of reference OTUs from a public database or the reference fraction this isn't a problem. This is described in one of my earlier papers looking at open/closed reference clustering and was part of the reason that the order of the database was important."
+
+- Go back through https://peerj.com/articles/1487/ to get all the arguments for why the qiime based methods are problematic…
+1. The threshold with closed reference is a radius and with de novo its a diameter
+2. The gg reference was defined for full length sequences, within a subregion there are duplicate and nearly duplicate sequences
+3. Because VSEARCH/USEARCH is a greedy heuristic, its looking for a reference that is close. Although the ordering of the database is not relevant (it was with USEARCH) it gets the wrong number of its (see Figure 5)
 -->
 
 ## Abstract
