@@ -1,35 +1,13 @@
 ---
 title: "OptiFit: a fast method for fitting amplicon sequences to existing OTUs"
 date: '`r Sys.Date()`'
-authors:
-  - name: "Kelly L. Sovacool"
-    url: https://github.com/kelly-sovacool
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
-    orcid_id: 0000-0003-3283-829X
-  - name: "Sarah L. Westcott"
-    url: https://github.com/mothur-westcott
-    affiliation: Department of Microbiology and Immunology, University of Michigan
-  - name: "M. Brodie Mumphrey"
-    url: https://github.com/MBMumphrey
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
-  - name: "Gabrielle A. Dotson"
-    url: https://github.com/dotsonga
-    affiliation: Department of Computational Medicine and Bioinformatics, University of Michigan
-  - name: "Patrick D. Schloss"
-    url: https://github.com/pschloss
-    affiliation: Department of Microbiology and Immunology, University of Michigan
 bibliography: references.bib
 output:
-  distill::distill_article:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-  bookdown::pdf_document2:
+  pdf_document:
     keep_tex: false
     includes:
       in_header: preamble.tex
       before_body: head.tex
-      after_body: tail.tex
     number_sections: false
     toc: false
 knit: (function(inputFile, encoding) {
@@ -38,10 +16,6 @@ csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
 repository_url: https://github.com/SchlossLab/OptiFitAnalysis
-creative_commons: CC BY-SA
-twitter:
-  creator: "@kelly_sovacool"
-  site: "@PatSchloss"
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
@@ -540,7 +514,7 @@ metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], the SRA toolkit
 The complete workflow, manuscript, and conda environment are available at
 **TODO: UPDATED REPO LINK**.
 
-## Acknowledgements {.appendix}
+## Acknowledgements
 
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
 
@@ -549,10 +523,12 @@ PDS received support from **TODO: Pat's grant(s)**.
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
 
-## Author Contributions {.appendix}
+## Author Contributions
 
 KLS wrote the analysis code, evaluated the algorithm, and wrote the original draft of the manuscript.
 SLW designed and implemented the OptiFit algorithm and assisted in debugging the analysis code.
 MBM and GAD contributed analysis code.
 PDS conceived the study, supervised the project, and assisted in debugging the analysis code.
 All authors reviewed and edited the manuscript.
+
+## References

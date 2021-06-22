@@ -1,3 +1,2 @@
 
-- [paper.html](paper.html)
-- [paper.pdf](paper.pdf)
+[paper.pdf](paper.pdf)

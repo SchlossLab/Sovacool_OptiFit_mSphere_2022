@@ -34,8 +34,7 @@ subworkflow vsearch:
 
 rule render_paper:
     input:
-        pdf='docs/paper.pdf',
-        html='docs/paper.html'
+        pdf='docs/paper.pdf'
 
 rule subtargets:
     input:
