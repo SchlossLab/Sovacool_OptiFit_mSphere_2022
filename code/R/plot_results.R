@@ -128,7 +128,6 @@ plot_runtime <- function(dat, yval, title = '') {
     geom_point(size = 3, position = position_dodge(width = 0.4)) +
     facet_wrap(dataset ~ ., nrow = 1, scales = 'free_x') +
     scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-    scale_y_reverse() +
     scale_color_manual(values = dual_colors) +
     coord_flip() +
     labs(x = '', y = '', title = title) +
@@ -164,5 +163,42 @@ ggsave(here('figures', 'results.tiff'),
        device = 'tiff', dpi=300,
        width=6, height=6, units='in')
 
-# TODO: reduce panel gaps/margins
 # TODO: jitter only needed for some points, e.g. de novo doesn't need jitter. 
+# TODO: reduce panel gaps/margins
+# TODO: try plotting IQR. note in caption when IQR is smaller than the data points.
+
+# does using facet_grid help reduce whitespace & redundancy?
+sum_all_metrics <- sum_all %>% 
+  mutate(frac_map_median = case_when(
+    method %>% as.character() != 'closed'  ~ NA_real_,
+    TRUE                                   ~ frac_map_median
+  )) %>% 
+  pivot_longer(c(mcc_median, frac_map_median, sec_median), 
+               names_to = 'metric') %>% 
+  mutate(
+    metric = factor(
+      case_when(
+        metric == "mcc_median"        ~ "MCC",
+        metric == 'frac_map_median'   ~ "Fraction Mapped",
+        metric == 'sec_median'        ~ "Runtime (sec)",
+        TRUE                          ~ metric
+      ),
+      levels = c('MCC', 'Fraction Mapped', 'Runtime (sec)')
+    ))
+sum_all_metrics %>% 
+  ggplot(aes(strategy, value, color = tool, shape = method)) +
+  geom_point(size = 3) +
+  facet_grid(dataset ~ metric, scales = 'free') +
+  scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
+  scale_color_manual(values = dual_colors) +
+  coord_flip() +
+  labs(x = '', y = '') +
+  theme_bw() +
+  theme(legend.position="bottom",
+        axis.text.y = element_markdown(),
+        legend.title = element_blank(),
+        legend.text = element_markdown())
+
+ggsave(here('figures', 'results-grid.tiff'), 
+       device = 'tiff', dpi=300,
+       width=6, height=6, units='in')
