@@ -4,12 +4,10 @@ date: '`r Sys.Date()`'
 bibliography: references.bib
 output:
   pdf_document:
-    keep_tex: false
     includes:
       in_header: preamble.tex
       before_body: head.tex
-    number_sections: false
-    toc: false
+    fig_caption: yes
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
 csl: msystems.csl
@@ -28,6 +26,7 @@ knitr::opts_chunk$set(fig.path = here::here('figures/'),
 
 ```{r deps, message = FALSE}
 library(cowplot)
+library(glue)
 library(here)
 library(knitr)
 library(schtools)
@@ -37,7 +36,9 @@ load(here(snakemake@input[['rda']]))
 figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
-  if (attribute != 'cap') {
+  if (attribute == 'cap') {
+    value <- glue("\\label{fig:[fig_name]} [value]", .open='[', .close = ']')
+  } else {
     value <- eval(parse(text = value))
   }
   return(value)
@@ -210,14 +211,14 @@ databases of reference OTUs: the Greengenes database, the SILVA non-redundant
 database, and the Ribosomal Database Project (RDP) [@desantis_greengenes_2006;
 @quast_silva_2013; @cole_ribosomal_2014].
 Reference OTUs for each database were created by performing _de novo_ clustering
-with OptiClust at a distance threshold of 3% (see Figure \@ref(fig:workflow)).
+with OptiClust at a distance threshold of 3% (see Figure \ref{fig:workflow}).
 The _de novo_ MCC scores were `r dn_dbs_mcc` for `r names(dn_dbs_mcc)`, 
 respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
 dropped to `r closed_fit_rdp_mcc` when fitting to RDP 
-(see Figure \@ref(fig:results_sum)).
+(see Figure \ref{fig:results_sum}).
 For comparison, clustering datasets _de novo_ with
 OptiClust produced an average MCC score of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference

@@ -1,10 +1,10 @@
 workflow:
-  cap: \textbf{The Analysis Workflow.} 
+  cap: \textbf{The Analysis Workflow.}
        TODO write this caption.
   path: here('figures', 'workflow.tiff')
   dim: c(4.5,3.5)
 results_sum:
-  cap: \textbf{Benchmarking Results.} 
+  cap: \textbf{Benchmarking Results.}
        TODO write this caption.
   path: here('figures', 'results-sum.tiff')
   dim: c(6,6)
