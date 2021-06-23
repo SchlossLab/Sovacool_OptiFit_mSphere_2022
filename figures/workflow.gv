@@ -2,9 +2,9 @@
 digraph snakemake_dag {
     graph[bgcolor=white];
     node[shape=box, style=rounded, 
-         fontname=helvetica, fontsize=10, penwidth=2];
+         fontname=helvetica, fontsize=12, penwidth=2];
     edge[penwidth=2, color=grey, 
-         fontname=helvetica, fontsize=10];
+         fontname=helvetica, fontsize=12];
     
 	1[label = "Preprocess\ndatasets", 
 	  color = "#66C2A5", style="rounded"];

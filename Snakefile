@@ -73,14 +73,14 @@ rule plot_workflow:
         'figures/workflow.tiff'
     shell:
         """
-        dot -T tiff -Gsize=4,3\! -Gdpi=300 {input.gv} > {output}
+        dot -T tiff -Gsize=4.5,3.5\! -Gdpi=300 {input.gv} > {output}
         """
 
 rule plot_results:
     input:
         R='code/R/plot_results.R'
     output:
-        'figures/results.tiff'
+        'figures/results-sum.tiff'
     script:
         'code/R/plot_results.R'
 

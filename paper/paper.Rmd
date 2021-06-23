@@ -204,7 +204,7 @@ Fitting sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
 dropped to `r closed_fit_rdp_mcc` when fitting to RDP 
-(see Figure \@ref(fig:workflow)).
+(see Figure \@ref(fig:results-sum)).
 For comparison, clustering datasets _de novo_ with
 OptiClust produced an average MCC score of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference
@@ -214,7 +214,7 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, dpi=300, fig.dim=c(4,3), fig.cap="The Analysis Workflow"}
+```{r workflow, dpi=300, fig.dim=c(4.5,3.5), fig.cap="**The Analysis Workflow.**"}
 # TODO: write caption
 here('figures', 'workflow.tiff') %>% 
   tiff::readTIFF() %>% 
@@ -248,9 +248,9 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
-```{r results, dpi=100, fig.dim=c(6,6), fig.cap="Benchmarking results"}
+```{r results-sum, dpi=100, fig.dim=c(6,6), fig.cap="**Benchmarking results**"}
 # TODO: write caption
-here('figures', 'results.tiff') %>% 
+here('figures', 'results-sum.tiff') %>% 
   tiff::readTIFF() %>% 
   grid::grid.raster() 
 ```
