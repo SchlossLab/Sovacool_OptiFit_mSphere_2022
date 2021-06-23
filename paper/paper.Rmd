@@ -2,14 +2,13 @@
 title: "OptiFit: a fast method for fitting amplicon sequences to existing OTUs"
 date: '`r Sys.Date()`'
 bibliography: references.bib
+link-citations: true
 output:
   pdf_document:
     includes:
       in_header: preamble.tex
       before_body: head.tex
     fig_caption: yes
-knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
 csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
