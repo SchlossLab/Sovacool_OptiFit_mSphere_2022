@@ -37,7 +37,7 @@ figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {
-    value <- glue("\\label{fig:[fig_name]} [value]", .open='[', .close = ']')
+    value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
   } else {
     value <- eval(parse(text = value))
   }
