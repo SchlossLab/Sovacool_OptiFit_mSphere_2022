@@ -16,11 +16,14 @@ csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
 repository_url: https://github.com/SchlossLab/OptiFitAnalysis
+params:
+    smk: "none"
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_chunk$set(fig.path = here::here('figures/'))
+knitr::opts_chunk$set(fig.path = here::here('figures/'),
+                      dpi = 300)
 ```
 
 ```{r deps, message = FALSE}
@@ -29,8 +32,20 @@ library(here)
 library(knitr)
 library(schtools)
 library(tidyverse)
-load(here('results', 'stats.RData'))
+snakemake <- params$smk
+load(here(snakemake@input[['rda']]))
 ```
+```{r figs-meta}
+figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
+figs <- function(fig_name, attribute) {
+  value <- figures_meta[[fig_name]][[attribute]]
+  if (attribute != 'cap') {
+    value <- eval(parse(text = value))
+  }
+  return(value)
+}
+```
+
 <!--
 - **"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
 
@@ -204,7 +219,7 @@ Fitting sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
 dropped to `r closed_fit_rdp_mcc` when fitting to RDP 
-(see Figure \@ref(fig:results-sum)).
+(see Figure \@ref(fig:results_sum)).
 For comparison, clustering datasets _de novo_ with
 OptiClust produced an average MCC score of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference
@@ -214,9 +229,8 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, dpi=300, fig.dim=c(4.5,3.5), fig.cap="**The Analysis Workflow.**"}
-# TODO: write caption
-here('figures', 'workflow.tiff') %>% 
+```{r workflow, fig.dim=figs('workflow','dim'), fig.cap=figs('workflow','cap')}
+figs('workflow', 'path') %>% 
   tiff::readTIFF() %>% 
   grid::grid.raster() 
 ```
@@ -248,9 +262,8 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
-```{r results-sum, dpi=100, fig.dim=c(6,6), fig.cap="**Benchmarking results**"}
-# TODO: write caption
-here('figures', 'results-sum.tiff') %>% 
+```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+figs('results_sum', 'path') %>% 
   tiff::readTIFF() %>% 
   grid::grid.raster() 
 ```

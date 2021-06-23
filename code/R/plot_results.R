@@ -9,46 +9,46 @@ library(knitr)
 library(tidyverse)
 dual_colors <- RColorBrewer::brewer.pal(3, 'Set1')[1:2]
 mutate_perf <- function(dat) {
-  dat %>% 
+  dat %>%
     mutate(mem_mb = max_rss,
-           mem_gb = mem_mb / 1024) %>% 
+           mem_gb = mem_mb / 1024) %>%
     rename(sec = s)
 }
 select_cols <- function(dat) {
-  dat %>% 
+  dat %>%
     select(dataset, strategy, method, tool, mcc, sec, mem_gb, fraction_mapped)
 }
 
-opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>% 
-  full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>% 
-  mutate_perf() %>% 
+opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>%
+  full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>%
+  mutate_perf() %>%
   mutate(strategy = method, fraction_mapped = NA)
-optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
+optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>%
   mutate_perf()
-optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>% 
-  filter(ref_frac == 0.5, ref_weight == 'simple') %>% 
+optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>%
+  filter(ref_frac == 0.5, ref_weight == 'simple') %>%
   mutate_perf()
-optifit_all <- list(optifit_dbs %>% 
+optifit_all <- list(optifit_dbs %>%
                       mutate(strategy = glue('database_{ref}')),
-                    optifit_split %>% 
-                      mutate(strategy = 'self-split')) %>% 
+                    optifit_split %>%
+                      mutate(strategy = 'self-split')) %>%
   reduce(full_join)
-vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>% 
-  mutate_perf() %>% 
+vsearch <- read_tsv(here('subworkflows/4_vsearch/results/vsearch_results.tsv')) %>%
+  mutate_perf() %>%
   mutate(strategy = case_when(
     method == 'de_novo' ~ method,
-    TRUE ~ as.character(glue('database_{ref}')))) 
-mothur_vsearch <- list(optifit_all, opticlust, vsearch) %>% 
-  lapply(select_cols) %>% 
-  reduce(bind_rows) %>% 
+    TRUE ~ as.character(glue('database_{ref}'))))
+mothur_vsearch <- list(optifit_all, opticlust, vsearch) %>%
+  lapply(select_cols) %>%
+  reduce(bind_rows) %>%
   mutate(method = as.character(method),
-         strategy = as.character(strategy)) %>% 
+         strategy = as.character(strategy)) %>%
   mutate(fraction_mapped = case_when(
     method %>% as.character() != 'closed'  ~ NA_real_,
     TRUE                                   ~ fraction_mapped
-  )) %>% 
-  pivot_longer(c(mcc, fraction_mapped, sec), 
-               names_to = 'metric') %>% 
+  )) %>%
+  pivot_longer(c(mcc, fraction_mapped, sec),
+               names_to = 'metric') %>%
   mutate(
     metric = factor(
       case_when(
@@ -67,7 +67,7 @@ mothur_vsearch <- list(optifit_all, opticlust, vsearch) %>%
         strategy == 'database_gg'    ~ "db: Greengenes",
         TRUE                         ~ strategy
       ),
-      levels = c('db: RDP', 'db: SILVA', 'db: Greengenes', 
+      levels = c('db: RDP', 'db: SILVA', 'db: Greengenes',
                  'self-split',  '_de novo_')
     ),
     method = factor(
@@ -82,13 +82,13 @@ med_iqr <- function(x) {
                     ymax = quantile(x)[4]))
 }
 
-mothur_vsearch  %>% 
+mothur_vsearch  %>%
   ggplot(aes(value, strategy, color = tool, shape = method)) +
   # stat_summary(geom = "linerange",
   #              fun.data = med_iqr,
   #              position = position_dodge(width = 0.4)) +
-  stat_summary(geom = 'point', 
-               fun = median, 
+  stat_summary(geom = 'point',
+               fun = median,
                size = 3,
                position = position_dodge(width = 0.4)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
@@ -105,6 +105,7 @@ mothur_vsearch  %>%
         plot.margin=unit(x=c(3,3,3,0),units="pt")
   )
 
-ggsave(here('figures', 'results-sum.tiff'), 
+dim <- eval(parse(text=snakemake@params[['dim']]))
+ggsave(snakemake@output[['tiff']],
        device = 'tiff', dpi=300,
-       width=6, height=6, units='in')
+       width=dim[1], height=dim[2], units='in')

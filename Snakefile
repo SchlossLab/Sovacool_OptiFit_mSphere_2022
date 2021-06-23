@@ -1,6 +1,9 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
+import yaml
 
 configfile: 'config/config.yaml'
+figs_meta_filename = 'config/figures.yaml'
+fig_meta = yaml.safe_load(open(figs_meta_filename))
 
 subworkflow prep_db:
     workdir:
@@ -70,50 +73,39 @@ rule plot_workflow:
     input:
         gv='figures/workflow.gv'
     output:
-        'figures/workflow.tiff'
+        tiff='figures/workflow.tiff'
+    params:
+        dim=fig_meta['workflow']['dim'].strip('c(').rstrip(')')
     shell:
         """
-        dot -T tiff -Gsize=4.5,3.5\! -Gdpi=300 {input.gv} > {output}
+        dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output}
         """
 
 rule plot_results:
     input:
         R='code/R/plot_results.R'
     output:
-        'figures/results-sum.tiff'
+        tiff='figures/results-sum.tiff'
+    params:
+        dim=fig_meta['results_sum']['dim']
     script:
         'code/R/plot_results.R'
-
-deps = ['paper/references.bib',
-        'paper/msystems.csl',
-        rules.calc_results_stats.output.rda,
-        rules.plot_workflow.output,
-        rules.plot_results.output]
 
 rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
         R='code/R/render.R',
         fcns="code/R/functions.R",
-        pre=['paper/preamble.tex', 'paper/head.tex', 'paper/tail.tex'],
-        deps=deps
+        rda=rules.calc_results_stats.output.rda,
+        deps=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msystems.csl',
+              figs_meta_filename,
+              rules.plot_workflow.output,
+              rules.plot_results.output
+              ]
     output:
         file='docs/paper.pdf'
     params:
         format='pdf_document'
     script:
         'code/R/render.R'
-
-rule render_html:
-    input:
-        Rmd="paper/paper.Rmd",
-        R='code/R/render.R',
-        fcns="code/R/functions.R",
-        deps=deps
-    output:
-        file='docs/paper.html'
-    params:
-        format="distill::distill_article"
-    script:
-        'code/R/render.R'
-
