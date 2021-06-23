@@ -17,7 +17,7 @@ fontsize: 12pt
 geometry: margin=1.0in
 repository_url: https://github.com/SchlossLab/OptiFitAnalysis
 params:
-    smk: "none"
+    snakemake: "none"
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
@@ -32,10 +32,8 @@ library(here)
 library(knitr)
 library(schtools)
 library(tidyverse)
-snakemake <- params$smk
+snakemake <- params$snakemake
 load(here(snakemake@input[['rda']]))
-```
-```{r figs-meta}
 figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
