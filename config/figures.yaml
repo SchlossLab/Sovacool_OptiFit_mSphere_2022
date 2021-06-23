@@ -2,7 +2,7 @@ workflow:
   cap: \textbf{The Analysis Workflow.}
        TODO write this caption.
   path: here('figures', 'workflow.tiff')
-  dim: c(4.5,3.5)
+  dim: c(6,4)
 results_sum:
   cap: \textbf{Benchmarking Results.}
        TODO write this caption.
