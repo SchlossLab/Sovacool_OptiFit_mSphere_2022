@@ -22,8 +22,7 @@ select_cols <- function(dat) {
 opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>% 
   full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>% 
   mutate_perf() %>% 
-  mutate(strategy = method)
-sum_opticlust <- opticlust %>% group_sum()
+  mutate(strategy = method, fraction_mapped = NA)
 optifit_dbs <- read_tsv(here('subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv')) %>% 
   mutate_perf()
 optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>% 
@@ -106,6 +105,6 @@ mothur_vsearch  %>%
         plot.margin=unit(x=c(3,3,3,0),units="pt")
   )
 
-ggsave(here('figures', 'results.tiff'), 
+ggsave(here('figures', 'results-sum.tiff'), 
        device = 'tiff', dpi=300,
        width=6, height=6, units='in')
