@@ -81,15 +81,15 @@ rule plot_workflow:
         dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output}
         """
 
-rule plot_results:
+rule plot_results_sum:
     input:
-        R='code/R/plot_results.R'
+        R='code/R/plot_results_sum.R'
     output:
-        tiff='figures/results-sum.tiff'
+        tiff='figures/results_sum.tiff'
     params:
         dim=fig_meta['results_sum']['dim']
     script:
-        'code/R/plot_results.R'
+        'code/R/plot_results_sum.R'
 
 rule render_pdf:
     input:
@@ -101,7 +101,7 @@ rule render_pdf:
               'paper/references.bib', 'paper/msystems.csl',
               figs_meta_filename,
               rules.plot_workflow.output,
-              rules.plot_results.output
+              rules.plot_results_sum.output
               ]
     output:
         file='docs/paper.pdf'
