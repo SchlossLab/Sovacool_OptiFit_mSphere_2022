@@ -87,6 +87,8 @@ color_labels <- lapply(names(color_breaks),
                          glue("<span style = 'color:{color_breaks[[name]]};'>{name}</span>")
                        }
                        ) %>% unlist()
+color_values <- color_breaks
+color_values['NA'] <- '#000000'
 dat %>% 
   filter((ref_weight == 'simple' | ref_frac == 0.5) | method == "_de novo_") %>% 
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
@@ -97,10 +99,7 @@ dat %>%
                position = position_dodge(width = 0.07)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = list(simple="#FF8C00",
-                                   abundance="#9932CC",
-                                   similarity="#008B8B",
-                                   `NA`="#000000"),
+  scale_color_manual(values = color_values,
                      breaks = names(color_breaks),
                      labels = color_labels) +
   scale_x_continuous(breaks = seq(0, 0.9, 0.1), 
