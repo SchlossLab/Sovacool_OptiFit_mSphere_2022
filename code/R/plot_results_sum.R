@@ -84,9 +84,10 @@ med_iqr <- function(x) {
 color_list <- list(mothur = RColorBrewer::brewer.pal(3, 'Set1')[1],
                      vsearch = RColorBrewer::brewer.pal(3, 'Set1')[2])
 color_labels <- lapply(names(color_list), 
-                       function(name) { glue("<span style = 'color:{color_list[[name]]};'>{name}</span>")
+                       function(name) {
+                         glue("<span style = 'color:{color_list[[name]]};'>{name}</span>")
                        }
-) %>% unlist()
+                       ) %>% unlist()
 
 mothur_vsearch  %>%
   ggplot(aes(value, strategy, color = tool, shape = method)) +
