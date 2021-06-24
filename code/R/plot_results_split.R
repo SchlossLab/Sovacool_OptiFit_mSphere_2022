@@ -83,8 +83,9 @@ color_breaks <- list(simple="#FF8C00",
                      abundance="#9932CC",
                      similarity="#008B8B")
 color_labels <- lapply(names(color_breaks), 
-                       function(name) { glue("<span style = 'color:{color_breaks[[name]]};'>{name}</span>")
-                         }
+                       function(name) { 
+                         glue("<span style = 'color:{color_breaks[[name]]};'>{name}</span>")
+                       }
                        ) %>% unlist()
 dat %>% 
   filter((ref_weight == 'simple' | ref_frac == 0.5) | method == "_de novo_") %>% 
@@ -93,7 +94,7 @@ dat %>%
   stat_summary(geom = 'point',
                fun = median,
                size = 3,
-               position = position_dodge(width = 0.05)) +
+               position = position_dodge(width = 0.07)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
   scale_color_manual(values = list(simple="#FF8C00",
