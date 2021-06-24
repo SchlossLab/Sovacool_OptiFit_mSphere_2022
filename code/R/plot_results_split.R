@@ -7,7 +7,7 @@ library(glue)
 library(here)
 library(knitr)
 library(tidyverse)
-tri_colors <-  c("darkorange","darkorchid","cyan4")
+weight_colors <-  c("darkorange","darkorchid","cyan4")
 color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
 dataset_colors <- c(
   human = color_palette[[3]],
@@ -30,7 +30,10 @@ select_cols <- function(dat) {
 opticlust <- read_tsv(here('subworkflows/1_prep_samples/results/opticlust_results.tsv')) %>%
   full_join(read_tsv(here('subworkflows/1_prep_samples/results/dataset_sizes.tsv'))) %>%
   mutate_perf() %>%
-  mutate(strategy = method, fraction_mapped = NA)
+  mutate(strategy = method, 
+         fraction_mapped = NA, 
+         ref_frac = 0,
+         ref_weight = "NA")
 optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_split_results.tsv')) %>%
   mutate_perf() %>%
   mutate(strategy = 'self-split')
@@ -75,7 +78,7 @@ dat <- list(optifit_split) %>% #, opticlust) %>%
     ref_weight = factor(
       case_when(ref_weight == "distance" ~ "similarity",
                 TRUE                     ~ ref_weight),
-      levels = c('simple', 'abundance', 'similarity')
+      levels = c('simple', 'abundance', 'similarity', 'NA')
     ))
 
 med_iqr <- function(x) {
@@ -91,10 +94,10 @@ fractions_plot <- dat %>%
                fun = median,
                size = 3,
                position = position_dodge(width = 0.2)) +
-  facet_wrap("metric", scales = 'free_y', nrow = 1) +
+  facet_wrap("metric", scales = 'free', nrow = 1) +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
   scale_color_manual(values = dataset_colors) +
-  scale_x_continuous(breaks = seq(0.1, 0.9, 0.1), limits = c(0.1, 0.9)) +
+  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0.1, 0.9)) +
   labs(x = 'reference fraction', y = '') +
   theme_bw() +
   theme(legend.title = element_blank(),
@@ -110,7 +113,7 @@ weights_plot <- dat %>%
                fun = median,
                size = 3,
                position = position_dodge(width = 0.2)) +
-  facet_wrap("metric", scales = 'free_y', nrow = 1) +
+  facet_wrap("metric", scales = 'free', nrow = 1) +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
   scale_color_manual(values = dataset_colors) +
   labs(x = '', y = '') +
@@ -127,22 +130,20 @@ plot_grid(fractions_plot ,
 ) 
 
 
-# TODO: try one plot with facet_grid, color as ref_weight, just filter out some data pointsdat %>%
+# TODO: try one plot with facet_grid, color as ref_weight, just filter out some data points
 dat %>% 
   filter(ref_weight == 'simple' | ref_frac == 0.5) %>% 
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
-  # stat_summary(geom = "linerange",
-  #              fun.data = med_iqr,
-  #              position = position_dodge(width = 0.2)) +
+  coord_flip() +
   stat_summary(geom = 'point',
                fun = median,
                size = 3,
                position = position_dodge(width = 0.1)) +
-  facet_wrap(dataset ~ metric, scales = 'free', ncol = 3) +
+  facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = tri_colors) +
-  scale_x_continuous(breaks = seq(0.1, 0.9, 0.1), limits = c(0.1, 0.9)) +
-  labs(x = 'reference fraction', y = '') +
+  scale_color_manual(values = weight_colors) +
+  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0.1, 0.9)) +
+  labs(x = 'reference fraction', x = '') +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position="top",
@@ -150,7 +151,7 @@ dat %>%
         plot.margin=unit(x=c(0,3,3,0),units="pt")
   )
 
-# TODO: plot de novo data for comparison
+# TODO: plot de novo data for comparison -- use h/v line
 
 dim <- eval(parse(text=snakemake@params[['dim']]))
 ggsave(snakemake@output[['tiff']],
