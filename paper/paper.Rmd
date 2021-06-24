@@ -266,7 +266,6 @@ figs('results_sum', 'path') %>%
   grid::grid.raster() 
 ```
 
-
 To compare to the reference clustering method used by QIIME2, we clustered each
 dataset with VSEARCH against the Greengenes database of OTUs previously 
 clustered at 97% sequence similarity.
@@ -333,6 +332,13 @@ Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
+
+```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+figs('results_split', 'path') %>% 
+  tiff::readTIFF() %>% 
+  grid::grid.raster() 
+```
+
 While we initially tested this strategy using an even split of the data into
 reference and query fractions, we then wanted to investigate whether there was
 an optimal reference fraction size.
@@ -345,7 +351,7 @@ fractions.
 Run time generally decreased as the reference fraction increased; for the human
 dataset, the median run time was `r sec_fit_split_human_simple_1` with 10% of
 sequences in the reference and `r sec_fit_split_human_simple_9` with 90% of
-sequences in the reference.
+sequences in the reference (Figure \ref{fig:results_split}).
 In closed reference mode, the fraction of sequences that mapped increased as the
 reference size increased; for the human dataset, the median fraction mapped was
 `r frac_fit_split_human_simple_1` with 10% of sequences in the reference and 

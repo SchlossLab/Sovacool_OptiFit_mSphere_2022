@@ -6,5 +6,10 @@ workflow:
 results_sum:
   cap: \textbf{Benchmarking Results.}
        TODO write this caption.
-  path: here('figures', 'results-sum.tiff')
+  path: here('figures', 'results_sum.tiff')
   dim: c(6,6)
+results_split:
+  cap: \textbf{Split dataset strategy.}
+       TODO write this caption.
+  path: here('figures', 'results_split.tiff')
+  dim: c(6.8,9)

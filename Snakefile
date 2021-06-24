@@ -91,6 +91,16 @@ rule plot_results_sum:
     script:
         'code/R/plot_results_sum.R'
 
+rule plot_results_split:
+    input:
+        R='code/R/plot_results_split.R'
+    output:
+        tiff='figures/results_split.tiff'
+    params:
+        dim=fig_meta['results_split']['dim']
+    script:
+        'code/R/plot_results_split.R'
+
 rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
@@ -101,7 +111,8 @@ rule render_pdf:
               'paper/references.bib', 'paper/msystems.csl',
               figs_meta_filename,
               rules.plot_workflow.output,
-              rules.plot_results_sum.output
+              rules.plot_results_sum.output,
+              rules.plot_results_split.output
               ]
     output:
         file='docs/paper.pdf'
