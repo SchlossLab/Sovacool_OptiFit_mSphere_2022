@@ -79,7 +79,13 @@ med_iqr <- function(x) {
                     ymin = quantile(x)[2],
                     ymax = quantile(x)[4]))
 }
-
+color_breaks <- list(simple="#FF8C00",
+                     abundance="#9932CC",
+                     similarity="#008B8B")
+color_labels <- lapply(names(color_breaks), 
+                       function(name) { glue("<span style = 'color:{color_breaks[[name]]};'>{name}</span>")
+                         }
+                       ) %>% unlist()
 dat %>% 
   filter((ref_weight == 'simple' | ref_frac == 0.5) | method == "_de novo_") %>% 
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
@@ -90,11 +96,12 @@ dat %>%
                position = position_dodge(width = 0.05)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = list(simple="darkorange",
-                                   abundance="darkorchid",
-                                   similarity="cyan4",
-                                   `NA`="black"),
-                     breaks = c('simple', 'abundance', 'similarity')) +
+  scale_color_manual(values = list(simple="#FF8C00",
+                                   abundance="#9932CC",
+                                   similarity="#008B8B",
+                                   `NA`="#000000"),
+                     breaks = names(color_breaks),
+                     labels = color_labels) +
   scale_x_continuous(breaks = seq(0, 0.9, 0.1), 
                      limits = c(0, 0.9),
                      labels = c('NA', seq(0.1, 0.9, 0.1))) +
@@ -105,7 +112,11 @@ dat %>%
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
         plot.margin=unit(x=c(0,3,0,3),units="pt")
-  )
+  ) + 
+  guides(shape = guide_legend(order = 1),
+         colour = guide_legend(override.aes = list(size = -1),
+                               order = 2)
+         )
 
 dim <- eval(parse(text=snakemake@params[['dim']]))
 ggsave(snakemake@output[['tiff']],

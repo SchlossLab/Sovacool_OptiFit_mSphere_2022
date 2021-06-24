@@ -7,7 +7,6 @@ library(glue)
 library(here)
 library(knitr)
 library(tidyverse)
-dual_colors <- RColorBrewer::brewer.pal(3, 'Set1')[1:2]
 mutate_perf <- function(dat) {
   dat %>%
     mutate(mem_mb = max_rss,
@@ -82,6 +81,13 @@ med_iqr <- function(x) {
                     ymax = quantile(x)[4]))
 }
 
+color_list <- list(mothur = RColorBrewer::brewer.pal(3, 'Set1')[1],
+                     vsearch = RColorBrewer::brewer.pal(3, 'Set1')[2])
+color_labels <- lapply(names(color_list), 
+                       function(name) { glue("<span style = 'color:{color_list[[name]]};'>{name}</span>")
+                       }
+) %>% unlist()
+
 mothur_vsearch  %>%
   ggplot(aes(value, strategy, color = tool, shape = method)) +
   # stat_summary(geom = "linerange",
@@ -93,7 +99,8 @@ mothur_vsearch  %>%
                position = position_dodge(width = 0.4)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = dual_colors) +
+  scale_color_manual(values = color_list,
+                     labels = color_labels) +
   labs(x = '', y = '') +
   theme_bw() +
   theme(strip.placement = "outside",
@@ -103,6 +110,10 @@ mothur_vsearch  %>%
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
         plot.margin=unit(x=c(3,3,3,0),units="pt")
+  ) + 
+  guides(shape = guide_legend(order = 1),
+         colour = guide_legend(override.aes = list(size = -1),
+                               order = 2)
   )
 
 dim <- eval(parse(text=snakemake@params[['dim']]))
