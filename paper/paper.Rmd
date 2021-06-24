@@ -42,6 +42,7 @@ figs <- function(fig_name, attribute) {
   }
   return(value)
 }
+set.seed(20210624)
 ```
 
 <!--
