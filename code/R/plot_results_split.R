@@ -90,15 +90,18 @@ dat %>%
                position = position_dodge(width = 0.05)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = list(simple="darkorange", 
+  scale_color_manual(values = list(simple="darkorange",
                                    abundance="darkorchid",
                                    similarity="cyan4",
-                                   `NA`="gray40")) +
-  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0, 0.9)) +
+                                   `NA`="black"),
+                     breaks = c('simple', 'abundance', 'similarity')) +
+  scale_x_continuous(breaks = seq(0, 0.9, 0.1), 
+                     limits = c(0, 0.9),
+                     labels = c('NA', seq(0.1, 0.9, 0.1))) +
   labs(x = 'reference fraction', y = '') +
   theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.text = element_markdown(),
+  theme(legend.text = element_markdown(),
+        legend.title = element_blank(),
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
         plot.margin=unit(x=c(0,3,0,3),units="pt")
