@@ -525,10 +525,10 @@ We implemented the analysis workflow in Snakemake [@koster_snakemake_2012] and
 wrote scripts in R [@r_core_team_r_2020], Python [@van_rossum_python_2009], and
 GNU bash [@noauthor_bash_nodate].
 Software used includes mothur v1.45.0 [@schloss_introducing_2009], VSEARCH
-v2.13.3 [@rognes_vsearch_2016], numpy [@harris_array_2020], the Tidyverse
-metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], the SRA toolkit
-[@noauthor_sra-tools_nodate], and the conda environment manager
-[@noauthor_anaconda_2016].
+v2.13.3 [@rognes_vsearch_2016], numpy [@harris_array_2020], the tidyverse
+metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], ggtext
+[@wilke_ggtext_2020], the SRA toolkit [@noauthor_sra-tools_nodate], and the
+conda environment manager [@noauthor_anaconda_2016].
 The complete workflow, manuscript, and conda environment are available at
 **TODO: UPDATED REPO LINK**.
 
