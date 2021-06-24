@@ -7,14 +7,7 @@ library(glue)
 library(here)
 library(knitr)
 library(tidyverse)
-weight_colors <-  c("darkorange","darkorchid","cyan4")
-color_palette <- RColorBrewer::brewer.pal(4, "Dark2")
-dataset_colors <- c(
-  human = color_palette[[3]],
-  marine = color_palette[[1]],
-  mouse = color_palette[[4]],
-  soil = color_palette[[2]]
-)
+
 mutate_perf <- function(dat) {
   dat %>%
     mutate(mem_mb = max_rss,
@@ -38,7 +31,7 @@ optifit_split <- read_tsv(here('subworkflows/3_fit_sample_split/results/optifit_
   mutate_perf() %>%
   mutate(strategy = 'self-split')
 
-dat <- list(optifit_split) %>% #, opticlust) %>%
+dat <- list(optifit_split, opticlust) %>%
   lapply(select_cols) %>%
   reduce(bind_rows) %>%
   mutate(method = as.character(method),
@@ -87,71 +80,29 @@ med_iqr <- function(x) {
                     ymax = quantile(x)[4]))
 }
 
-fractions_plot <- dat %>%
-  filter(ref_weight == 'simple') %>% 
-  ggplot(aes(ref_frac, value, color = dataset, shape = method)) +
-  stat_summary(geom = 'point',
-               fun = median,
-               size = 3,
-               position = position_dodge(width = 0.2)) +
-  facet_wrap("metric", scales = 'free', nrow = 1) +
-  scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = dataset_colors) +
-  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0.1, 0.9)) +
-  labs(x = 'reference fraction', y = '') +
-  theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.position="top",
-        legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
-        plot.margin=unit(x=c(0,3,3,0),units="pt")
-  )
-
-weights_plot <- dat %>%
-  filter(ref_frac ==  0.5) %>% 
-  ggplot(aes(ref_weight, value, color = dataset, shape = method)) +
-  stat_summary(geom = 'point',
-               fun = median,
-               size = 3,
-               position = position_dodge(width = 0.2)) +
-  facet_wrap("metric", scales = 'free', nrow = 1) +
-  scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = dataset_colors) +
-  labs(x = '', y = '') +
-  theme_bw() +
-  theme(legend.position="none",
-        plot.margin=unit(x=c(0,3,0,0),units="pt")
-  )
-
-
-plot_grid(fractions_plot , 
-          weights_plot, 
-          ncol = 1, 
-          labels = 'AUTO'
-) 
-
-
-# TODO: try one plot with facet_grid, color as ref_weight, just filter out some data points
 dat %>% 
-  filter(ref_weight == 'simple' | ref_frac == 0.5) %>% 
+  filter((ref_weight == 'simple' | ref_frac == 0.5) | method == "_de novo_") %>% 
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
   coord_flip() +
   stat_summary(geom = 'point',
                fun = median,
                size = 3,
-               position = position_dodge(width = 0.1)) +
+               position = position_dodge(width = 0.05)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
-  scale_color_manual(values = weight_colors) +
-  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0.1, 0.9)) +
-  labs(x = 'reference fraction', x = '') +
+  scale_color_manual(values = list(simple="darkorange", 
+                                   abundance="darkorchid",
+                                   similarity="cyan4",
+                                   `NA`="gray40")) +
+  scale_x_continuous(breaks = seq(0, 0.9, 0.1), limits = c(0, 0.9)) +
+  labs(x = 'reference fraction', y = '') +
   theme_bw() +
   theme(legend.title = element_blank(),
+        legend.text = element_markdown(),
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
-        plot.margin=unit(x=c(0,3,3,0),units="pt")
+        plot.margin=unit(x=c(0,3,0,3),units="pt")
   )
-
-# TODO: plot de novo data for comparison -- use h/v line
 
 dim <- eval(parse(text=snakemake@params[['dim']]))
 ggsave(snakemake@output[['tiff']],
