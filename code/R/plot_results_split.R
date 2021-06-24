@@ -87,8 +87,7 @@ color_labels <- lapply(names(color_breaks),
                          glue("<span style = 'color:{color_breaks[[name]]};'>{name}</span>")
                        }
                        ) %>% unlist()
-color_values <- color_breaks
-color_values['NA'] <- '#000000'
+color_values <- append(color_breaks, list(`NA`="#000000"))
 dat %>% 
   filter((ref_weight == 'simple' | ref_frac == 0.5) | method == "_de novo_") %>% 
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
