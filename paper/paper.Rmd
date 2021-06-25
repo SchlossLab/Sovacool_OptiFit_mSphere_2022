@@ -72,7 +72,7 @@ existing OTUs, we developed the OptiFit algorithm.
 We tested OptiFit using four microbiome datasets with two different strategies:
 by fitting to an external reference database, or by splitting the dataset into a 
 reference and query set and fitting the query sequences to the reference set.
-The result is a robust implementation of closed and open-refernce clustering.
+The result is a robust implementation of closed and open-reference clustering.
 OptiFit produces OTUs of similar quality as OptiClust and at faster speeds when
 using the split dataset strategy, although the OTU quality and processing speed
 depends on the database chosen when using the external database strategy.
@@ -82,8 +82,11 @@ assignments at the same quality afforded by _de novo_ clustering methods.
 ### Importance
 
 **TODO.**
+<!--
 **"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
-
+Advancements in sequencing technology have allowed researchers to affordably generate millions of reads of microorganisms from diverse natural communities,
+allowing us to characterize communities.
+-->
 \newpage
 
 ## Introduction
@@ -352,7 +355,7 @@ reference and query fractions, we next investigated whether there was
 an optimal reference fraction size.
 To test the best reference size, reference sets with 10% to 80% of the
 sequences were created, with the remaining sequences used for the query.
-OTU quality was remarkably stable across reference fraction sizes.
+OTU quality was remarkably consistent across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
 variation of `r cv_fit_split_mcc_human_simple` for the MCC score across all
 fractions.
@@ -421,8 +424,8 @@ We recommend that users who require an independent reference database opt for
 large databases with regular updates and good coverage of microbial diversity.
 Since OptiClust still performs faster than open reference OptiFit and creates
 higher quality OTUs than closed reference OptiFit with the database strategy, we
-recommend using OptiClust rather than fitting to a database whenever stable OTUs
-are not required for the study at hand.
+recommend using OptiClust rather than fitting to a database whenever consistent
+OTUs are not required for the study at hand.
 
 The OptiClust and OptiFit algorithms produced higher quality
 OTUs than VSEARCH in open reference, closed reference, or _de novo_ modes.
@@ -450,9 +453,10 @@ sophisticated reference selection methods do not offer any benefit.
 The similarity in OTU quality between OptiClust and OptiFit with this strategy
 demonstrates the suitability of using OptiFit to fit sequences to existing OTUs,
 such as when comparing OTUs across studies.
-However, when stable OTUs are not required, we recommend using OptiClust for _de
-novo_ clustering over the split strategy with OptiFit since OptiClust is simpler
-to execute but performs similarly in terms of both run time and OTU quality.
+However, when consistent OTUs are not required, we recommend using OptiClust for
+_de novo_ clustering over the split strategy with OptiFit since OptiClust is
+simpler to execute but performs similarly in terms of both run time and OTU
+quality.
 
 We have developed a new clustering algorithm that allows users to produce high
 quality OTUs using already existing OTUs as a reference.
@@ -464,7 +468,7 @@ Potential applications include fitting sequences to reference databases,
 comparing taxonomic composition of microbiomes across different studies, 
 or using OTU-based machine learning models to make predictions on new data.
 OptiFit fills the missing option for fitting query sequences to existing OTUs
-that does not sacrifice OTU quality for stability of OTU assignments.
+that does not sacrifice OTU quality for consistency of OTU assignments.
 
 ## Materials and Methods
 
@@ -474,9 +478,10 @@ We downloaded 16S rRNA gene amplicon sequences from four published datasets
 isolated from soil [@johnston_metagenomics_2016], marine
 [@henson_artificial_2016], mouse gut [@schloss_stabilization_2012], and human
 gut [@baxter_microbiota-based_2016] samples.
-These were selected because **TODO**.
-Raw sequences were processed using mothur according to the Schloss Lab MiSeq SOP
-as described in the mothur wiki and accompanying study by Kozich _et al._
+These datasets represent a selection of the broad types of natural communities
+that microbial ecologists study.
+We processed the raw sequences using mothur according to the Schloss Lab MiSeq
+SOP as described in the mothur wiki and accompanying study by Kozich _et al._
 [@schloss_miseq_nodate; @kozich_development_2013].
 These steps included trimming and filtering for quality, aligning to the SILVA
 reference alignment [@quast_silva_2013], discarding sequences that aligned
