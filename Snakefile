@@ -69,6 +69,14 @@ rule calc_results_stats:
     script:
         'code/R/calc_results_stats.R'
 
+rule plot_algorithm:
+    input:
+        R='code/R/algorithm_diagram.R'
+    output:
+        tiff='figures/algorithm.tiff'
+    script:
+        'code/R/algorithm_diagram.R'
+
 rule plot_workflow:
     input:
         gv='figures/workflow.gv'
@@ -110,6 +118,7 @@ rule render_pdf:
         deps=['paper/preamble.tex', 'paper/head.tex',
               'paper/references.bib', 'paper/msystems.csl',
               figs_meta_filename,
+              #rules.plot_algorithm.output,
               rules.plot_workflow.output,
               rules.plot_results_sum.output,
               rules.plot_results_split.output

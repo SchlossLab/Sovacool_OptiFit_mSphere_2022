@@ -46,8 +46,6 @@ set.seed(20210624)
 ```
 
 <!--
-- **"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
-
 - Go back through https://peerj.com/articles/1487/ to get all the arguments for why the qiime based methods are problematic…
 1. The threshold with closed reference is a radius and with de novo its a diameter
 2. The gg reference was defined for full length sequences, within a subregion there are duplicate and nearly duplicate sequences
@@ -83,7 +81,8 @@ assignments at the same quality afforded by _de novo_ clustering methods.
 
 ### Importance
 
-**TODO**
+**TODO.**
+**"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
 
 \newpage
 
@@ -111,8 +110,10 @@ all pairs of sequences in the dataset to cluster them into OTUs by maximizing
 the Matthews Correlation Coefficient (MCC) [@westcott_opticlust_2017].
 This approach takes into account the distances between all pairs of sequences
 when assigning query sequences to OTUs, in contrast to other _de novo_
-algorithms such as VSEARCH which only considers the distance between the query
-sequence and a representative centroid sequence in the OTU [**TODO cite vsearch and schloss papers, also maybe qiime**].
+methods such as the greedy clustering algorithms implemented by USEARCH and
+VSEARCH, which only considers the distance between the query sequence and a
+representative centroid sequence in the OTU [@edgar_search_2010;
+@rognes_vsearch_2016].
 A limitation of _de novo_ clustering is that different OTU assignments will be
 produced when new sequences are added to a dataset, making it difficult to use
 _de novo_ clustering to compare OTUs between different studies.
@@ -124,7 +125,7 @@ clustering methods by using a representative set of sequences from a database,
 with each reference sequence seeding an OTU.
 Commonly, the Greengenes set of representative full length sequences clustered
 at 97% similarity is used as the reference with VSEARCH
-[@desantis_greengenes_2006; **TODO cite vsearch**].
+[@desantis_greengenes_2006; @rognes_vsearch_2016; @noauthor_clustering_nodate].
 Query sequences are then assigned to OTUs based on their similarity to the
 reference sequences.
 Any query sequences that are not within the distance threshold to any of the
@@ -534,7 +535,8 @@ metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], ggtext
 [@wilke_ggtext_2020], the SRA toolkit [@noauthor_sra-tools_nodate], and the
 conda environment manager [@noauthor_anaconda_2016].
 The complete workflow, manuscript, and conda environment are available at
-**TODO: UPDATED REPO LINK**.
+https://github.com/SchlossLab/Sovacool_OptiFit_2021.
+<!-- TODO: update repo link with journal title -->
 
 ## Acknowledgements
 

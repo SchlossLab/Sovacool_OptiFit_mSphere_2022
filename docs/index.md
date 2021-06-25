@@ -1,2 +1,2 @@
 
-[paper.pdf](paper.pdf)
+Manuscript: [paper.pdf](paper.pdf)
