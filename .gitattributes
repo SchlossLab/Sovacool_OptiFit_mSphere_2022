@@ -3,3 +3,4 @@
 .smk linguist-language=Python
 *.R linguist-language=R
 paper/paper.tex linguist-vendored=true
+paper/references.bib linguist-vendored=true
