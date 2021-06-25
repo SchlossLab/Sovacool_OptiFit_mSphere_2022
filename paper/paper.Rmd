@@ -108,18 +108,23 @@ may impact downstream analyses of community composition
 
 There are two main categories of OTU clustering algorithms: _de novo_ and
 reference-based.
-OptiClust is a _de novo_ clustering method which uses the distance score between
-all pairs of sequences in the dataset to cluster them into OTUs by maximizing
-the Matthews Correlation Coefficient (MCC) [@westcott_opticlust_2017].
+OptiClust is a _de novo_ clustering algorithm which uses the distance score
+between all pairs of sequences in the dataset to cluster them into OTUs by
+maximizing the Matthews Correlation Coefficient (MCC)
+[@westcott_opticlust_2017].
 This approach takes into account the distances between all pairs of sequences
 when assigning query sequences to OTUs, in contrast to other _de novo_
-methods such as the greedy clustering algorithms implemented by USEARCH and
-VSEARCH, which only considers the distance between the query sequence and a
+methods such as the greedy clustering algorithms implemented in USEARCH and
+VSEARCH, which only consider the distance between the query sequence and a
 representative centroid sequence in the OTU [@edgar_search_2010;
 @rognes_vsearch_2016].
 A limitation of _de novo_ clustering is that different OTU assignments will be
 produced when new sequences are added to a dataset, making it difficult to use
 _de novo_ clustering to compare OTUs between different studies.
+Additionally, the greedy clustering algorithms implemented in VSEARCH are
+sensitive to the order of the input sequences: different OTU assignments are
+produced when the same sequences are randomly shuffled [@westcott_novo_2015;
+@he_stability_2015].
 Furthermore, since _de novo_ clustering requires calculating and comparing
 distances between all sequences in a dataset, the execution time can be slow for
 very large datasets.
@@ -138,7 +143,7 @@ While reference-based clustering is generally fast, it is limited by the
 diversity of the reference database.
 Rare or novel sequences in the sample will be lost in closed reference mode if
 they are not represented by a similar sequence in the database.
-**TODO: closed uses radius of 3%. de novo uses diameter of 3%. open uses both. vsearch is order dependent.**
+**TODO: closed uses radius of 3%. de novo uses diameter of 3%. open uses both.**
 Previous studies found that the OptiClust _de novo_ clustering algorithm created
 the highest quality OTU assignments of all clustering methods [@westcott_opticlust_2017].
 
@@ -257,7 +262,8 @@ both MCC score and fraction of query sequences that could be fit to the
 reference OTUs.
 
 Despite the drawbacks, closed reference methods have been used when fast
-execution speed is required, such as when using very large datasets [**TODO: REF**].
+execution speed is required, such as when using very large datasets
+[@navas-molina_chapter_2013].
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
 Across all dataset and database combinations, closed reference OptiFit
@@ -353,7 +359,7 @@ figs('results_split', 'path') %>%
 While we initially tested this strategy using a 50% split of the data into
 reference and query fractions, we next investigated whether there was
 an optimal reference fraction size.
-To test the best reference size, reference sets with 10% to 80% of the
+To test the best reference size, reference sets with 10% to 90% of the
 sequences were created, with the remaining sequences used for the query.
 OTU quality was remarkably consistent across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
@@ -439,10 +445,12 @@ OTU, requiring that all pairs of sequences (including reference and query
 sequences) in an OTU are within the distance threshold without penalizing the
 MCC.
 In contrast, VSEARCH only requires each query sequence to be similar to the
-single sequence that seeded the OTU.
+single centroid sequence that seeded the OTU.
+Additionally, OTU assignments clustered by VSEARCH are dependent on the order of
+the input sequences, because each query is assigned to the OTU of the first
+centroid sequence that is found within the distance threshold.
 In this way, VSEARCH sacrifices OTU quality in order to allow more sequences to
 fit to OTUs.
-**TODO: another problem with vsearch is dependence on order of the ref sequences.**
 
 When fitting with the split dataset strategy, OTU quality was remarkably similar
 when reference sequences were selected by a simple random sample or weighted by
