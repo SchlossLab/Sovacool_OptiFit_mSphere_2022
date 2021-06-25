@@ -2,8 +2,8 @@
 
 ## Rulegraph
 
-![](../../figures/rulegraph_prep_db.png)
+![](../../figures/snakemake-graphs/rulegraph_prep_db.png)
 
 ## DAG
 
-![](../../figures/dag_prep_db.png)
+![](../../figures/snakemake-graphs/dag_prep_db.png)

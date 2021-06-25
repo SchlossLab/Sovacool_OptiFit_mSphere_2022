@@ -2,10 +2,10 @@
 
 ## Rulegraph
 
-![](../../figures/rulegraph_vsearch.png)
+![](../../figures/snakemake-graphs/rulegraph_vsearch.png)
 
 ## DAG
 
 Using config_test, because regular config is too big:
 
-![](../../figures/dag_vsearch.png)
+![](../../figures/snakemake-graphs/dag_vsearch.png)

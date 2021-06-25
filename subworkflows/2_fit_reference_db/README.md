@@ -2,10 +2,10 @@
 
 ## Rulegraph
 
-![](../../figures/rulegraph_fit_db.png)
+![](../../figures/snakemake-graphs/rulegraph_fit_db.png)
 
 ## DAG
 
 Using config_test, because regular config is too big:
 
-![](../../figures/dag_fit_db.png)
+![](../../figures/snakemake-graphs/dag_fit_db.png)
