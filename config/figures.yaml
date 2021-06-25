@@ -1,3 +1,8 @@
+algorithm:
+  cap: \textbf{The OptiFit Algorithm.}
+       TODO write this caption.
+  path: here('figures', 'algorithm.tiff')
+  dim: c(6.8,9)
 workflow:
   cap: \textbf{The Analysis Workflow.}
        TODO write this caption.
