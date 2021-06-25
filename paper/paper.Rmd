@@ -56,31 +56,30 @@ set.seed(20210624)
 
 ## Abstract
 
-Assigning amplicon sequences to Operational Taxonomic Units (OTUs) is an
+Assigning amplicon sequences to operational taxonomic units (OTUs) is often an
 important step in characterizing the composition of microbial communities across
 large datasets.
 OptiClust, a _de novo_ OTU clustering method in the mothur program, has been
 shown to produce higher quality OTU assignments than other methods and at
-comparable or faster speeds [@westcott_opticlust_2017;
-@schloss_introducing_2009].
+comparable or faster speeds.
 A notable difference between _de novo_ clustering and database-dependent methods
-is that OTU assignments clustered with _de novo_ methods are not stable when new
-sequences are added to a dataset [@westcott_novo_2015].
+is that OTU assignments clustered with _de novo_ methods may change when new
+sequences are added to a dataset.
 However, in some cases one may wish to incorporate new samples into a previously
 clustered dataset without performing clustering again on all sequences, such as
-when deploying a machine learning model where OTUs are features
-[@topcuoglu_effective_2019].
+when comparing across datasets or deploying machine learning models where OTUs
+are features.
 To provide an efficient and robust method to fit amplicon sequence data to
-existing OTUs, we developed the OptiFit algorithm as a new component of the
-mothur program.
-We tested OptiFit using four microbiome datasets with two different strategies;
+existing OTUs, we developed the OptiFit algorithm.
+We tested OptiFit using four microbiome datasets with two different strategies:
 by fitting to an external reference database, or by splitting the dataset into a 
 reference and query set and fitting the query sequences to the reference set.
+The result is a robust implementation of closed and open-refernce clustering.
 OptiFit produces OTUs of similar quality as OptiClust and at faster speeds when
-using the split dataset strategy, while the OTU quality and speed depends on the
-database chosen when using the external database strategy.
-OptiFit provides a suitable option for users who require stable reference-based
-OTU assignments at the same quality afforded by _de novo_ clustering methods.
+using the split dataset strategy, although the OTU quality and processing speed
+depends on the database chosen when using the external database strategy.
+OptiFit provides a suitable option for users who require consistent OTU
+assignments at the same quality afforded by _de novo_ clustering methods.
 
 ### Importance
 
@@ -90,17 +89,16 @@ OTU assignments at the same quality afforded by _de novo_ clustering methods.
 
 ## Introduction
 
-Amplicon sequencing has become a mainstay of microbial ecology and
-host-associated microbiome research.
+Amplicon sequencing has become a mainstay of microbial ecology.
 Researchers can affordably generate millions of sequences to characterize the
-composition of hundreds of samples from culture-independent microbial
-communities. 
-In a typical analysis pipeline, 16S rRNA gene sequences are assigned to
-Operational Taxonomic Units (OTUs) to facilitate comparison of taxonomic
-composition between communities.
+composition of hundreds of samples from microbial communities without the need
+for culturing.
+In many analysis pipelines, 16S rRNA gene sequences are assigned to
+operational taxonomic units (OTUs) to facilitate comparison of taxonomic
+composition between communities to avoid the need for classification.
 A distance threshold of 3% (or sequence similarity of 97%) is commonly used to
-cluster sequences into OTUs based on either a reference database or pairwise
-comparisons of the sequences within the dataset.
+cluster sequences into OTUs based on pairwise comparisons of the sequences
+within the dataset.
 The method chosen for clustering affects the quality of OTU assignments and thus
 may impact downstream analyses of community composition
 [@westcott_opticlust_2017; @schloss_application_2016;
@@ -108,45 +106,42 @@ may impact downstream analyses of community composition
 
 There are two main categories of OTU clustering algorithms: _de novo_ and
 reference-based.
-OptiClust, the _de novo_ clustering method provided by the mothur software
-program, uses the distance score between all pairs of sequences in the dataset
-to cluster them into OTUs by maximizing the Matthews correlation coefficient
-(MCC) [@westcott_opticlust_2017].
+OptiClust is a _de novo_ clustering method which uses the distance score between
+all pairs of sequences in the dataset to cluster them into OTUs by maximizing
+the Matthews Correlation Coefficient (MCC) [@westcott_opticlust_2017].
 This approach takes into account the distances between all pairs of sequences
-when assigning query sequences to OTUs, in contrast to other tools such as
-VSEARCH which only considers the distance between the query sequence and a
-representative centroid sequence in the OTU.
+when assigning query sequences to OTUs, in contrast to other _de novo_
+algorithms such as VSEARCH which only considers the distance between the query
+sequence and a representative centroid sequence in the OTU [**TODO cite vsearch and schloss papers, also maybe qiime**].
 A limitation of _de novo_ clustering is that different OTU assignments will be
 produced when new sequences are added to a dataset, making it difficult to use
 _de novo_ clustering to compare OTUs between different studies.
-Furthermore, since _de novo_ clustering requires distance calculations between all
-sequences in a dataset, the execution time can be slow for very large datasets.
-
+Furthermore, since _de novo_ clustering requires calculating and comparing
+distances between all sequences in a dataset, the execution time can be slow for
+very large datasets.
 Reference clustering attempts to overcome the limitations of _de novo_
 clustering methods by using a representative set of sequences from a database,
 with each reference sequence seeding an OTU.
 Commonly, the Greengenes set of representative full length sequences clustered
 at 97% similarity is used as the reference with VSEARCH
-[@desantis_greengenes_2006].
+[@desantis_greengenes_2006; **TODO cite vsearch**].
 Query sequences are then assigned to OTUs based on their similarity to the
 reference sequences.
 Any query sequences that are not within the distance threshold to any of the
-reference sequences are either thrown out (closed reference mode) or clustered
-_de novo_ to create additional OTUs (open reference mode).
+reference sequences are either thrown out (closed reference clustering) or
+clustered _de novo_ to create additional OTUs (open reference clustering).
 While reference-based clustering is generally fast, it is limited by the
 diversity of the reference database.
 Rare or novel sequences in the sample will be lost in closed reference mode if
 they are not represented by a similar sequence in the database.
+**TODO: closed uses radius of 3%. de novo uses diameter of 3%. open uses both. vsearch is order dependent.**
 Previous studies found that the OptiClust _de novo_ clustering algorithm created
-the highest quality OTU assignments of all clustering methods based on the
-Matthews correlation coefficient (MCC) [@westcott_opticlust_2017].
-As a result, we have recommended OptiClust as the preferred method for OTU
-clustering whenever OTU stability is not required.
+the highest quality OTU assignments of all clustering methods [@westcott_opticlust_2017].
 
-To overcome the limitations of _de novo_ clustering while maintaining OTU
-quality, we developed OptiFit, a reference-based clustering algorithm in the
-mothur program which takes existing OTUs as the reference to fit new sequences
-to. 
+To overcome the limitations of current reference-based and _de novo_ clustering
+algorithms while maintaining OTU quality, we developed OptiFit, a
+reference-based clustering algorithm which uses existing OTUs as the reference
+and fits new sequences those reference OTUs.
 In contrast to other tools, OptiFit considers all pairwise distance scores
 between reference and query sequences when assigning sequences to OTUs in order
 to produce OTUs of the highest possible quality.
@@ -156,6 +151,7 @@ To evaluate the OptiFit algorithm and compare to existing methods, we used four
 published datasets isolated from soil [@johnston_metagenomics_2016], marine
 [@henson_artificial_2016], mouse gut [@schloss_stabilization_2012], and human
 gut [@baxter_microbiota-based_2016] samples. 
+OptiFit is available within the mothur software program.
 
 ## Results
 
@@ -168,6 +164,7 @@ OptiClust first seeds each sequence into its own OTU as a singleton.
 Then for each sequence, OptiClust considers whether the sequence should move to
 a different OTU or remain in its current OTU, choosing the option that results
 in a better Matthews correlation coefficient (MCC).
+**TODO: describe how it generates a confusion matrix and calculates the MCC.**
 Iterations continue until the MCC stabilizes or until a maximum number of
 iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
@@ -175,7 +172,7 @@ the input sequences.
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to assign to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03).
-Initially, query sequences are placed in singleton OTUs. 
+Initially, all query sequences are placed into separate OTUs. 
 Then, the algorithm iteratively reassigns the query sequences to the reference 
 OTUs to optimize the MCC. 
 Alternatively, a sequence will remain unassigned if the MCC value is maximized
@@ -189,7 +186,7 @@ In the open reference mode, unassigned query sequences are clustered _de novo_
 using OptiClust to generate new OTUs.
 The final MCC is reported with the best OTU assignments.
 There are two strategies for generating OTUs with OptiFit: 
-1) fit query sequences to reference OTUs generated by _de novo_ clustering an
+1) fit the query sequences to reference OTUs generated by _de novo_ clustering an
 independent database, or
 2) split the dataset into a reference and query fraction, cluster the reference
 sequences _de novo_, then fit the query sequences to the reference OTUs.
@@ -199,6 +196,12 @@ We clustered sequences from four datasets isolated from soil
 samples to test the performance of OptiFit with both of these strategies.
 
 ### Reference clustering with public databases
+
+```{r db_names}
+db_names <- names(dn_dbs_mcc)
+db_names_upper <- case_when(db_names == 'gg' ~ 'Greengenes', 
+                           TRUE ~ toupper(db_names))
+```
 
 While _de novo_ clustering produces high quality OTUs, researchers may prefer to
 perform reference clustering to a public database because reference-based
@@ -212,18 +215,18 @@ database, and the Ribosomal Database Project (RDP) [@desantis_greengenes_2006;
 @quast_silva_2013; @cole_ribosomal_2014].
 Reference OTUs for each database were created by performing _de novo_ clustering
 with OptiClust at a distance threshold of 3% (see Figure \ref{fig:workflow}).
-The _de novo_ MCC scores were `r dn_dbs_mcc` for `r names(dn_dbs_mcc)`, 
+The _de novo_ MCC scores were `r dn_dbs_mcc` for `r db_names_upper`,
 respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
-similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
+similarly, with median MCC scores of `r closed_fit_gg_mcc` (**TODO: should be 0.80**) and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
-dropped to `r closed_fit_rdp_mcc` when fitting to RDP 
+was `r closed_fit_rdp_mcc` when fitting to RDP 
 (see Figure \ref{fig:results_sum}).
-For comparison, clustering datasets _de novo_ with
-OptiClust produced an average MCC score of `r opticlust_mcc`.
+For comparison, clustering datasets with OptiClust produced an average MCC score
+of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference
-mode, which produced median MCCs of `r open_fit_gg_mcc` with greengenes, 
-`r open_fit_silva_mcc` with SILVA, and `r open_fit_rdp_mcc` with RDP.
+mode, which produced median MCCs of `r open_fit_gg_mcc` with Greengenes, 
+`r open_fit_silva_mcc` with SILVA, and `r open_fit_rdp_mcc` with the RDP.
 Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
@@ -239,7 +242,8 @@ not be assigned to reference OTUs, an additional measure of clustering
 performance to consider is the fraction of query sequences that were able to be
 assigned.
 On average, more sequences were assigned with Greengenes as the reference 
-(`r frac_fit_gg`%) than with SILVA (`r frac_fit_silva`%) or RDP (`r frac_fit_rdp`%).
+(`r frac_fit_gg`%) than with SILVA (`r frac_fit_silva`%) or with the RDP 
+(`r frac_fit_rdp`%).
 This mirrored the result reported above that Greengenes produced better OTUs in
 terms of MCC score than either SILVA or RDP.
 Note that _de novo_ and open reference clustering methods always assign 100% of
@@ -249,7 +253,7 @@ both MCC score and fraction of query sequences that could be fit to the
 reference OTUs.
 
 Despite the drawbacks, closed reference methods have been used when fast
-execution speed is required, such as when using very large datasets.
+execution speed is required, such as when using very large datasets [**TODO: REF**].
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
 Across all dataset and database combinations, closed reference OptiFit
@@ -267,7 +271,7 @@ figs('results_sum', 'path') %>%
   grid::grid.raster() 
 ```
 
-To compare to the reference clustering method used by QIIME2, we clustered each
+To compare to the reference clustering methods used by QIIME2, we clustered each
 dataset with VSEARCH against the Greengenes database of OTUs previously 
 clustered at 97% sequence similarity.
 Each reference OTU from the Greengenes 97% database contains one reference
@@ -289,13 +293,15 @@ all pairs of sequences in an OTU. <!-- VSEARCH "diameter" vs OptiFit "radius"
 -->
 When open reference clustering, OptiFit produced higher quality OTUs than
 VSEARCH against the Greengenes database, with median MCC scores of 
-`r open_fit_gg_mcc` and `r open_vsearch_mcc` (respectively).
+`r open_fit_gg_mcc` and `r open_vsearch_mcc`, respectively).
 In terms of run time, OptiFit outperformed VSEARCH in both closed and open
 reference mode by `r sec_closed_fit_db_vs_vsearch`% and 
 `r sec_vsearch_vs_open_fit_db`% on average respectively.
-Thus, the more stringent OTU definition employed by OptiFit resulted in fewer
-sequences being fit to reference OTUs than when using VSEARCH, but caused
-OptiFit to outperform VSEARCH in terms of both OTU quality and execution time.
+Thus, the more stringent OTU definition employed by OptiFit, which requires the
+query to be similar to all other sequences in the OTU rather than to one
+sequence, resulted in fewer sequences being fit to reference OTUs than when
+using VSEARCH, but caused OptiFit to outperform VSEARCH in terms of both OTU
+quality and execution time.
 
 ### Reference clustering with split datasets
 
@@ -317,7 +323,7 @@ sequences were fit to the _de novo_ OTUs with OptiFit.
 
 First, we tested whether OptiFit performed as well as _de novo_ clustering when
 using the split dataset strategy with half of the sequences selected for
-the reference by a simple random sample.
+the reference by a simple random sample (a 50% split).
 OTU quality was highly similar to that from OptiClust regardless of
 mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC).
 In closed reference mode, OptiFit was able to fit `r frac_fit_split`% of query
@@ -340,10 +346,10 @@ figs('results_split', 'path') %>%
   grid::grid.raster() 
 ```
 
-While we initially tested this strategy using an even split of the data into
-reference and query fractions, we then wanted to investigate whether there was
+While we initially tested this strategy using a 50% split of the data into
+reference and query fractions, we next investigated whether there was
 an optimal reference fraction size.
-To test the best reference size, reference sizes from 10% to 80% of the
+To test the best reference size, reference sets with 10% to 80% of the
 sequences were created, with the remaining sequences used for the query.
 OTU quality was remarkably stable across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
@@ -356,16 +362,17 @@ sequences in the reference (Figure \ref{fig:results_split}).
 In closed reference mode, the fraction of sequences that mapped increased as the
 reference size increased; for the human dataset, the median fraction mapped was
 `r frac_fit_split_human_simple_1` with 10% of sequences in the reference and 
-`r frac_fit_split_human_simple_9` with 90% of sequences in the reference.
-These trends hold for the other datasets as well (see supplemental figure **TODO**).
-Thus, the reference fraction does not affect OTU quality in terms of MCC score,
-but does affect the run time and the fraction of sequences that map during
-closed reference mode.
+`r frac_fit_split_human_simple_9` with 90% of sequences in the reference. 
+These trends held for the other datasets as well (Figure 
+\ref{fig:results_split}).
+Thus, the reference fraction doid not affect OTU quality in terms of MCC score,
+but did affect the run time and the fraction of sequences that mapped during the
+closed reference clustering.
 
 After testing the split strategy using a simple random sample to select the
 reference sequences, we then investigated other methods of splitting the data.
 We tested three methods for selecting the fraction of sequences to be used as
-the reference at a size of 50%; a simple random sample, weighting sequences by
+the reference at a size of 50%: a simple random sample, weighting sequences by
 relative abundance, and weighting by similarity to other sequences in the
 dataset.
 OTU quality in terms of MCC was similar with the simple and abundance-weighted
@@ -380,7 +387,7 @@ While simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
 similarity-weighted samples with a median runtime of `r sec_fit_split_dist`
 seconds compared to `r sec_fit_split_simple` and `r sec_fit_split_abun` seconds
-for simple and abundance-weighted sampling (respectively).
+for simple and abundance-weighted sampling, respectively.
 Thus, employing more complicated sampling strategies such as abundance-weighted
 and similarity-weighted sampling did not confer any advantages over selecting
 the reference via a simple random sample, and in fact decreased OTU quality in
@@ -404,19 +411,19 @@ than half of query sequences were able to be fit to OTUs across any
 dataset/database combination. 
 This may reflect limitations of reference
 databases, which are unlikely to contain sequences from rare and novel microbes.
-This drop in quality was most notable with RDP, which contains only about 21,000
-sequences compared to over 200,000 sequences in SILVA and Greengenes each.
+This drop in quality was most notable with RDP, which contains only 21,000 (**TODO insert exact number**)
+sequences compared to over 200,000 (**TODO insert exact number**) sequences in SILVA and Greengenes each.
 Note that Greengenes has not been updated since 2013 at the time of this
 writing, while SILVA is updated every one to two years with the most recent
 release in 2019.
 We recommend that users who require an independent reference database opt for
 large databases with regular updates and good coverage of microbial diversity.
-Since OptiClust performs faster than open reference OptiFit and creates higher
-quality OTUs than closed reference OptiFit with the database strategy, we
+Since OptiClust still performs faster than open reference OptiFit and creates
+higher quality OTUs than closed reference OptiFit with the database strategy, we
 recommend using OptiClust rather than fitting to a database whenever stable OTUs
 are not required for the study at hand.
 
-The OptiClust and OptiFit algorithms provided by mothur produced higher quality
+The OptiClust and OptiFit algorithms produced higher quality
 OTUs than VSEARCH in open reference, closed reference, or _de novo_ modes.
 However, VSEARCH was able to map more sequences to OTUs than OptiFit in closed
 reference mode.
@@ -431,11 +438,7 @@ In contrast, VSEARCH only requires each query sequence to be similar to the
 single sequence that seeded the OTU.
 In this way, VSEARCH sacrifices OTU quality in order to allow more sequences to
 fit to OTUs.
-Users who require closed reference clustering to the Greengenes database may
-prefer to use VSEARCH if they wish to maximize the fraction of sequences that
-can be fit at the cost of OTU quality.
-However, mothur's OptiClust or OptiFit are recommended for _de novo_ or open
-reference clustering to produce OTUs of the highest possible quality.
+**TODO: another problem with vsearch is dependence on order of the ref sequences.**
 
 When fitting with the split dataset strategy, OTU quality was remarkably similar
 when reference sequences were selected by a simple random sample or weighted by
@@ -452,7 +455,7 @@ to execute but performs similarly in terms of both run time and OTU quality.
 
 We have developed a new clustering algorithm that allows users to produce high
 quality OTUs using already existing OTUs as a reference.
-Unlike existing reference-based methods which map query sequences to a single
+Unlike existing reference-based methods that map query sequences to a single
 centroid sequence in each reference OTU, OptiFit considers all sequences in each
 reference OTU when fitting query sequences, resulting in OTUs of a similar high
 quality as those produced by the _de novo_ OptiClust algorithm.
@@ -470,6 +473,7 @@ We downloaded 16S rRNA gene amplicon sequences from four published datasets
 isolated from soil [@johnston_metagenomics_2016], marine
 [@henson_artificial_2016], mouse gut [@schloss_stabilization_2012], and human
 gut [@baxter_microbiota-based_2016] samples.
+These were selected because **TODO**.
 Raw sequences were processed using mothur according to the Schloss Lab MiSeq SOP
 as described in the mothur wiki and accompanying study by Kozich _et al._
 [@schloss_miseq_nodate; @kozich_development_2013].
@@ -490,8 +494,8 @@ clustering sequences into _de novo_ OTUs with OptiClust.
 Processed reads from each of the four datasets were clustered with OptiFit to
 the reference OTUs generated from each of the three databases.
 When reference clustering with VSEARCH, processed datasets were fit directly to
-the unprocessed Greengenes reference alignment, since this method is how VSEARCH
-is typically used by the QIIME2 software reference-based clustering
+the unprocessed Greengenes 97% OTU reference alignment, since this method is how
+VSEARCH is typically used by the QIIME2 software reference-based clustering
 [@bolyen_reproducible_2019; @noauthor_clustering_nodate].
 
 ### Split dataset clustering
@@ -499,7 +503,7 @@ is typically used by the QIIME2 software reference-based clustering
 For each dataset, a fraction of the sequences was selected to be clustered _de
 novo_ into reference OTUs with OptiClust.
 We used three methods for selecting the fraction of sequences to be used
-as the reference; a simple random sample, weighting sequences by relative
+as the reference: a simple random sample, weighting sequences by relative
 abundance, and weighting by similarity to other sequences in the dataset.
 Dataset splitting was repeated with reference fractions ranging from 10% to 80%
 of the dataset and for 100 random seeds.
@@ -535,8 +539,7 @@ The complete workflow, manuscript, and conda environment are available at
 ## Acknowledgements
 
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
-
-PDS received support from **TODO: Pat's grant(s)**.
+Salary support for PDS came from NIH grants R01CA215574 and U01AI124255.
 
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
