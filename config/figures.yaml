@@ -2,7 +2,7 @@ algorithm:
   cap: \textbf{The OptiFit Algorithm.}
        TODO write this caption.
   path: here('figures', 'algorithm.tiff')
-  dim: c(6.8,9)
+  dim: c(6,6)
 workflow:
   cap: \textbf{The Analysis Workflow.}
        Reference sequences from Greengenes, the RDP, and SILVA were downloaded, trimmed to the V4 region using mothur, and clustered _de novo_ with OptiClust for 100 repetitions.

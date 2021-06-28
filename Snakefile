@@ -71,11 +71,13 @@ rule calc_results_stats:
 
 rule plot_algorithm:
     input:
-        R='code/R/algorithm_diagram.R'
+        R='code/R/plot_algorithm_diagram.R'
     output:
         tiff='figures/algorithm.tiff'
+    params:
+        dim=fig_meta['algorithm']['dim']
     script:
-        'code/R/algorithm_diagram.R'
+        'code/R/plot_algorithm_diagram.R'
 
 rule plot_workflow:
     input:
