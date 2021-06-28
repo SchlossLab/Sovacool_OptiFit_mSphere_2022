@@ -5,11 +5,20 @@ algorithm:
   dim: c(6,6)
 workflow:
   cap: \textbf{The Analysis Workflow.}
-       Reference sequences from Greengenes, the RDP, and SILVA were downloaded, trimmed to the V4 region using mothur, and clustered _de novo_ with OptiClust for 100 repetitions.
-       Datasets from human, marine, mouse, and soil microbiomes were downloaded, aligned to the SILVA reference alignment and trimmed with mothur, then clustered _de novo_ with OptiClust for 100 repetitions.
-       Individual datasets were fit to reference databases with OptiFit; OptiFit was repeated 100 times for each dataset and database combination.
-       Datasets were also randomly split into a reference and query fraction, and the query sequences were fit to the reference sequences with OptiFit for 100 repetitions.
-       The final MCC score was reported for all OptiClust and OptiFit repetitions.
+       Reference sequences from Greengenes, the RDP, and SILVA were downloaded,
+       preprocessed with mothur by trimming to the V4 region, and clustered _de
+       novo_ with OptiClust for 100 repetitions.
+       Datasets from human, marine, mouse, and soil microbiomes were
+       downloaded, preprocessed with mothur by aligning to the SILVA V4
+       reference alignment, then clustered _de novo_ with OptiClust for 100
+       repetitions.
+       Individual datasets were fit to reference databases with OptiFit;
+       OptiFit was repeated 100 times for each dataset and database combination.
+       Datasets were also randomly split into a reference and query fraction,
+       and the query sequences were fit to the reference sequences with OptiFit
+       for 100 repetitions.
+       The final MCC score was reported for all OptiClust and OptiFit
+       repetitions.
   path: here('figures', 'workflow.tiff')
   dim: c(6,4)
 results_sum:
