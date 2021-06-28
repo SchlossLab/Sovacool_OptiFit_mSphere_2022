@@ -30,8 +30,13 @@ library(here)
 library(knitr)
 library(schtools)
 library(tidyverse)
+set.seed(20210624)
 snakemake <- params$snakemake
 load(here(snakemake@input[['rda']]))
+ref_seqs <- read_tsv(here('subworkflows', '0_prep_db', 'data', 
+                          'seq_counts.tsv')) %>% 
+  pivot_wider(names_from = ref, values_from = nseqs) %>% as.list()
+
 figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
@@ -42,7 +47,6 @@ figs <- function(fig_name, attribute) {
   }
   return(value)
 }
-set.seed(20210624)
 ```
 
 <!--
@@ -121,10 +125,9 @@ representative centroid sequence in the OTU [@edgar_search_2010;
 A limitation of _de novo_ clustering is that different OTU assignments will be
 produced when new sequences are added to a dataset, making it difficult to use
 _de novo_ clustering to compare OTUs between different studies.
-Additionally, the greedy clustering algorithms implemented in VSEARCH are
-sensitive to the order of the input sequences: different OTU assignments are
-produced when the same sequences are randomly shuffled [@westcott_novo_2015;
-@he_stability_2015].
+Additionally, the greedy clustering algorithms are sensitive to the order of the
+input sequences: different OTU assignments are produced when the same sequences
+are randomly shuffled [@westcott_novo_2015; @he_stability_2015].
 Furthermore, since _de novo_ clustering requires calculating and comparing
 distances between all sequences in a dataset, the execution time can be slow for
 very large datasets.
@@ -227,7 +230,7 @@ with OptiClust at a distance threshold of 3% (see Figure \ref{fig:workflow}).
 The _de novo_ MCC scores were `r dn_dbs_mcc` for `r db_names_upper`,
 respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
-similarly, with median MCC scores of `r closed_fit_gg_mcc` (**TODO: should be 0.80**) and 
+similarly, with median MCC scores of `r round(closed_fit_gg_mcc, 3)` (**TODO: Pat marked this as 0.80, but the actual number is 0.795414**) and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
 was `r closed_fit_rdp_mcc` when fitting to RDP 
 (see Figure \ref{fig:results_sum}).
@@ -421,8 +424,9 @@ than half of query sequences were able to be fit to OTUs across any
 dataset/database combination. 
 This may reflect limitations of reference
 databases, which are unlikely to contain sequences from rare and novel microbes.
-This drop in quality was most notable with RDP, which contains only 21,000 (**TODO insert exact number**)
-sequences compared to over 200,000 (**TODO insert exact number**) sequences in SILVA and Greengenes each.
+This drop in quality was most notable with the RDP reference, which contained only 
+`r ref_seqs[['rdp']]` sequences compared to `r ref_seqs[['silva']]` sequences in
+SILVA and `r ref_seqs[['gg']]` in Greengenes after trimming to the V4 region.
 Note that Greengenes has not been updated since 2013 at the time of this
 writing, while SILVA is updated every one to two years with the most recent
 release in 2019.
