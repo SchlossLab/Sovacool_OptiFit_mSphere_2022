@@ -167,9 +167,9 @@ rule count_seqs:
         ref=ref_dbs
     shell:
         """
-        echo "ref\tnseqs\n" > {output.tsv}
+        echo "ref\tnseqs" > {output.tsv}
         for ref in {params.ref}; do
             nseqs=$(grep ">" data/$ref/$ref.bact_v4.fasta | wc -l)
-            echo $ref\\t$nseqs >> {output.tsv}
+            echo $ref"\t"$nseqs >> {output.tsv}
         done
         """
