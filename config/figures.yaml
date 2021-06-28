@@ -2,7 +2,7 @@ algorithm:
   cap: \textbf{The OptiFit Algorithm.}
        TODO write this caption.
   path: here('figures', 'algorithm.tiff')
-  dim: c(6,6)
+  dim: c(4,4)
 workflow:
   cap: \textbf{The Analysis Workflow.}
        Reference sequences from Greengenes, the RDP, and SILVA were downloaded,

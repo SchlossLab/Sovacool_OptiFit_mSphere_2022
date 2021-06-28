@@ -191,9 +191,16 @@ of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
+```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+figs('algorithm', 'path') %>% 
+  tiff::readTIFF() %>% 
+  grid::grid.raster() 
+```
+
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to assign to the reference OTUs, and
-the sequence pairs that are within the distance threshold (e.g. 0.03).
+the sequence pairs that are within the distance threshold (e.g. 0.03) 
+(Figure \ref{fig:algorithm}).
 Initially, all query sequences are placed into separate OTUs. 
 Then, the algorithm iteratively reassigns the query sequences to the reference 
 OTUs to optimize the MCC. 
