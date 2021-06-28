@@ -175,12 +175,22 @@ method for reference-based clustering.
 OptiClust first seeds each sequence into its own OTU as a singleton. 
 Then for each sequence, OptiClust considers whether the sequence should move to
 a different OTU or remain in its current OTU, choosing the option that results
-in a better Matthews correlation coefficient (MCC).
-**TODO: describe how it generates a confusion matrix and calculates the MCC.**
-Iterations continue until the MCC stabilizes or until a maximum number of
-iterations is reached.
+in a better Matthews correlation coefficient (MCC) [@westcott_opticlust_2017].
+The MCC uses all values from a confusion matrix and ranges from zero to one,
+with a score of one occurring when all sequence pairs are true positives and
+true negatives, and a score of zero when all pairs are false positives and false
+negatives.
+Sequence pairs that are similar to each other (i.e. within the distance
+threshold) are counted as true positives if they are assigned to the same OTU,
+and false negatives if they are not in the the same OTU.
+Sequence pairs that are not similar to each other are true negatives if they are
+not assigned to the same OTU, and false positives if they are not in the same
+OTU.
+OptiClust iterations continue until the MCC stabilizes or until a maximum number
+of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
+
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to assign to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03).
@@ -189,6 +199,7 @@ Then, the algorithm iteratively reassigns the query sequences to the reference
 OTUs to optimize the MCC. 
 Alternatively, a sequence will remain unassigned if the MCC value is maximized
 when the sequence is a singleton rather than assigned to a reference OTU.
+All query and reference sequence pairs are considered when calculating the MCC.
 This process is repeated until the MCC changes by no more than 0.0001 (default)
 or until a maximum number of iterations is reached (default: 100).
 In the closed reference mode, any query sequences that cannot be assigned to
