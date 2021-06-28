@@ -25,9 +25,9 @@ results_sum:
   cap: \textbf{Benchmarking Results.}
        TODO write this caption.
   path: here('figures', 'results_sum.tiff')
-  dim: c(6,6)
+  dim: c(6.875,6.875)
 results_split:
   cap: \textbf{Split dataset strategy.}
        TODO write this caption.
   path: here('figures', 'results_split.tiff')
-  dim: c(6,9)
+  dim: c(6.875,9.0625)
