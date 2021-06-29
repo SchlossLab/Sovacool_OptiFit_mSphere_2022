@@ -128,7 +128,7 @@ otu_list <- list(
 seqs_to_otus <- get_seqs_to_otus(otu_list)
 otu_mat <- get_otu_mat_from_list(otu_list, seqs)
 
-current_mcc <- calc_mcc_from_conf_mat(get_conf_mat(pairs, dist_mat, otu_mat))
+current_mcc <- calc_mcc_from_conf_mat(get_conf_mat(seq_pairs, dist_mat, otu_mat))
 
 # Pat's method for plotting network graph
 tp <- 0
@@ -147,5 +147,62 @@ M["K,P", "L"] <- mcc(tp = tp + 1, tn = tn - 1, fp = fp + 1, fn = fn - 1)
 C["O", "L"] <- -0.4
 C["K,P", "L"] <- 0.4
 par(mar = c(1, 2, 1, 2), xpd = T)
-plotmat(M, pos = n_seqs, name = names, lwd = 1, curve = C, box.lwd = 2, cex.txt = 0.6, box.size = 0.03, box.type = "circle", shadow.size = 0, arr.type = "triangle", dtext = 0.5, self.shiftx = -0.02, self.shifty = -0.04, xpd = T, box.cex = 0.6, arr.length = 0.3)
+plotmat(M, pos = n_seqs, name = names, lwd = 1, curve = C, box.lwd = 2, 
+        cex.txt = 0.6, box.size = 0.03, box.type = "circle", shadow.size = 0, 
+        arr.type = "triangle", dtext = 0.5, self.shiftx = -0.02, 
+        self.shifty = -0.04, xpd = T, box.cex = 0.6, arr.length = 0.3)
 }
+
+# example diagrammeR graphs
+create_graph(nodes_df=create_node_df(4), 
+             edges_df = create_edge_df(from = 1:3, to = (2:4)), 
+             attr_theme = 'lr') %>% 
+  render_graph()
+
+from_adj_matrix(otu_mat, use_diag = FALSE) %>% render_graph()
+
+from_adj_matrix(dist_mat, use_diag = FALSE) %>% render_graph()
+
+from_adj_matrix(otu_mat, use_diag = FALSE) %>% 
+  add_global_graph_attrs('rankdir', 'TB', attr_type = 'graph') %>% 
+  add_global_graph_attrs('layout', 'dot', attr_type = 'graph') %>% 
+  render_graph()
+
+# can I make part of a node label bold?
+library(ggraph)
+library(tidygraph)
+graph <- tbl_graph(nodes = data.frame(name = c("abc", "def", "g**h**i", "jkl")), 
+               edges = data.frame(from = c(1, 1, 1, 2, 3, 3, 4, 4, 4),
+                             to = c(2, 3, 4, 1, 1, 2, 1, 2, 3)))
+ggraph(graph, layout = 'fr') + 
+  geom_edge_link() + 
+  geom_node_label(aes(label = name)) + 
+  #geom_richtext(aes(label = name)) +
+  labs(title = 'an *example* plot') +
+  theme(plot.title = element_markdown())
+
+# have to use geom_richtext() to get markdown in labels
+
+nodes <- data.frame(
+  otu_label = c("abc", "def", "g**h**i", "jkl"),
+  x = c(1, 2, 3, 4),
+  y = c(1, 1, 1, 1)
+) 
+edges <- data.frame(from = c(2, 2),
+                    to   = c(1, 3)
+                    ) %>% 
+  mutate(x1 = nodes[['x']][from],
+         y1 = nodes[['y']][from],
+         x2 = nodes[['x']][to],
+         y2 = nodes[['y']][to])
+
+
+ggplot() +
+  geom_richtext(aes(x, y, label = otu_label), data = nodes) +
+  geom_curve(
+    aes(x = x1, y = y1, xend = x2, yend = y2),
+    data = edges,
+    arrow = arrow(length = unit(0.03, "npc"))
+  )
+ggsave('figures/tmp.tiff', device = 'tiff', dpi=300, 
+       width = 10, heigh = 2, units = 'in')
