@@ -37,14 +37,13 @@ the subworkflows and renders the [paper](paper).
     conda activate optifit
     ```
 
-    You will also need to compile the development version of mothur v1.45.0
+    You will also need mothur version >= 1.45.0: https://github.com/mothur/mothur/releases/
+    
+    I used a custom version of `ggraph` for the algorithm figure. 
+    You can install it with devtools from R:
+    ```r
+    devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
     ```
-    git clone https://github.com/mothur/mothur
-    cd mothur
-    git checkout 1.45.0
-    make
-    ```
-    Make sure this version is the first mothur binary in your shell path.
 1. Run the entire pipeline.
 
     Locally:

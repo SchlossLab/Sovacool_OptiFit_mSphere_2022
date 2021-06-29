@@ -1,15 +1,11 @@
+2021-06-29
+
+``` r
 library(tidyverse)
-set.seed(20200308)
+library(diagram)
+```
 
-# blank placeholder plot for now
-ggplot() + theme_void() + annotate('text', x=1, y=1, 
-                                   label='insert algorithm diagram here', 
-                                   size=8, angle=45)
-dims <- eval(parse(text=snakemake@params[['dim']]))
-ggsave(snakemake@output[['tiff']],
-       device = 'tiff', dpi=300,
-       width=dims[1], height=dims[2], units='in')
-
+``` r
 # Pat's MCC function
 # source: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/a8bc26855423bba85acc0b8e7cca075e5c94f533/submission/supplemental_text.Rmd#L26-L28
 mcc <- function(tp, tn, fp, fn) {
@@ -82,9 +78,9 @@ get_conf_mat <- function(pairs, dist_mat, otu_mat) {
     as.matrix()
   return(conf_mat)
 }
+```
 
-pat_example <- function() {
-
+``` r
 # example data
 seqs <- LETTERS[1:17]
 seq_pairs <- combn(seqs, 2)
@@ -130,7 +126,7 @@ tp <- 12
 tn <- 1210
 fp <- 0
 fn <- 3
-names <- c(	"B,D,I", "E,F,Q", "C,G", "A,H,J", "M,N", "L,O,P", "K", "...")
+names <- c( "B,D,I", "E,F,Q", "C,G", "A,H,J", "M,N", "L,O,P", "K", "...")
 n_seqs <- length(names)
 M <- matrix(nrow = n_seqs, ncol = n_seqs, byrow = TRUE, data = 0)
 rownames(M) <- colnames(M) <- names
@@ -147,18 +143,54 @@ diagram::plotmat(M, pos=n_seqs, name = names, lwd = 1, curve=C, box.lwd = 2,
         cex.txt = 0.6, box.size = 0.03, box.type = "circle", shadow.size=0, 
         arr.type="triangle", dtext=0.5, self.shiftx =-0.02, self.shifty=-0.04,
         xpd=T, box.cex=0.6, arr.length=0.3)
-}
+```
 
-# can I make part of a node label bold?
-# I modified ggraph::geom_node_label to use ggtext::geom_richtext by default
+![](figures/opticlust-1.png)<!-- -->
+
+## ggraph
+
+can I make part of a node label bold? I modified
+`ggraph::geom_node_label` to use `ggtext::geom_richtext` by default.
+
+``` r
 # devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
-experiment_ggraph <- function() {
-  library(ggraph)
-  library(ggtext)
-  library(tidygraph)
-  graph <- tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L")), 
-                 edges = data.frame(from = c(2), to = c(3)))
-  ggraph(graph, layout = 'linear') + 
-    geom_edge_link() + 
-    geom_node_label(aes(label = name), richtext = TRUE)
-}
+#library(ggraph) # something is wrong & this fails, but load_all() works!
+devtools::load_all('../ggraph')
+library(ggtext)
+library(tidygraph)
+```
+
+``` r
+graph <-
+  tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L")),
+            edges = data.frame(from = c(2, 2, 2), 
+                               to = c(3, 4, 2), 
+                               mcc = c(0.97, 0.84, 0.80)))
+ggraph(graph, layout = 'linear') +
+  geom_edge_arc(aes(label = mcc,
+                    start_cap = label_rect(node1.name),
+                    end_cap = label_rect(node2.name)), 
+                arrow = arrow(length = unit(4, 'mm')),
+                edge_colour = 'gray',
+                angle_calc = 'along',
+                label_dodge = unit(2, 'mm')
+                ) +
+  geom_edge_loop(aes(label = mcc,
+                     span=120,
+                     direction=270,
+                     strength=0.5
+                     ),
+                 angle_calc = 'along',
+                 label_dodge = unit(-2, 'mm'),
+                 edge_colour = 'gray') +
+  geom_node_label(aes(label = name), richtext = TRUE) +
+  theme(panel.background = element_rect(fill='white'))
+```
+
+    ## Warning: Ignoring unknown parameters: parse
+
+![](figures/ggraph_exp-1.png)<!-- -->
+
+``` r
+ggsave('figures/tmp-ggraph.png', width=8, heigh=2)
+```
