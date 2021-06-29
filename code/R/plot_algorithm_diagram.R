@@ -184,25 +184,31 @@ ggraph(graph, layout = 'fr') +
 # have to use geom_richtext() to get markdown in labels
 
 nodes <- data.frame(
-  otu_label = c("abc", "def", "g**h**i", "jkl"),
-  x = c(1, 2, 3, 4),
-  y = c(1, 1, 1, 1)
+  otu_label = c("abc", "def", "g**h**i", "jkl", 'null', 'null'),
+  x = c(1, 2, 3, 4, 4.1, 0.9),
+  y = c(1, 1, 1, 1, 1.1, 0.9),
+  is_real = c(1, 1, 1, 1, 0, 0)
 ) 
 edges <- data.frame(from = c(2, 2),
                     to   = c(1, 3)
                     ) %>% 
   mutate(x1 = nodes[['x']][from],
-         y1 = nodes[['y']][from],
+         y1 = nodes[['y']][from] + 0.01,
          x2 = nodes[['x']][to],
          y2 = nodes[['y']][to])
 
 
 ggplot() +
-  geom_richtext(aes(x, y, label = otu_label), data = nodes) +
+  geom_richtext(aes(x, y, label = otu_label, alpha = is_real), 
+                data = nodes) +
   geom_curve(
     aes(x = x1, y = y1, xend = x2, yend = y2),
     data = edges,
     arrow = arrow(length = unit(0.03, "npc"))
-  )
+  ) +
+  scale_alpha_manual(values = c(0, 1)) +
+  theme_void() +
+  theme(legend.position = 'none')
+
 ggsave('figures/tmp.tiff', device = 'tiff', dpi=300, 
        width = 10, heigh = 2, units = 'in')
