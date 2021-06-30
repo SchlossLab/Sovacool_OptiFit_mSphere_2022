@@ -170,27 +170,17 @@ ggraph(graph, layout = 'linear') +
   geom_edge_arc(aes(label = mcc,
                     start_cap = label_rect(node1.name),
                     end_cap = label_rect(node2.name)), 
-                arrow = arrow(length = unit(4, 'mm')),
+                arrow = arrow(length = unit(4, 'mm'),
+                              type = 'closed'),
                 edge_colour = 'gray',
                 angle_calc = 'along',
-                label_dodge = unit(2, 'mm')
+                label_dodge = unit(-2, 'mm')
                 ) +
-  geom_edge_loop(aes(label = mcc,
-                     span=120,
-                     direction=270,
-                     strength=0.5
-                     ),
-                 angle_calc = 'along',
-                 label_dodge = unit(-2, 'mm'),
-                 edge_colour = 'gray') +
-  geom_node_label(aes(label = name), richtext = TRUE) +
-  theme(panel.background = element_rect(fill='white'))
+  geom_node_point(color='blue', size=8)+
+  geom_node_label(aes(label = name), repel = TRUE) +
+  theme_void() +
+  theme(panel.background = element_rect(fill='white'),
+        plot.margin=unit(x=c(0,0,0,0),units="pt")) 
 ```
-
-    ## Warning: Ignoring unknown parameters: parse
 
 ![](figures/ggraph_exp-1.png)<!-- -->
-
-``` r
-ggsave('figures/tmp-ggraph.png', width=8, heigh=2)
-```
