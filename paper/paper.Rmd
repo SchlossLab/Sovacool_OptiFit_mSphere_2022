@@ -248,7 +248,7 @@ with OptiClust at a distance threshold of 3% (see Figure \ref{fig:workflow}).
 The _de novo_ MCC scores were `r dn_dbs_mcc` for `r db_names_upper`,
 respectively.
 Fitting sequences to Greengenes and SILVA in closed reference mode performed
-similarly, with median MCC scores of `r round(closed_fit_gg_mcc, 3)` (**TODO: Pat marked this as 0.80, but the actual number is 0.795414**) and 
+similarly, with median MCC scores of `r closed_fit_gg_mcc` and 
 `r closed_fit_silva_mcc` respectively, while the median MCC 
 was `r closed_fit_rdp_mcc` when fitting to RDP 
 (see Figure \ref{fig:results_sum}).
