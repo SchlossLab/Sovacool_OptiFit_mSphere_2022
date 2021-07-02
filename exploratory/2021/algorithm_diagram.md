@@ -1,4 +1,4 @@
-2021-06-29
+2021-07-01
 
 ``` r
 library(tidyverse)
@@ -85,7 +85,7 @@ get_conf_mat <- function(pairs, dist_mat, otu_mat) {
 seqs <- LETTERS[1:17]
 seq_pairs <- combn(seqs, 2)
 # distances within threshold
-dat <- data.frame(
+dist_dat <- data.frame(
   Seq1 = c("D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q"),
   Seq2 = c("B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F"),
   Distance = c(0.024, 0.028, 0.028, 0.027, 0.016, 0.024, 0.028, 0.024, 0.024, 0.024, 0.016, 0.027, 0.027, 0.024, 0.028)
@@ -97,8 +97,8 @@ dist_mat <- matrix(
   dimnames = list(seqs, seqs), data = 0
 )
 diag(dist_mat) <- 1
-for (i in 1:nrow(dat)) {
-  r <- dat[i, ]
+for (i in 1:nrow(dist_dat)) {
+  r <- dist_dat[i, ]
   seq1 <- r[["Seq1"]]
   seq2 <- r[["Seq2"]]
   dist_mat[seq1, seq2] <- 1
@@ -158,15 +158,28 @@ can I make part of a node label bold? I modified
 devtools::load_all('../ggraph')
 library(ggtext)
 library(tidygraph)
+library(patchwork)
+library(gridExtra)
+g1 <-
+  tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L"),
+                               i = 1:4),
+            edges = data.frame(from = c(2, 2, 2), 
+                               to = c(3, 4, 2), 
+                               mcc = c(0.97, 0.84, 0.80)) %>% 
+              mutate(is_loop = from == to))
+g2 <-
+  tbl_graph(nodes = data.frame(name = c("A B C", "D **E** F", "G H I", "J K L"),
+                               i = 1:4),
+            edges = data.frame(from = c(2, 2, 2), 
+                               to = c(1, 3, 2), 
+                               mcc = c(0.94, 0.81, 0.86)) %>% 
+              mutate(is_loop = from == to))
 ```
 
 ``` r
-graph <-
-  tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L")),
-            edges = data.frame(from = c(2, 2, 2), 
-                               to = c(3, 4, 2), 
-                               mcc = c(0.97, 0.84, 0.80)))
-ggraph(graph, layout = 'linear') +
+plot_graph <- function(graph) {
+  create_layout(graph, 'linear', sort.by = i) %>% 
+  ggraph() +
   geom_edge_arc(aes(label = mcc,
                     start_cap = label_rect(node1.name),
                     end_cap = label_rect(node2.name)), 
@@ -176,11 +189,34 @@ ggraph(graph, layout = 'linear') +
                 angle_calc = 'along',
                 label_dodge = unit(-2, 'mm')
                 ) +
-  geom_node_point(color='blue', size=8)+
-  geom_node_label(aes(label = name), repel = TRUE) +
+  geom_edge_loop(aes(span = 1, direction = 270, strength = 0.2, color = is_loop)) +
+  geom_node_label(aes(label = name)) +
+    scale_edge_color_manual(values = c('white')) +
   theme_void() +
-  theme(panel.background = element_rect(fill='white'),
-        plot.margin=unit(x=c(0,0,0,0),units="pt")) 
+  theme(plot.margin=unit(x=c(0,0,10,0), units="pt"),
+        legend.position = 'none')
+}
+
+
+pg1 <- plot_graph(g1) 
+```
+
+    ## Warning: Ignoring unknown parameters: parse
+
+``` r
+pg2 <- plot_graph(g2) 
+```
+
+    ## Warning: Ignoring unknown parameters: parse
+
+``` r
+wrap_elements(tableGrob(t(dist_dat),
+                        theme = ttheme_default(base_size = 9, 
+                                               padding = unit(c(4,8), 'pt')))
+              ) /
+((pg1 / pg2 / pg1 / pg2) + 
+  plot_annotation(tag_levels = '1')) +
+plot_layout(heights = c(1,4))
 ```
 
 ![](figures/ggraph_exp-1.png)<!-- -->
