@@ -188,6 +188,8 @@ g2 <-
               mutate(is_loop = from == to))
 ```
 
+## plot several optifit iterations
+
 ```{r ggraph_exp, fig.dim=c(6,5), dpi=300}
 plot_graph <- function(graph) {
   create_layout(graph, 'linear', sort.by = i) %>% 
@@ -222,5 +224,11 @@ wrap_elements(tableGrob(t(dist_dat),
   plot_annotation(tag_levels = '1')) +
 plot_layout(heights = c(1,4))
   
+```
+
+## maybe I'll do everything before plotting in python
+
+```{python}
+r.g1
 ```
 
