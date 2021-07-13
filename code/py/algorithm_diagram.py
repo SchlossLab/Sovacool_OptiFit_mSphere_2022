@@ -25,16 +25,35 @@ class otuMap(dict):
             otu_dict_set[otu_id].add(seq)
         return otu_dict_set
 
-    def conf_mat(self, dist_mat): # TODO
+    def conf_mat(self, dist_mat):
         """
-        :param dist_mat: dict of sets of the form {seqA: {seqB, seqC}, seqB: {seqA}}
+        :param dist_mat: dict of sets, e.g. {seqA: {seqB, seqC}, seqB: {seqA}}
         """
-        for seq1, seq2 in combinations(self.keys(), 2)
+        conf_mat = {'tp': 0, 'tn': 0, 'fp': 0, 'fn': 0}
+        for seq1, seq2 in combinations(self.keys(), 2):
+            # are they actually similar (true assignment)
+            true_otu = (seq2 in dist_mat[seq1]) or (seq1 in dist_mat[seq2])
+            # were they assigned to the same OTU (predicted assignment)
+            pred_otu = self[seq1] == self[seq2]
 
-    def mcc(self, dist_mat): # TODO
+            if true_otu and pred_otu:
+                result = 'tp'
+            elif true_otu and not pred_otu:
+                result = 'fn'
+            elif not true_otu and pred_otu:
+                result = 'fp'
+            elif not true_otu and not pred_otu:
+                result = 'tn'
+            else:
+                raise ValueError("this should never happen")
+            conf_mat[result] += 1
+        return conf_mat
+
+    def mcc(self, conf_mat):
         """
-        Calculate the Matthews Correlation coefficient given a distance matrix.
+        Calculate the Matthews Correlation coefficient given a confusion matrix.
         """
+        return round((tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)), 2)
 
 
 class OptiFit: # TODO
