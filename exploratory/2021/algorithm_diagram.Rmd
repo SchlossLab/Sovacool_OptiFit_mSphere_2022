@@ -15,6 +15,8 @@ knitr::opts_chunk$set(echo = TRUE,
 ```{r lib}
 library(tidyverse)
 library(diagram)
+library(reticulate)
+use_python('~/miniconda3/bin/python')
 ```
 
 ```{r functions}
