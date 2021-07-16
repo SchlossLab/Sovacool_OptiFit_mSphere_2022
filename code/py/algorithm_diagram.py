@@ -4,6 +4,7 @@ from collections import defaultdict, Counter
 from copy import deepcopy
 from itertools import combinations
 from math import comb, sqrt
+import numpy
 import pandas
 
 
@@ -232,11 +233,14 @@ class OptiFit:
     def iterate(self):
         iterations = list()
         curr_fitmap = self.fitmap
-        for seq in self.query_seqs:
-            if seq in self.fitmap.dist_mat:
-                iteration = OptiIter(curr_fitmap, seq)
-                iterations.append(iteration.to_dict)
-                curr_fitmap = iteration.best_map
+        prev_mcc = 0
+        while not numpy.isclose(prev_mcc, self.mcc):
+            prev_mcc = self.mcc
+            for seq in self.query_seqs:
+                if seq in self.fitmap.dist_mat:
+                    iteration = OptiIter(curr_fitmap, seq)
+                    iterations.append(iteration.to_dict)
+                    curr_fitmap = iteration.best_map
         return iterations
 
 
@@ -266,7 +270,6 @@ class OptiIter:
            })
         best_option = max(options)
         # make sure OTU numbers are continuous
-        print('RENUMBER')
         self.best_map = best_option.fitmap
 
     def __repr__(self):
@@ -287,7 +290,7 @@ class OptiOption:
         self.from_otu = curr_fitmap.seqs_to_otus[curr_seq]
         self.to_otu = curr_fitmap.seqs_to_otus[sim_seq]
 
-        self.fitmap = deepcopy(curr_fitmap) # TODO: is this the bug?
+        self.fitmap = deepcopy(curr_fitmap)
         self.fitmap.seqs_to_otus[curr_seq] = self.to_otu
         self.fitmap.renumber_otus()
         self.mcc = self.fitmap.mcc
@@ -304,10 +307,3 @@ class OptiOption:
     def __gt__(self, other):
         return self.mcc > other.mcc
 
-
-def main():
-    run_optifit()
-
-
-if __name__ == "__main__":
-    main()
