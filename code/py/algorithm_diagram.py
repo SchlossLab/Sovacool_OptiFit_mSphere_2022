@@ -3,49 +3,12 @@
 from collections import defaultdict, Counter
 from itertools import combinations
 from math import comb, sqrt
-          
-          
-def main():
-    ref_otus = opticlust_example()
-    print(ref_otus)
 
 
 def opticlust_example():
     dist_frame = {
-        "seq1": [
-            "D",
-            "F",
-            "G",
-            "H",
-            "I",
-            "I",
-            "J",
-            "J",
-            "N",
-            "O",
-            "P",
-            "P",
-            "P",
-            "Q",
-            "Q",
-        ],
-        "seq2": [
-            "B",
-            "E",
-            "C",
-            "A",
-            "B",
-            "D",
-            "A",
-            "H",
-            "M",
-            "L",
-            "K",
-            "L",
-            "O",
-            "E",
-            "F",
-        ],
+        "seq1": [ "D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q", ],
+        "seq2": [ "B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F", ],
     }
     assert len(dist_frame['seq1']) == len(dist_frame['seq2'])
     dist_mat = dist_pairs_to_sets(dist_frame)
@@ -55,7 +18,7 @@ def opticlust_example():
     #print(otus)
     #conf_mat = otus.conf_mat(dist_mat)
     #print('mcc current:', mcc(conf_mat),
-    #      '\nmcc from correct conf mat:', 
+    #      '\nmcc from correct conf mat:',
     #      mcc({"tp": 14, "tn": 1210, "fp": 0, "fn": 1}),
     #      '\nmcc correct: 0.97')
     return otus
@@ -105,7 +68,7 @@ def dist_pairs_to_sets(dframe):
         dist_set[seq1].add(seq2)
         dist_set[seq2].add(seq1)
     return dist_set
-            
+
 
 class otuMap:
     """
@@ -121,7 +84,7 @@ class otuMap:
         self.seqs_to_otus = seqs_to_otus if seqs_to_otus else dict()
         self.dist_mat = dist_mat if dist_mat else dict()
         self.n_seqs = n_seqs
-        
+
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.seqs_to_otus)
@@ -136,7 +99,7 @@ class otuMap:
         """
         return cls(seqs_to_otus = {seq: idx for idx, otu in enumerate(otu_list)
                                             for seq in otu}, **kwargs)
-    
+
     @property
     def seqs(self):
         return set(self.seqs_to_otus.keys())
@@ -155,7 +118,7 @@ class otuMap:
     @property
     def ghost_pairs(self):
         """
-        ghost_pairs: number of pairs from ghost sequences, calculated from the 
+        ghost_pairs: number of pairs from ghost sequences, calculated from the
             distance matrix and total number of seqs (n_seqs).
             Ghost sequences are not similar enough to any other seq
             to be included in the distance matrix, thus they form singleton OTUs
@@ -166,9 +129,8 @@ class otuMap:
         n_unsim_seqs = self.n_seqs - n_sim_seqs
         # number of distances within the distance threshold, i.e. they're included in dist_mat
         #n_dists = sum([len(dist_mat[s1]) for s1 in dist_mat]) / 2
-        
         return comb(n_unsim_seqs, 2) + n_unsim_seqs * n_sim_seqs
-        
+
     @property
     def conf_mat(self):
         """
@@ -183,20 +145,36 @@ class otuMap:
             )
             for seq1, seq2 in combinations(self.seqs_to_otus.keys(), 2)
         ]
+        # account for additional singleton sequences
         classes.extend('tn' for i in range(self.ghost_pairs))
         # convert to a dictionary of counts
         return Counter(classes)
 
 
-class OptiFit:  # TODO
-    def __init__(self, ref_otus, query_seqs, dist_mat):
+class OptiFit:
+    def __init__(self, ref_otus, query_seqs, query_dist_mat):
         self.ref_otus = ref_otus
         self.query_seqs = query_seqs
-        self.dist_mat = dist_mat
+        self.dist_mat = self.ref_otus.dist_mat.copy()
+        for s1 in query_dist_mat:
+            self.dist_mat[s1].update(query_dist_mat[s1])
+            for s2 in query_dist_mat[s1]:
+                self.dist_mat[s2].add(s1)
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
+    
+    def run_iter(self): # TODO
+        pass
 
+
+def main():
+    ref_otus = opticlust_example()
+    print(ref_otus)
+    query_seqs = {'X', 'Y', 'Z'}
+    query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
+                                         'seq2': ['Y', 'C', 'G', 'K', 'C']})
+    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat)
 
 if __name__ == "__main__":
     main()
