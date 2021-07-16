@@ -1,8 +1,11 @@
-2021-07-01
+2021-07-16
 
 ``` r
+library(here)
 library(tidyverse)
 library(diagram)
+library(reticulate)
+use_python('~/miniconda3/bin/python')
 ```
 
 ``` r
@@ -122,10 +125,10 @@ current_mcc <- calc_mcc_from_conf_mat(get_conf_mat(seq_pairs, dist_mat, otu_mat)
 
 # Pat's method for plotting the network graph
 # last example from OptiClust supplemental text
-tp <- 12
+tp <- 14
 tn <- 1210
 fp <- 0
-fn <- 3
+fn <- 1
 names <- c( "B,D,I", "E,F,Q", "C,G", "A,H,J", "M,N", "L,O,P", "K", "...")
 n_seqs <- length(names)
 M <- matrix(nrow = n_seqs, ncol = n_seqs, byrow = TRUE, data = 0)
@@ -176,6 +179,8 @@ g2 <-
               mutate(is_loop = from == to))
 ```
 
+## plot several optifit iterations
+
 ``` r
 plot_graph <- function(graph) {
   create_layout(graph, 'linear', sort.by = i) %>% 
@@ -220,3 +225,25 @@ plot_layout(heights = c(1,4))
 ```
 
 ![](figures/ggraph_exp-1.png)<!-- -->
+
+## maybe I’ll do everything in python until the actual plotting step
+
+``` r
+reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
+optifit_iters <- run_optifit() %>% 
+  sapply(function(x) {
+    return(list(nodes = x[['nodes']] %>% py_to_r(),
+                edges = x[['edges']] %>% py_to_r()))
+    })
+```
+
+``` r
+g <- tbl_graph(nodes = optifit_iters[,1]$nodes,
+               edges = optifit_iters[,1]$edges %>% 
+                 mutate(is_loop = from == to))
+plot_graph(g)
+```
+
+    ## Warning: Ignoring unknown parameters: parse
+
+![](figures/graph_optifit-1.png)<!-- -->

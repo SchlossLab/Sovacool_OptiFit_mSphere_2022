@@ -4,7 +4,16 @@ from collections import defaultdict, Counter
 from copy import deepcopy
 from itertools import combinations
 from math import comb, sqrt
-import pandas as pd
+import pandas
+
+
+def run_optifit():
+    ref_otus = opticlust_example()
+    query_seqs = {'X', 'Y', 'Z'}
+    query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
+                                         'seq2': ['Y', 'C', 'G', 'K', 'C']})
+    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
+    return optifit.iterate
 
 
 def opticlust_example():
@@ -202,6 +211,7 @@ class OptiIter:
         Store the nodes and edges as dictionaries for tidygraph.
         """
         sim_seqs = fitmap.dist_mat[curr_seq]
+        sim_seqs.add(curr_seq)
         options = list()
         edges = {'from': [], 'to': [], 'mcc': []}
         for sim_seq in sim_seqs:
@@ -209,10 +219,11 @@ class OptiIter:
             edges['from'].append(option.from_otu)
             edges['to'].append(option.to_otu)
             edges['mcc'].append(option.mcc)
-        self.edges = pd.DataFrame.from_dict(edges)
-        self.nodes = pd.DataFrame.from_dict(
+
+        self.edges = pandas.DataFrame.from_dict(edges)
+        self.nodes = pandas.DataFrame.from_dict(
           {'name': [' '.join([s if s != curr_seq else f"**{s}**"
-                              for s in otu])
+                              for s in sorted(otu)])
                     for otu in fitmap.otus_to_seqs.values()],
            'id': list(fitmap.otus_to_seqs.keys())
            })
@@ -243,16 +254,8 @@ class OptiOption:
 
 
 def main():
-    ref_otus = opticlust_example()
-    query_seqs = {'X', 'Y', 'Z'}
-    query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
-                                         'seq2': ['Y', 'C', 'G', 'K', 'C']})
-    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
-    iters = optifit.iterate
-    print(iters)
+    run_optifit()
 
 
 if __name__ == "__main__":
     main()
-
-
