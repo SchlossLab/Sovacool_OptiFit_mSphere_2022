@@ -1,4 +1,4 @@
-""" Prep a series of graphs for the algorithm diagram figure
+""" Prep a series of graphs for the algorithm diagram figure.
 """
 from collections import defaultdict, Counter
 from itertools import combinations
@@ -20,7 +20,7 @@ def mcc(conf_mat):
 def classify(true_otu, pred_otu):
     """
     Classify a prediction as a true positive (tp), true negative (tn),
-    false positive (fp), or false negataive (fn).
+        false positive (fp), or false negataive (fn).
     """
     if true_otu and pred_otu:
         result = "tp"
@@ -38,7 +38,10 @@ def classify(true_otu, pred_otu):
 def dist_pairs_to_sets(dframe):
     """
     Convert a dict of 2 lists, with each sequence at the same index being within
-    the distance threshold, to a dict of sets.
+        the distance threshold, to a dict of sets.
+    :param dframe: {'seq1': ['A', 'A', 'B'],
+                    'seq2': ['B', 'C', 'D']}
+    :return: {'A': {'B','C'}, 'B': {'A','C','D'}, 'C': {'A','B'}, 'D': {'B'}}
     """
     dist_set = defaultdict(set)
     for seq1, seq2 in zip(dframe["seq1"], dframe["seq2"]):
@@ -47,34 +50,37 @@ def dist_pairs_to_sets(dframe):
     return dist_set
 
 
-class otuMap(dict):
-    def __init__(self, *args, **kwargs):
-        """
-        Maps sequences to OTU assignments. The dict should be of the form
-          {seqID: otuIndex}, e.g. {'seqA': 1, 'seqB': 2, 'seqC': 3}
-        """
-        super().__init__(*args, **kwargs)
+class otuMap():
+    """
+    Maps sequences to OTU assignments. The dict should be of the form
+        {seqID: otuIndex}, e.g. {'seqA': 1, 'seqB': 2, 'seqC': 3}
+    """
+
+    def __init__(self, seqs_to_otus = None):
+        self.seqs_to_otus = seqs_to_otus if seqs_to_otus else dict()
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__.items())
+        return "%s(%r)" % (self.__class__, self.seqs_to_otus)
 
     @classmethod
     def from_list(cls, otu_list):
         """
         :param otu_list: should be of the form
-          [{seqA, seqB}, {seqC, secD}, {secE}]
-          where the index in the list is the OTU ID.
+            [{seqA, seqB}, {seqC, secD}, {secE}]
+            where the index in the list is the OTU ID.
+        :return: an otuMap
         """
-        return cls({seq: idx for idx, otu in enumerate(otu_list) for seq in otu})
+        return cls(seqs_to_otus = {seq: idx for idx, otu in enumerate(otu_list) 
+                                            for seq in otu})
 
     @property
-    def otu_to_seq(self):
+    def otus_to_seqs(self):
         """
         :return: dictionary of sets, with keys as OTU IDs and values as sets
-          containing sequence IDs.
+            containing sequence IDs.
         """
         otu_dict_set = defaultdict(set)
-        for seq, otu_id in self.items():
+        for seq, otu_id in self.seqs_to_otus.items():
             otu_dict_set[otu_id].add(seq)
         return otu_dict_set
 
@@ -82,15 +88,17 @@ class otuMap(dict):
         """
         :param dist_mat: dict of sets, e.g. {seqA: {seqB, seqC}, seqB: {seqA}}
         :param baseline_conf_mat: provide a confusion matrix (as a dictionary)
-          with starting values other than zero.
+            with starting values other than zero.
+        :return: a confusion matrix as a dictionary of counts containing
+            the keys 'tp', 'tn', 'fp', and 'fn'
         """
         # build list of tp, tn, fp, & fn
         classes = [
             classify(
                 (seq2 in dist_mat[seq1]) or (seq1 in dist_mat[seq2]),
-                self[seq1] == self[seq2],
+                self.seqs_to_otus[seq1] == self.seqs_to_otus[seq2],
             )
-            for seq1, seq2 in combinations(self.keys(), 2)
+            for seq1, seq2 in combinations(self.seqs_to_otus.keys(), 2)
         ]
         # convert to a dictionary of counts
         conf_mat = Counter(classes)
@@ -148,6 +156,9 @@ def main():
         ],
     }
     dist_mat = dist_pairs_to_sets(dist_frame)
+    otu_list = [{}, {'I', 'D', 'B'}, {'F', 'E', 'Q'}, {'C', 'G'}, {'H', 'J', 'A'}, {'M', 'N'}, {'P', 'L', 'O'}, {'K'}]
+    otus = otuMap.from_list(otu_list)
+    print(otus)
 
 
 if __name__ == "__main__":
