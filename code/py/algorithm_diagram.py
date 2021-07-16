@@ -81,6 +81,22 @@ def dist_pairs_to_sets(dframe):
     return dist_set
 
 
+def format_seq(s, optifit, curr_seq, color_curr_seq = False,
+               base_color = "#000000",
+               ref_color = "#D95F02",
+               query_color = "#1B9E77"):
+    """
+    format sequences with bold for the current iteration seq and
+    color-code reference and query sequences.
+    """
+    if s == curr_seq:
+        s = f"**{s}**"
+        color = query_color if color_curr_seq else base_color
+    else:
+        color = query_color if s in optifit.query_seqs else ref_color
+    return f"<span style = 'color:{color};'>{s}</span>"
+
+
 class otuMap:
     """
     Maps sequences to OTU assignments.
@@ -199,17 +215,19 @@ class OptiFit:
 
     @property
     def iterate(self):
-        return [OptiIter(self.fitmap, seq).to_dict
+        # TODO: after each iteration, modify fitmap with best option
+        return [OptiIter(self, seq).to_dict
                 for seq in self.query_seqs
                 if seq in self.fitmap.dist_mat]
 
 
 class OptiIter:
-    def __init__(self, fitmap, curr_seq):
+    def __init__(self, optifit, curr_seq):
         """
         Calculate possible MCCs if the current seq is moved to different OTUs.
         Store the nodes and edges as dictionaries for tidygraph.
         """
+        fitmap = optifit.fitmap
         sim_seqs = fitmap.dist_mat[curr_seq]
         sim_seqs.add(curr_seq)
         options = list()
@@ -222,11 +240,12 @@ class OptiIter:
 
         self.edges = pandas.DataFrame.from_dict(edges)
         self.nodes = pandas.DataFrame.from_dict(
-          {'name': [' '.join([s if s != curr_seq else f"**{s}**"
+          {'name': [' '.join([format_seq(s, optifit, curr_seq)
                               for s in sorted(otu)])
                     for otu in fitmap.otus_to_seqs.values()],
            'id': list(fitmap.otus_to_seqs.keys())
            })
+        # TODO: best_option, modify optifit object
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
@@ -245,12 +264,14 @@ class OptiOption:
         self.sim_seq = sim_seq
         self.from_otu = curr_otu_map.seqs_to_otus[curr_seq]
         self.to_otu = curr_otu_map.seqs_to_otus[sim_seq]
-        otu_map = deepcopy(curr_otu_map)
-        otu_map.seqs_to_otus[curr_seq] = self.to_otu
-        self.mcc = otu_map.mcc
+
+        self.otu_map = deepcopy(curr_otu_map)
+        self.otu_map.seqs_to_otus[curr_seq] = self.to_otu
+        self.mcc = self.otu_map.mcc
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
+
 
 
 def main():

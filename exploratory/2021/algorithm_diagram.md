@@ -165,14 +165,14 @@ library(patchwork)
 library(gridExtra)
 g1 <-
   tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L"),
-                               i = 1:4),
+                               id = 1:4),
             edges = data.frame(from = c(2, 2, 2), 
                                to = c(3, 4, 2), 
                                mcc = c(0.97, 0.84, 0.80)) %>% 
               mutate(is_loop = from == to))
 g2 <-
   tbl_graph(nodes = data.frame(name = c("A B C", "D **E** F", "G H I", "J K L"),
-                               i = 1:4),
+                               id = 1:4),
             edges = data.frame(from = c(2, 2, 2), 
                                to = c(1, 3, 2), 
                                mcc = c(0.94, 0.81, 0.86)) %>% 
@@ -183,7 +183,7 @@ g2 <-
 
 ``` r
 plot_graph <- function(graph) {
-  create_layout(graph, 'linear', sort.by = i) %>% 
+  create_layout(graph, 'linear', sort.by = id) %>% 
   ggraph() +
   geom_edge_arc(aes(label = mcc,
                     start_cap = label_rect(node1.name),
@@ -231,19 +231,33 @@ plot_layout(heights = c(1,4))
 ``` r
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
 optifit_iters <- run_optifit() %>% 
-  sapply(function(x) {
+  lapply(function(x) {
     return(list(nodes = x[['nodes']] %>% py_to_r(),
-                edges = x[['edges']] %>% py_to_r()))
+                edges = x[['edges']] %>% py_to_r() %>% 
+                 mutate(is_loop = from == to)))
     })
 ```
 
 ``` r
-g <- tbl_graph(nodes = optifit_iters[,1]$nodes,
-               edges = optifit_iters[,1]$edges %>% 
-                 mutate(is_loop = from == to))
+g <- tbl_graph(nodes = optifit_iters[[1]]$nodes,
+               edges = optifit_iters[[1]]$edges)
 plot_graph(g)
 ```
 
     ## Warning: Ignoring unknown parameters: parse
 
-![](figures/graph_optifit-1.png)<!-- -->
+![](figures/optifit_example-1.png)<!-- -->
+
+``` r
+lapply(optifit_iters, function(x) {
+  tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
+    plot_graph()
+}) %>% 
+  wrap_plots(ncol = 1)
+```
+
+    ## Warning: Ignoring unknown parameters: parse
+
+    ## Warning: Ignoring unknown parameters: parse
+
+![](figures/plot_optifit_iters-1.png)<!-- -->

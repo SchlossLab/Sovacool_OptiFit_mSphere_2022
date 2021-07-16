@@ -234,16 +234,24 @@ plot_layout(heights = c(1,4))
 ```{r pseudo_optifit}
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
 optifit_iters <- run_optifit() %>% 
-  sapply(function(x) {
+  lapply(function(x) {
     return(list(nodes = x[['nodes']] %>% py_to_r(),
-                edges = x[['edges']] %>% py_to_r()))
+                edges = x[['edges']] %>% py_to_r() %>% 
+                 mutate(is_loop = from == to)))
     })
 ```
 
-```{r graph_optifit, fig.dim=c(6,5), dpi=300}
-g <- tbl_graph(nodes = optifit_iters[,1]$nodes,
-               edges = optifit_iters[,1]$edges %>% 
-                 mutate(is_loop = from == to))
+```{r optifit_example, fig.dim=c(6,5), dpi=300}
+g <- tbl_graph(nodes = optifit_iters[[1]]$nodes,
+               edges = optifit_iters[[1]]$edges)
 plot_graph(g)
+```
+
+```{r plot_optifit_iters, fig.dim=c(6,5), dpi=300}
+lapply(optifit_iters, function(x) {
+  tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
+    plot_graph()
+}) %>% 
+  wrap_plots(ncol = 1)
 ```
 
