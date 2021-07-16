@@ -2,6 +2,63 @@
 """
 from collections import defaultdict, Counter
 from itertools import combinations
+from math import comb, sqrt
+          
+          
+def main():
+    ref_otus = opticlust_example()
+    print(ref_otus)
+
+
+def opticlust_example():
+    dist_frame = {
+        "seq1": [
+            "D",
+            "F",
+            "G",
+            "H",
+            "I",
+            "I",
+            "J",
+            "J",
+            "N",
+            "O",
+            "P",
+            "P",
+            "P",
+            "Q",
+            "Q",
+        ],
+        "seq2": [
+            "B",
+            "E",
+            "C",
+            "A",
+            "B",
+            "D",
+            "A",
+            "H",
+            "M",
+            "L",
+            "K",
+            "L",
+            "O",
+            "E",
+            "F",
+        ],
+    }
+    assert len(dist_frame['seq1']) == len(dist_frame['seq2'])
+    dist_mat = dist_pairs_to_sets(dist_frame)
+    otu_list = [{}, {'I', 'D', 'B'}, {'F', 'E', 'Q'}, {'C', 'G'},
+                {'H', 'J', 'A'}, {'M', 'N'}, {'P', 'L', 'O'}, {'K'}]
+    otus = otuMap.from_list(otu_list, dist_mat = dist_mat, n_seqs = 50)
+    #print(otus)
+    #conf_mat = otus.conf_mat(dist_mat)
+    #print('mcc current:', mcc(conf_mat),
+    #      '\nmcc from correct conf mat:', 
+    #      mcc({"tp": 14, "tn": 1210, "fp": 0, "fn": 1}),
+    #      '\nmcc correct: 0.97')
+    return otus
 
 
 def mcc(conf_mat):
@@ -48,30 +105,41 @@ def dist_pairs_to_sets(dframe):
         dist_set[seq1].add(seq2)
         dist_set[seq2].add(seq1)
     return dist_set
+            
 
-
-class otuMap():
+class otuMap:
     """
-    Maps sequences to OTU assignments. The dict should be of the form
-        {seqID: otuIndex}, e.g. {'seqA': 1, 'seqB': 2, 'seqC': 3}
+    Maps sequences to OTU assignments.
     """
 
-    def __init__(self, seqs_to_otus = None):
+    def __init__(self, seqs_to_otus = None, dist_mat = None, n_seqs = 0):
+        """
+        :param seqs_to_otus: dict of the form {seqID: otuIndex},
+            e.g. {'seqA': 1, 'seqB': 2, 'seqC': 3}.
+        :param n_seqs: total number of sequences in dataset.
+        """
         self.seqs_to_otus = seqs_to_otus if seqs_to_otus else dict()
+        self.dist_mat = dist_mat if dist_mat else dict()
+        self.n_seqs = n_seqs
+        
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.seqs_to_otus)
 
     @classmethod
-    def from_list(cls, otu_list):
+    def from_list(cls, otu_list, **kwargs):
         """
         :param otu_list: should be of the form
             [{seqA, seqB}, {seqC, secD}, {secE}]
             where the index in the list is the OTU ID.
         :return: an otuMap
         """
-        return cls(seqs_to_otus = {seq: idx for idx, otu in enumerate(otu_list) 
-                                            for seq in otu})
+        return cls(seqs_to_otus = {seq: idx for idx, otu in enumerate(otu_list)
+                                            for seq in otu}, **kwargs)
+    
+    @property
+    def seqs(self):
+        return set(self.seqs_to_otus.keys())
 
     @property
     def otus_to_seqs(self):
@@ -84,27 +152,40 @@ class otuMap():
             otu_dict_set[otu_id].add(seq)
         return otu_dict_set
 
-    def conf_mat(self, dist_mat, baseline_conf_mat=False):
+    @property
+    def ghost_pairs(self):
         """
-        :param dist_mat: dict of sets, e.g. {seqA: {seqB, seqC}, seqB: {seqA}}
-        :param baseline_conf_mat: provide a confusion matrix (as a dictionary)
-            with starting values other than zero.
+        ghost_pairs: number of pairs from ghost sequences, calculated from the 
+            distance matrix and total number of seqs (n_seqs).
+            Ghost sequences are not similar enough to any other seq
+            to be included in the distance matrix, thus they form singleton OTUs
+            and contribute to the number of true negatives.
+            These are not shown in the otuMap in order to save space.
+        """
+        n_sim_seqs = len(self.dist_mat)
+        n_unsim_seqs = self.n_seqs - n_sim_seqs
+        # number of distances within the distance threshold, i.e. they're included in dist_mat
+        #n_dists = sum([len(dist_mat[s1]) for s1 in dist_mat]) / 2
+        
+        return comb(n_unsim_seqs, 2) + n_unsim_seqs * n_sim_seqs
+        
+    @property
+    def conf_mat(self):
+        """
         :return: a confusion matrix as a dictionary of counts containing
             the keys 'tp', 'tn', 'fp', and 'fn'
         """
         # build list of tp, tn, fp, & fn
         classes = [
             classify(
-                (seq2 in dist_mat[seq1]) or (seq1 in dist_mat[seq2]),
+                (seq2 in self.dist_mat[seq1]) or (seq1 in self.dist_mat[seq2]),
                 self.seqs_to_otus[seq1] == self.seqs_to_otus[seq2],
             )
             for seq1, seq2 in combinations(self.seqs_to_otus.keys(), 2)
         ]
+        classes.extend('tn' for i in range(self.ghost_pairs))
         # convert to a dictionary of counts
-        conf_mat = Counter(classes)
-        if baseline_conf_mat:
-            conf_mat.update(baseline_conf_mat)
-        return conf_mat
+        return Counter(classes)
 
 
 class OptiFit:  # TODO
@@ -115,50 +196,6 @@ class OptiFit:  # TODO
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
-
-
-def main():
-    conf_mat = {"tp": 12, "tn": 1210, "fp": 0, "fn": 3}
-    dist_frame = {
-        "seq1": [
-            "D",
-            "F",
-            "G",
-            "H",
-            "I",
-            "I",
-            "J",
-            "J",
-            "N",
-            "O",
-            "P",
-            "P",
-            "P",
-            "Q",
-            "Q",
-        ],
-        "seq2": [
-            "B",
-            "E",
-            "C",
-            "A",
-            "B",
-            "D",
-            "A",
-            "H",
-            "M",
-            "L",
-            "K",
-            "L",
-            "O",
-            "E",
-            "F",
-        ],
-    }
-    dist_mat = dist_pairs_to_sets(dist_frame)
-    otu_list = [{}, {'I', 'D', 'B'}, {'F', 'E', 'Q'}, {'C', 'G'}, {'H', 'J', 'A'}, {'M', 'N'}, {'P', 'L', 'O'}, {'K'}]
-    otus = otuMap.from_list(otu_list)
-    print(otus)
 
 
 if __name__ == "__main__":
