@@ -179,7 +179,7 @@ class OptiFit:
         self.fitmap = otuMap(seqs_to_otus = seqs_to_otus,
                              dist_mat = dist_mat,
                              n_seqs = n_seqs)
-        self.iterations = list()  # list of dataframes for ggraph
+        #self.iterations = list()  # list of DataFrames for tidygraph/ggraph
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.fitmap)
@@ -188,18 +188,11 @@ class OptiFit:
     def mcc(self):
         return self.fitmap.mcc
 
+    @property
     def iterate(self):
-        return [OptiIter(self.fitmap, seq) for seq in self.query_seqs]
-
-"""
-g1 <-
-  tbl_graph(nodes = data.frame(name = c("A B C", "D E F", "G **H** I", "J K L"),
-                               i = 1:4),
-            edges = data.frame(from = c(2, 2, 2),
-                               to = c(3, 4, 2),
-                               mcc = c(0.97, 0.84, 0.80)) %>%
-              mutate(is_loop = from == to))
-"""
+        return [OptiIter(self.fitmap, seq).to_dict
+                for seq in self.query_seqs
+                if seq in self.fitmap.dist_mat]
 
 
 class OptiIter:
@@ -210,17 +203,26 @@ class OptiIter:
         """
         sim_seqs = fitmap.dist_mat[curr_seq]
         options = list()
-        self.edges = {'from': [], 'to': [], 'mcc': []}
+        edges = {'from': [], 'to': [], 'mcc': []}
         for sim_seq in sim_seqs:
-                option = OptiOption(fitmap, curr_seq, sim_seq)
-                edges['from'].append(option.from)
-                edges['to'].append(option.to)
-                edges['mcc'].append(potential_map.mcc)
-        self.nodes = {'name': [' '.join([s for s in otu
-                                         if s != curr_seq else f"**{s}**"]
-                                         )
-                               for otu in optifit.fitmap.otus_to_seqs.values()],
-                      'id': list(fitmap.otus_to_seqs.keys())}
+            option = OptiOption(fitmap, curr_seq, sim_seq)
+            edges['from'].append(option.from_otu)
+            edges['to'].append(option.to_otu)
+            edges['mcc'].append(option.mcc)
+        self.edges = pd.DataFrame.from_dict(edges)
+        self.nodes = pd.DataFrame.from_dict(
+          {'name': [' '.join([s if s != curr_seq else f"**{s}**"
+                              for s in otu])
+                    for otu in fitmap.otus_to_seqs.values()],
+           'id': list(fitmap.otus_to_seqs.keys())
+           })
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__.items())
+
+    @property
+    def to_dict(self):
+        return {'nodes': self.nodes, 'edges': self.edges}
 
 
 class OptiOption:
@@ -230,11 +232,14 @@ class OptiOption:
         """
         self.curr_seq = curr_seq
         self.sim_seq = sim_seq
-        self.from = curr_otu_map.seqs_to_otus[curr_seq]
-        self.to = curr_otu_map.seqs_to_otus[sim_seq]
+        self.from_otu = curr_otu_map.seqs_to_otus[curr_seq]
+        self.to_otu = curr_otu_map.seqs_to_otus[sim_seq]
         otu_map = deepcopy(curr_otu_map)
-        otu_map.seqs_to_otus[curr_seq] = to
+        otu_map.seqs_to_otus[curr_seq] = self.to_otu
         self.mcc = otu_map.mcc
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__.items())
 
 
 def main():
@@ -243,8 +248,11 @@ def main():
     query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
                                          'seq2': ['Y', 'C', 'G', 'K', 'C']})
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
-    print(optifit.mcc)
+    iters = optifit.iterate
+    print(iters)
 
 
 if __name__ == "__main__":
     main()
+
+
