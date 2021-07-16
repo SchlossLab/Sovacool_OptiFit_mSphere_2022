@@ -255,3 +255,7 @@ lapply(optifit_iters, function(x) {
   wrap_plots(ncol = 1)
 ```
 
+```{r debug}
+optifit_iters[[2]]
+```
+

@@ -9,7 +9,7 @@ import pandas
 
 def run_optifit():
     ref_otus = opticlust_example()
-    query_seqs = {'X', 'Y', 'Z'}
+    query_seqs = ['X', 'Y', 'Z']
     query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
                                          'seq2': ['Y', 'C', 'G', 'K', 'C']})
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
@@ -130,9 +130,8 @@ class otuMap:
         re-number OTU ids so they're continuous
         """
         old_otus = self.otus_to_seqs
-        if not all(old_otus.values()): # there exists an empty set
-            print('renumbering otus')
-            self.seqs_to_otus = otu_list_to_dict([otu for otu in old_otus if otu])
+        if max(old_otus) != len(old_otus): # then OTU IDs are not continuous
+            self.seqs_to_otus = otu_list_to_dict([{}]+[otu for idx, otu in old_otus.items() if otu])
 
     @classmethod
     def from_list(cls, otu_list, **kwargs):
@@ -221,7 +220,6 @@ class OptiFit:
         self.fitmap = otuMap(seqs_to_otus = seqs_to_otus,
                              dist_mat = dist_mat,
                              n_seqs = n_seqs)
-        #self.iterations = list()  # list of DataFrames for tidygraph/ggraph
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.fitmap)
@@ -233,27 +231,27 @@ class OptiFit:
     @property
     def iterate(self):
         iterations = list()
+        curr_fitmap = self.fitmap
         for seq in self.query_seqs:
             if seq in self.fitmap.dist_mat:
-                iter = OptiIter(self, seq)
-                iterations.append(iter.to_dict)
-                self.fitmap = iter.best_map
+                iteration = OptiIter(curr_fitmap, seq)
+                iterations.append(iteration.to_dict)
+                curr_fitmap = iteration.best_map
         return iterations
 
 
 class OptiIter:
-    def __init__(self, optifit, curr_seq):
+    def __init__(self, curr_fitmap, curr_seq):
         """
         Calculate possible MCCs if the current seq is moved to different OTUs.
         Store the nodes and edges as dictionaries for tidygraph.
         """
-        fitmap = optifit.fitmap
-        sim_seqs = fitmap.dist_mat[curr_seq]
+        sim_seqs = curr_fitmap.dist_mat[curr_seq]
         sim_seqs.add(curr_seq)
         options = list()
         edges = {'from': [], 'to': [], 'mcc': []}
         for sim_seq in sim_seqs:
-            option = OptiOption(fitmap, curr_seq, sim_seq)
+            option = OptiOption(curr_fitmap, curr_seq, sim_seq)
             options.append(option)
             edges['from'].append(option.from_otu)
             edges['to'].append(option.to_otu)
@@ -263,13 +261,13 @@ class OptiIter:
         self.nodes = pandas.DataFrame.from_dict(
           {'name': [' '.join([format_seq(s, optifit, curr_seq)
                               for s in sorted(otu)])
-                    for otu in fitmap.otus_to_seqs.values()],
-           'id': list(fitmap.otus_to_seqs.keys())
+                    for otu in curr_fitmap.otus_to_seqs.values()],
+           'id': list(curr_fitmap.otus_to_seqs.keys())
            })
         best_option = max(options)
         # make sure OTU numbers are continuous
-        best_option.otu_map.renumber_otus()
-        self.best_map = best_option.otu_map
+        print('RENUMBER')
+        self.best_map = best_option.fitmap
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
@@ -280,18 +278,19 @@ class OptiIter:
 
 
 class OptiOption:
-    def __init__(self, curr_otu_map, curr_seq, sim_seq):
+    def __init__(self, curr_fitmap, curr_seq, sim_seq):
         """
         Calculate the hypothetical MCC if curr_seq were moved to the OTU containing sim_seq
         """
         self.curr_seq = curr_seq
         self.sim_seq = sim_seq
-        self.from_otu = curr_otu_map.seqs_to_otus[curr_seq]
-        self.to_otu = curr_otu_map.seqs_to_otus[sim_seq]
+        self.from_otu = curr_fitmap.seqs_to_otus[curr_seq]
+        self.to_otu = curr_fitmap.seqs_to_otus[sim_seq]
 
-        self.otu_map = deepcopy(curr_otu_map)
-        self.otu_map.seqs_to_otus[curr_seq] = self.to_otu
-        self.mcc = self.otu_map.mcc
+        self.fitmap = deepcopy(curr_fitmap) # TODO: is this the bug?
+        self.fitmap.seqs_to_otus[curr_seq] = self.to_otu
+        self.fitmap.renumber_otus()
+        self.mcc = self.fitmap.mcc
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
