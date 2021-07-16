@@ -136,10 +136,10 @@ current_mcc <- calc_mcc_from_conf_mat(get_conf_mat(seq_pairs, dist_mat, otu_mat)
 
 # Pat's method for plotting the network graph
 # last example from OptiClust supplemental text
-tp <- 12
+tp <- 14
 tn <- 1210
 fp <- 0
-fn <- 3
+fn <- 1
 names <- c(	"B,D,I", "E,F,Q", "C,G", "A,H,J", "M,N", "L,O,P", "K", "...")
 n_seqs <- length(names)
 M <- matrix(nrow = n_seqs, ncol = n_seqs, byrow = TRUE, data = 0)
@@ -230,7 +230,7 @@ plot_layout(heights = c(1,4))
 
 ## maybe I'll do everything before plotting in python
 
-```{python}
-r.g1
-```
+#```{python}
+#r.g1
+#```
 
