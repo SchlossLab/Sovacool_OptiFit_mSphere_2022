@@ -80,8 +80,16 @@ def dist_pairs_to_sets(dframe):
         dist_set[seq2].add(seq1)
     return dist_set
 
+def otu_list_to_dict(otu_list):
+    """
+    :param otu_list: should be of the form
+        [{seqA, seqB}, {seqC, secD}, {secE}]
+        where the index in the list is the OTU ID.
+    :return: an otuMap
+    """
+    return {seq: idx for idx, otu in enumerate(otu_list) for seq in otu}
 
-def format_seq(s, optifit, curr_seq, color_curr_seq = False,
+def format_seq(s, optifit, curr_seq, color_curr_seq = False, do_color = False,
                base_color = "#000000",
                ref_color = "#D95F02",
                query_color = "#1B9E77"):
@@ -94,7 +102,8 @@ def format_seq(s, optifit, curr_seq, color_curr_seq = False,
         color = query_color if color_curr_seq else base_color
     else:
         color = query_color if s in optifit.query_seqs else ref_color
-    return f"<span style = 'color:{color};'>{s}</span>"
+
+    return f"<span style = 'color:{color};'>{s}</span>" if do_color else s
 
 
 class otuMap:
@@ -116,6 +125,15 @@ class otuMap:
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.seqs_to_otus)
 
+    def renumber_otus(self):
+        """
+        re-number OTU ids so they're continuous
+        """
+        old_otus = self.otus_to_seqs
+        if not all(old_otus.values()): # there exists an empty set
+            print('renumbering otus')
+            self.seqs_to_otus = otu_list_to_dict([otu for otu in old_otus if otu])
+
     @classmethod
     def from_list(cls, otu_list, **kwargs):
         """
@@ -124,8 +142,7 @@ class otuMap:
             where the index in the list is the OTU ID.
         :return: an otuMap
         """
-        return cls(seqs_to_otus = {seq: idx for idx, otu in enumerate(otu_list)
-                                            for seq in otu}, **kwargs)
+        return cls(seqs_to_otus = otu_list_to_dict(otu_list), **kwargs)
 
     @property
     def seqs(self):
@@ -215,10 +232,13 @@ class OptiFit:
 
     @property
     def iterate(self):
-        # TODO: after each iteration, modify fitmap with best option
-        return [OptiIter(self, seq).to_dict
-                for seq in self.query_seqs
-                if seq in self.fitmap.dist_mat]
+        iterations = list()
+        for seq in self.query_seqs:
+            if seq in self.fitmap.dist_mat:
+                iter = OptiIter(self, seq)
+                iterations.append(iter.to_dict)
+                self.fitmap = iter.best_map
+        return iterations
 
 
 class OptiIter:
@@ -234,6 +254,7 @@ class OptiIter:
         edges = {'from': [], 'to': [], 'mcc': []}
         for sim_seq in sim_seqs:
             option = OptiOption(fitmap, curr_seq, sim_seq)
+            options.append(option)
             edges['from'].append(option.from_otu)
             edges['to'].append(option.to_otu)
             edges['mcc'].append(option.mcc)
@@ -245,7 +266,10 @@ class OptiIter:
                     for otu in fitmap.otus_to_seqs.values()],
            'id': list(fitmap.otus_to_seqs.keys())
            })
-        # TODO: best_option, modify optifit object
+        best_option = max(options)
+        # make sure OTU numbers are continuous
+        best_option.otu_map.renumber_otus()
+        self.best_map = best_option.otu_map
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
@@ -272,6 +296,14 @@ class OptiOption:
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__.items())
 
+    def __eq__(self, other):
+        return self.mcc == other.mcc
+
+    def __ge__(self, other):
+        return self.mcc >= other.mcc
+
+    def __gt__(self, other):
+        return self.mcc > other.mcc
 
 
 def main():

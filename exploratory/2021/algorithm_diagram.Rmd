@@ -242,9 +242,9 @@ optifit_iters <- run_optifit() %>%
 ```
 
 ```{r optifit_example, fig.dim=c(6,5), dpi=300}
-g <- tbl_graph(nodes = optifit_iters[[1]]$nodes,
-               edges = optifit_iters[[1]]$edges)
-plot_graph(g)
+tbl_graph(nodes = optifit_iters[[1]]$nodes,
+          edges = optifit_iters[[1]]$edges) %>% 
+  plot_graph()
 ```
 
 ```{r plot_optifit_iters, fig.dim=c(6,5), dpi=300}
