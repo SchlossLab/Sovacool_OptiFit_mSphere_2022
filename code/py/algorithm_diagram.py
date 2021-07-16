@@ -84,6 +84,7 @@ class otuMap:
         self.seqs_to_otus = seqs_to_otus if seqs_to_otus else dict()
         self.dist_mat = dist_mat if dist_mat else dict()
         self.n_seqs = n_seqs
+        assert n_seqs >= len(self.seqs_to_otus)
 
 
     def __repr__(self):
@@ -152,29 +153,42 @@ class otuMap:
 
 
 class OptiFit:
-    def __init__(self, ref_otus, query_seqs, query_dist_mat):
+    def __init__(self, ref_otus, query_seqs, query_dist_mat, n_seqs = 0):
         self.ref_otus = ref_otus
         self.query_seqs = query_seqs
-        self.dist_mat = self.ref_otus.dist_mat.copy()
+
+        # create merged dist mat
+        dist_mat = self.ref_otus.dist_mat.copy()
         for s1 in query_dist_mat:
-            self.dist_mat[s1].update(query_dist_mat[s1])
+            dist_mat[s1].update(query_dist_mat[s1])
             for s2 in query_dist_mat[s1]:
-                self.dist_mat[s2].add(s1)
+                dist_mat[s2].add(s1)
+        # initialize OTUs from reference
+        seqs_to_otus =  self.ref_otus.seqs_to_otus.copy()
+        # seed each query sequence as a singelton OTU
+        n_otus = len(self.ref_otus.otus_to_seqs)
+        for seq in self.query_seqs:
+            n_otus += 1
+            seqs_to_otus[seq] = n_otus
+
+        self.fitmap = otuMap(seqs_to_otus = seqs_to_otus,
+                             dist_mat = dist_mat,
+                             n_seqs = n_seqs)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__.items())
-    
+        return "%s(%r)" % (self.__class__, self.fitmap)
+
     def run_iter(self): # TODO
         pass
 
 
 def main():
     ref_otus = opticlust_example()
-    print(ref_otus)
     query_seqs = {'X', 'Y', 'Z'}
     query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
                                          'seq2': ['Y', 'C', 'G', 'K', 'C']})
-    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat)
+    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
+
 
 if __name__ == "__main__":
     main()
