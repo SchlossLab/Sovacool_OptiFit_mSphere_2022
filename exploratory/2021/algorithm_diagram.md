@@ -1,4 +1,4 @@
-2021-07-16
+2021-07-17
 
 ``` r
 library(here)
@@ -194,9 +194,11 @@ plot_graph <- function(graph) {
                 angle_calc = 'along',
                 label_dodge = unit(-2, 'mm')
                 ) +
-  geom_edge_loop(aes(span = 1, direction = 270, strength = 0.2, color = is_loop)) +
+  geom_edge_loop(aes(#span = 1, strength = 0.2, direction = 270, 
+                     color = is_loop)) +
   geom_node_label(aes(label = name)) +
-    scale_edge_color_manual(values = c('white')) +
+    scale_edge_color_manual(values = c('black')#c('white')
+                            ) +
   theme_void() +
   theme(plot.margin=unit(x=c(0,0,10,0), units="pt"),
         legend.position = 'none')
@@ -226,7 +228,7 @@ plot_layout(heights = c(1,4))
 
 ![](figures/ggraph_exp-1.png)<!-- -->
 
-## maybe I’ll do everything in python until the actual plotting step
+## do backend in python until the actual plotting step
 
 ``` r
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
@@ -239,9 +241,9 @@ optifit_iters <- run_optifit() %>%
 ```
 
 ``` r
-g <- tbl_graph(nodes = optifit_iters[[1]]$nodes,
-               edges = optifit_iters[[1]]$edges)
-plot_graph(g)
+tbl_graph(nodes = optifit_iters[[1]]$nodes,
+          edges = optifit_iters[[1]]$edges) %>% 
+  plot_graph()
 ```
 
     ## Warning: Ignoring unknown parameters: parse
@@ -255,6 +257,8 @@ lapply(optifit_iters, function(x) {
 }) %>% 
   wrap_plots(ncol = 1)
 ```
+
+    ## Warning: Ignoring unknown parameters: parse
 
     ## Warning: Ignoring unknown parameters: parse
 

@@ -206,9 +206,11 @@ plot_graph <- function(graph) {
                 angle_calc = 'along',
                 label_dodge = unit(-2, 'mm')
                 ) +
-  geom_edge_loop(aes(span = 1, direction = 270, strength = 0.2, color = is_loop)) +
+  geom_edge_loop(aes(#span = 1, strength = 0.2, direction = 270, 
+                     color = is_loop)) +
   geom_node_label(aes(label = name)) +
-    scale_edge_color_manual(values = c('white')) +
+    scale_edge_color_manual(values = c('black')#c('white')
+                            ) +
   theme_void() +
   theme(plot.margin=unit(x=c(0,0,10,0), units="pt"),
         legend.position = 'none')
@@ -229,7 +231,7 @@ plot_layout(heights = c(1,4))
   
 ```
 
-## maybe I'll do everything in python until the actual plotting step
+## do backend in python until the actual plotting step
 
 ```{r pseudo_optifit}
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
@@ -254,8 +256,3 @@ lapply(optifit_iters, function(x) {
 }) %>% 
   wrap_plots(ncol = 1)
 ```
-
-```{r debug}
-optifit_iters[[2]]
-```
-

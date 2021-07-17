@@ -90,7 +90,7 @@ def otu_list_to_dict(otu_list):
     """
     return {seq: idx for idx, otu in enumerate(otu_list) for seq in otu}
 
-def format_seq(s, optifit, curr_seq, color_curr_seq = False, do_color = False,
+def format_seq(s, curr_seq, query_seqs, color_curr_seq = False, do_color = False,
                base_color = "#000000",
                ref_color = "#D95F02",
                query_color = "#1B9E77"):
@@ -102,7 +102,7 @@ def format_seq(s, optifit, curr_seq, color_curr_seq = False, do_color = False,
         s = f"**{s}**"
         color = query_color if color_curr_seq else base_color
     else:
-        color = query_color if s in optifit.query_seqs else ref_color
+        color = query_color if s in query_seqs else ref_color
 
     return f"<span style = 'color:{color};'>{s}</span>" if do_color else s
 
@@ -238,14 +238,14 @@ class OptiFit:
             prev_mcc = self.mcc
             for seq in self.query_seqs:
                 if seq in self.fitmap.dist_mat:
-                    iteration = OptiIter(curr_fitmap, seq)
+                    iteration = OptiIter(curr_fitmap, seq, self.query_seqs)
                     iterations.append(iteration.to_dict)
                     curr_fitmap = iteration.best_map
         return iterations
 
 
 class OptiIter:
-    def __init__(self, curr_fitmap, curr_seq):
+    def __init__(self, curr_fitmap, curr_seq, query_seqs):
         """
         Calculate possible MCCs if the current seq is moved to different OTUs.
         Store the nodes and edges as dictionaries for tidygraph.
@@ -263,7 +263,7 @@ class OptiIter:
 
         self.edges = pandas.DataFrame.from_dict(edges)
         self.nodes = pandas.DataFrame.from_dict(
-          {'name': [' '.join([format_seq(s, optifit, curr_seq)
+          {'name': [' '.join([format_seq(s, curr_seq, query_seqs)
                               for s in sorted(otu)])
                     for otu in curr_fitmap.otus_to_seqs.values()],
            'id': list(curr_fitmap.otus_to_seqs.keys())
