@@ -10,9 +10,10 @@ import pandas
 
 def run_optifit():
     ref_otus = opticlust_example()
-    query_seqs = ['X', 'Y', 'Z']
-    query_dist_mat = dist_pairs_to_sets({'seq1': ['X', 'X', 'X', 'X', 'Y'],
-                                         'seq2': ['Y', 'C', 'G', 'K', 'C']})
+    query_seqs = ['W','X','Y','Z']
+    query_dist_mat = dist_pairs_to_sets(
+    {'seq1': ['X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'],
+     'seq2': ['Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']})
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs = 53)
     return optifit.iterate
 
@@ -90,7 +91,7 @@ def otu_list_to_dict(otu_list):
     """
     return {seq: idx for idx, otu in enumerate(otu_list) for seq in otu}
 
-def format_seq(s, curr_seq, query_seqs, color_curr_seq = False, do_color = False,
+def format_seq(s, curr_seq, query_seqs, color_curr_seq = False, do_color = True,
                base_color = "#000000",
                ref_color = "#D95F02",
                query_color = "#1B9E77"):
