@@ -183,7 +183,11 @@ g2 <-
 ## plot several optifit iterations
 
 ``` r
-plot_graph <- function(graph, title = '') {
+plot_graph <- function(graph, title = '', 
+                       is_last_plot = FALSE,
+                       hide_loops = FALSE) {
+  loop_dir <- ifelse(is_last_plot, 270, 90)
+  loop_color <- ifelse(hide_loops, 'white', 'black')
   create_layout(graph, 'linear', sort.by = id) %>% 
   ggraph() +
   geom_edge_arc(aes(label = mcc,
@@ -195,10 +199,12 @@ plot_graph <- function(graph, title = '') {
                 angle_calc = 'along',
                 label_dodge = unit(-2, 'mm')
                 ) +
-  geom_edge_loop(aes(span = 1, direction = 90, strength = 0.2,# direction = 270, 
+  geom_edge_loop(aes(span = 1, 
+                     direction = loop_dir, 
+                     strength = 0.2,
                      color = is_loop)) +
   geom_node_label(aes(label = name)) +
-    scale_edge_color_manual(values = c('black')#c('white')
+    scale_edge_color_manual(values = c(loop_color)
                             ) +
   labs(title = title) +
   theme_void() +
@@ -255,12 +261,13 @@ tbl_graph(nodes = optifit_iters[[1]]$nodes,
 ## plot optifit iterations with ggraph & patchwork
 
 ``` r
-# TODO custom modifications for loop span & direction
 i <- 0
 lapply(optifit_iters, function(x) {
   i <<- i + 1
   tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
-    plot_graph(title = glue('{i}) mcc = {x$edges %>% filter(is_loop) %>% pull(mcc)}'))
+    plot_graph(title = glue('{i}) mcc = {x$edges %>% filter(is_loop) %>% pull(mcc)}'),
+               is_last_plot = i == length(optifit_iters),
+               hide_loops = FALSE)
 }) %>% 
   wrap_plots(ncol = 1)
 ```
