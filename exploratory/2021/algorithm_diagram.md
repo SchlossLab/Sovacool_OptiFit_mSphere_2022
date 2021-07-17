@@ -256,12 +256,13 @@ tbl_graph(nodes = optifit_iters[[1]]$nodes,
 
 ``` r
 # TODO custom modifications for loop span & direction
+i <- 0
 lapply(optifit_iters, function(x) {
+  i <<- i + 1
   tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
-    plot_graph(title = glue('mcc = {x$edges %>% filter(is_loop) %>% pull(mcc)}'))
+    plot_graph(title = glue('{i}) mcc = {x$edges %>% filter(is_loop) %>% pull(mcc)}'))
 }) %>% 
-  wrap_plots(ncol = 1) +
-  plot_annotation(tag_levels = 'A')
+  wrap_plots(ncol = 1)
 ```
 
     ## Warning: Ignoring unknown parameters: parse
