@@ -1,10 +1,10 @@
 # RColorBrewer::brewer.pal(n=4, name='Set2')
 digraph snakemake_dag {
-    graph[bgcolor=white, nodesep=0.1, ranksep=0.1, outputorder=edgesfirst]
+    graph[bgcolor=white, nodesep=0.05, ranksep=0.05, outputorder=edgesfirst]
     node[shape=box, style="rounded,filled",
-         fontname=helvetica, fontsize=12, penwidth=2];
-    edge[penwidth=2, color=grey,
-         fontname=helvetica, fontsize=12];
+         fontname=helvetica, fontsize=10, penwidth=1];
+    edge[penwidth=1, color=grey,
+         fontname=helvetica, fontsize=10];
 
   node[color="#66C2A5"]
 	1[label="Preprocess\ndatasets"];
@@ -32,7 +32,7 @@ digraph snakemake_dag {
 	20 -> 21
 	1 -> 20
 	21 -> 30
-	
+
 	edge[label="x100", color="white", arrowhead=none]
 	2 -> 2
 	12 -> 12

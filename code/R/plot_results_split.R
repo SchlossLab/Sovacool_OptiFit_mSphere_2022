@@ -110,7 +110,8 @@ dat %>%
         legend.title = element_blank(),
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
-        plot.margin=unit(x=c(0,0,0,0),units="pt")
+        plot.margin=unit(x=c(0,0,0,0),units="pt"),
+        panel.grid.minor.y = element_blank()
   ) + 
   guides(shape = guide_legend(order = 1),
          colour = guide_legend(override.aes = list(size = -1),

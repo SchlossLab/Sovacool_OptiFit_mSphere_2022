@@ -117,7 +117,7 @@ mothur_vsearch  %>%
                                order = 2)
   )
 
-dim <- eval(parse(text=snakemake@params[['dim']]))
+dims <- eval(parse(text=snakemake@params[['dim']]))
 ggsave(snakemake@output[['tiff']],
        device = 'tiff', dpi=300,
-       width=dim[1], height=dim[2], units='in')
+       width=dims[1], height=dims[2], units='in')
