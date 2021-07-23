@@ -8,14 +8,14 @@ import numpy
 import pandas
 
 
-def run_optifit():
+def create_optifit():
     ref_otus = opticlust_example()
     query_seqs = ['W', 'X', 'Y', 'Z']
     query_dist_mat = dist_pairs_to_sets(
         {'seq1': ['X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'],
          'seq2': ['Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']})
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs=53)
-    return optifit.iterate
+    return optifit
 
 
 def opticlust_example():
@@ -85,6 +85,17 @@ def dist_pairs_to_sets(dframe):
         dist_set[seq2].add(seq1)
     return dist_set
 
+
+def dist_array_to_dframe(dist_array):
+    """
+    :param dist_array: pd.DataFrame(dist_array,
+                          columns=['A', 'B', 'C', 'D'],
+                          index=['A', 'B', 'C', 'D'])
+    :return: pd.DataFrame.from_dict({'seq1': ['A', 'A', 'B'],
+                                     'seq2': ['B', 'C', 'D']})
+
+    """
+    return # TODO
 
 def otu_list_to_dict(otu_list):
     """
@@ -205,6 +216,26 @@ class otuMap:
     def mcc(self):
         return mcc(self.conf_mat)
 
+    @property
+    def dists_to_array(self):
+        """
+        :param dist_mat: {'A': {'B','C'}, 'B': {'A','C','D'}, 'C': {'A','B'}, 'D': {'B'}}
+        :return: pd.DataFrame(dist_array,
+                              columns=['A', 'B', 'C', 'D'],
+                              index=['A', 'B', 'C', 'D'])
+        """
+        dist_sets = self.dist_mat
+        seqs = {seq2 for seq1 in dist_sets for seq2 in dist_sets[seq1]}
+        seqs.update({seq for seq in dist_sets})
+        seqs = list(sorted(seqs))
+        len_seqs = len(seqs)
+        dist_array = numpy.zeros(len_seqs, len_seqs)
+        for i, seqi in enumerate(seqs):
+            for j, seqj in enumerate(seqs):
+                if i == j or seqi in dist_sets[seqj] or seqj in dist_sets[seqi]:
+                    dist_array [i][j] = 1
+                    dist_array [j][i] = 1
+        return pandas.DataFrame(dist_array, columns=seqs, index=seqs)
 
 class OptiFit:
     def __init__(self, ref_otus, query_seqs, query_dist_mat, n_seqs=0):

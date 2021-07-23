@@ -21,6 +21,8 @@ library(reticulate)
 use_python('~/miniconda3/bin/python')
 ```
 
+## Pat's OptiClust diagram
+
 ```{r functions}
 # Pat's MCC function
 # source: https://github.com/SchlossLab/Westcott_OptiClust_mSphere_2017/blob/a8bc26855423bba85acc0b8e7cca075e5c94f533/submission/supplemental_text.Rmd#L26-L28
@@ -240,10 +242,17 @@ plot_layout(heights = c(1,4))
 ```
 
 ## do backend in python until the actual plotting step
-
-```{r pseudo_optifit}
+```{python optifit}
+import code.py.algorithm_diagram
+optifit = create_optifit()
+iters = optifit.iterate
+dists = dist_sets_to_array(optifit.fitmap.dist_mat)
+```
+```{r pytor}
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
-optifit_iters <- run_optifit() %>% 
+optifit <- create_optifit() 
+dist_array <- optifit$fitmap$dists_to_array %>% py_to_r()
+optifit_iters <- optifit$iterate %>% 
   lapply(function(x) {
     return(list(nodes = x[['nodes']] %>% py_to_r(),
                 edges = x[['edges']] %>% py_to_r() %>% 
