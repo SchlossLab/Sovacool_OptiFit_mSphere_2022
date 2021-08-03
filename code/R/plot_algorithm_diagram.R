@@ -63,21 +63,30 @@ query_color <- "#1B9E77"
 ref_seqs <- LETTERS[1:17]
 query_seqs <- LETTERS[23:26]
 
-dist_dat <- get_dists() %>% mutate(color1 = ifelse(seq1 %in% ref_seqs, 
-                                                   ref_color, query_color),
-                                   color2 = ifelse(seq2 %in% ref_seqs, 
-                                                   ref_color, query_color))
+
+dist_dat <- get_dists() %>%
+  arrange(seq1, seq2) %>% 
+  mutate(
+    color1 = ifelse(seq1 %in% ref_seqs, ref_color, query_color),
+    color2 = ifelse(seq2 %in% ref_seqs, ref_color, query_color)
+  )
 table_colors <- dist_dat %>% select(color1, color2) %>% as.matrix() %>% t()
 
-
-wrap_elements(tableGrob(dist_dat %>% 
+dists_as_table <- wrap_elements(tableGrob(dist_dat %>% 
                           select(seq1, seq2) %>% 
-                          arrange(seq1, seq2) %>% 
                           t(),
-                          theme = ttheme_default(base_size = 12, 
-                                                 padding = unit(c(4,8), 'pt')))
-              ) / optifit_graphs + 
-  plot_layout(heights = c(2, 2, 2, 2, 1))
+                        theme = ttheme_default(base_size = 12,
+                                               padding = unit(c(4, 8), 'pt'),
+                        core = list(fg_params = list(col = table_colors),
+                                    bg_params = list(col = NA)),
+                        rowhead = list(bg_params = list(col = NA)),
+                        colhead = list(bg_params = list(col = NA)))
+              )) 
+
+dists_as_table / 
+  optifit_graphs + 
+  plot_layout(heights = c(1, 2, 2, 2, 1)) 
+
 
 dims <- eval(parse(text=snakemake@params[['dim']]))
 ggsave(snakemake@output[['tiff']],
