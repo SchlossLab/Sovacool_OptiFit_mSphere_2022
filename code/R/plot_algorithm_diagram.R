@@ -77,7 +77,7 @@ table_plot <- plot_grid(ggdraw() +
                                      x = 0,
                                      hjust = 0
                                      ) + 
-                          theme(plot.margin = margin(0, 10, 0, 0)),
+                          theme(plot.margin = margin(5, 0, 5, 0)),
                    tableGrob(dist_dat %>% 
                                select(seq1, seq2) %>% 
                                t(),
