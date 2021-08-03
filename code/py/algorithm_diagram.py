@@ -38,6 +38,11 @@ def opticlust_example():
     #      '\nmcc correct: 0.97')
     return otus
 
+def get_dists():
+    return pandas.DataFrame.from_dict({
+        "seq1": ["D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q", 'X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'],
+        "seq2": ["B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F", 'Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']
+        })
 
 def mcc(conf_mat):
     """
@@ -301,7 +306,8 @@ class OptiIter:
 
         self.edges = pandas.DataFrame.from_dict(edges)
         self.nodes = pandas.DataFrame.from_dict(
-            {'name': [' '.join([format_seq(s, curr_seq, query_seqs)
+            {'name': [' '.join([format_seq(s, curr_seq, query_seqs,
+                                           color_curr_seq = True)
                                 for s in sorted(otu)])
                       for otu in curr_fitmap.otus_to_seqs.values()],
              'id': list(curr_fitmap.otus_to_seqs.keys())
