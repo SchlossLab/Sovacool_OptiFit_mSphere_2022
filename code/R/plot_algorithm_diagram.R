@@ -1,11 +1,12 @@
 devtools::load_all('../ggraph')
-library(ggtext)
-library(tidygraph)
-library(patchwork)
+library(cowplot)
 library(glue)
 library(gridExtra)
+library(ggtext)
 library(here)
+library(patchwork)
 library(reticulate)
+library(tidygraph)
 library(tidyverse)
 set.seed(20200308)
 
@@ -44,7 +45,7 @@ plot_optifit_graph <- function(graph, title = '',
     ) +
     labs(title = title) +
     theme_void() +
-    theme(plot.margin=unit(x=c(0,0,10,0), units="pt"),
+    theme(plot.margin=unit(x=c(0,0,0,0), units="pt"),
           legend.position = 'none')
 }
 
@@ -71,21 +72,26 @@ dist_dat <- get_dists() %>%
     color2 = ifelse(seq2 %in% ref_seqs, ref_color, query_color)
   )
 table_colors <- dist_dat %>% select(color1, color2) %>% as.matrix() %>% t()
+table_plot <- plot_grid(ggdraw() + 
+                          draw_label("A) Sequence pairs within the distance threshold",
+                                     x = 0,
+                                     hjust = 0
+                                     ) + 
+                          theme(plot.margin = margin(0, 10, 0, 0)),
+                   tableGrob(dist_dat %>% 
+                               select(seq1, seq2) %>% 
+                               t(),
+                             theme = ttheme_default(base_size = 12,
+                                                    padding = unit(c(4, 8), 'pt'),
+                                                    core = list(fg_params = list(col = table_colors),
+                                                                bg_params = list(col = NA)),
+                                                    rowhead = list(bg_params = list(col = NA)),
+                                                    colhead = list(bg_params = list(col = NA)))
+), ncol = 1, rel_heights = c(0.1, 1))
 
-dists_as_table <- wrap_elements(tableGrob(dist_dat %>% 
-                          select(seq1, seq2) %>% 
-                          t(),
-                        theme = ttheme_default(base_size = 12,
-                                               padding = unit(c(4, 8), 'pt'),
-                        core = list(fg_params = list(col = table_colors),
-                                    bg_params = list(col = NA)),
-                        rowhead = list(bg_params = list(col = NA)),
-                        colhead = list(bg_params = list(col = NA)))
-              )) 
-
-dists_as_table / 
+table_plot / 
   optifit_graphs + 
-  plot_layout(heights = c(1, 2, 2, 2, 1)) 
+  plot_layout(heights = c(0.75, 1, 1.5, 1, 0.3))  
 
 
 dims <- eval(parse(text=snakemake@params[['dim']]))
