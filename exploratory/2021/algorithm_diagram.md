@@ -1,4 +1,4 @@
-2021-07-17
+2021-08-03
 
 ``` r
 library(here)
@@ -8,6 +8,8 @@ library(glue)
 library(reticulate)
 use_python('~/miniconda3/bin/python')
 ```
+
+## Pat’s OptiClust diagram
 
 ``` r
 # Pat's MCC function
@@ -184,9 +186,8 @@ g2 <-
 
 ``` r
 plot_graph <- function(graph, title = '', 
-                       is_last_plot = FALSE,
                        hide_loops = FALSE) {
-  loop_dir <- ifelse(is_last_plot, 270, 90)
+  loop_dir <- 90
   loop_color <- ifelse(hide_loops, 'white', 'black')
   create_layout(graph, 'linear', sort.by = id) %>% 
   ggraph() +
@@ -201,7 +202,7 @@ plot_graph <- function(graph, title = '',
                 ) +
   geom_edge_loop(aes(span = 1, 
                      direction = loop_dir, 
-                     strength = 0.2,
+                     strength = 0.5,
                      color = is_loop)) +
   geom_node_label(aes(label = name)) +
     scale_edge_color_manual(values = c(loop_color)
@@ -238,13 +239,25 @@ plot_layout(heights = c(1,4))
 
 ## do backend in python until the actual plotting step
 
+``` python
+import pandas as pd
+dist_mat = pd.DataFrame.from_dict({
+    "seq1": ["D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q", 'X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'], 
+    "seq2": ["B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F", 'Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']})
+```
+
 ``` r
 reticulate::source_python(here('code', 'py', 'algorithm_diagram.py'))
-optifit_iters <- run_optifit() %>% 
+optifit <- create_optifit() 
+#dist_array <- optifit$fitmap$dists_to_array %>% py_to_r()
+
+optifit_iters <- optifit$iterate %>% 
   lapply(function(x) {
     return(list(nodes = x[['nodes']] %>% py_to_r(),
                 edges = x[['edges']] %>% py_to_r() %>% 
-                 mutate(is_loop = from == to)))
+                  bind_rows(data.frame(from = 1, to = 1, mcc = NA)) %>% 
+                 mutate(is_loop = from == to,
+                        loop_dir = ifelse(from == 1, 270, 90))))
     })
 ```
 
@@ -266,7 +279,6 @@ lapply(optifit_iters, function(x) {
   i <<- i + 1
   tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
     plot_graph(title = glue('{i}) mcc = {x$edges %>% filter(is_loop) %>% pull(mcc)}'),
-               is_last_plot = i == length(optifit_iters),
                hide_loops = FALSE)
 }) %>% 
   wrap_plots(ncol = 1)
