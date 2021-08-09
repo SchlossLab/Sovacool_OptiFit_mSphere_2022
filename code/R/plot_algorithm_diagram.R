@@ -55,7 +55,7 @@ i <- 0
 optifit_graphs <- lapply(optifit_iters, function(x) {
   i <<- i + 1
   tbl_graph(nodes = x$nodes, edges = x$edges) %>% 
-    plot_optifit_graph(title = glue('{i}) MCC = {x$edges %>% filter(is_loop) %>% pull(mcc)}'),
+    plot_optifit_graph(title = glue('{i}. MCC = {x$edges %>% filter(is_loop) %>% pull(mcc)}'),
                hide_loops = TRUE)
 })
 
@@ -66,30 +66,34 @@ query_color <- "#1B9E77"
 ref_seqs <- LETTERS[1:17]
 query_seqs <- LETTERS[23:26]
 
-
-dist_dat <- get_dists() %>%
+dist_dat <- get_dists()  %>%
   arrange(seq1, seq2) %>% 
   mutate(
     color1 = ifelse(seq1 %in% ref_seqs, ref_color, query_color),
-    color2 = ifelse(seq2 %in% ref_seqs, ref_color, query_color)
+    color2 = ifelse(seq2 %in% ref_seqs, ref_color, query_color),
   )
-table_colors <- dist_dat %>% select(color1, color2) %>% as.matrix() %>% t()
+dist_dat[["color3"]] <- rep.int('black', nrow(dist_dat))
+dist_dat[['distance']] <- runif(nrow(dist_dat), 0.1, 0.3) %>% 
+  as.character() %>% substring(2, 4)
+table_colors <- dist_dat %>% select(color1, color2, color3) %>% as.matrix() %>% t()
+
 table_plot <- plot_grid(ggdraw() + 
-                          draw_label("A) Sequence pairs within the distance threshold",
+                          draw_label("0. List of sequence pairs within the distance threshold",
                                      x = 0,
                                      hjust = 0
                                      ) + 
                           theme(plot.margin = margin(5, 0, 5, 0)),
                    tableGrob(dist_dat %>% 
-                               select(seq1, seq2) %>% 
+                               select(seq1, seq2, distance) %>% 
                                t(),
-                             theme = ttheme_default(base_size = 12,
-                                                    padding = unit(c(4, 8), 'pt'),
+                             theme = ttheme_default(base_size = 10,
+                                                    padding = unit(c(4, 4), 'pt'),
                                                     core = list(fg_params = list(col = table_colors),
-                                                                bg_params = list(col = NA)),
+                                                                bg_params = list(col = 'white')),
                                                     rowhead = list(bg_params = list(col = NA)),
                                                     colhead = list(bg_params = list(col = NA)))
-), ncol = 1, rel_heights = c(0.1, 1))
+                             ), 
+                   ncol = 1, rel_heights = c(0.1, 1))
 
 table_plot / 
   optifit_graphs + 
