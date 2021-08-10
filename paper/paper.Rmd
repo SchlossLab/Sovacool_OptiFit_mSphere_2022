@@ -122,6 +122,11 @@ methods such as the greedy clustering algorithms implemented in USEARCH and
 VSEARCH, which only consider the distance between the query sequence and a
 representative centroid sequence in the OTU [@edgar_search_2010;
 @rognes_vsearch_2016].
+As a result of greedy clustering, some pairs of sequences in the same OTU may
+have a greater distance than the specified threshold since only the distance
+between each sequence and the centroid sequence is considered while clustering.
+In contrast, the OptiClust algorithm enforces that all pairs of sequences must
+be within the distance threshold. <!-- i.e. radius vs. diameter -->
 A limitation of _de novo_ clustering is that different OTU assignments will be
 produced when new sequences are added to a dataset, making it difficult to use
 _de novo_ clustering to compare OTUs between different studies.
@@ -146,7 +151,6 @@ While reference-based clustering is generally fast, it is limited by the
 diversity of the reference database.
 Rare or novel sequences in the sample will be lost in closed reference mode if
 they are not represented by a similar sequence in the database.
-**TODO: closed uses radius of 3%. de novo uses diameter of 3%. open uses both.**
 Previous studies found that the OptiClust _de novo_ clustering algorithm created
 the highest quality OTU assignments of all clustering methods [@westcott_opticlust_2017].
 
