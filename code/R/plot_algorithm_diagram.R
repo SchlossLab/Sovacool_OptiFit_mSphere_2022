@@ -73,8 +73,8 @@ dist_dat <- get_dists()  %>%
     color2 = ifelse(seq2 %in% ref_seqs, ref_color, query_color),
   )
 dist_dat[["color3"]] <- rep.int('black', nrow(dist_dat))
-dist_dat[['distance']] <- runif(nrow(dist_dat), 0.1, 0.3) %>% 
-  as.character() %>% substring(2, 4)
+dist_dat[['dist']] <- runif(nrow(dist_dat), 1.0, 2.9) %>% 
+  format(digits = 2) %>% as.character() 
 table_colors <- dist_dat %>% select(color1, color2, color3) %>% as.matrix() %>% t()
 
 table_plot <- plot_grid(ggdraw() + 
@@ -84,7 +84,10 @@ table_plot <- plot_grid(ggdraw() +
                                      ) + 
                           theme(plot.margin = margin(5, 0, 5, 0)),
                    tableGrob(dist_dat %>% 
-                               select(seq1, seq2, distance) %>% 
+                               select(seq1, seq2, dist) %>% 
+                               rename(`% distance` = dist,
+                                      ` ` = seq1,
+                                      `  ` = seq2) %>% 
                                t(),
                              theme = ttheme_default(base_size = 10,
                                                     padding = unit(c(4, 4), 'pt'),
