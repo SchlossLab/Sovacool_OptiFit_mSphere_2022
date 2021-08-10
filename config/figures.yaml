@@ -2,7 +2,7 @@ algorithm:
   cap: \textbf{The OptiFit Algorithm.}
        TODO write this caption.
   path: here('figures', 'algorithm.tiff')
-  dim: c(6.5,5.5)
+  dim: c(6.87,5.5)
 workflow:
   cap: \textbf{The Analysis Workflow.}
        Reference sequences from Greengenes, the RDP, and SILVA were downloaded,
@@ -23,11 +23,22 @@ workflow:
   dim: c(6,4)
 results_sum:
   cap: \textbf{Benchmarking Results.}
-       TODO write this caption.
+       The median MCC score, fraction of query sequences that mapped in
+       closed-reference clustering, and runtime in seconds from repeating each
+       clustering method 100 times.
+       Each dataset underwent _de novo_ clustering using OptiClust or
+       reference-based clustering using OptiFit with one of two strategies;
+       splitting the dataset and fitting 50% the sequences to the other 50%, or
+       fitting the dataset to a reference database (Greengenes, SILVA, or RDP).
+       Reference-based clustering was repeated with open and closed mode.
+       For additional comparison, VSEARCH was used for _de novo_ and reference-based clustering against the Greengenes database.
   path: here('figures', 'results_sum.tiff')
-  dim: c(6.875,6.875)
+  dim: c(6.87,6.87)
 results_split:
   cap: \textbf{Split dataset strategy.}
-       TODO write this caption.
+       The median MCC score, fraction of query sequences that mapped in
+       closed-reference clustering, and runtime in seconds from repeating each
+       clustering method 100 times.
+       Each dataset was split into a reference and query fraction.
   path: here('figures', 'results_split.tiff')
-  dim: c(6.875,9.0625)
+  dim: c(6.87,9.0625)
