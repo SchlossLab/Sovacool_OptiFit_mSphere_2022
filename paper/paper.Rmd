@@ -86,11 +86,9 @@ assignments at the same quality afforded by _de novo_ clustering methods.
 ### Importance
 
 **TODO.**
-<!--
-**"AND, BUT, THEREFORE" structure. start paragraph with question, end with why we should care. transitions to move the story along.**
-Advancements in sequencing technology have allowed researchers to affordably generate millions of reads of microorganisms from diverse natural communities,
+Advancements in DNA sequencing technology have allowed researchers to affordably
+generate millions of reads from microorganisms in diverse natural communities.
 allowing us to characterize communities.
--->
 \newpage
 
 ## Introduction
