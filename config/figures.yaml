@@ -1,6 +1,21 @@
 algorithm:
   cap: \textbf{The OptiFit Algorithm.}
-       TODO write this caption.
+       Here we present a toy example of the OptiFit algorithm fitting query
+       sequences to existing OTUs, given the list of all sequence pairs that
+       are within the distance threshold (here 3% is used).
+       The goal of OptiFit is to assign the query sequences W through Z
+       (colored \textcolor{queryGreen}{green}) to the reference OTUs created by
+       clustering Sequences A through Q (colored \textcolor{refOrange}{orange})
+       which were previously clustered _de novo_ with OptiClust (see the
+       OptiClust supplemental text [@westcott_opticlust_2017]).
+       Initially, OptiFit places each query sequence in its own OTU.
+       Then, for each query sequence (\textbf{bolded}), OptiFit determines what
+       the new MCC score would be if that sequence were moved to one of the
+       OTUs containing at least one other similar sequence.
+       The sequence is then moved to the OTU which would result in the best MCC
+       score.
+       OptiFit stops iterating over sequences once the MCC score stabilizes (in
+       this example; only one iteration over each sequence is needed).
   dim: c(6.87,5.5)
   path: here('figures', 'algorithm.tiff')
 workflow:

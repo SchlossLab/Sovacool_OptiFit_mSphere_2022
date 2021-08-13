@@ -88,7 +88,9 @@ assignments at the same quality afforded by _de novo_ clustering methods.
 **TODO.**
 Advancements in DNA sequencing technology have allowed researchers to affordably
 generate millions of reads from microorganisms in diverse natural communities.
-allowing us to characterize communities.
+Efficient software tools are needed to group sequences into OTUs for
+characterization and comparison of communities.
+
 \newpage
 
 ## Introduction
