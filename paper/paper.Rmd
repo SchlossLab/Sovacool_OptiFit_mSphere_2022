@@ -543,10 +543,10 @@ novo_ into reference OTUs with OptiClust.
 We used three methods for selecting the fraction of sequences to be used
 as the reference: a simple random sample, weighting sequences by relative
 abundance, and weighting by similarity to other sequences in the dataset.
-Dataset splitting was repeated with reference fractions ranging from 10% to 80%
+Dataset splitting was repeated with reference fractions ranging from 10% to 90%
 of the dataset and for 100 random seeds.
-For each dataset split, the remaining sequences were assigned to the reference
-OTUs with OptiFit.
+For each dataset split, the remaining query sequences were assigned to the
+reference OTUs with OptiFit.
 
 ### Benchmarking
 
