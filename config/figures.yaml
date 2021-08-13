@@ -40,5 +40,13 @@ results_split:
        closed-reference clustering, and runtime in seconds from repeating each
        clustering method 100 times.
        Each dataset was split into a reference and query fraction.
+       We used three methods for selecting the fraction of sequences to be used
+       as the reference; a simple random sample, weighting sequences by
+       relative abundance, and weighting by similarity to other sequences in
+       the dataset.
+       With the simple random sample method, dataset splitting was repeated
+       with reference fractions ranging from 10% to 90% of the dataset and for
+       100 random seeds.
+       _De novo_ clustering each dataset is also shown for comparison.
   path: here('figures', 'results_split.tiff')
   dim: c(6.87,9.0625)
