@@ -1,8 +1,8 @@
 algorithm:
   cap: \textbf{The OptiFit Algorithm.}
        TODO write this caption.
-  path: here('figures', 'algorithm.tiff')
   dim: c(6.87,5.5)
+  path: here('figures', 'algorithm.tiff')
 workflow:
   cap: \textbf{The Analysis Workflow.}
        Reference sequences from Greengenes, the RDP, and SILVA were downloaded,
@@ -19,8 +19,8 @@ workflow:
        for 100 repetitions.
        The final MCC score was reported for all OptiClust and OptiFit
        repetitions.
-  path: here('figures', 'workflow.tiff')
   dim: c(6,4)
+  path: here('figures', 'workflow.tiff')
 results_sum:
   cap: \textbf{Benchmarking Results.}
        The median MCC score, fraction of query sequences that mapped in
@@ -32,21 +32,20 @@ results_sum:
        fitting the dataset to a reference database (Greengenes, SILVA, or RDP).
        Reference-based clustering was repeated with open and closed mode.
        For additional comparison, VSEARCH was used for _de novo_ and reference-based clustering against the Greengenes database.
+  dim: c(6,6)
   path: here('figures', 'results_sum.tiff')
-  dim: c(6.87,6.87)
 results_split:
   cap: \textbf{Split dataset strategy.}
        The median MCC score, fraction of query sequences that mapped in
        closed-reference clustering, and runtime in seconds from repeating each
        clustering method 100 times.
        Each dataset was split into a reference and query fraction.
-       We used three methods for selecting the fraction of sequences to be used
-       as the reference; a simple random sample, weighting sequences by
-       relative abundance, and weighting by similarity to other sequences in
-       the dataset.
+       References sequences were selected via a simple random sample, weighting
+       sequences by relative abundance, or weighting by similarity to other
+       sequences in the dataset.
        With the simple random sample method, dataset splitting was repeated
        with reference fractions ranging from 10% to 90% of the dataset and for
        100 random seeds.
        _De novo_ clustering each dataset is also shown for comparison.
+  dim: c(6.87,8)
   path: here('figures', 'results_split.tiff')
-  dim: c(6.87,9.0625)

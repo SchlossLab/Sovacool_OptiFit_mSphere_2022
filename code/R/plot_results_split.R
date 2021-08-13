@@ -94,7 +94,7 @@ dat %>%
   coord_flip() +
   stat_summary(geom = 'point',
                fun = median,
-               size = 3,
+               size = 2,
                position = position_dodge(width = 0.07)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
@@ -102,7 +102,6 @@ dat %>%
                      breaks = names(color_breaks),
                      labels = color_labels) +
   scale_x_continuous(breaks = seq(0, 1, 0.1), 
-                     #limits = c(0, 0.9),
                      labels = c('NA', seq(0.1, 1, 0.1))) +
   labs(x = 'reference fraction', y = '') +
   theme_bw() +
@@ -111,7 +110,8 @@ dat %>%
         legend.position="top",
         legend.margin=margin(t=0, r=0, b=0, l=0, unit='pt'),
         plot.margin=unit(x=c(0,0,0,0),units="pt"),
-        panel.grid.minor.y = element_blank()
+        panel.grid.minor.y = element_blank(),
+        axis.title.x = element_blank()
   ) + 
   guides(shape = guide_legend(order = 1),
          colour = guide_legend(override.aes = list(size = -1),

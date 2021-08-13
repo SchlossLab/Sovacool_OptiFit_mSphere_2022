@@ -96,7 +96,7 @@ mothur_vsearch  %>%
   #              position = position_dodge(width = 0.4)) +
   stat_summary(geom = 'point',
                fun = median,
-               size = 3,
+               size = 2,
                position = position_dodge(width = 0.4)) +
   facet_grid(dataset ~ metric, scales = 'free', switch = 'x') +
   scale_shape_manual(values = list(open = 1, closed = 19, `_de novo_` = 17)) +
@@ -106,6 +106,8 @@ mothur_vsearch  %>%
   theme_bw() +
   theme(strip.placement = "outside",
         axis.text.y = element_markdown(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
         legend.title = element_blank(),
         legend.text = element_markdown(),
         legend.position="top",
