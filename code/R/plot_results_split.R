@@ -101,9 +101,9 @@ dat %>%
   scale_color_manual(values = color_values,
                      breaks = names(color_breaks),
                      labels = color_labels) +
-  scale_x_continuous(breaks = seq(0, 0.9, 0.1), 
-                     limits = c(0, 0.9),
-                     labels = c('NA', seq(0.1, 0.9, 0.1))) +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), 
+                     #limits = c(0, 0.9),
+                     labels = c('NA', seq(0.1, 1, 0.1))) +
   labs(x = 'reference fraction', y = '') +
   theme_bw() +
   theme(legend.text = element_markdown(),
