@@ -49,7 +49,7 @@ figs <- function(fig_name, attribute) {
 }
 ```
 
-<!--
+<!-- TODO
 - Go back through https://peerj.com/articles/1487/ to get all the arguments for why the qiime based methods are problematic…
 1. The threshold with closed reference is a radius and with de novo its a diameter
 2. The gg reference was defined for full length sequences, within a subregion there are duplicate and nearly duplicate sequences
@@ -85,11 +85,21 @@ assignments at the same quality afforded by _de novo_ clustering methods.
 
 ### Importance
 
-**TODO.**
 Advancements in DNA sequencing technology have allowed researchers to affordably
 generate millions of reads from microorganisms in diverse natural communities.
-Efficient software tools are needed to group sequences into OTUs for
-characterization and comparison of communities.
+Efficient software tools are needed to assign microbial sequences into
+taxonomic groups for characterization and comparison of communities.
+The OptiClust algorithm produces high quality groups by comparing sequences to
+each other, but the taxonomic assignments can change when new sequences are
+added to a dataset, making it difficult to compare different studies.
+Other approaches assign sequences to taxonomic groups by comparing them to
+sequences in a reference database to produce consistent assignments, but the
+quality of the groups produced is reduced compared to OptiClust.
+We developed OptiFit, a new reference-based algorithm that produces consistent
+yet high quality taxonomic assignments like OptiClust.
+OptiFit allows researchers to compare microbial communities across different
+studies or add new data to existing studies without sacrificing the quality of
+the taxonomic assignments.
 
 \newpage
 
@@ -579,9 +589,10 @@ https://github.com/SchlossLab/Sovacool_OptiFit_2021.
 
 ## Acknowledgements
 
+We thank members of the Schloss Lab for their feedback on the figures.
+
 KLS received support from the NIH Training Program in Bioinformatics (T32 GM070449).
 Salary support for PDS came from NIH grants R01CA215574 and U01AI124255.
-
 The funders had no role in study design, data collection and interpretation, 
 or the decision to submit the work for publication.
 
