@@ -105,6 +105,7 @@ mothur_vsearch  %>%
   labs(x = '', y = '') +
   theme_bw() +
   theme(strip.placement = "outside",
+        strip.background = element_blank(),
         axis.text.y = element_markdown(),
         axis.title.y = element_blank(),
         axis.title.x = element_blank(),
