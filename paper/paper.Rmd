@@ -1,5 +1,5 @@
 ---
-title: "OptiFit: a fast method for fitting amplicon sequences to existing OTUs"
+title: "OptiFit: a new method for fitting amplicon sequences to existing OTUs"
 date: '`r Sys.Date()`'
 bibliography: references.bib
 link-citations: true
@@ -59,6 +59,7 @@ figs <- function(fig_name, attribute) {
 <!-- TODO
 - "require" and "enforce" for opti -- wrong word choice.
 - be consistent with cluster, assign, fit, and map.
+- can we replace "robust" with something better / more specific?
 -->
 
 ## Abstract
