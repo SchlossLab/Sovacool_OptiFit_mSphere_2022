@@ -1,5 +1,5 @@
 ---
-title: "OptiFit: a new method for fitting amplicon sequences to existing OTUs"
+title: "OptiFit: an improved method for fitting amplicon sequences to existing OTUs"
 date: '`r Sys.Date()`'
 bibliography: references.bib
 link-citations: true
@@ -84,7 +84,7 @@ We tested OptiFit using four microbiome datasets with two different strategies:
 by fitting to an external reference database or by splitting the dataset into a 
 reference and query set and fitting the query sequences to the reference set
 after clustering it using OptiClust.
-The result is a robust implementation of closed and open-reference clustering.
+The result is an improved implementation of closed and open-reference clustering.
 OptiFit produces OTUs of similar quality as OptiClust and at faster speeds when
 using the split dataset strategy, although the OTU quality and processing speed
 depends on the database chosen when using the external database strategy.
