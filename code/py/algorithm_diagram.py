@@ -10,25 +10,66 @@ import pandas
 
 def create_optifit():
     ref_otus = opticlust_example()
-    query_seqs = ['W', 'X', 'Y', 'Z']
+    query_seqs = ["W", "X", "Y", "Z"]
     query_dist_mat = dist_pairs_to_sets(
-        {'seq1': ['X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'],
-         'seq2': ['Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']})
+        {
+            "seq1": ["X", "X", "X", "X", "Y", "W", "W", "W"],
+            "seq2": ["Y", "C", "G", "N", "C", "M", "N", "F"],
+        }
+    )
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs=53)
     return optifit
 
 
 def opticlust_example():
     dist_frame = {
-        "seq1": ["D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P",
-                 "P", "Q", "Q", ],
-        "seq2": ["B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L",
-                 "O", "E", "F", ],
+        "seq1": [
+            "D",
+            "F",
+            "G",
+            "H",
+            "I",
+            "I",
+            "J",
+            "J",
+            "N",
+            "O",
+            "P",
+            "P",
+            "P",
+            "Q",
+            "Q",
+        ],
+        "seq2": [
+            "B",
+            "E",
+            "C",
+            "A",
+            "B",
+            "D",
+            "A",
+            "H",
+            "M",
+            "L",
+            "K",
+            "L",
+            "O",
+            "E",
+            "F",
+        ],
     }
-    assert len(dist_frame['seq1']) == len(dist_frame['seq2'])
+    assert len(dist_frame["seq1"]) == len(dist_frame["seq2"])
     dist_mat = dist_pairs_to_sets(dist_frame)
-    otu_list = [{}, {'I', 'D', 'B'}, {'F', 'E', 'Q'}, {'C', 'G'},
-                {'H', 'J', 'A'}, {'M', 'N'}, {'P', 'L', 'O'}, {'K'}]
+    otu_list = [
+        {},
+        {"I", "D", "B"},
+        {"F", "E", "Q"},
+        {"C", "G"},
+        {"H", "J", "A"},
+        {"M", "N"},
+        {"P", "L", "O"},
+        {"K"},
+    ]
     otus = otuMap.from_list(otu_list, dist_mat=dist_mat, n_seqs=50)
     # print(otus)
     # conf_mat = otus.conf_mat(dist_mat)
@@ -38,11 +79,63 @@ def opticlust_example():
     #      '\nmcc correct: 0.97')
     return otus
 
+
 def get_dists():
-    return pandas.DataFrame.from_dict({
-        "seq1": ["D", "F", "G", "H", "I", "I", "J", "J", "N", "O", "P", "P", "P", "Q", "Q", 'X', 'X', 'X', 'X', 'Y', 'W', 'W', 'W'],
-        "seq2": ["B", "E", "C", "A", "B", "D", "A", "H", "M", "L", "K", "L", "O", "E", "F", 'Y', 'C', 'G', 'N', 'C', 'M', 'N', 'F']
-        })
+    return pandas.DataFrame.from_dict(
+        {
+            "seq1": [
+                "D",
+                "F",
+                "G",
+                "H",
+                "I",
+                "I",
+                "J",
+                "J",
+                "N",
+                "O",
+                "P",
+                "P",
+                "P",
+                "Q",
+                "Q",
+                "X",
+                "X",
+                "X",
+                "X",
+                "Y",
+                "W",
+                "W",
+                "W",
+            ],
+            "seq2": [
+                "B",
+                "E",
+                "C",
+                "A",
+                "B",
+                "D",
+                "A",
+                "H",
+                "M",
+                "L",
+                "K",
+                "L",
+                "O",
+                "E",
+                "F",
+                "Y",
+                "C",
+                "G",
+                "N",
+                "C",
+                "M",
+                "N",
+                "F",
+            ],
+        }
+    )
+
 
 def mcc(conf_mat):
     """
@@ -53,8 +146,7 @@ def mcc(conf_mat):
     fp = conf_mat["fp"]
     fn = conf_mat["fn"]
     return round(
-        (tp * tn - fp * fn) / sqrt(
-            (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)), 2
+        (tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)), 2
     )
 
 
@@ -100,7 +192,8 @@ def dist_array_to_dframe(dist_array):
                                      'seq2': ['B', 'C', 'D']})
 
     """
-    return # TODO
+    return  # TODO
+
 
 def otu_list_to_dict(otu_list):
     """
@@ -112,10 +205,16 @@ def otu_list_to_dict(otu_list):
     return {seq: idx for idx, otu in enumerate(otu_list) for seq in otu}
 
 
-def format_seq(s, curr_seq, query_seqs, color_curr_seq=False, do_color=True,
-               base_color="#000000",
-               ref_color="#D95F02",
-               query_color="#1B9E77"):
+def format_seq(
+    s,
+    curr_seq,
+    query_seqs,
+    color_curr_seq=False,
+    do_color=True,
+    base_color="#000000",
+    ref_color="#D95F02",
+    query_color="#1B9E77",
+):
     """
     format sequences with bold for the current iteration seq and
     color-code reference and query sequences.
@@ -155,7 +254,8 @@ class otuMap:
         old_otus = self.otus_to_seqs
         if max(old_otus) != len(old_otus):  # then OTU IDs are not continuous
             self.seqs_to_otus = otu_list_to_dict(
-                [{}] + [otu for idx, otu in old_otus.items() if otu])
+                [{}] + [otu for idx, otu in old_otus.items() if otu]
+            )
 
     @classmethod
     def from_list(cls, otu_list, **kwargs):
@@ -213,7 +313,7 @@ class otuMap:
             for seq1, seq2 in combinations(self.seqs_to_otus.keys(), 2)
         ]
         # account for additional singleton sequences
-        classes.extend('tn' for i in range(self.ghost_pairs))
+        classes.extend("tn" for i in range(self.ghost_pairs))
         # convert to a dictionary of counts
         return Counter(classes)
 
@@ -238,9 +338,10 @@ class otuMap:
         for i, seqi in enumerate(seqs):
             for j, seqj in enumerate(seqs):
                 if i == j or seqi in dist_sets[seqj] or seqj in dist_sets[seqi]:
-                    dist_array [i][j] = 1
-                    dist_array [j][i] = 1
+                    dist_array[i][j] = 1
+                    dist_array[j][i] = 1
         return pandas.DataFrame(dist_array, columns=seqs, index=seqs)
+
 
 class OptiFit:
     def __init__(self, ref_otus, query_seqs, query_dist_mat, n_seqs=0):
@@ -261,9 +362,9 @@ class OptiFit:
             n_otus += 1
             seqs_to_otus[seq] = n_otus
 
-        self.fitmap = otuMap(seqs_to_otus=seqs_to_otus,
-                             dist_mat=dist_mat,
-                             n_seqs=n_seqs)
+        self.fitmap = otuMap(
+            seqs_to_otus=seqs_to_otus, dist_mat=dist_mat, n_seqs=n_seqs
+        )
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.fitmap)
@@ -296,22 +397,29 @@ class OptiIter:
         sim_seqs = curr_fitmap.dist_mat[curr_seq]
         sim_seqs.add(curr_seq)
         options = list()
-        edges = {'from': [], 'to': [], 'mcc': []}
+        edges = {"from": [], "to": [], "mcc": []}
         for sim_seq in sim_seqs:
             option = OptiOption(curr_fitmap, curr_seq, sim_seq)
             options.append(option)
-            edges['from'].append(option.from_otu)
-            edges['to'].append(option.to_otu)
-            edges['mcc'].append(option.mcc)
+            edges["from"].append(option.from_otu)
+            edges["to"].append(option.to_otu)
+            edges["mcc"].append(option.mcc)
 
         self.edges = pandas.DataFrame.from_dict(edges)
         self.nodes = pandas.DataFrame.from_dict(
-            {'name': [' '.join([format_seq(s, curr_seq, query_seqs,
-                                           color_curr_seq = True)
-                                for s in sorted(otu)])
-                      for otu in curr_fitmap.otus_to_seqs.values()],
-             'id': list(curr_fitmap.otus_to_seqs.keys())
-             })
+            {
+                "name": [
+                    " ".join(
+                        [
+                            format_seq(s, curr_seq, query_seqs, color_curr_seq=True)
+                            for s in sorted(otu)
+                        ]
+                    )
+                    for otu in curr_fitmap.otus_to_seqs.values()
+                ],
+                "id": list(curr_fitmap.otus_to_seqs.keys()),
+            }
+        )
         best_option = max(options)
         # make sure OTU numbers are continuous
         self.best_map = best_option.fitmap
@@ -321,7 +429,7 @@ class OptiIter:
 
     @property
     def to_dict(self):
-        return {'nodes': self.nodes, 'edges': self.edges}
+        return {"nodes": self.nodes, "edges": self.edges}
 
 
 class OptiOption:
