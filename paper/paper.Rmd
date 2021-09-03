@@ -70,16 +70,21 @@ large datasets.
 OptiClust, a _de novo_ OTU clustering method, has been
 shown to produce higher quality OTU assignments than other methods and at
 comparable or faster speeds.
-A notable difference between _de novo_ clustering and database-dependent methods
-is that OTU assignments from _de novo_ methods may change when new
-sequences are added to a dataset.
+A notable difference between _de novo_ clustering and database-dependent
+reference clustering methods is that OTU assignments from _de novo_ methods may
+change when new sequences are added to a dataset.
 However, in some cases one may wish to incorporate new samples into a previously
 clustered dataset without performing clustering again on all sequences, such as
 when comparing across datasets or deploying machine learning models where OTUs
 are features.
-**TODO**: sentence mentioning open/closed reference clustering and the inherent problems with the current methods.
+Existing reference-based clustering methods produce consistent OTUs, but they
+only consider the similarity of each query sequence to a single reference
+sequence in an OTU, thus resulting in some dissimilar sequences being assigned
+to the same OTU.
 To provide an efficient and robust method to fit amplicon sequence data to
 existing OTUs, we developed the OptiFit algorithm.
+Like OptiFit, OptiClust considers the similarity of all pairs of reference and
+query sequences in an OTU to produce OTUs of the best possible quality.
 We tested OptiFit using four microbiome datasets with two different strategies:
 by fitting to an external reference database or by splitting the dataset into a 
 reference and query set and fitting the query sequences to the reference set
