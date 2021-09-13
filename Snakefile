@@ -46,13 +46,21 @@ rule subtargets:
         optifit_split=fit_split('results/optifit_split_results.tsv'),
         vsearch=vsearch('results/vsearch_results.tsv')
 
+rule print_mothur_version:
+    output:
+        'results/mothur_version.txt'
+    shell:
+        """
+        mothur -v > {output}
+        """
+
 rule summarize_results:
     input:
-        R='code/R/summarize_results.R'
-        #opticlust=prep_samples('results/opticlust_results.tsv'),
-        #optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        #optifit_split=fit_split('results/optifit_split_results.tsv'),
-        #vsearch=vsearch('results/vsearch_results.tsv')
+        R='code/R/summarize_results.R',
+        opticlust=prep_samples('results/opticlust_results.tsv'),
+        optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
+        optifit_split=fit_split('results/optifit_split_results.tsv'),
+        vsearch=vsearch('results/vsearch_results.tsv')
     output:
         agg='results/aggregated.tsv',
         sum='results/summarized.tsv'
@@ -123,7 +131,8 @@ rule render_pdf:
               rules.plot_algorithm.output,
               rules.plot_workflow.output,
               rules.plot_results_sum.output,
-              rules.plot_results_split.output
+              rules.plot_results_split.output,
+              rules.print_mothur_version.output
               ]
     output:
         file='docs/paper.pdf'
