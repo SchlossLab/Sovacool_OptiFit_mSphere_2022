@@ -131,3 +131,11 @@ rule render_pdf:
         format='pdf_document'
     script:
         'code/R/render.R'
+
+rule run_tests:
+    input:
+        R='tests/testthat.R'
+    shell:
+        """
+        Rscript {input.R}
+        """
