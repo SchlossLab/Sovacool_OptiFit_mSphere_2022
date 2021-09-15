@@ -18,6 +18,8 @@ perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
 min_seq_length = 30 # from Pat's vsearch script
 max_accepts = 16
 max_rejects = 64
+# the default value of wordlength is already 8 but I'm paranoid
+word_length = 8
 
 wildcard_constraints:
     region='bact_v4'
@@ -123,7 +125,8 @@ rule vsearch_de_novo:
         perc_identity=perc_identity,
         min_seq_length=min_seq_length,
         max_accepts=max_accepts,
-        max_rejects=max_rejects
+        max_rejects=max_rejects,
+        word_length=word_length
     resources:
         procs=8
     shell:
@@ -136,6 +139,7 @@ rule vsearch_de_novo:
             --minseqlength {params.min_seq_length} \
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
+            --wordlength {params.word_length} \
             --strand both \
             --relabel OTU_
         """
@@ -153,7 +157,8 @@ rule vsearch_closed_ref:
         perc_identity=perc_identity,
         min_seq_length=min_seq_length,
         max_accepts=max_accepts,
-        max_rejects=max_rejects
+        max_rejects=max_rejects,
+        word_length=word_length
     resources:
         procs=8
     shell:
@@ -167,6 +172,7 @@ rule vsearch_closed_ref:
             --minseqlength {params.min_seq_length} \
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
+            --wordlength {params.word_length} \
             --strand both
         """
 
@@ -184,7 +190,8 @@ rule vsearch_open_ref:
         perc_identity=perc_identity,
         min_seq_length=min_seq_length,
         max_accepts=max_accepts,
-        max_rejects=max_rejects
+        max_rejects=max_rejects,
+        word_length=word_length
     resources:
         procs=8
     shell:
@@ -198,6 +205,7 @@ rule vsearch_open_ref:
             --minseqlength {params.min_seq_length} \
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
+            --wordlength {params.word_length} \
             --strand both
         vsearch --cluster_smallmem {output.unmatched} \
             --usersort \
@@ -207,6 +215,7 @@ rule vsearch_open_ref:
             --minseqlength {params.min_seq_length} \
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
+            --wordlength {params.word_length} \
             --strand both \
             --relabel OTU_
         """
