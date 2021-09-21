@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=ofa
+#SBATCH --job-name=OptiFit
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -35,5 +35,11 @@
 #SBATCH --mail-user=YOUR_EMAIL
 #SBATCH --mail-type=BEGIN,END
 
+alias snakemake_cmd="time snakemake --profile config/slurm_KLS --latency-wait 90"
 source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
-time snakemake --profile config/slurm --latency-wait 90
+for dir in $(ls subworkflows); do
+    pushd subworkflows/${dir}
+    snakemake_cmd
+    popd
+done
+snakemake_cmd
