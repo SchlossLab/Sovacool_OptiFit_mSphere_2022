@@ -64,7 +64,7 @@ rule remove_gaps_query:
         procs=2
     shell:
         """
-        mothur '#set.dir(output={params.outdir}); set.logfile(name={log});
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir}); 
             degap.seqs(fasta={input.fna}, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
         # vsearch doesn't support dots or hyphens in fasta headers
