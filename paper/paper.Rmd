@@ -9,6 +9,11 @@ output:
       in_header: preamble.tex
       before_body: head.tex
     fig_caption: yes
+  github_document:
+    includes:
+      in_header: preamble.tex
+      before_body: head.tex
+    html_preview: false
 csl: msystems.csl
 fontsize: 12pt
 geometry: margin=1.0in
