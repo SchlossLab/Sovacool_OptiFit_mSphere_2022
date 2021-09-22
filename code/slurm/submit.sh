@@ -35,11 +35,10 @@
 #SBATCH --mail-user=YOUR_EMAIL
 #SBATCH --mail-type=BEGIN,END
 
-alias snakemake_cmd="time snakemake --profile config/slurm_KLS --latency-wait 90"
 source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
 for dir in $(ls subworkflows); do
     pushd subworkflows/${dir}
-    snakemake_cmd
+    time snakemake --profile config/slurm_KLS --latency-wait 90
     popd
 done
-snakemake_cmd
+time snakemake --profile config/slurm_KLS --latency-wait 90
