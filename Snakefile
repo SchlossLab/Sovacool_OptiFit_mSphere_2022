@@ -35,7 +35,7 @@ subworkflow vsearch:
     configfile:
         config['configpath']
 
-rule render_paper:
+rule paper:
     input:
         pdf='docs/paper.pdf'
 
@@ -111,7 +111,7 @@ rule plot_results_split:
     script:
         'code/R/plot_results_split.R'
 
-rule render_pdf:
+rule render_paper:
     input:
         Rmd="paper/paper.Rmd",
         R='code/R/render.R',
@@ -126,9 +126,10 @@ rule render_pdf:
               rules.plot_results_split.output
               ]
     output:
-        file='docs/paper.pdf'
+        pdf='docs/paper.pdf',
+        md='docs/paper.md'
     params:
-        format='pdf_document'
+        outdir='docs/'
     script:
         'code/R/render.R'
 
