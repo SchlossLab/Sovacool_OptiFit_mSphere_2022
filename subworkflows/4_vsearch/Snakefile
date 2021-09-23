@@ -35,7 +35,7 @@ subworkflow prep_samples:
     configfile:
         config['configpath']
 
-ruleorder: combine_open_lists > uc_to_list > biom_to_list
+ruleorder: combine_open_lists > uc_to_list
 
 rule aggregate_vsearch_results:
     input:
@@ -230,15 +230,6 @@ rule uc_to_list:
     script:
         'code/R/uc_to_list.R'
 
-rule biom_to_list:
-    input:
-        code="code/R/biom_to_list.R",
-        biom="results/{dataset}/{method}/{dataset_step}.biom"
-    output:
-        list="results/{dataset}/{method}/{dataset_step}.list"
-    script:
-        "code/R/biom_to_list.R"
-
 rule combine_open_lists:
     input:
         l1='results/{dataset}/open/{dataset}.closed.list',
@@ -264,12 +255,13 @@ rule prep_count_table:
 # but not in the distance value (3rd occurrence).
 rule prep_dist:
     input:
-        dist=prep_samples("results/{dataset}/{dataset}.dist")
+        dist=prep_samples("results/{dataset}/{dataset}.dist"),
+        py='code/py/remove_hyphens_dist.py'
     output:
         dist='data/{dataset}/{dataset}.dist'
     shell:
         """
-        cat {input.dist} |  sed 's/[\.-]/_/' | sed 's/[\.-]/_/' > {output.dist}
+        python {input.py} {input.dist} {output.dist}
         """
 
 rule sensspec_vsearch:
