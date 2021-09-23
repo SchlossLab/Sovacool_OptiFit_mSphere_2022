@@ -41,4 +41,4 @@ for dir in $(2_fit_reference_db 3_fit_sample_split 4_vsearch); do
     time snakemake --profile config/slurm --latency-wait 90
     popd
 done
-time snakemake --profile config/slurm --latency-wait 90
+time snakemake --latency-wait 90
