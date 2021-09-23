@@ -22,3 +22,4 @@ core.*
 *benchmarks*
 *KLS*
 *.bak
+bin/
