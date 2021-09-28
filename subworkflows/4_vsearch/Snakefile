@@ -49,12 +49,31 @@ rule aggregate_vsearch_results:
     script:
         'code/R/rbind_tsv.R'
 
-# vsearch doesn't support dots or hyphens in fasta headers
-rule prep_query_seqs:
+# some mothur commands don't like hyphens in file paths
+rule copy_query_files:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
         count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        dist=prep_samples("results/{dataset}/{dataset}.dist"),
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
+    output:
+        fna='data/{dataset}/input/{dataset}.fasta',
+        count_table='data/{dataset}/input/{dataset}.count_table',
+        dist='data/{dataset}/input/{dataset}.dist'
+    params:
+        outdir='data/{dataset}/input/'
+    shell:
+        """
+        for f in {input}; do
+            cp $f {params.outdir}
+        done
+        """
+
+# vsearch doesn't support dots or hyphens in fasta headers
+rule prep_query_seqs:
+    input:
+        fna=rules.copy_query_files.output.fna,
+        count_table=rules.copy_query_files.output.count_table,
+        dist=rules.copy_query_files.output.dist,
         py='code/py/remove_hyphens_dist.py'
     output:
         degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
@@ -66,13 +85,11 @@ rule prep_query_seqs:
     params:
         outdir="data/{dataset}/",
         prefix='{dataset}.tmp'
-    resources:
-        procs=2
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             deunique.seqs(fasta={input.fna}, count={input.count_table})
-            degap.seqs(fasta=current, processors={resources.procs});
+            degap.seqs(fasta=current);
             rename.file(fasta=current, prefix={params.prefix}) '
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
         cat {input.count_table} |  sed 's/[\.-]/_/g' > {output.count_table}
