@@ -273,7 +273,7 @@ rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
         names=rules.prep_query_seqs.output.names,
-        #count_table=rules.prep_query_seqs.output.count_table,
+        count_table=rules.prep_query_seqs.output.count_table,
         dist=rules.prep_query_seqs.output.dist
     output:
         tsv='results/{dataset}/{method}/{dataset}.sensspec'
@@ -284,7 +284,7 @@ rule sensspec_vsearch:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, name={input.names}, column={input.dist}) '
+            sens.spec(list={input.list}, count={input.count_table}, column={input.dist}) '
         """
 
 rule calc_diversity4:
