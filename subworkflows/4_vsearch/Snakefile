@@ -49,12 +49,18 @@ rule aggregate_vsearch_results:
     script:
         'code/R/rbind_tsv.R'
 
-rule remove_gaps_query:
+# vsearch doesn't support dots or hyphens in fasta headers
+rule prep_query_seqs:
     input:
-        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        dist=prep_samples("results/{dataset}/{dataset}.dist"),
+        py='code/py/remove_hyphens_dist.py'
     output:
         degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
-        fna="data/{dataset}/{dataset}.ng.fasta"
+        fna="data/{dataset}/{dataset}.ng.fasta",
+        count_table='data/{dataset}/{dataset}.ng.count_table',
+        dist='data/{dataset}/{dataset}.ng.dist'
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
@@ -64,11 +70,13 @@ rule remove_gaps_query:
         procs=2
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir}); 
-            degap.seqs(fasta={input.fna}, processors={resources.procs});
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            deunique.seqs(fasta={input.fna}, count={input.count_table})
+            degap.seqs(fasta=current, processors={resources.procs});
             rename.file(fasta=current, prefix={params.prefix}) '
-        # vsearch doesn't support dots or hyphens in fasta headers
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
+        cat {input.count_table} |  sed 's/[\.-]/_/g' > {output.count_table}
+        python {input.py} {input.dist} {output.dist}
         """
 
 rule copy_ref:
@@ -98,7 +106,7 @@ rule list_ref_seqs:
 
 rule vsearch_sort:
     input:
-        fna=rules.remove_gaps_query.output.fna
+        fna=rules.prep_query_seqs.output.fna
     output:
         fna="data/{dataset}/{dataset}.ng.sorted.fasta",
         uc="data/{dataset}/{dataset}.ng.sorted.uc"
@@ -240,35 +248,11 @@ rule combine_open_lists:
     script:
         'code/py/combine_open_lists.py'
 
-# vsearch doesn't support dots or hyphens in sequence names.
-rule prep_count_table:
-    input:
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table")
-    output:
-        count='data/{dataset}/{dataset}.count_table'
-    shell:
-        """
-        cat {input.count} |  sed 's/[\.-]/_/g' > {output.count}
-        """
-
-# replace dots/hyphens in fasta headers (1st & 2nd occurrence),
-# but not in the distance value (3rd occurrence).
-rule prep_dist:
-    input:
-        dist=prep_samples("results/{dataset}/{dataset}.dist"),
-        py='code/py/remove_hyphens_dist.py'
-    output:
-        dist='data/{dataset}/{dataset}.dist'
-    shell:
-        """
-        python {input.py} {input.dist} {output.dist}
-        """
-
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        count=rules.prep_count_table.output.count,
-        dist=rules.prep_dist.output.dist
+        count_table=rules.prep_query_seqs.output.count_table,
+        dist=rules.prep_query_seqs.output.dist
     output:
         tsv='results/{dataset}/{method}/{dataset}.sensspec'
     params:
@@ -278,13 +262,13 @@ rule sensspec_vsearch:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
+            sens.spec(list={input.list}, count={input.count_table}, column={input.dist}) '
         """
 
 rule calc_diversity4:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        count=rules.prep_count_table.output.count,
+        count_table=rules.prep_query_seqs.output.count_table,
     output:
         list_accnos="results/{dataset}/{method}/{dataset}.accnos",
         tsv='results/{dataset}/{method}/{dataset}.groups.summary'
@@ -296,7 +280,7 @@ rule calc_diversity4:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
         list.seqs(list={input.list});
-        get.seqs(count={input.count}, accnos=current);
+        get.seqs(count={input.count_table}, accnos=current);
         make.shared(list={input.list}, count=current, label=0.03);
         summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
         """
@@ -305,7 +289,7 @@ rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
         mapped=rules.calc_diversity4.output.list_accnos,
-        query=rules.prep_count_table.output.count,
+        query=rules.prep_query_seqs.output.count_table,
         ref=rules.list_ref_seqs.output.accnos
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
