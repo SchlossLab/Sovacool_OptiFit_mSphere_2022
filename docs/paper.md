@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-09-21
+2021-09-23
 
 \usepackage{helvet} % Helvetica font
 \renewcommand*\familydefault{\sfdefault} % Use the sans serif version of the font
@@ -748,9 +748,10 @@ class="csl-right-inline">**Navas-Molina JA**, **Peralta-Sánchez JM**,
 **González A**, **McMurdie PJ**, **Vázquez-Baeza Y**, **Xu Z**, **Ursell
 LK**, **Lauber C**, **Zhou H**, **Song SJ**, **Huntley J**, **Ackermann
 GL**, **Berg-Lyons D**, **Holmes S**, **Caporaso JG**, **Knight R**.
-2013. Chapter Nineteen - Advancing Our Understanding of the Human
-Microbiome Using QIIME, p. 371–444. *In* DeLong, EF (ed.), Methods in
-Enzymology. Academic Press.</span>
+2013. [Chapter Nineteen - Advancing Our Understanding of the Human
+Microbiome Using
+QIIME](https://doi.org/10.1016/B978-0-12-407863-5.00019-8), p. 371–444.
+*In* DeLong, EF (ed.), Methods in Enzymology. Academic Press.</span>
 
 </div>
 
