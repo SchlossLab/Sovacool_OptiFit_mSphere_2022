@@ -76,24 +76,31 @@ rule prep_query_seqs:
         dist=rules.copy_query_files.output.dist,
         py='code/py/remove_hyphens_dist.py'
     output:
-        degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
+        #degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
         fna="data/{dataset}/{dataset}.ng.fasta",
         count_table='data/{dataset}/{dataset}.ng.count_table',
-        dist='data/{dataset}/{dataset}.ng.dist'
+        dist='data/{dataset}/{dataset}.ng.dist',
+        names="data/{dataset}/{dataset}.ng.names
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
         outdir="data/{dataset}/",
-        prefix='{dataset}.tmp'
+        prefix='{dataset}.ng',
+        label=0.03
+    resources:
+        procs=16
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            deunique.seqs(fasta={input.fna}, count={input.count_table});
+            rename.seqs(fasta={input.fasta}, count={input.count_table});
+            dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
+            deunique.seqs(fasta=current, count=current);
             degap.seqs(fasta=current);
-            rename.file(fasta=current, prefix={params.prefix}) '
-        cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
-        cat {input.count_table} |  sed 's/[\.-]/_/g' > {output.count_table}
-        python {input.py} {input.dist} {output.dist}
+            rename.file(fasta=current, column=current, count=current, prefix={params.prefix});
+            unique.seqs(fasta=current) '
+        #cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
+        #cat {input.count_table} |  sed 's/[\.-]/_/g' > {output.count_table}
+        #python {input.py} {input.dist} {output.dist}
         """
 
 rule copy_ref:
@@ -268,7 +275,8 @@ rule combine_open_lists:
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        count_table=rules.prep_query_seqs.output.count_table,
+        names=rules.prep_query_seqs.output.names
+        #count_table=rules.prep_query_seqs.output.count_table,
         dist=rules.prep_query_seqs.output.dist
     output:
         tsv='results/{dataset}/{method}/{dataset}.sensspec'
@@ -279,7 +287,7 @@ rule sensspec_vsearch:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, count={input.count_table}, column={input.dist}) '
+            sens.spec(list={input.list}, name={input.names}, column={input.dist}) '
         """
 
 rule calc_diversity4:
