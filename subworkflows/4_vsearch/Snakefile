@@ -80,7 +80,7 @@ rule prep_query_seqs:
         fna="data/{dataset}/{dataset}.ng.fasta",
         count_table='data/{dataset}/{dataset}.ng.count_table',
         dist='data/{dataset}/{dataset}.ng.dist',
-        names="data/{dataset}/{dataset}.ng.names
+        names="data/{dataset}/{dataset}.ng.names"
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
@@ -92,15 +92,12 @@ rule prep_query_seqs:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            rename.seqs(fasta={input.fasta}, count={input.count_table});
+            rename.seqs(fasta={input.fna}, count={input.count_table});
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
             deunique.seqs(fasta=current, count=current);
             degap.seqs(fasta=current);
             rename.file(fasta=current, column=current, count=current, prefix={params.prefix});
             unique.seqs(fasta=current) '
-        #cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
-        #cat {input.count_table} |  sed 's/[\.-]/_/g' > {output.count_table}
-        #python {input.py} {input.dist} {output.dist}
         """
 
 rule copy_ref:
@@ -275,7 +272,7 @@ rule combine_open_lists:
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        names=rules.prep_query_seqs.output.names
+        names=rules.prep_query_seqs.output.names,
         #count_table=rules.prep_query_seqs.output.count_table,
         dist=rules.prep_query_seqs.output.dist
     output:
