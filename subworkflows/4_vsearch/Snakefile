@@ -88,7 +88,7 @@ rule prep_query_seqs:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            deunique.seqs(fasta={input.fna}, count={input.count_table})
+            deunique.seqs(fasta={input.fna}, count={input.count_table});
             degap.seqs(fasta=current);
             rename.file(fasta=current, prefix={params.prefix}) '
         cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
