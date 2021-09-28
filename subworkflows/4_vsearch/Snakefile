@@ -252,8 +252,8 @@ rule uc_to_list:
         clustered='results/{dataset}/{method}/{dataset_step}.uc'
     output:
         list='results/{dataset}/{method}/{dataset_step}.list'
-    script:
-        'code/R/uc_to_list.R'
+    shell:
+        'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
 rule combine_open_lists:
     input:
