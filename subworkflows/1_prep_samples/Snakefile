@@ -227,7 +227,7 @@ rule calc_dists_dataset:
 rule cluster_dataset:
     input:
         dist=rules.calc_dists_dataset.output.column,
-        count_table=rules.mutate_count1.output.count
+        count_table=rules.mutate_count1.output.count_table
     output:
         list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
         sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'),
