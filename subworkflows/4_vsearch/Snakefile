@@ -323,7 +323,6 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        div=rules.calc_diversity4.output.tsv,
         map=rules.fraction_reads_mapped4.output.txt
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'

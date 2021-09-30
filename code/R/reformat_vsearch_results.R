@@ -2,7 +2,7 @@ source(snakemake@input[["fcns"]])
 
 log_smk()
 
-sapply(c("bench", "sensspec", "div", "map"), function(x) snakemake@input[[x]]) %>%
+sapply(c("bench", "sensspec", "map"), function(x) snakemake@input[[x]]) %>%
   map_dfc(read_tsv) %>%
   mutate(
     dataset = snakemake@wildcards[["dataset"]],
