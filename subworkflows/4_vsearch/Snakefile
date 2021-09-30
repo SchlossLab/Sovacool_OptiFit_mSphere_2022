@@ -76,15 +76,15 @@ rule prep_query_seqs:
         py='code/py/remove_hyphens_dist.py'
     output:
         #degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
-        fna="data/{dataset}/{dataset}.ng.fasta",
-        count_table='data/{dataset}/{dataset}.ng.count_table',
-        dist='data/{dataset}/{dataset}.ng.dist',
-        names="data/{dataset}/{dataset}.ng.names",
-        renamed_fna=temp('data/{dataset}/{dataset}.renamed.fasta')
+        fna="data/{dataset}/processed/{dataset}.ng.fasta",
+        count_table='data/{dataset}/processed/{dataset}.ng.count_table',
+        dist='data/{dataset}/processed/{dataset}.ng.dist',
+        names="data/{dataset}/processed/{dataset}.ng.names",
+        renamed_fna=temp('data/{dataset}/processed/{dataset}.redundant.renamed.fasta')
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
-        outdir="data/{dataset}/",
+        outdir="data/{dataset}/processed/",
         prefix='{dataset}.ng',
         label=0.03
     resources:
