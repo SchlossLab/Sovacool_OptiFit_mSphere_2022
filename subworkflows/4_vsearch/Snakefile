@@ -93,7 +93,7 @@ rule prep_query_seqs:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             deunique.seqs(fasta={input.fna}, count={input.count_table});
-            rename.seqs(fasta=current); # remove hyphens from seq names
+            rename.seqs(fasta=current);
             unique.seqs(fasta=current);
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
 
@@ -287,7 +287,7 @@ rule sensspec_vsearch:
     shell:
         """
         {input.mothur} '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, count={input.count_table}, column={input.dist}, label=userLabel, cutoff=0.03) '
+            sens.spec(list={input.list}, name={input.names}, column={input.dist}, label=userLabel, cutoff=0.03) '
         """
 
 rule calc_diversity4:
