@@ -290,30 +290,26 @@ rule sensspec_vsearch:
             sens.spec(list={input.list}, name={input.names}, column={input.dist}, label=userLabel, cutoff=0.03) '
         """
 
-rule calc_diversity4:
+rule list_seqs:
     input:
-        list="results/{dataset}/{method}/{dataset}.list",
-        count_table=rules.prep_query_seqs.output.count_table,
+        list="results/{dataset}/{method}/{dataset}.list"
     output:
-        list_accnos="results/{dataset}/{method}/{dataset}.accnos",
-        tsv='results/{dataset}/{method}/{dataset}.groups.summary'
+        accnos="results/{dataset}/{method}/{dataset}.accnos"
     params:
         outdir="results/{dataset}/{method}/"
     log:
-        "log/{dataset}/calc_diversity.{dataset}.method_{method}.txt"
+        "log/{dataset}/list_seqs.{dataset}.method_{method}.txt"
     shell:
         """
         mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(list={input.list});
-        get.seqs(count={input.count_table}, accnos=current);
-        make.shared(list={input.list}, count=current, label=0.03);
-        summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
+            list.seqs(list={input.list})
+        "
         """
 
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        mapped=rules.calc_diversity4.output.list_accnos,
+        mapped=rules.list_seqs.output.accnos,
         query=rules.prep_query_seqs.output.count_table,
         ref=rules.list_ref_seqs.output.accnos
     output:
