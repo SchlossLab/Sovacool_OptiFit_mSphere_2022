@@ -80,7 +80,7 @@ rule prep_query_seqs:
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
         dist='data/{dataset}/processed/{dataset}.ng.dist',
         names="data/{dataset}/processed/{dataset}.ng.names",
-        renamed_fna=temp('data/{dataset}/processed/{dataset}.redundant.renamed.fasta')
+        renamed_fna='data/{dataset}/processed/{dataset}.redundant.renamed.fasta'
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
@@ -95,6 +95,7 @@ rule prep_query_seqs:
             deunique.seqs(fasta={input.fna}, count={input.count_table});
             rename.seqs(fasta=current);
             unique.seqs(fasta=current);
+            count.seqs(name=current);
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
 
             degap.seqs(fasta={output.renamed_fna});
