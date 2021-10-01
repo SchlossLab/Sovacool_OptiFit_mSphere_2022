@@ -80,7 +80,8 @@ rule prep_query_seqs:
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
         dist='data/{dataset}/processed/{dataset}.ng.dist',
         names="data/{dataset}/processed/{dataset}.ng.names",
-        renamed_fna='data/{dataset}/processed/{dataset}.redundant.renamed.fasta'
+        renamed_fna='data/{dataset}/processed/{dataset}.redundant.renamed.fasta',
+        accnos="data/{dataset}/processed/{dataset}.ng.accnos"
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
@@ -99,7 +100,8 @@ rule prep_query_seqs:
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
 
             degap.seqs(fasta={output.renamed_fna});
-            rename.file(fasta=current, column=current, count=current, name=current, prefix={params.prefix})
+            rename.file(fasta=current, column=current, count=current, name=current, prefix={params.prefix});
+            list.seqs(fasta=current)
             '
         """
 
@@ -311,7 +313,7 @@ rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
         mapped=rules.list_seqs.output.accnos,
-        query=rules.prep_query_seqs.output.count_table,
+        query=rules.prep_query_seqs.output.accnos,
         ref=rules.list_ref_seqs.output.accnos
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'

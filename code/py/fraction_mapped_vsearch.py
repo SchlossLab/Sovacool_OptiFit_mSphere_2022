@@ -14,6 +14,13 @@ def parse_seqs(infilename):
 
 
 def main():
+    if snakemake.wildcards.method == 'de_novo':
+        write_fraction_mapped(snakemake.wildcards, 1)
+    else:
+        write_fraction_mapped(snakemake.wildcards, get_fraction_mapped())
+
+
+def get_fraction_mapped():
     query_seqs = parse_seqs(snakemake.input.query)
     ref_seqs = parse_seqs(snakemake.input.ref)
     mapped_seqs = parse_seqs(snakemake.input.mapped)
@@ -40,8 +47,11 @@ def main():
         len(mapped_seqs.intersection(query_seqs)) / len(query_seqs), 3
     )
     assert fraction_mapped <= 1 and fraction_mapped >= 0
+    return fraction_mapped
 
-    wildcards = snakemake.wildcards
+
+
+def write_fraction_mapped(wildcards, fraction_mapped):
     method = wildcards.method
     ref = "NA" if method == "de_novo" else "gg"
     region = "NA"
