@@ -275,8 +275,8 @@ rule closed_uc_to_list:
 
 rule combine_open_lists:
     input:
-        l1='results/{dataset}/open/{dataset}.closed.uc',
-        l2='results/{dataset}/open/{dataset}.de_novo.uc',
+        l1='results/{dataset}/open/{dataset}.closed.list',
+        l2='results/{dataset}/open/{dataset}.de_novo.list',
         py='code/py/combine_open_lists.py'
     output:
         list='results/{dataset}/open/{dataset}.list'
