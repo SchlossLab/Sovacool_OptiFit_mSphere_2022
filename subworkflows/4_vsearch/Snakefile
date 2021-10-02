@@ -12,17 +12,12 @@ datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
 
-# hard-coded params
-regions = ['bact_v4']
+# hard-coded params, same as used in Pat's 2015 PeerJ paper
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
-min_seq_length = 30 # from Pat's vsearch script
+min_seq_length = 30
 max_accepts = 16
 max_rejects = 64
-# the default value of wordlength is already 8 but I'm paranoid
-word_length = 8
-
-wildcard_constraints:
-    region='bact_v4'
+word_length = 8 # the default value of wordlength is already 8 but I'm paranoid
 
 subworkflow prep_db:
     workdir:
@@ -34,8 +29,6 @@ subworkflow prep_samples:
         "../1_prep_samples/"
     configfile:
         config['configpath']
-
-ruleorder: combine_open_lists > denovo_uc_to_list
 
 rule aggregate_vsearch_results:
     input:
@@ -217,7 +210,7 @@ rule vsearch_open_ref:
     output:
         closed='results/{dataset}/open/{dataset}.closed.uc',
         unmatched='results/{dataset}/open/{dataset}.unmatched.fasta',
-        denovo='results/{dataset}/open/{dataset}.denovo.uc'
+        denovo='results/{dataset}/open/{dataset}.de_novo.uc'
     benchmark:
         'benchmarks/{dataset}/vsearch.method_open.{dataset}.txt'
     params:
@@ -258,11 +251,12 @@ rule denovo_uc_to_list:
     input:
         code='code/R/uc_to_list.R',
         sorted=rules.vsearch_sort.output.uc,
-        clustered='results/{dataset}/{method}/{dataset_step}.uc'
+        clustered='results/{dataset}/{method}/{dataset_denovo}.uc'
     output:
-        list='results/{dataset}/{method}/{dataset_step}.list'
+        list='results/{dataset}/{method}/{dataset_denovo}.list'
     wildcard_constraints:
-        method='open|de_novo'
+        method='open|de_novo',
+        dataset_denovo='|'.join(d for d in datasets)+'|'+'|'.join(f"{d}.de_novo" for d in datasets)
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
@@ -270,16 +264,19 @@ rule closed_uc_to_list:
     input:
         code='code/R/cvsearch_to_list.R',
         sorted=rules.vsearch_sort.output.uc,
-        clustered='results/{dataset}/closed/{dataset}.uc'
+        clustered='results/{dataset}/{method}/{dataset_closed}.uc'
     output:
-        list='results/{dataset}/closed/{dataset}.list'
+        list='results/{dataset}/{method}/{dataset_closed}.list'
+    wildcard_constraints:
+        method="open|closed",
+        dataset_closed='|'.join(d for d in datasets)+'|'+'|'.join(f"{d}.closed" for d in datasets)
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
 rule combine_open_lists:
     input:
-        l1=rules.closed_uc_to_list.output.list,
-        l2='results/{dataset}/open/{dataset}.denovo.list',
+        l1='results/{dataset}/open/{dataset}.closed.uc',
+        l2='results/{dataset}/open/{dataset}.de_novo.uc',
         py='code/py/combine_open_lists.py'
     output:
         list='results/{dataset}/open/{dataset}.list'
