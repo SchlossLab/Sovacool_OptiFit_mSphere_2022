@@ -1,3 +1,4 @@
+# adapted from https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/uc_to_list.R
 uc_to_list <- function(unique_file_name, clustered_file_name, list_file_name) {
 
 	uniqued <- read.table(file=unique_file_name, stringsAsFactors=FALSE)

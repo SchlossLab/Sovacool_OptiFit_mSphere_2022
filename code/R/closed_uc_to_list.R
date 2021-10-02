@@ -1,4 +1,6 @@
-cvsearch_to_list <- function(unique_file_name, clustered_file_name){
+# adapted from: https://github.com/SchlossLab/Schloss_Cluster_PeerJ_2015/blob/master/code/cvsearch_to_list.R
+
+cvsearch_to_list <- function(unique_file_name, clustered_file_name, list_file_name){
 
 	uniqued <- read.table(file=unique_file_name, stringsAsFactors=FALSE)
 
@@ -31,7 +33,10 @@ cvsearch_to_list <- function(unique_file_name, clustered_file_name){
 	}
 
 	list_file_data <- paste(c("userLabel", length(otu_list), otu_list), collapse='\t')
-	list_file_name <- gsub("vclosed/vsearch/abundance_sorted.uc", "cvsearch.list", unique_file_name)
-	list_file_name <- gsub("ng.", "", list_file_name)
 	write(list_file_data, list_file_name)
 }
+args <- commandArgs(trailingOnly=TRUE)
+unique_filename <- args[1]
+clustered_filename <- args[2]
+list_filename <- args[3]
+cvsearch_to_list(unique_filename, clustered_filename, list_filename)
