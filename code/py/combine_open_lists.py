@@ -16,8 +16,14 @@ class mothurList:
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            next(listfile)  # don't need header line
-            line = next(listfile).split()
+            lines = [line.split for line in listfile]
+            len_lines = len(lines)
+            if len_lines == 1: # for when there's no header line
+                line = lines[0]
+            elif len_lines == 2: # ditch the header line
+                line == lines[1]
+            else: # this shouldn't happen
+                raise ValueError(f"List file contains {len_lines} lines, but only 1 or 2 were expected.")
             label = line[0]
             otu_assigns = line[2:]
         return cls(label, otu_assigns)
