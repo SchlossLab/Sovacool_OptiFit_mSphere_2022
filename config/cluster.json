@@ -34,6 +34,10 @@
   "procs": "{resources.procs}",
   "walltime": "24:00:00"
  },
+ "prep_query_seqs": {
+  "procs": "{resources.procs}",
+  "walltime": "24:00:00"
+ },
  "preprocess": {
   "procs": "{resources.procs}",
   "pmem": "{resources.pmem}GB"
@@ -93,6 +97,12 @@
     "pmem": "160GB"
     },
 "sensspec_vsearch": {
+    "pmem": "16GB"
+    },
+"denovo_uc_to_list": {
+    "pmem": "16GB"
+    },
+"closed_uc_to_list": {
     "pmem": "16GB"
     }
 }
