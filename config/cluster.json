@@ -104,5 +104,8 @@
     },
 "closed_uc_to_list": {
     "pmem": "16GB"
+    },
+"fraction_reads_mapped4": {
+    "pmem": "16GB"
     }
 }
