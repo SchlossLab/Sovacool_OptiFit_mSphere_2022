@@ -16,17 +16,18 @@ class mothurList:
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            lines = [line.split for line in listfile]
+            lines = [line.split() for line in listfile]
             len_lines = len(lines)
+            dat_line = []
             if len_lines == 1: # for when there's no header line
-                line = lines[0]
+                dat_line = lines[0]
             elif len_lines == 2: # ditch the header line
-                line == lines[1]
+                dat_line == lines[1]
             else: # this shouldn't happen
                 raise ValueError(f"List file contains {len_lines} lines, but only 1 or 2 were expected.")
-            label = line[0]
-            otu_assigns = line[2:]
-        return cls(label, otu_assigns)
+            list_label = dat_line[0]
+            otu_assigns = dat_line[2:]
+        return cls(list_label, otu_assigns)
 
     @property
     def num_otus(self):
