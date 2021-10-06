@@ -55,7 +55,8 @@ rule summarize_results:
         # vsearch=vsearch('results/vsearch_results.tsv')
     output:
         agg='results/aggregated.tsv',
-        sum='results/summarized.tsv'
+        sum='results/summarized.tsv',
+        vsearch='subworkflows/4_vsearch/results/vsearch_abbr.md'
     script:
         'code/R/summarize_results.R'
 

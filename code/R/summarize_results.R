@@ -6,17 +6,13 @@ mutate_perf <- function(dat) {
   dat %>%
     mutate(
       mem_mb = max_rss,
-      mem_gb = mem_mb / 1024
+      mem_gb = mem_mb / 1024,
+      label = as.character(label)
     ) %>%
     rename(
       sec = s
     )
 }
-#
-# opticlust <- read_tsv(snakemake@input[['opticlust']])
-# optifit_db <- read_tsv(snakemake@input[['optifit_db']])
-# optifit_split <- read_tsv(snakemake@input[['optifit_split']])
-# vsearch <- read_tsv(snakemake@input[['vsearch']])
 
 opticlust <- read_tsv(here("subworkflows/1_prep_samples/results/opticlust_results.tsv")) %>%
   mutate_perf() %>%
@@ -50,3 +46,8 @@ results_sum <- results_agg %>%
 # write_tsv(results_sum, snakemake@output[['sum']])
 write_tsv(results_agg, "results/aggregated.tsv")
 write_tsv(results_sum, "results/summarized.tsv")
+
+vsearch %>% 
+  select(dataset, method, mcc, fraction_mapped, sec) %>% 
+  knitr::kable() %>% 
+  write(file = 'subworkflows/4_vsearch/results/vsearch_abbr.md')
