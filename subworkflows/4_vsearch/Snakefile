@@ -288,18 +288,23 @@ rule sensspec_vsearch:
         list="results/{dataset}/{method}/{dataset}.list",
         names=rules.prep_query_seqs.output.names,
         count_table=rules.prep_query_seqs.output.count_table,
-        dist=rules.prep_query_seqs.output.dist,
-        mothur='bin/mothur-1.37.0/mothur'
+        dist=rules.prep_query_seqs.output.dist
     output:
-        tsv='results/{dataset}/{method}/{dataset}.sensspec'
+        accnos="results/{dataset}/{method}/{dataset}.ng.accnos",
+        list="results/{dataset}/{method}/{dataset}.userLabel.pick.list",
+        tsv='results/{dataset}/{method}/{dataset}.userLabel.pick.sensspec'
     params:
         outdir='results/{dataset}/{method}/'
     log:
         'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:
         """
-        {input.mothur} '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, name={input.names}, column={input.dist}, label=userLabel, cutoff=0.03) '
+        mothur '#set.logfile(name={log});
+            set.dir(output={params.outdir});
+            list.seqs(count={input.count_table});
+            get.seqs(list={input.list});
+            sens.spec(list=current, count=current, column={input.dist}, label=userLabel, cutoff=0.03)
+            '
         """
 
 rule list_seqs:
