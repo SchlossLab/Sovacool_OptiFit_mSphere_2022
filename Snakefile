@@ -94,7 +94,8 @@ rule plot_workflow:
 
 rule plot_results_sum:
     input:
-        R='code/R/plot_results_sum.R'
+        R='code/R/plot_results_sum.R',
+        dat=rules.summarize_results.output
     output:
         tiff='figures/results_sum.tiff'
     params:
@@ -104,7 +105,8 @@ rule plot_results_sum:
 
 rule plot_results_split:
     input:
-        R='code/R/plot_results_split.R'
+        R='code/R/plot_results_split.R',
+        dat=rules.summarize_results.output
     output:
         tiff='figures/results_split.tiff'
     params:
