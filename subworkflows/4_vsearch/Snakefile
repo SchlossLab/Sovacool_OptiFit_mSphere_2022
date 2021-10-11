@@ -253,7 +253,7 @@ rule denovo_uc_to_list:
         sorted=rules.vsearch_sort.output.uc,
         clustered=rules.vsearch_de_novo.output.uc
     output:
-        list='results/{dataset}/{method}/{dataset}.list'
+        list='results/{dataset}/de_novo/{dataset}.list'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
@@ -263,7 +263,7 @@ rule closed_uc_to_list:
         sorted=rules.vsearch_sort.output.uc,
         clustered=rules.vsearch_closed_ref.output.uc
     output:
-        list='results/{dataset}/{method}/{dataset}.list'
+        list='results/{dataset}/closed/{dataset}.list'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
