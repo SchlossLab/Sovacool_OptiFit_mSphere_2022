@@ -283,7 +283,7 @@ rule open_uc_to_list:
         """
         Rscript {input.R_closed} {input.sorted} {input.uc_closed} {output.list_closed}
         Rscript {input.R_denovo} {input.sorted} {input.uc_denovo} {output.list_denovo}
-        python {input.py} {output.list_closed} {output.list_open} {output.list_combined}
+        python {input.py} {output.list_closed} {output.list_denovo} {output.list_combined}
         """
 
 rule sensspec_vsearch:
