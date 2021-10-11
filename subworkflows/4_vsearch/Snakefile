@@ -251,12 +251,9 @@ rule denovo_uc_to_list:
     input:
         code='code/R/denovo_uc_to_list.R',
         sorted=rules.vsearch_sort.output.uc,
-        clustered='results/{dataset}/{method}/{dataset_denovo}.uc'
+        clustered=rules.vsearch_de_novo.output.uc
     output:
-        list='results/{dataset}/{method}/{dataset_denovo}.list'
-    wildcard_constraints:
-        method='open|de_novo',
-        dataset_denovo='|'.join(d for d in datasets)+'|'+'|'.join(f"{d}.de_novo" for d in datasets)
+        list='results/{dataset}/{method}/{dataset}.list'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
@@ -264,24 +261,30 @@ rule closed_uc_to_list:
     input:
         code='code/R/closed_uc_to_list.R',
         sorted=rules.vsearch_sort.output.uc,
-        clustered='results/{dataset}/{method}/{dataset_closed}.uc'
+        clustered=rules.vsearch_closed_ref.output.uc
     output:
-        list='results/{dataset}/{method}/{dataset_closed}.list'
-    wildcard_constraints:
-        method="open|closed",
-        dataset_closed='|'.join(d for d in datasets)+'|'+'|'.join(f"{d}.closed" for d in datasets)
+        list='results/{dataset}/{method}/{dataset}.list'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
-rule combine_open_lists:
+rule open_uc_to_list:
     input:
-        l1='results/{dataset}/open/{dataset}.closed.list',
-        l2='results/{dataset}/open/{dataset}.de_novo.list',
+        sorted=rules.vsearch_sort.output.uc,
+        R_closed='code/R/closed_uc_to_list.R',
+        uc_closed=rules.vsearch_open_ref.output.closed,
+        R_denovo='code/R/denovo_uc_to_list.R',
+        uc_denovo=rules.vsearch_open_ref.output.denovo,
         py='code/py/combine_open_lists.py'
     output:
-        list='results/{dataset}/open/{dataset}.list'
-    script:
-        'code/py/combine_open_lists.py'
+        list_closed='results/{dataset}/open/{dataset}.closed.list',
+        list_denovo='results/{dataset}/open/{dataset}.de_novo.list',
+        list_combined='results/{dataset}/open/{dataset}.list'
+    shell:
+        """
+        Rscript {input.R_closed} {input.sorted} {input.uc_closed} {output.list_closed}
+        Rscript {input.R_denovo} {input.sorted} {input.uc_denovo} {output.list_denovo}
+        python {input.py} {output.list_closed} {output.list_open} {output.list_combined}
+        """
 
 rule sensspec_vsearch:
     input:
