@@ -315,8 +315,8 @@ rule sensspec_vsearch:
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        query=rules.sensspec_vsearch.output.accnos,
-        mapped=,
+        query=rules.sensspec_vsearch.output.query_accnos,
+        mapped=rules.sensspec_vsearch.output.list_accnos,
     output:
         tsv='results/{dataset}/{method}/fraction_mapped_{dataset}.tsv'
     script:
