@@ -5,9 +5,6 @@ calculate the fraction of reads that mapped during closed-reference clustering
 
 def count_seqs(infilename):
     with open(infilename, "r") as seq_file:
-        if not infilename.endswith(".fna") or not infilename.endswith('.fasta'):
-            raise ValueError(f"{infilename} does not appear to be a fasta file")
-        # first column of all lines
         num_seqs = sum({1 for line in seq_file if line.startswith('>')})
     return num_seqs
 
