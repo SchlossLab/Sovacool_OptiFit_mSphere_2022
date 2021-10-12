@@ -327,7 +327,7 @@ rule fraction_map_sanity_check:
         code="code/py/fraction_mapped_sanity_check.py",
         query=rules.vsearch_sort.output.fna,
         unmapped=rules.vsearch_closed_ref.output.unmatched,
-        tsv=rules.fraction_reads_mapped4.output.txt
+        tsv=rules.fraction_reads_mapped4.output.tsv
     output:
         txt='results/{dataset}/closed/fraction_mapped_sanity_check.txt'
     script:
@@ -339,7 +339,8 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        map=rules.fraction_reads_mapped4.output.tsv
+        map=rules.fraction_reads_mapped4.output.tsv,
+        check=rules.fraction_map_sanity_check.output
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
