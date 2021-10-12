@@ -313,11 +313,10 @@ rule sensspec_vsearch:
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        mapped=rules.sensspec_vsearch.output.accnos,
-        query=rules.sensspec_vsearch.output.accnos,
-        ref=rules.list_ref_seqs.output.accnos
+        query=rules.vsearch_sort.output.fna,
+        umatched=rules.vsearch_closed_ref.output.unmatched
     output:
-        txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
+        txt='results/{dataset}/closed/fraction-mapped_{dataset}.txt'
     script:
         "code/py/fraction_mapped_vsearch.py"
 

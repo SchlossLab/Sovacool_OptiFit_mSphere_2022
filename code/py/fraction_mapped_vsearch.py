@@ -3,53 +3,18 @@
 calculate the fraction of reads that mapped during closed-reference clustering
 """
 
-
-def parse_seqs(infilename):
-    with open(infilename, "r") as count_file:
-        if not infilename.endswith(".accnos"):
-            next(count_file)  # drop header line if it's not an accnos file
+def count_seqs(infilename):
+    with open(infilename, "r") as seq_file:
+        if not infilename.endswith(".fna") or not infilename.endswith('.fasta'):
+            raise ValueError(f"{infilename} does not appear to be a fasta file")
         # first column of all lines
-        seqs = {line.split("\t")[0].strip() for line in count_file}
-    return seqs
+        num_seqs = sum({1 for line in seq_file if line.startswith('>')})
+    return num_seqs
 
-
-def main():
-    if snakemake.wildcards.method == 'de_novo':
-        write_fraction_mapped(snakemake.wildcards, 1)
-    else:
-        write_fraction_mapped(snakemake.wildcards, get_fraction_mapped())
-
-
-def get_fraction_mapped():
-    query_seqs = parse_seqs(snakemake.input.query)
-    ref_seqs = parse_seqs(snakemake.input.ref)
-    mapped_seqs = parse_seqs(snakemake.input.mapped)
-
-    print("map==ref", mapped_seqs == ref_seqs)
-    print("map==query", mapped_seqs == query_seqs)
-
-    print("len(ref)", len(ref_seqs))
-    print("len(query)", len(query_seqs))
-    print("len(map)", len(mapped_seqs))
-
-    print("ref int query", len(query_seqs.intersection(ref_seqs)))
-    print("map int query", len(mapped_seqs.intersection(query_seqs)))
-    print("map int ref", len(mapped_seqs.intersection(ref_seqs)))
-
-    # remove reference seqs from mapped seqs
-    mapped_seqs = mapped_seqs - ref_seqs
-    print("len(map) after remove ref seqs", len(mapped_seqs))
-
-    # mapped reads should not contain reads not in query
-    assert not (mapped_seqs - query_seqs)
-
-    fraction_mapped = round(
-        len(mapped_seqs.intersection(query_seqs)) / len(query_seqs), 3
-    )
+def get_fraction_mapped(num_query_seqs, num_unmapped_seqs):
+    fraction_mapped = round(num_unmapped_seqs / num_query_seqs, 3)
     assert fraction_mapped <= 1 and fraction_mapped >= 0
     return fraction_mapped
-
-
 
 def write_fraction_mapped(wildcards, fraction_mapped):
     method = wildcards.method
@@ -61,5 +26,13 @@ def write_fraction_mapped(wildcards, fraction_mapped):
         output_file.write(header_line)
         output_file.write(data_str)
 
+def main():
+    if wildcards.method == 'closed':
+        num_query = count_seqs(snakemake.input.query)
+        num_unmapped = count_seqs(snakemake.input.unmapped)
+        frac_mapped = get_fraction_mapped(num_query, num_unmapped)
+    else:
+        frac_mapped = 1
+    write_fraction_mapped(snakemake.wildcards, frac_mapped)
 
 main()
