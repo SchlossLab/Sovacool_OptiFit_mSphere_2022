@@ -1,10 +1,14 @@
 datasets:
-- human
+- marine
+- mouse
+- soil
 references:
 - silva
 weights:
 - simple
 methods:
+- de_novo
+- open
 - closed
 printrefs:
 - f
