@@ -314,7 +314,7 @@ rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
         query=rules.vsearch_sort.output.fna,
-        umatched=rules.vsearch_closed_ref.output.unmatched
+        unmapped=rules.vsearch_closed_ref.output.unmatched
     output:
         txt='results/{dataset}/closed/fraction-mapped_{dataset}.txt'
     script:
