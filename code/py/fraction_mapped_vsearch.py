@@ -22,7 +22,6 @@ def main():
     print("len(query)", len(query_seqs))
     print("len(map)", len(mapped_seqs))
 
-    print("ref int query", len(query_seqs.intersection(ref_seqs)))
     print("map int query", len(mapped_seqs.intersection(query_seqs)))
 
     fraction_mapped = round(
