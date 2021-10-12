@@ -310,27 +310,11 @@ rule sensspec_vsearch:
             '
         """
 
-rule list_seqs:
-    input:
-        list="results/{dataset}/{method}/{dataset}.list"
-    output:
-        accnos="results/{dataset}/{method}/{dataset}.accnos"
-    params:
-        outdir="results/{dataset}/{method}/"
-    log:
-        "log/{dataset}/list_seqs.{dataset}.method_{method}.txt"
-    shell:
-        """
-        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-            list.seqs(list={input.list})
-        "
-        """
-
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        mapped=rules.list_seqs.output.accnos,
-        query=rules.prep_query_seqs.output.accnos,
+        mapped=rules.sensspec_vsearch.output.accnos,
+        query=rules.sensspec_vsearch.output.accnos,
         ref=rules.list_ref_seqs.output.accnos
     output:
         txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
