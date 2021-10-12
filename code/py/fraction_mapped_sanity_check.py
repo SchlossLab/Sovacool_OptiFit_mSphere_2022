@@ -22,9 +22,10 @@ def main():
 
     with open(snakemake.input.tsv, 'r') as tsv_file:
         header_line = next(tsv_file).split('\t')
-        assert header_line[4] == 'fraction_mapped'
+        print(header_line)
+        assert header_line[4].strip() == 'fraction_mapped'
         data_line = next(tsv_file).split('\t')
-        frac_mapped_list = float(data_line[4])
+        frac_mapped_list = float(data_line[4].strip())
 
     print('frac_mapped_fasta: ', frac_mapped_fasta)
     print('frac_mapped_list:  ', frac_mapped_list)
@@ -34,7 +35,7 @@ def main():
     #assert is_close
 
     with open(snakemake.output.txt, 'w') as outfile:
-        writeline('frac_mapped_fasta\tfrac_mapped_list\tis_close\n')
-        writeline(f"{frac_mapped_fasta}\t{frac_mapped_list}\t{is_close}\n")
+        outfile.write('frac_mapped_fasta\tfrac_mapped_list\tis_close\n')
+        outfile.write(f"{frac_mapped_fasta}\t{frac_mapped_list}\t{is_close}\n")
 
 main()

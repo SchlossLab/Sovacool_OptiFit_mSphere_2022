@@ -330,7 +330,7 @@ rule fraction_map_sanity_check:
         unmapped=rules.vsearch_closed_ref.output.unmatched,
         tsv=rules.fraction_reads_mapped4.output.tsv
     output:
-        txt='results/{dataset}/closed/fraction_mapped_sanity_check.txt'
+        txt='results/{dataset}/{method}/fraction_mapped_sanity_check.txt'
     script:
         "code/py/fraction_mapped_sanity_check.py"
 
