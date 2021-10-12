@@ -293,7 +293,8 @@ rule sensspec_vsearch:
         count_table=rules.prep_query_seqs.output.count_table,
         dist=rules.prep_query_seqs.output.dist
     output:
-        accnos="results/{dataset}/{method}/{dataset}.ng.accnos",
+        query_accnos="results/{dataset}/{method}/{dataset}.ng.accnos",
+        list_accnos="results/{dataset}/{method}/{dataset}.userLabel.pick.accnos",
         list="results/{dataset}/{method}/{dataset}.userLabel.pick.list",
         tsv='results/{dataset}/{method}/{dataset}.userLabel.pick.sensspec'
     params:
@@ -306,6 +307,7 @@ rule sensspec_vsearch:
             set.dir(output={params.outdir});
             list.seqs(count={input.count_table});
             get.seqs(list={input.list});
+            list.seqs(list=current);
             sens.spec(list=current, count=current, column={input.dist}, label=userLabel, cutoff=0.03)
             '
         """
@@ -313,12 +315,23 @@ rule sensspec_vsearch:
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        query=rules.vsearch_sort.output.fna,
-        unmapped=rules.vsearch_closed_ref.output.unmatched
+        query=rules.sensspec_vsearch.output.accnos,
+        mapped=,
     output:
-        txt='results/{dataset}/closed/fraction-mapped_{dataset}.txt'
+        tsv='results/{dataset}/{method}/fraction_mapped_{dataset}.tsv'
     script:
         "code/py/fraction_mapped_vsearch.py"
+
+rule fraction_map_sanity_check:
+    input:
+        code="code/py/fraction_mapped_sanity_check.py",
+        query=rules.vsearch_sort.output.fna,
+        unmapped=rules.vsearch_closed_ref.output.unmatched,
+        tsv=rules.fraction_reads_mapped4.output.txt
+    output:
+        txt='results/{dataset}/closed/fraction_mapped_sanity_check.txt'
+    script:
+        "code/py/fraction_mapped_sanity_check.py"
 
 rule reformat_vsearch_results:
     input:
@@ -326,7 +339,7 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        map=rules.fraction_reads_mapped4.output.txt
+        map=rules.fraction_reads_mapped4.output.tsv
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
