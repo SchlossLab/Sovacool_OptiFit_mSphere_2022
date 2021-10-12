@@ -36,7 +36,8 @@ rule aggregate_vsearch_results:
                     dataset=datasets,
                     method=methods + ['de_novo']),
         fcns='code/R/functions.R',
-        R='code/R/rbind_tsv.R'
+        R='code/R/rbind_tsv.R',
+        sanity_checks=expand('results/{dataset}/closed/fraction_mapped_sanity_check.txt', dataset=datasets)
     output:
         tsv='results/vsearch_results.tsv'
     script:
@@ -339,8 +340,7 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        map=rules.fraction_reads_mapped4.output.tsv,
-        check=rules.fraction_map_sanity_check.output
+        map=rules.fraction_reads_mapped4.output.tsv
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
