@@ -27,12 +27,10 @@ def write_fraction_mapped(wildcards, fraction_mapped):
         output_file.write(data_str)
 
 def main():
-    if snakemake.wildcards.method == 'closed':
-        num_query = count_seqs(snakemake.input.query)
-        num_unmapped = count_seqs(snakemake.input.unmapped)
-        frac_mapped = get_fraction_mapped(num_query, num_unmapped)
-    else:
-        frac_mapped = 1
+    num_query = count_seqs(snakemake.input.query)
+    num_unmapped = count_seqs(snakemake.input.unmapped)
+    frac_mapped = get_fraction_mapped(num_query, num_unmapped)
+    frac_mapped = 1
     write_fraction_mapped(snakemake.wildcards, frac_mapped)
 
 main()
