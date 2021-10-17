@@ -8,7 +8,7 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
-datasets = ['miseq']# config['datasets']
+datasets = ['miseq_1.0_01']# config['datasets']
 refs = config['references']
 methods = config['methods']
 
@@ -62,7 +62,7 @@ rule copy_query_files:
             cp $f {params.outdir}
         done
         """
-'''
+
 # vsearch doesn't support dots or hyphens in fasta headers
 rule prep_query_seqs:
     input:
@@ -72,7 +72,6 @@ rule prep_query_seqs:
         #count_table=rules.copy_query_files.output.count_table,
         py='code/py/remove_hyphens_dist.py'
     output:
-        #degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
         fna="data/{dataset}/processed/{dataset}.ng.fasta",
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
         dist='data/{dataset}/processed/{dataset}.ng.dist',
@@ -92,6 +91,38 @@ rule prep_query_seqs:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             deunique.seqs(fasta={input.fna}, count={input.count_table});
             rename.seqs(fasta=current);
+            unique.seqs(fasta=current);
+            count.seqs(name=current);
+            dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
+
+            degap.seqs(fasta={output.renamed_fna});
+            rename.file(fasta=current, column=current, count=current, name=current, prefix={params.prefix});
+            list.seqs(fasta=current)
+            '
+        """
+'''
+rule prep_miseq_query_seqs:
+    input:
+        fna='data/{dataset}/input/{dataset}.fasta'
+    output:
+        fna="data/{dataset}/processed/{dataset}.ng.fasta",
+        count_table='data/{dataset}/processed/{dataset}.ng.count_table',
+        dist='data/{dataset}/processed/{dataset}.ng.dist',
+        names="data/{dataset}/processed/{dataset}.ng.names",
+        renamed_fna='data/{dataset}/processed/{dataset}.redundant.renamed.fasta',
+        accnos="data/{dataset}/processed/{dataset}.ng.accnos"
+    log:
+        'log/{dataset}/remove_gaps_query.log'
+    params:
+        outdir="data/{dataset}/processed/",
+        prefix='{dataset}.ng',
+        label=0.03
+    resources:
+        procs=16
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            rename.seqs(fasta={input.fna});
             unique.seqs(fasta=current);
             count.seqs(name=current);
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
@@ -129,7 +160,7 @@ rule list_ref_seqs:
 
 rule vsearch_sort:
     input:
-        fna=rules.prep_query_seqs.output.fna
+        fna="data/{dataset}/processed/{dataset}.ng.fasta"
     output:
         fna="data/{dataset}/{dataset}.ng.sorted.fasta",
         uc="data/{dataset}/{dataset}.ng.sorted.uc"
@@ -293,9 +324,9 @@ rule open_uc_to_list:
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        names=rules.prep_query_seqs.output.names,
-        count_table=rules.prep_query_seqs.output.count_table,
-        dist=rules.prep_query_seqs.output.dist
+        names="data/{dataset}/processed/{dataset}.ng.names",
+        count_table="data/{dataset}/processed/{dataset}.ng.count_table",
+        dist="data/{dataset}/processed/{dataset}.ng.dist"
     output:
         query_accnos="results/{dataset}/{method}/{dataset}.ng.accnos",
         list_accnos="results/{dataset}/{method}/{dataset}.userLabel.pick.accnos",
