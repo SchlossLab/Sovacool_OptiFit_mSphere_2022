@@ -8,7 +8,7 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
-datasets = config['datasets']
+datasets = ['miseq']# config['datasets']
 refs = config['references']
 methods = config['methods']
 
@@ -44,6 +44,7 @@ rule aggregate_vsearch_results:
         'code/R/rbind_tsv.R'
 
 # some mothur commands don't like hyphens in file paths
+'''
 rule copy_query_files:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
@@ -61,12 +62,14 @@ rule copy_query_files:
             cp $f {params.outdir}
         done
         """
-
+'''
 # vsearch doesn't support dots or hyphens in fasta headers
 rule prep_query_seqs:
     input:
-        fna=rules.copy_query_files.output.fna,
-        count_table=rules.copy_query_files.output.count_table,
+        fna='data/{dataset}/input/{dataset}.fasta',
+        count_table='data/{dataset}/input/{dataset}.count_table',
+        #fna=rules.copy_query_files.output.fna,
+        #count_table=rules.copy_query_files.output.count_table,
         py='code/py/remove_hyphens_dist.py'
     output:
         #degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
