@@ -109,7 +109,7 @@ rule prep_miseq_query_seqs:
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
         dist='data/{dataset}/processed/{dataset}.ng.dist',
         names="data/{dataset}/processed/{dataset}.ng.names",
-        renamed_fna='data/{dataset}/processed/{dataset}.redundant.renamed.fasta',
+        renamed_fna='data/{dataset}/processed/{dataset}.renamed.fasta',
         accnos="data/{dataset}/processed/{dataset}.ng.accnos"
     log:
         'log/{dataset}/remove_gaps_query.log'
