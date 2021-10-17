@@ -143,3 +143,9 @@ rule run_tests:
         """
         Rscript {input.R}
         """
+
+onsuccess:
+    print("🎉 workflow complete!")
+
+onerror:
+    print("⛔️ something went wrong...")
