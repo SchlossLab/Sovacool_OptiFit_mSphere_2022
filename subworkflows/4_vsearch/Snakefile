@@ -122,7 +122,7 @@ rule prep_miseq_query_seqs:
     shell: # TODO; what if we don't do name repair at all?
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            unique.seqs(fasta=current);
+            unique.seqs(fasta={input.fna});
             count.seqs(name=current);
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
 
