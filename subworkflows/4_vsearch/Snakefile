@@ -122,7 +122,8 @@ rule prep_miseq_query_seqs:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            rename.seqs(fasta={input.fna});
+            make.group(fasta={input.fna}, groups='seq');
+            rename.seqs(fasta={input.fna}, group=current, placement=front);
             unique.seqs(fasta=current);
             count.seqs(name=current);
             dist.seqs(fasta=current, cutoff={params.label}, processors={resources.procs});
