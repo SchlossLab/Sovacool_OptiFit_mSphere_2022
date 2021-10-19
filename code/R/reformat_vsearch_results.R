@@ -2,7 +2,7 @@ source(snakemake@input[["fcns"]])
 
 log_smk()
 
-sapply(c("bench", "sensspec", "map"), function(x) snakemake@input[[x]]) %>%
+sapply(c("bench", "sensspec", "map", "summary"), function(x) snakemake@input[[x]]) %>%
   map_dfc(read_tsv) %>%
   mutate(
     dataset = snakemake@wildcards[["dataset"]],
@@ -12,6 +12,7 @@ sapply(c("bench", "sensspec", "map"), function(x) snakemake@input[[x]]) %>%
       "gg"
     ),
     region = NA,
-    tool = "vsearch"
+    tool = "vsearch",
+    num_otus = as.double(sobs)
   ) %>%
   write_tsv(snakemake@output[["tsv"]])
