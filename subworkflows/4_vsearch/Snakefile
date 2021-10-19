@@ -262,7 +262,7 @@ rule denovo_uc_to_list:
     output:
         list='results/{dataset}/de_novo/{dataset}.list'
     benchmark:
-        'benchmarks/{dataset}/denovo_uc_to_list.{dataset}.txt'
+        'benchmarks/{dataset}/uc_to_list.de_novo.{dataset}.txt'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
@@ -274,7 +274,7 @@ rule closed_uc_to_list:
     output:
         list='results/{dataset}/closed/{dataset}.list'
     benchmark:
-        'benchmarks/{dataset}/closed_uc_to_list.{dataset}.txt'
+        'benchmarks/{dataset}/uc_to_list.closed.{dataset}.txt'
     shell:
         'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
 
@@ -291,7 +291,7 @@ rule open_uc_to_list:
         list_denovo='results/{dataset}/open/{dataset}.de_novo.list',
         list_combined='results/{dataset}/open/{dataset}.list'
     benchmark:
-        'benchmarks/{dataset}/open_uc_to_list.{dataset}.txt'
+        'benchmarks/{dataset}/uc_to_list.open.{dataset}.txt'
     shell:
         """
         Rscript {input.R_closed} {input.sorted} {input.uc_closed} {output.list_closed}
