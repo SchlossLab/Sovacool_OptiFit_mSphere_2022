@@ -16,7 +16,7 @@ class mothurList:
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            lines = [line.split() for line in listfile]
+            lines = [line.split('\t') for line in listfile]
             len_lines = len(lines)
             dat_line = []
             if len_lines == 1: # for when there's no header line
@@ -42,14 +42,16 @@ class mothurList:
         assert self.label == other.label
         self.otu_assigns += other.otu_assigns
 
-    def write(self, list_filename):
+    def write(self, list_filename, use_header=False):
         with open(list_filename, "w") as listfile:
-            listfile.write(
-                "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
-            )
-            listfile.write(
-                "\t".join([self.label, str(self.num_otus)] + self.otu_assigns)
-            )
+            if use_header:
+                listfile.write(
+                    "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
+                )
+            listfile.write(f"{self.label}\t{str(self.num_otus)})
+            for otu in self.otu_assigns:
+                listfile.write(f"\t{otu}")
+            listfile.write('\n')
 
 
 if __name__ == "__main__":
