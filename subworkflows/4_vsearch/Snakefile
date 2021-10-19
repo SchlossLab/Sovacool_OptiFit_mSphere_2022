@@ -74,7 +74,7 @@ rule deunique:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            deunique(fasta={input.fna}, count={intput.count_table});
+            deunique(fasta={input.fna}, count={input.count_table});
             '
         sed "s/_/-/g" < {output.redund} > {output.rename}
         """
