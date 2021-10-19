@@ -101,7 +101,7 @@ rule degap:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
             unique.seqs(fasta={input.fna});
             count.seqs(fasta=current);
-            dist.seqs(fasta=current; processors={resources.procs}, cutoff={params.cutoff});
+            dist.seqs(fasta=current, processors={resources.procs}, cutoff={params.cutoff});
             degap.seqs(fasta={input.fna});
             rename.file(fasta=current, count=current, column=current, prefix={params.prefix})
             '
