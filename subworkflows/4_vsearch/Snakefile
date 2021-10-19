@@ -174,8 +174,7 @@ rule vsearch_de_novo:
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
             --wordlength {params.word_length} \
-            --strand both \
-            --relabel OTU_
+            --strand both
         """
 
 rule vsearch_closed_ref:
@@ -250,8 +249,7 @@ rule vsearch_open_ref:
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
             --wordlength {params.word_length} \
-            --strand both \
-            --relabel OTU_
+            --strand both
         """
 
 rule denovo_uc_to_list:
