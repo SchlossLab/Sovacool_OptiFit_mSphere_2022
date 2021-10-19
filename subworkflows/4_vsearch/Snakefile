@@ -69,6 +69,8 @@ rule deunique:
     output:
         redund='data/{dataset}/processed/{dataset}.redundant.fasta',
         rename='data/{dataset}/processed/{dataset}.redundant.renamed.fasta'
+    log:
+        'log/{dataset}/deunique.log'
     params:
         outdir='data/{dataset}/processed'
     shell:
@@ -87,7 +89,7 @@ rule degap:
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
         dist='data/{dataset}/processed/{dataset}.ng.dist'
     log:
-        'log/{dataset}/remove_gaps_query.log'
+        'log/{dataset}/degap.log'
     params:
         outdir="data/{dataset}/processed/",
         prefix='{dataset}.ng',
