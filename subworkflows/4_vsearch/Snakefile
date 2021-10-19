@@ -321,6 +321,23 @@ rule sensspec_vsearch:
             '
         """
 
+rule summary:
+    input:
+        list="results/{dataset}/{method}/{dataset}.list"
+    output:
+        tsv='results/{dataset}/{method}/{dataset}.list.summary'
+    params:
+        outdir='results/{dataset}/{method}/'
+    log:
+        'log/summary.single.{dataset}.{method}.log'
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+                set.dir(output={params.outdir});
+                summary.single(list={input.list}, calc=sobs)
+                "
+        """
+
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
@@ -348,7 +365,8 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        map=rules.fraction_reads_mapped4.output.tsv
+        map=rules.fraction_reads_mapped4.output.tsv,
+        summary=rules.summary.output.tsv
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
