@@ -44,7 +44,7 @@ rule aggregate_vsearch_results:
         'code/R/rbind_tsv.R'
 
 # some mothur commands don't like hyphens in file paths
-
+'''
 rule copy_query_files:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
@@ -89,7 +89,7 @@ rule prep_query_seqs:
             rename.file(fasta=current, count=current, column={input.dist}, prefix={params.prefix})
             '
         """
-
+'''
 rule copy_ref:
     input:
         prep_db("data/gg/gg_13_8_otus/rep_set/97_otus.fasta")
