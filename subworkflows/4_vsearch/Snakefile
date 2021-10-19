@@ -117,14 +117,13 @@ rule list_ref_seqs:
 
 rule vsearch_sort:
     input:
-        fna="data/{dataset}/processed/{dataset}.ng.fasta",
-        vsearch='bin/vsearch-1.5.0/vsearch'
+        fna="data/{dataset}/processed/{dataset}.ng.fasta"
     output:
         fna="data/{dataset}/{dataset}.ng.sorted.fasta",
         uc="data/{dataset}/{dataset}.ng.sorted.uc"
     shell:
         """
-        {input.vsearch} \
+        vsearch \
             --derep_fulllength {input.fna} \
             --sizeout \
             --minseqlength 30 \
@@ -136,8 +135,7 @@ rule vsearch_sort:
 
 rule vsearch_de_novo:
     input:
-        query=rules.vsearch_sort.output.fna,
-        vsearch='bin/vsearch-1.5.0/vsearch'
+        query=rules.vsearch_sort.output.fna
     output:
         uc='results/{dataset}/de_novo/{dataset}.uc'
     benchmark:
@@ -152,7 +150,7 @@ rule vsearch_de_novo:
         procs=8
     shell:
         """
-        {input.vsearch} --cluster_smallmem {input.query} \
+        vsearch --cluster_smallmem {input.query} \
             --usersort \
             --uc {output.uc} \
             --threads {resources.procs} \
@@ -168,8 +166,7 @@ rule vsearch_de_novo:
 rule vsearch_closed_ref:
     input:
         query=rules.vsearch_sort.output.fna,
-        ref=rules.copy_ref.output.fasta,
-        vsearch='bin/vsearch-1.5.0/vsearch'
+        ref=rules.copy_ref.output.fasta
     output:
         uc='results/{dataset}/closed/{dataset}.uc',
         unmatched='results/{dataset}/closed/{dataset}.unmatched.fasta'
@@ -185,7 +182,7 @@ rule vsearch_closed_ref:
         procs=8
     shell:
         """
-        {input.vsearch} --usearch_global {input.query} \
+        vsearch --usearch_global {input.query} \
             --db {input.ref} \
             --notmatched {output.unmatched} \
             --uc {output.uc} \
@@ -201,8 +198,7 @@ rule vsearch_closed_ref:
 rule vsearch_open_ref:
     input:
         query=rules.vsearch_sort.output.fna,
-        ref=rules.copy_ref.output.fasta,
-        vsearch='bin/vsearch-1.5.0/vsearch'
+        ref=rules.copy_ref.output.fasta
     output:
         closed='results/{dataset}/open/{dataset}.closed.uc',
         unmatched='results/{dataset}/open/{dataset}.unmatched.fasta',
@@ -219,7 +215,7 @@ rule vsearch_open_ref:
         procs=8
     shell:
         """
-        {input.vsearch} --usearch_global {input.query} \
+        vsearch --usearch_global {input.query} \
             --db {input.ref} \
             --notmatched {output.unmatched} \
             --uc {output.closed} \
