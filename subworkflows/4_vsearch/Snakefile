@@ -256,7 +256,7 @@ rule vsearch_open_ref:
 
 rule denovo_uc_to_list:
     input:
-        code='code/R/denovo_uc_to_list.R',
+        code='code/py/uc_to_list.py',
         sorted=rules.vsearch_sort.output.uc,
         clustered=rules.vsearch_de_novo.output.uc
     output:
@@ -268,7 +268,7 @@ rule denovo_uc_to_list:
 
 rule closed_uc_to_list:
     input:
-        code='code/R/closed_uc_to_list.R',
+        code='code/py/uc_to_list.py',
         sorted=rules.vsearch_sort.output.uc,
         clustered=rules.vsearch_closed_ref.output.uc
     output:
@@ -281,9 +281,9 @@ rule closed_uc_to_list:
 rule open_uc_to_list:
     input:
         sorted=rules.vsearch_sort.output.uc,
-        R_closed='code/R/closed_uc_to_list.R',
+        R_closed='code/py/uc_to_list.py',
         uc_closed=rules.vsearch_open_ref.output.closed,
-        R_denovo='code/R/denovo_uc_to_list.R',
+        R_denovo='code/py/uc_to_list.py',
         uc_denovo=rules.vsearch_open_ref.output.denovo,
         py='code/py/combine_open_lists.py'
     output:
