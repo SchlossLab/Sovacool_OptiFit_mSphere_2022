@@ -325,7 +325,7 @@ rule summary:
     input:
         list="results/{dataset}/{method}/{dataset}.list"
     output:
-        tsv='results/{dataset}/{method}/{dataset}.list.summary'
+        tsv='results/{dataset}/{method}/{dataset}.summary'
     params:
         outdir='results/{dataset}/{method}/'
     log:
