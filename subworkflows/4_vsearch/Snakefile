@@ -8,7 +8,7 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
-datasets = ['mouse']# config['datasets']
+datasets = ['miseq_1.0_01']# config['datasets']
 refs = config['references']
 methods = config['methods']
 
