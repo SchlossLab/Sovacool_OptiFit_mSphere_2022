@@ -69,13 +69,10 @@ rule prep_query_seqs:
         fna='data/{dataset}/input/{dataset}.fasta',
         count_table='data/{dataset}/input/{dataset}.count_table',
         dist='data/{dataset}/input/{dataset}.dist'
-        #fna=rules.copy_query_files.output.fna,
-        #count_table=rules.copy_query_files.output.count_table,
     output:
         fna="data/{dataset}/processed/{dataset}.ng.fasta",
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
-        dist='data/{dataset}/processed/{dataset}.ng.dist',
-        accnos="data/{dataset}/processed/{dataset}.ng.accnos"
+        dist='data/{dataset}/processed/{dataset}.ng.dist'
     log:
         'log/{dataset}/remove_gaps_query.log'
     params:
@@ -87,9 +84,9 @@ rule prep_query_seqs:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            degap.seqs(fasta={input.fna});
-            rename.file(fasta=current, column={input.dist}, count={input.count_table}, name=current, prefix={params.prefix});
-            list.seqs(fasta=current)
+            deunique(fasta={input.fna}, count={intput.count_table});
+            degap.seqs(fasta=current);
+            rename.file(fasta=current, count=current, column={input.dist}, prefix={params.prefix})
             '
         """
 
