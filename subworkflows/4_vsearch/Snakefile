@@ -8,7 +8,7 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
-datasets = ['miseq_1.0_01']# config['datasets']
+datasets = ['miseq_1.0_01', 'mouse']# config['datasets']
 refs = config['references']
 methods = config['methods']
 
@@ -52,8 +52,7 @@ rule copy_query_files:
         dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
         fna='data/{dataset}/input/{dataset}.fasta',
-        count_table='data/{dataset}/input/{dataset}.count_table',
-        dist='data/{dataset}/input/{dataset}.dist'
+        count_table='data/{dataset}/input/{dataset}.count_table'
     params:
         outdir='data/{dataset}/input/'
     shell:
@@ -62,13 +61,27 @@ rule copy_query_files:
             cp $f {params.outdir}
         done
         """
-
-# vsearch doesn't support dots or hyphens in fasta headers
-rule prep_query_seqs:
+'''
+rule deunique:
     input:
         fna='data/{dataset}/input/{dataset}.fasta',
-        count_table='data/{dataset}/input/{dataset}.count_table',
-        dist='data/{dataset}/input/{dataset}.dist'
+        count_table='data/{dataset}/input/{dataset}.count_table'
+    output:
+        redund='data/{dataset}/processed/{dataset}.redundant.fasta',
+        rename='data/{dataset}/processed/{dataset}.redundant.renamed.fasta'
+    params:
+        outdir='data/{dataset}/processed'
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            deunique(fasta={input.fna}, count={intput.count_table});
+            '
+        sed "s/_/-/g" < {output.redund} > {output.rename}
+        """
+
+rule degap:
+    input:
+        fna=rules.deunique.output.rename
     output:
         fna="data/{dataset}/processed/{dataset}.ng.fasta",
         count_table='data/{dataset}/processed/{dataset}.ng.count_table',
@@ -78,18 +91,20 @@ rule prep_query_seqs:
     params:
         outdir="data/{dataset}/processed/",
         prefix='{dataset}.ng',
-        label=0.03
+        cutoff=0.03
     resources:
         procs=16
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            deunique(fasta={input.fna}, count={intput.count_table});
-            degap.seqs(fasta=current);
-            rename.file(fasta=current, count=current, column={input.dist}, prefix={params.prefix})
+            unique.seqs(fasta={input.fna});
+            count.seqs(fasta=current);
+            dist.seqs(fasta=current; processors={resources.procs}, cutoff={params.cutoff});
+            degap.seqs(fasta={input.fna});
+            rename.file(fasta=current, count=current, column=current, prefix={params.prefix})
             '
         """
-'''
+
 rule copy_ref:
     input:
         prep_db("data/gg/gg_13_8_otus/rep_set/97_otus.fasta")
@@ -281,7 +296,7 @@ rule open_uc_to_list:
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        names="data/{dataset}/processed/{dataset}.ng.names",
+        #names="data/{dataset}/processed/{dataset}.ng.names",
         count_table="data/{dataset}/processed/{dataset}.ng.count_table",
         dist="data/{dataset}/processed/{dataset}.ng.dist"
     output:
@@ -290,7 +305,9 @@ rule sensspec_vsearch:
         list="results/{dataset}/{method}/{dataset}.userLabel.pick.list",
         tsv='results/{dataset}/{method}/{dataset}.userLabel.pick.sensspec'
     params:
-        outdir='results/{dataset}/{method}/'
+        outdir='results/{dataset}/{method}/',
+        label='userLabel',
+        cutoff=0.03
     log:
         'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:
@@ -298,9 +315,9 @@ rule sensspec_vsearch:
         mothur '#set.logfile(name={log});
             set.dir(output={params.outdir});
             list.seqs(count={input.count_table});
-            get.seqs(list={input.list});
+            get.seqs(list={input.list}, accnos=current);
             list.seqs(list=current);
-            sens.spec(list=current, count=current, column={input.dist}, label=userLabel, cutoff=0.03)
+            sens.spec(list=current, count=current, column={input.dist}, label={params.label}, cutoff={params.cutoff})
             '
         """
 
