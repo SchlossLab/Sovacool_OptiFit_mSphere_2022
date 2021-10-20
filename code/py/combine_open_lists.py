@@ -13,6 +13,11 @@ class mothurList:
         self.label = label
         self.otu_assigns = otu_assigns
 
+    def __eq__(self, other):
+        return all([self.__class__ ==  other.__class__,
+                    self.label == other.label,
+                    self.otu_assigns == other.otu_assigns])
+
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
