@@ -1,4 +1,5 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
+import os
 import yaml
 
 configfile: 'config/config.yaml'
@@ -136,13 +137,19 @@ rule render_paper:
     script:
         'code/R/render.R'
 
-rule run_tests:
+rule test_R_code:
     input:
-        R='tests/testthat.R'
-    shell:
-        """
-        Rscript {input.R}
-        """
+        R='tests/testthat.R',
+        scripts=[os.path.join('code/R', file) for file in os.listdir('code/R')]
+    script:
+        'tests/testthat.R'
+
+rule test_Python_code:
+    input:
+        py='tests/test_python.py',
+        scripts=[os.path.join('code/py', file) for file in os.listdir('code/py')]
+    script:
+        'tests/test_python.py'
 
 onsuccess:
     print("🎉 workflow complete!")
