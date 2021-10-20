@@ -56,6 +56,6 @@ class mothurList:
 
 if __name__ == "__main__":
     if "snakemake" in locals() or "snakemake" in globals():
-        main(snakemake.input.l1, snakemake.input.l2, snakemake.output.list)
+        main(snakemake.input.list_closed, snakemake.input.list_denovo, snakemake.output.list)
     else:
         main(sys.argv[1], sys.argv[2], sys.argv[3])
