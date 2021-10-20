@@ -274,10 +274,8 @@ rule combine_open_lists:
         list_combined='results/{dataset}/open/{dataset}.list'
     benchmark:
         'benchmarks/{dataset}/combine_open_lists.open.{dataset}.txt'
-    shell:
-        """
-        python {input.py_combine} {output.list_closed} {output.list_denovo} {output.list_combined}
-        """
+    script:
+        'code/py/combine_open_lists.py'
 
 rule sensspec_vsearch:
     input:
