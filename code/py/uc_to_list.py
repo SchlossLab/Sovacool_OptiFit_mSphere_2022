@@ -1,10 +1,10 @@
 import collections
 import sys
 
-def main(uc_filename, list_filename):
+def main(sorted_filename, clustered_filename, list_filename):
     clusters = collections.defaultdict(set)
-    with open(uc_filename, 'r') as uc_file:
-        for line in uc_file:
+    with open(clustered_filename, 'r') as clustered_file:
+        for line in clustered_file:
             line = line.split('\t')
             # https://drive5.com/usearch/manual/opt_uc.html
             record_type = line[0]
@@ -22,4 +22,4 @@ if __name__ == "__main__":
     if 'snakemake' in globals() or 'snakemake' in locals():
         main(snakemake.input.uc, snakemake.output.list)
     else:
-        main(sys.argv[1], sys.argv[2])
+        main(sys.argv[1], sys.argv[2], sys.argv[3])
