@@ -264,7 +264,7 @@ rule denovo_uc_to_list:
     benchmark:
         'benchmarks/{dataset}/uc_to_list.de_novo.{dataset}.txt'
     shell:
-        'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
+        'python {input.code} {input.sorted} {input.clustered} {output.list}'
 
 rule closed_uc_to_list:
     input:
@@ -276,14 +276,14 @@ rule closed_uc_to_list:
     benchmark:
         'benchmarks/{dataset}/uc_to_list.closed.{dataset}.txt'
     shell:
-        'Rscript {input.code} {input.sorted} {input.clustered} {output.list}'
+        'python {input.code} {input.sorted} {input.clustered} {output.list}'
 
 rule open_uc_to_list:
     input:
         sorted=rules.vsearch_sort.output.uc,
-        R_closed='code/py/uc_to_list.py',
+        code_closed='code/py/uc_to_list.py',
         uc_closed=rules.vsearch_open_ref.output.closed,
-        R_denovo='code/py/uc_to_list.py',
+        code_denovo='code/py/uc_to_list.py',
         uc_denovo=rules.vsearch_open_ref.output.denovo,
         py='code/py/combine_open_lists.py'
     output:
@@ -294,8 +294,8 @@ rule open_uc_to_list:
         'benchmarks/{dataset}/uc_to_list.open.{dataset}.txt'
     shell:
         """
-        Rscript {input.R_closed} {input.sorted} {input.uc_closed} {output.list_closed}
-        Rscript {input.R_denovo} {input.sorted} {input.uc_denovo} {output.list_denovo}
+        python {input.code_closed} {input.sorted} {input.uc_closed} {output.list_closed}
+        python {input.code_denovo} {input.sorted} {input.uc_denovo} {output.list_denovo}
         python {input.py} {output.list_closed} {output.list_denovo} {output.list_combined}
         """
 
