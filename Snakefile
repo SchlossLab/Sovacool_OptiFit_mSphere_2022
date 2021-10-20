@@ -146,10 +146,10 @@ rule test_R_code:
 
 rule test_Python_code:
     input:
-        py='tests/test_python.py',
+        py='code/tests/test_python.py',
         scripts=[os.path.join('code/py', file) for file in os.listdir('code/py')]
-    script:
-        'tests/test_python.py'
+    shell:
+        'python -m code.tests.test_python'
 
 onsuccess:
     print("🎉 workflow complete!")
