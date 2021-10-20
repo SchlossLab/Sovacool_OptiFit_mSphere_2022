@@ -271,7 +271,7 @@ rule combine_open_lists:
         list_denovo='results/{dataset}/open/{dataset}.de_novo.list',
         py_combine='code/py/combine_open_lists.py'
     output:
-        list_combined='results/{dataset}/open/{dataset}.list'
+        list='results/{dataset}/open/{dataset}.list'
     benchmark:
         'benchmarks/{dataset}/combine_open_lists.open.{dataset}.txt'
     script:
