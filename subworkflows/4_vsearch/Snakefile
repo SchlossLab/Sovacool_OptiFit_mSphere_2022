@@ -8,7 +8,7 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
-datasets = ['miseq_1.0_01', 'mouse']# config['datasets']
+datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
 
@@ -44,7 +44,7 @@ rule aggregate_vsearch_results:
         'code/R/rbind_tsv.R'
 
 # some mothur commands don't like hyphens in file paths
-'''
+
 rule copy_query_files:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
@@ -61,7 +61,7 @@ rule copy_query_files:
             cp $f {params.outdir}
         done
         """
-'''
+
 rule deunique:
     input:
         fna='data/{dataset}/input/{dataset}.fasta',
@@ -254,49 +254,29 @@ rule vsearch_open_ref:
             --strand both
         """
 
-rule denovo_uc_to_list:
+rule uc_to_list:
     input:
         code='code/py/uc_to_list.py',
-        sorted=rules.vsearch_sort.output.uc,
-        clustered=rules.vsearch_de_novo.output.uc
+        uc='results/{dataset}/{method}/{dataset_step}.uc'
     output:
-        list='results/{dataset}/de_novo/{dataset}.list'
+        list='results/{dataset}/{method}/{dataset_step}.list'
     benchmark:
-        'benchmarks/{dataset}/uc_to_list.de_novo.{dataset}.txt'
-    shell:
-        'python {input.code} {input.sorted} {input.clustered} {output.list}'
+        'benchmarks/{dataset}/uc_to_list.{method}.{dataset_step}.txt'
+    script:
+        'code/py/uc_to_list.py'
 
-rule closed_uc_to_list:
+rule combine_open_lists:
     input:
-        code='code/py/uc_to_list.py',
-        sorted=rules.vsearch_sort.output.uc,
-        clustered=rules.vsearch_closed_ref.output.uc
-    output:
-        list='results/{dataset}/closed/{dataset}.list'
-    benchmark:
-        'benchmarks/{dataset}/uc_to_list.closed.{dataset}.txt'
-    shell:
-        'python {input.code} {input.sorted} {input.clustered} {output.list}'
-
-rule open_uc_to_list:
-    input:
-        sorted=rules.vsearch_sort.output.uc,
-        code_closed='code/py/uc_to_list.py',
-        uc_closed=rules.vsearch_open_ref.output.closed,
-        code_denovo='code/py/uc_to_list.py',
-        uc_denovo=rules.vsearch_open_ref.output.denovo,
-        py='code/py/combine_open_lists.py'
-    output:
         list_closed='results/{dataset}/open/{dataset}.closed.list',
         list_denovo='results/{dataset}/open/{dataset}.de_novo.list',
+        py_combine='code/py/combine_open_lists.py'
+    output:
         list_combined='results/{dataset}/open/{dataset}.list'
     benchmark:
-        'benchmarks/{dataset}/uc_to_list.open.{dataset}.txt'
+        'benchmarks/{dataset}/combine_open_lists.open.{dataset}.txt'
     shell:
         """
-        python {input.code_closed} {input.sorted} {input.uc_closed} {output.list_closed}
-        python {input.code_denovo} {input.sorted} {input.uc_denovo} {output.list_denovo}
-        python {input.py} {output.list_closed} {output.list_denovo} {output.list_combined}
+        python {input.py_combine} {output.list_closed} {output.list_denovo} {output.list_combined}
         """
 
 rule sensspec_vsearch:
