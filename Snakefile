@@ -137,6 +137,16 @@ rule render_paper:
     script:
         'code/R/render.R'
 
+rule create_test_data:
+    input:
+        py='code/py/create_test_uc_files.py'
+    output:
+        'code/tests/data/closed.uc',
+        'code/tests/data/denovo.uc',
+        'code/tests/data/oracle_open.list'
+    script:
+        'code/py/create_test_uc_files.py'
+
 rule test_R_code:
     input:
         R='code/tests/testthat.R',
@@ -147,7 +157,8 @@ rule test_R_code:
 rule test_Python_code:
     input:
         py='code/tests/test_python.py',
-        scripts=[os.path.join('code/py', file) for file in os.listdir('code/py')]
+        scripts=[os.path.join('code/py', file) for file in os.listdir('code/py')],
+        dat=rules.create_test_data.output
     shell:
         'python -m code.tests.test_python'
 
