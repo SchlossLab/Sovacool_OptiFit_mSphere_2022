@@ -95,7 +95,7 @@ rule degap:
         prefix='{dataset}.ng',
         cutoff=0.03
     resources:
-        procs=16
+        procs=8
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});

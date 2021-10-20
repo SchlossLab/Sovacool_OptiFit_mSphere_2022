@@ -28,15 +28,19 @@
  },
  "calc_dists_db": {
   "procs": "{resources.procs}",
-  "walltime": "24:00:00"
+  "walltime": "4:00:00"
  },
  "calc_dists_dataset": {
   "procs": "{resources.procs}",
-  "walltime": "24:00:00"
+  "walltime": "4:00:00"
  },
  "prep_query_seqs": {
   "procs": "{resources.procs}",
-  "walltime": "24:00:00"
+  "walltime": "4:00:00"
+ },
+ "degap": {
+  "procs": "{resources.procs}",
+  "walltime": "4:00:00"
  },
  "preprocess": {
   "procs": "{resources.procs}",
