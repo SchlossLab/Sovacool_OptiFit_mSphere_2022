@@ -48,7 +48,7 @@ class mothurList:
                 listfile.write(
                     "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
                 )
-            listfile.write(f"{self.label}\t{str(self.num_otus)})
+            listfile.write(f"{self.label}\t{str(self.num_otus)}")
             for otu in self.otu_assigns:
                 listfile.write(f"\t{otu}")
             listfile.write('\n')
