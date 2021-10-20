@@ -40,7 +40,7 @@ rule paper:
     input:
         pdf='docs/paper.pdf'
 
-rule subtargets:
+rule subtargets: # it takes a long time to build the DAG for some of these
     input:
         opticlust=prep_samples('results/opticlust_results.tsv'),
         optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
@@ -49,11 +49,11 @@ rule subtargets:
 
 rule summarize_results:
     input:
-        R='code/R/summarize_results.R'#,
-        # opticlust=prep_samples('results/opticlust_results.tsv'),
-        # optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        # optifit_split=fit_split('results/optifit_split_results.tsv'),
-        # vsearch=vsearch('results/vsearch_results.tsv')
+        R='code/R/summarize_results.R',
+        opticlust='subworkflows/1_prep_samples/results/opticlust_results.tsv',
+        optifit_db='subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv',
+        optifit_split='subworkflows/3_fit_sample_split/results/optifit_split_results.tsv',
+        vsearch='subworkflows/4_vsearch/results/vsearch_results.tsv'
     output:
         agg='results/aggregated.tsv',
         sum='results/summarized.tsv',
