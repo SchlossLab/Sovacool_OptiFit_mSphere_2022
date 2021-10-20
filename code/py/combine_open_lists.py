@@ -16,7 +16,7 @@ class mothurList:
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            lines = [line.split('\t') for line in listfile]
+            lines = [line.strip().split('\t') for line in listfile]
             len_lines = len(lines)
             dat_line = []
             if len_lines == 1: # for when there's no header line
