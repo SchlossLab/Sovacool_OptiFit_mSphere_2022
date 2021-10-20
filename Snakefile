@@ -139,10 +139,10 @@ rule render_paper:
 
 rule test_R_code:
     input:
-        R='tests/testthat.R',
+        R='code/tests/testthat.R',
         scripts=[os.path.join('code/R', file) for file in os.listdir('code/R')]
     script:
-        'tests/testthat.R'
+        'code/tests/testthat.R'
 
 rule test_Python_code:
     input:
