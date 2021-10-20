@@ -30,9 +30,8 @@ jobs:
           git pull
       - name: Install build dependencies
         run: |
-          Rscript -e "install.packages(c('styler','usethis'))"
+          Rscript -e "install.packages(c('styler','usethis', 'testthat', 'tidyverse', 'here'))"
           python -m pip install --upgrade pip
-          pip install snakefmt
       - name: Style R code
         run: |
           Rscript -e 'usethis::use_tidy_style()'
@@ -41,15 +40,18 @@ jobs:
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
           -m '🎨  Style R code'
+      - name: Test R code
+        run: Rscript code/tests/testthat.R
       - name: Style Python code
         run: |
           black .
-          #snakefmt .
           git add .
           git diff-index --quiet HEAD \
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
           -m '🎨  Style Python code 🐍'
+      - name: Test Python code
+        run: python -m code.tests.test_python
       - name: Push
         uses: ad-m/github-push-action@v0.6.0
         with:
