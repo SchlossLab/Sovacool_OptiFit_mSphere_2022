@@ -24,3 +24,4 @@ core.*
 *KLS*
 *.bak
 bin/
+__pycache__/
