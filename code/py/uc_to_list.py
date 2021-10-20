@@ -1,7 +1,7 @@
 import collections
 import sys
 
-def main(sorted_filename, clustered_filename, list_filename):
+def main(clustered_filename, list_filename):
     clusters = collections.defaultdict(set)
     with open(clustered_filename, 'r') as clustered_file:
         for line in clustered_file:
@@ -22,4 +22,4 @@ if __name__ == "__main__":
     if 'snakemake' in globals() or 'snakemake' in locals():
         main(snakemake.input.uc, snakemake.output.list)
     else:
-        main(sys.argv[1], sys.argv[2], sys.argv[3])
+        main(sys.argv[1], sys.argv[2])
