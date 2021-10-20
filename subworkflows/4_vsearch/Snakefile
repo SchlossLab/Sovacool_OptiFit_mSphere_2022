@@ -313,7 +313,7 @@ rule summary:
     params:
         outdir='results/{dataset}/{method}/'
     log:
-        'log/summary.single.{dataset}.{method}.log'
+        'log/{dataset}/summary.single.{dataset}.{method}.log'
     shell:
         """
         mothur "#set.logfile(name={log});
