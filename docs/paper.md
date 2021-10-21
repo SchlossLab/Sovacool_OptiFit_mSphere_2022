@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-09-24
+2021-10-21
 
 \usepackage{helvet} % Helvetica font
 \renewcommand*\familydefault{\sfdefault} % Use the sans serif version of the font
@@ -326,10 +326,10 @@ sequence’s similarity to the single reference sequence. In contrast,
 OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference
 sequences is considered when assigning sequences to OTUs.
-<!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced 45.2%
+<!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced 14.0%
 higher quality OTUs than VSEARCH in terms of MCC, but performed 
-58.0% slower than VSEARCH.--> In closed reference mode, OptiFit produced
-27.2% higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
+65.6% slower than VSEARCH.--> In closed reference mode, OptiFit produced
+27.3% higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
 25.0% more query sequences than OptiFit to the Greengenes reference
 database (Figure ). This is because VSEARCH only considers the distances
 between each query sequence to the single reference sequence, while
@@ -338,7 +338,7 @@ sequences in an OTU. When open reference clustering, OptiFit produced
 higher quality OTUs than VSEARCH against the Greengenes database, with
 median MCC scores of 0.86 and 0.56, respectively). In terms of run time,
 OptiFit outperformed VSEARCH in both closed and open reference mode by
-60.6% and 55.0% on average, respectively. Thus, the more stringent OTU
+64.3% and 65.6% on average, respectively. Thus, the more stringent OTU
 definition employed by OptiFit, which prefers the query sequence to be
 similar to all other sequences in the OTU rather than to only one
 sequence, resulted in fewer sequences being clustered to reference OTUs
