@@ -29,6 +29,8 @@ seq_stats <- c("human","marine","mouse","soil") %>% map_dfr(function(x) {
 }) %>% pivot_longer(c(similarity, abundance), names_to = 'statistic')
 ```
 
+## histograms
+
 ```{r hist_sim_abun}
 seq_stats %>% 
   ggplot(aes(x=value, fill=statistic)) +
@@ -36,7 +38,7 @@ seq_stats %>%
   facet_grid(dataset ~ statistic, scales='free')
 ```
 
-## log10
+### log10
 
 ```{r hist_sim_abun_log10}
 seq_stats %>% 
@@ -45,6 +47,17 @@ seq_stats %>%
   scale_x_log10() +
   facet_wrap("dataset")
 ```
+
+## boxplots
+
+```{r box_sim_abun}
+seq_stats %>% 
+  ggplot(aes(x=value, y=dataset, fill=statistic)) +
+  geom_boxplot() +
+  scale_x_log10() +
+  facet_wrap('statistic', scales = 'free')
+``` 
+
 
 ## abundance vs similarity
 
@@ -56,4 +69,6 @@ seq_stats %>%
   scale_x_log10() +
   facet_wrap('dataset')
 ```
+
+
 
