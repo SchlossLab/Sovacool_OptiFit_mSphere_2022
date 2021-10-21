@@ -1,6 +1,4 @@
 datasets:
-- marine
-- mouse
 - soil
 references:
 - silva
@@ -8,7 +6,6 @@ weights:
 - simple
 methods:
 - de_novo
-- open
 - closed
 printrefs:
 - f
@@ -16,5 +13,5 @@ ref_fracs:
     start: 5
     stop: 6
     step: 1
-seeds: 4
+seeds: 2
 configpath: 'config/config_test.yaml'
