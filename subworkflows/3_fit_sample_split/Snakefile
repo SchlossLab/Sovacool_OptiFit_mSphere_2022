@@ -34,7 +34,7 @@ results_files = [f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/s
     for printref in printrefs]
 
 onstart:
-    print(f" Params will produce {len(results_files)} OptiFit runs")
+    print(f"🎛  Params will produce {len(results_files)} OptiFit runs")
 
 wildcard_constraints:
     seed="\d+",
