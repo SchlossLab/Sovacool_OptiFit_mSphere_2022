@@ -301,7 +301,7 @@ measured the execution time. Across all dataset and database
 combinations, closed reference OptiFit outperformed both OptiClust and
 open reference OptiFit (Figure ). For example, with the human dataset
 fit to SILVA reference OTUs, the average run times in seconds were 375.9
-for closed reference OptiFit, 403.6 for *de novo* clustering the
+for closed reference OptiFit, 420.2 for *de novo* clustering the
 dataset, and 547.4 for open reference OptiFit. Thus, the OptiFit
 algorithm continues the precedent that closed reference clustering
 sacrifices OTU quality for execution speed.
@@ -328,7 +328,7 @@ sequences, and the sequence similarity between all query and reference
 sequences is considered when assigning sequences to OTUs.
 <!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced 14.0%
 higher quality OTUs than VSEARCH in terms of MCC, but performed 
-65.6% slower than VSEARCH.--> In closed reference mode, OptiFit produced
+66.0% slower than VSEARCH.--> In closed reference mode, OptiFit produced
 27.3% higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
 25.0% more query sequences than OptiFit to the Greengenes reference
 database (Figure ). This is because VSEARCH only considers the distances
@@ -366,12 +366,12 @@ First, we tested whether OptiFit performed as well as *de novo*
 clustering when using the split dataset strategy with half of the
 sequences selected for the reference by a simple random sample (a 50%
 split) (Figure ; self-split). OTU quality was similar to that from
-OptiClust regardless of mode (0.069% difference in median MCC). In
+OptiClust regardless of mode (0.056% difference in median MCC). In
 closed reference mode, OptiFit was able to cluster 85.2% of query
 sequences to reference OTUs with the split strategy, a great improvement
 over the average 59.0% of sequences clustered to the Greengenes
 database. In terms of run time, closed and open reference OptiFit
-performed faster than OptiClust on whole datasets by 20.0% and 10.4%,
+performed faster than OptiClust on whole datasets by 20.9% and 11.5%,
 respectively. The split dataset strategy also performed 8.7% faster than
 the database strategy in closed reference mode and 29.7% faster in open
 reference mode. Thus, reference clustering with the split dataset

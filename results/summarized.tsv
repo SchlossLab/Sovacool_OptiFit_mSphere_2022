@@ -23,10 +23,10 @@ mothur	database	open	mouse	silva	NA	NA	100	0.8571	83.6664	1.26916015625	1
 mothur	database	open	soil	gg	NA	NA	100	0.7289	173.63815	1.9219970703125	1
 mothur	database	open	soil	rdp	NA	NA	100	0.7185	197.0839	2.7709326171875	1
 mothur	database	open	soil	silva	NA	NA	100	0.7272	182.3351	2.0536572265624997	1
-mothur	de_novo	de_novo	human	NA	NA	NA	100	0.8764045	403.5963	3.69392578125	NA
-mothur	de_novo	de_novo	marine	NA	NA	NA	100	0.8572325000000001	191.23325	1.726572265625	NA
-mothur	de_novo	de_novo	mouse	NA	NA	NA	100	0.8964615	58.2236	0.63908203125	NA
-mothur	de_novo	de_novo	soil	NA	NA	NA	100	0.7427275	146.6444	1.092705078125	NA
+mothur	de_novo	de_novo	human	NA	NA	NA	100	0.876357	420.2051	3.6969921875	NA
+mothur	de_novo	de_novo	marine	NA	NA	NA	100	0.8570635	194.61214999999999	1.729091796875	NA
+mothur	de_novo	de_novo	mouse	NA	NA	NA	100	0.8964615	60.4317	0.6390625	NA
+mothur	de_novo	de_novo	soil	NA	NA	NA	100	0.7427275	147.3758	1.092705078125	NA
 mothur	self-split	closed	human	NA	0.1	abundance	100	0.879149	407.6239	3.7026171875	0.848
 mothur	self-split	closed	human	NA	0.1	distance	100	0.851091	394.9923	3.7023583984375	0.652
 mothur	self-split	closed	human	NA	0.1	simple	100	0.875176	407.0516	3.70263671875	0.8485
