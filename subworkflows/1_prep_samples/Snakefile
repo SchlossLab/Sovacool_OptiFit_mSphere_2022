@@ -2,6 +2,7 @@ import os
 
 configfile: 'config/config.yaml'
 
+dist_thresh=0.03
 datasets = config['datasets']
 seeds = range(1, config['seeds']+1)
 
@@ -31,7 +32,7 @@ rule rbind_opticlust:
         tsv=expand("results/{dataset}/cluster/seed_{seed}/results.tsv",
                     dataset = datasets,
                     seed = seeds),
-        xtra='results/dataset_sizes.tsv' # because this is the target rule
+        xtra=['results/dataset_sizes.tsv']+ expand('data/{dataset}/seq_stats.tsv', dataset=datasets) # because this is the target rule
     output:
         tsv='results/opticlust_results.tsv'
     log:
@@ -259,3 +260,16 @@ rule cbind_opticlust_seed:
     script:
         'code/R/cbind_opticlust_seed.R'
 
+
+rule calc_seq_stats:
+    input:
+        code='code/py/seq_stats.py',
+        fasta="data/{dataset}/processed/{dataset}.fasta",
+        count="data/{dataset}/processed/{dataset}.count_table",
+        dist="results/{dataset}/{dataset}.dist"
+    output:
+        'data/{dataset}/seq_stats.tsv'
+    params:
+        dissim_thresh=dist_thresh
+    script:
+        'code/py/seq_stats.py'

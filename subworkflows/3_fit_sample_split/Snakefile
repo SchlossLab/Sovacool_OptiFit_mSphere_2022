@@ -45,8 +45,7 @@ wildcard_constraints:
 rule rbind_optifit_split:
     input:
         code='code/py/rbind_files.py',
-        tsv=results_files,
-        misc=expand('data/{dataset}/seq_stats.tsv', dataset=datasets)
+        tsv=results_files
     output:
         tsv='results/optifit_split_results.tsv'
     log:
@@ -99,19 +98,6 @@ rule check_split:
         txt=temp("data/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{sample_frac}/seed_{seed}/check_split.txt")
     script:
         'code/py/check_split.py'
-
-rule calc_seq_stats:
-    input:
-        code='code/py/seq_stats.py',
-        fasta=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
-        dist=prep_samples("results/{dataset}/{dataset}.dist")
-    output:
-        'data/{dataset}/seq_stats.tsv'
-    params:
-        dissim_thresh=dist_thresh
-    script:
-        'code/py/seq_stats.py'
 
 rule prep_subsample_ref:
     input:
