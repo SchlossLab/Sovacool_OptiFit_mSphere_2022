@@ -28,11 +28,11 @@
  },
  "calc_dists_db": {
   "procs": "{resources.procs}",
-  "walltime": "4:00:00"
+  "walltime": "12:00:00"
  },
  "calc_dists_dataset": {
   "procs": "{resources.procs}",
-  "walltime": "4:00:00"
+  "walltime": "12:00:00"
  },
  "prep_query_seqs": {
   "procs": "{resources.procs}",
