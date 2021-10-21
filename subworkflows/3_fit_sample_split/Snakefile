@@ -17,10 +17,23 @@ random_refweight_options = config['weights']
 
 fracs = config['ref_fracs']
 ref_fracs = [i/10 for i in range(fracs['start'], fracs['stop'], fracs['step'])]
-sample_fracs_complement = [round(1 - ref_frac, 1) for ref_frac in ref_fracs]
 
-n_runs = numpy.prod([len(param) for param in [datasets, methods, printrefs, seeds, random_refweight_options, sample_fracs_complement]])
-#print(f"Params will produce {n_runs} optifit runs")
+weights_to_fracs = {'simple': ref_fracs,
+                    'abundance': [0.5],
+                    'distance': [0.5]
+}
+for weight in set(weights_to_fracs.keys()) - set(random_refweight_options):
+    weights_to_fracs.pop(weight)
+
+results_files = [f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{round(1 - ref_frac, 1)}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
+    for dataset in datasets
+    for ref_weight, ref_fracs in weights_to_fracs.items()
+    for ref_frac in ref_fracs
+    for seed in seeds
+    for method in methods
+    for printref in printrefs]
+
+print(f"Params will produce {len(results_files)} OptiFit runs")
 
 wildcard_constraints:
     seed="\d+",
@@ -30,13 +43,7 @@ wildcard_constraints:
 rule rbind_optifit_split:
     input:
         code='code/py/rbind_files.py',
-        tsv=[f'results/{dataset}/refweight_{ref_weight}/reffrac_{ref_frac}/samplefrac_{round(1 - ref_frac, 1)}/seed_{seed}/fit/method_{method}/printref_{printref}/results.tsv'
-            for dataset in datasets
-            for ref_weight in random_refweight_options
-            for ref_frac in ref_fracs
-            for seed in seeds
-            for method in methods
-            for printref in printrefs]
+        tsv=results_files
     output:
         tsv='results/optifit_split_results.tsv'
     log:
