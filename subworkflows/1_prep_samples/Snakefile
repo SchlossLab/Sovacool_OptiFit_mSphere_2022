@@ -268,8 +268,9 @@ rule calc_seq_stats:
         count="data/{dataset}/processed/{dataset}.count_table",
         dist="results/{dataset}/{dataset}.dist"
     output:
-        'data/{dataset}/seq_stats.tsv'
+        tsv='data/{dataset}/seq_stats.tsv'
     params:
         dissim_thresh=dist_thresh
     script:
         'code/py/seq_stats.py'
+

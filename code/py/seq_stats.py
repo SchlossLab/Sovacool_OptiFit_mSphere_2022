@@ -1,4 +1,4 @@
-from .split_weighted_subsample import MetaSeq, SeqList
+from split_weighted_subsample import MetaSeq, SeqList
 
 
 def main(fasta_file, count_file, dist_file, output_file, dissim_thresh=0.03):
@@ -21,6 +21,6 @@ if __name__ == "__main__":
         snakemake.input.fasta,
         snakemake.input.count,
         snakemake.input.dist,
-        snakemake.output.tsv
-        dissim_thresh = snakemake.params.dissim_thresh,
+        snakemake.output.tsv,
+        dissim_thresh = snakemake.params.dissim_thresh
     )
