@@ -138,7 +138,7 @@ rule preprocess:
         rdp_tax=rules.copy_refs.output.rdp_tax
     output:
         filter="data/{dataset}/processed/{dataset}.filter",
-        count=temp("data/{dataset}/processed/{dataset}.temp.count_table"),
+        count_table=temp("data/{dataset}/processed/{dataset}.temp.count_table"),
         tax="data/{dataset}/processed/{dataset}.tax",
         fasta="data/{dataset}/processed/{dataset}.fasta"
     params:
@@ -146,7 +146,7 @@ rule preprocess:
         filter="data/{dataset}/temp/{dataset}.filter",
         tax="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.rdp.wang.pick.taxonomy",
         fasta="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
-        count="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
+        count_table="data/{dataset}/temp/{dataset}.trim.contigs.good.unique.good.filter.unique.precluster.denovo.uchime.pick.pick.count_table",
         trim_contigs='data/{dataset}/temp/{dataset}.trim.contigs.fasta',
         contigs_groups='data/{dataset}/temp/{dataset}.contigs.groups'
     log:
@@ -175,16 +175,16 @@ rule preprocess:
         mv {params.filter} {output.filter}
         mv {params.tax} {output.tax}
         mv {params.fasta} {output.fasta}
-        mv {params.count} {output.count}
-        rm -rf data/{wildcards.dataset}/temp/
+        mv {params.count_table} {output.count_table}
+        #rm -rf data/{wildcards.dataset}/temp/
         """
 
 rule mutate_count1:
     input:
-        count=rules.preprocess.output.count,
+        count_table=rules.preprocess.output.count_table,
         code="code/R/mutate_ref_count.R"
     output:
-        count='data/{dataset}/processed/{dataset}.count_table'
+        count_table='data/{dataset}/processed/{dataset}.count_table'
     script:
         "code/R/mutate_ref_count.R"
 
@@ -227,7 +227,7 @@ rule calc_dists_dataset:
 rule cluster_dataset:
     input:
         dist=rules.calc_dists_dataset.output.column,
-        count=rules.mutate_count1.output.count
+        count_table=rules.mutate_count1.output.count_table
     output:
         list=temp("results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.list"),
         sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'),
@@ -245,7 +245,7 @@ rule cluster_dataset:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        cluster(column={input.dist}, count={input.count_table}, cutoff=0.03) '
         """
 
 rule cbind_opticlust_seed:

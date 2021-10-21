@@ -341,7 +341,7 @@ VSEARCH against the Greengenes database, with median MCC scores of
 `r open_fit_gg_mcc` and `r open_vsearch_mcc`, respectively).
 In terms of run time, OptiFit outperformed VSEARCH in both closed and open
 reference mode by `r sec_closed_fit_db_vs_vsearch`% and 
-`r sec_vsearch_vs_open_fit_db`% on average respectively.
+`r sec_vsearch_vs_open_fit_db`% on average, respectively.
 Thus, the more stringent OTU definition employed by OptiFit, which prefers the
 query sequence to be similar to all other sequences in the OTU rather than to only one
 sequence, resulted in fewer sequences being clustered to reference OTUs than when
@@ -371,13 +371,13 @@ using the split dataset strategy with half of the sequences selected for
 the reference by a simple random sample (a 50% split) 
 (Figure \ref{fig:results_sum}; self-split).
 OTU quality was similar to that from OptiClust regardless of
-mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC [**TODO: why is opticlust worse than optifit now?!?!**]).
+mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC).
 In closed reference mode, OptiFit was able to cluster `r frac_fit_split`% of query
 sequences to reference OTUs with the split strategy, a great improvement over
 the average `r frac_fit_gg`% of sequences clustered to the Greengenes database.
 In terms of run time, closed and open reference OptiFit performed faster than
 OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and 
-`r sec_open_fit_split_vs_clust` respectively.
+`r sec_open_fit_split_vs_clust`%, respectively.
 The split dataset strategy also performed `r sec_closed_fit_split_vs_db`% faster
 than the database strategy in closed reference mode and 
 `r sec_open_fit_split_vs_db`% faster in open reference mode.

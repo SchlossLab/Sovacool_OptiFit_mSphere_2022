@@ -13,14 +13,32 @@ class mothurList:
         self.label = label
         self.otu_assigns = otu_assigns
 
+    def __eq__(self, other):
+        return all(
+            [
+                self.__class__ == other.__class__,
+                self.label == other.label,
+                self.otu_assigns == other.otu_assigns,
+            ]
+        )
+
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            next(listfile)  # don't need header line
-            line = next(listfile).split()
-            label = line[0]
-            otu_assigns = line[2:]
-        return cls(label, otu_assigns)
+            lines = [line.strip().split("\t") for line in listfile]
+            len_lines = len(lines)
+            dat_line = []
+            if len_lines == 1:  # for when there's no header line
+                dat_line = lines[0]
+            elif len_lines == 2:  # ditch the header line
+                dat_line == lines[1]
+            else:  # this shouldn't happen
+                raise ValueError(
+                    f"List file contains {len_lines} lines, but only 1 or 2 were expected."
+                )
+            list_label = dat_line[0]
+            otu_assigns = dat_line[2:]
+        return cls(list_label, otu_assigns)
 
     @property
     def num_otus(self):
@@ -35,18 +53,24 @@ class mothurList:
         assert self.label == other.label
         self.otu_assigns += other.otu_assigns
 
-    def write(self, list_filename):
+    def write(self, list_filename, use_header=False):
         with open(list_filename, "w") as listfile:
-            listfile.write(
-                "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
-            )
-            listfile.write(
-                "\t".join([self.label, str(self.num_otus)] + self.otu_assigns)
-            )
+            if use_header:
+                listfile.write(
+                    "\t".join(["label", "numOTUs"] + self.get_new_otu_names) + "\n"
+                )
+            listfile.write(f"{self.label}\t{str(self.num_otus)}")
+            for otu in self.otu_assigns:
+                listfile.write(f"\t{otu}")
+            listfile.write("\n")
 
 
 if __name__ == "__main__":
     if "snakemake" in locals() or "snakemake" in globals():
-        main(snakemake.input.l1, snakemake.input.l2, snakemake.output.list)
+        main(
+            snakemake.input.list_closed,
+            snakemake.input.list_denovo,
+            snakemake.output.list,
+        )
     else:
         main(sys.argv[1], sys.argv[2], sys.argv[3])
