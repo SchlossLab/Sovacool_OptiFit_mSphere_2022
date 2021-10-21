@@ -44,7 +44,6 @@ rule aggregate_vsearch_results:
         'code/R/rbind_tsv.R'
 
 # some mothur commands don't like hyphens in file paths
-'''
 rule copy_query_files:
     input:
         fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
@@ -61,7 +60,8 @@ rule copy_query_files:
             cp $f {params.outdir}
         done
         """
-'''
+
+# deunique seqs & replace underscores with hyphens in fasta headers
 rule deunique:
     input:
         fna='data/{dataset}/input/{dataset}.fasta',
