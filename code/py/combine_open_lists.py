@@ -14,22 +14,28 @@ class mothurList:
         self.otu_assigns = otu_assigns
 
     def __eq__(self, other):
-        return all([self.__class__ ==  other.__class__,
-                    self.label == other.label,
-                    self.otu_assigns == other.otu_assigns])
+        return all(
+            [
+                self.__class__ == other.__class__,
+                self.label == other.label,
+                self.otu_assigns == other.otu_assigns,
+            ]
+        )
 
     @classmethod
     def from_list_file(cls, list_filename):
         with open(list_filename, "r") as listfile:
-            lines = [line.strip().split('\t') for line in listfile]
+            lines = [line.strip().split("\t") for line in listfile]
             len_lines = len(lines)
             dat_line = []
-            if len_lines == 1: # for when there's no header line
+            if len_lines == 1:  # for when there's no header line
                 dat_line = lines[0]
-            elif len_lines == 2: # ditch the header line
+            elif len_lines == 2:  # ditch the header line
                 dat_line == lines[1]
-            else: # this shouldn't happen
-                raise ValueError(f"List file contains {len_lines} lines, but only 1 or 2 were expected.")
+            else:  # this shouldn't happen
+                raise ValueError(
+                    f"List file contains {len_lines} lines, but only 1 or 2 were expected."
+                )
             list_label = dat_line[0]
             otu_assigns = dat_line[2:]
         return cls(list_label, otu_assigns)
@@ -56,11 +62,15 @@ class mothurList:
             listfile.write(f"{self.label}\t{str(self.num_otus)}")
             for otu in self.otu_assigns:
                 listfile.write(f"\t{otu}")
-            listfile.write('\n')
+            listfile.write("\n")
 
 
 if __name__ == "__main__":
     if "snakemake" in locals() or "snakemake" in globals():
-        main(snakemake.input.list_closed, snakemake.input.list_denovo, snakemake.output.list)
+        main(
+            snakemake.input.list_closed,
+            snakemake.input.list_denovo,
+            snakemake.output.list,
+        )
     else:
         main(sys.argv[1], sys.argv[2], sys.argv[3])
