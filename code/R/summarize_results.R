@@ -24,6 +24,8 @@ optifit_split <- read_tsv(here("subworkflows/3_fit_sample_split/results/optifit_
   mutate_perf() %>%
   mutate(strategy = "self-split")
 vsearch <- read_tsv(here("subworkflows/4_vsearch/results/vsearch_results.tsv")) %>%
+  rename(label = label...10) %>% 
+  select(-label...30) %>% 
   mutate_perf() %>%
   mutate(strategy = case_when(
     method == "de_novo" ~ method,
