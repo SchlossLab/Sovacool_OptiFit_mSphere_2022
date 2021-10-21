@@ -32,7 +32,7 @@ def main():
 
     is_close = np.isclose(frac_mapped_fasta, frac_mapped_list)
     print('is_close: ', is_close)
-    #assert is_close
+    assert is_close
 
     with open(snakemake.output.txt, 'w') as outfile:
         outfile.write('frac_mapped_fasta\tfrac_mapped_list\tis_close\n')
