@@ -1,6 +1,7 @@
+bin/
 test/
 tmp/
-data*
+subworkflows/*/data
 log
 *.log
 .snakemake/
@@ -11,15 +12,8 @@ Rplots.pdf
 .idea/
 core.*
 .nfs*
-*.dist
-*.list
-*.count_table
-*.fasta
-*.steps
-*.summary
-*.sensspec
-*.txt
-*benchmarks*
+benchmarks*
 *KLS*
 *.bak
 bin/
+__pycache__/

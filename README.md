@@ -2,7 +2,7 @@
 
 Benchmarking the OptiFit algorithm in [mothur](https://github.com/mothur/mothur).
 
-Find more details on how to use OptiFit and descriptions of the parameter options on the mothur wiki: https://mothur.org/wiki/cluster.fit/. 
+Find more details on how to use OptiFit and descriptions of the parameter options on the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
 ## The Workflow
 
@@ -31,15 +31,13 @@ the subworkflows and renders the [paper](paper).
     ```
 1. Install the dependencies.
 
-    Most are listed in the conda environment file.
+    Almost all are listed in the conda environment file.
     ```
     conda env create -f config/env.simple.yaml
     conda activate optifit
     ```
 
-    You will also need mothur version >= 1.45.0: https://github.com/mothur/mothur/releases/
-    
-    I used a custom version of `ggraph` for the algorithm figure. 
+    Additionally, I used a custom version of `ggraph` for the algorithm figure.
     You can install it with devtools from R:
     ```r
     devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')

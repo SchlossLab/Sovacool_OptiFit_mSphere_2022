@@ -18,21 +18,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
       - uses: r-lib/actions/setup-r@v1
       - uses: r-lib/actions/setup-pandoc@v1
       - uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Configure git
-        run: |
-          git config --local user.email "noreply@github.com"
-          git config --local user.name "GitHub"
-          git pull
       - name: Install build dependencies
         run: |
-          Rscript -e "install.packages(c('styler','usethis'))"
+          Rscript -e "install.packages(c('styler','usethis', 'testthat', 'tidyverse', 'here'))"
           python -m pip install --upgrade pip
-          pip install snakefmt
+          pip install black
       - name: Style R code
         run: |
           Rscript -e 'usethis::use_tidy_style()'
@@ -41,17 +39,20 @@ jobs:
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
           -m '🎨  Style R code'
+      - name: Test R code
+        run: Rscript code/tests/testthat.R
       - name: Style Python code
         run: |
           black .
-          #snakefmt .
           git add .
           git diff-index --quiet HEAD \
           || git commit \
           --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
           -m '🎨  Style Python code 🐍'
+      - name: Test Python code
+        run: python -m code.tests.test_python
       - name: Push
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: ${{ github.head_ref }}

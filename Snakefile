@@ -1,4 +1,5 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
+import os
 import yaml
 
 configfile: 'config/config.yaml'
@@ -39,7 +40,7 @@ rule paper:
     input:
         pdf='docs/paper.pdf'
 
-rule subtargets:
+rule subtargets: # it takes a long time to build the DAG for some of these
     input:
         opticlust=prep_samples('results/opticlust_results.tsv'),
         optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
@@ -48,14 +49,15 @@ rule subtargets:
 
 rule summarize_results:
     input:
-        R='code/R/summarize_results.R'
-        #opticlust=prep_samples('results/opticlust_results.tsv'),
-        #optifit_db=fit_ref_db('results/optifit_dbs_results.tsv'),
-        #optifit_split=fit_split('results/optifit_split_results.tsv'),
-        #vsearch=vsearch('results/vsearch_results.tsv')
+        R='code/R/summarize_results.R',
+        opticlust='subworkflows/1_prep_samples/results/opticlust_results.tsv',
+        optifit_db='subworkflows/2_fit_reference_db/results/optifit_dbs_results.tsv',
+        optifit_split='subworkflows/3_fit_sample_split/results/optifit_split_results.tsv',
+        vsearch='subworkflows/4_vsearch/results/vsearch_results.tsv'
     output:
         agg='results/aggregated.tsv',
-        sum='results/summarized.tsv'
+        sum='results/summarized.tsv',
+        vsearch='subworkflows/4_vsearch/results/vsearch_abbr.md'
     script:
         'code/R/summarize_results.R'
 
@@ -93,7 +95,8 @@ rule plot_workflow:
 
 rule plot_results_sum:
     input:
-        R='code/R/plot_results_sum.R'
+        R='code/R/plot_results_sum.R',
+        dat=rules.summarize_results.output
     output:
         tiff='figures/results_sum.tiff'
     params:
@@ -103,7 +106,8 @@ rule plot_results_sum:
 
 rule plot_results_split:
     input:
-        R='code/R/plot_results_split.R'
+        R='code/R/plot_results_split.R',
+        dat=rules.summarize_results.output
     output:
         tiff='figures/results_split.tiff'
     params:
@@ -133,10 +137,33 @@ rule render_paper:
     script:
         'code/R/render.R'
 
-rule run_tests:
+rule create_test_data:
     input:
-        R='tests/testthat.R'
+        py='code/py/create_test_uc_files.py'
+    output:
+        'code/tests/data/closed.uc',
+        'code/tests/data/denovo.uc',
+        'code/tests/data/oracle_open.list'
+    script:
+        'code/py/create_test_uc_files.py'
+
+rule test_R_code:
+    input:
+        R='code/tests/testthat.R',
+        scripts=[os.path.join('code/R', file) for file in os.listdir('code/R')]
+    script:
+        'code/tests/testthat.R'
+
+rule test_Python_code:
+    input:
+        py='code/tests/test_python.py',
+        scripts=[os.path.join('code/py', file) for file in os.listdir('code/py')],
+        dat=rules.create_test_data.output
     shell:
-        """
-        Rscript {input.R}
-        """
+        'python -m code.tests.test_python'
+
+onsuccess:
+    print("🎉 workflow complete!")
+
+onerror:
+    print("⛔️ something went wrong...")
