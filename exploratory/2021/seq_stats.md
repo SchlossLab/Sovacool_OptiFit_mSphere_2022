@@ -17,6 +17,8 @@ seq_stats <- c("human","marine","mouse","soil") %>% map_dfr(function(x) {
 }) %>% pivot_longer(c(similarity, abundance), names_to = 'statistic')
 ```
 
+## histograms
+
 ``` r
 seq_stats %>% 
   ggplot(aes(x=value, fill=statistic)) +
@@ -26,7 +28,7 @@ seq_stats %>%
 
 ![](figures/hist_sim_abun-1.png)<!-- -->
 
-## log10
+### log10
 
 ``` r
 seq_stats %>% 
@@ -41,6 +43,22 @@ seq_stats %>%
     ## Warning: Removed 34675 rows containing non-finite values (stat_bin).
 
 ![](figures/hist_sim_abun_log10-1.png)<!-- -->
+
+## boxplots
+
+``` r
+seq_stats %>% 
+  ggplot(aes(x=value, y=dataset, fill=statistic)) +
+  geom_boxplot() +
+  scale_x_log10() +
+  facet_wrap('statistic', scales = 'free')
+```
+
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+
+    ## Warning: Removed 34675 rows containing non-finite values (stat_boxplot).
+
+![](figures/box_sim_abun-1.png)<!-- -->
 
 ## abundance vs similarity
 
