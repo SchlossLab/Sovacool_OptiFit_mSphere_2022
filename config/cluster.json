@@ -28,11 +28,19 @@
  },
  "calc_dists_db": {
   "procs": "{resources.procs}",
-  "walltime": "24:00:00"
+  "walltime": "12:00:00"
  },
  "calc_dists_dataset": {
   "procs": "{resources.procs}",
-  "walltime": "24:00:00"
+  "walltime": "12:00:00"
+ },
+ "prep_query_seqs": {
+  "procs": "{resources.procs}",
+  "walltime": "4:00:00"
+ },
+ "degap": {
+  "procs": "{resources.procs}",
+  "walltime": "4:00:00"
  },
  "preprocess": {
   "procs": "{resources.procs}",
@@ -93,6 +101,18 @@
     "pmem": "160GB"
     },
 "sensspec_vsearch": {
+    "pmem": "16GB"
+    },
+"denovo_uc_to_list": {
+    "pmem": "16GB"
+    },
+"closed_uc_to_list": {
+    "pmem": "16GB"
+    },
+"open_uc_to_list": {
+    "pmem": "16GB"
+    },
+"fraction_reads_mapped4": {
     "pmem": "16GB"
     }
 }

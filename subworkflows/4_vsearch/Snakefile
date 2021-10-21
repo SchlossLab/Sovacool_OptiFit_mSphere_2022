@@ -12,17 +12,12 @@ datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
 
-# hard-coded params
-regions = ['bact_v4']
+# hard-coded params, same as used in Pat's 2015 PeerJ paper
 perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
-min_seq_length = 30 # from Pat's vsearch script
+min_seq_length = 30
 max_accepts = 16
 max_rejects = 64
-# the default value of wordlength is already 8 but I'm paranoid
-word_length = 8
-
-wildcard_constraints:
-    region='bact_v4'
+word_length = 8 # the default value of wordlength is already 8 but I'm paranoid
 
 subworkflow prep_db:
     workdir:
@@ -35,40 +30,81 @@ subworkflow prep_samples:
     configfile:
         config['configpath']
 
-ruleorder: combine_open_lists > uc_to_list
-
 rule aggregate_vsearch_results:
     input:
         tsv=expand('results/{dataset}/{method}/results.{dataset}.tsv',
                     dataset=datasets,
                     method=methods + ['de_novo']),
         fcns='code/R/functions.R',
-        R='code/R/rbind_tsv.R'
+        R='code/R/rbind_tsv.R',
+        sanity_checks=expand('results/{dataset}/closed/fraction_mapped_sanity_check.txt', dataset=datasets)
     output:
         tsv='results/vsearch_results.tsv'
     script:
         'code/R/rbind_tsv.R'
 
-rule remove_gaps_query:
+# some mothur commands don't like hyphens in file paths
+rule copy_query_files:
     input:
-        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta")
+        fna=prep_samples("data/{dataset}/processed/{dataset}.fasta"),
+        count_table=prep_samples("data/{dataset}/processed/{dataset}.count_table"),
+        dist=prep_samples("results/{dataset}/{dataset}.dist")
     output:
-        degap=temp("data/{dataset}/{dataset}.tmp.fasta"),
-        fna="data/{dataset}/{dataset}.ng.fasta"
-    log:
-        'log/{dataset}/remove_gaps_query.log'
+        fna='data/{dataset}/input/{dataset}.fasta',
+        count_table='data/{dataset}/input/{dataset}.count_table'
     params:
-        outdir="data/{dataset}/",
-        prefix='{dataset}.tmp'
-    resources:
-        procs=2
+        outdir='data/{dataset}/input/'
     shell:
         """
-        mothur '#set.dir(output={params.outdir}); set.logfile(name={log});
-            degap.seqs(fasta={input.fna}, processors={resources.procs});
-            rename.file(fasta=current, prefix={params.prefix}) '
-        # vsearch doesn't support dots or hyphens in fasta headers
-        cat {output.degap} | sed 's/[\.-]/_/g' > {output.fna}
+        for f in {input}; do
+            cp $f {params.outdir}
+        done
+        """
+
+# deunique seqs & replace underscores with hyphens in fasta headers
+rule deunique:
+    input:
+        fna='data/{dataset}/input/{dataset}.fasta',
+        count_table='data/{dataset}/input/{dataset}.count_table'
+    output:
+        redund='data/{dataset}/processed/{dataset}.redundant.fasta',
+        rename='data/{dataset}/processed/{dataset}.redundant.renamed.fasta'
+    log:
+        'log/{dataset}/deunique.log'
+    params:
+        outdir='data/{dataset}/processed'
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            deunique.seqs(fasta={input.fna}, count={input.count_table})
+            '
+        sed "s/_/-/g" < {output.redund} > {output.rename}
+        """
+
+rule degap:
+    input:
+        fna=rules.deunique.output.rename
+    output:
+        fna="data/{dataset}/processed/{dataset}.ng.fasta",
+        count_table='data/{dataset}/processed/{dataset}.ng.count_table',
+        dist='data/{dataset}/processed/{dataset}.ng.dist'
+    log:
+        'log/{dataset}/degap.log'
+    params:
+        outdir="data/{dataset}/processed/",
+        prefix='{dataset}.ng',
+        cutoff=0.03
+    resources:
+        procs=8
+    shell:
+        """
+        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
+            unique.seqs(fasta={input.fna});
+            count.seqs(fasta=current);
+            dist.seqs(fasta=current, processors={resources.procs}, cutoff={params.cutoff});
+            degap.seqs(fasta={input.fna});
+            rename.file(fasta=current, count=current, column=current, prefix={params.prefix})
+            '
         """
 
 rule copy_ref:
@@ -98,7 +134,7 @@ rule list_ref_seqs:
 
 rule vsearch_sort:
     input:
-        fna=rules.remove_gaps_query.output.fna
+        fna="data/{dataset}/processed/{dataset}.ng.fasta"
     output:
         fna="data/{dataset}/{dataset}.ng.sorted.fasta",
         uc="data/{dataset}/{dataset}.ng.sorted.uc"
@@ -140,8 +176,7 @@ rule vsearch_de_novo:
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
             --wordlength {params.word_length} \
-            --strand both \
-            --relabel OTU_
+            --strand both
         """
 
 rule vsearch_closed_ref:
@@ -183,7 +218,7 @@ rule vsearch_open_ref:
     output:
         closed='results/{dataset}/open/{dataset}.closed.uc',
         unmatched='results/{dataset}/open/{dataset}.unmatched.fasta',
-        denovo='results/{dataset}/open/{dataset}.denovo.uc'
+        denovo='results/{dataset}/open/{dataset}.de_novo.uc'
     benchmark:
         'benchmarks/{dataset}/vsearch.method_open.{dataset}.txt'
     params:
@@ -216,101 +251,97 @@ rule vsearch_open_ref:
             --maxaccepts {params.max_accepts} \
             --maxrejects {params.max_rejects} \
             --wordlength {params.word_length} \
-            --strand both \
-            --relabel OTU_
+            --strand both
         """
 
 rule uc_to_list:
     input:
-        code='code/R/uc_to_list.R',
-        sorted=rules.vsearch_sort.output.uc,
-        clustered='results/{dataset}/{method}/{dataset_step}.uc'
+        code='code/py/uc_to_list.py',
+        uc='results/{dataset}/{method}/{dataset_step}.uc'
     output:
         list='results/{dataset}/{method}/{dataset_step}.list'
+    benchmark:
+        'benchmarks/{dataset}/uc_to_list.{method}.{dataset_step}.txt'
     script:
-        'code/R/uc_to_list.R'
+        'code/py/uc_to_list.py'
 
 rule combine_open_lists:
     input:
-        l1='results/{dataset}/open/{dataset}.closed.list',
-        l2='results/{dataset}/open/{dataset}.denovo.list',
-        py='code/py/combine_open_lists.py'
+        list_closed='results/{dataset}/open/{dataset}.closed.list',
+        list_denovo='results/{dataset}/open/{dataset}.de_novo.list',
+        py_combine='code/py/combine_open_lists.py'
     output:
         list='results/{dataset}/open/{dataset}.list'
+    benchmark:
+        'benchmarks/{dataset}/combine_open_lists.open.{dataset}.txt'
     script:
         'code/py/combine_open_lists.py'
-
-# vsearch doesn't support dots or hyphens in sequence names.
-rule prep_count_table:
-    input:
-        count=prep_samples("data/{dataset}/processed/{dataset}.count_table")
-    output:
-        count='data/{dataset}/{dataset}.count_table'
-    shell:
-        """
-        cat {input.count} |  sed 's/[\.-]/_/g' > {output.count}
-        """
-
-# replace dots/hyphens in fasta headers (1st & 2nd occurrence),
-# but not in the distance value (3rd occurrence).
-rule prep_dist:
-    input:
-        dist=prep_samples("results/{dataset}/{dataset}.dist"),
-        py='code/py/remove_hyphens_dist.py'
-    output:
-        dist='data/{dataset}/{dataset}.dist'
-    shell:
-        """
-        python {input.py} {input.dist} {output.dist}
-        """
 
 rule sensspec_vsearch:
     input:
         list="results/{dataset}/{method}/{dataset}.list",
-        count=rules.prep_count_table.output.count,
-        dist=rules.prep_dist.output.dist
+        #names="data/{dataset}/processed/{dataset}.ng.names",
+        count_table="data/{dataset}/processed/{dataset}.ng.count_table",
+        dist="data/{dataset}/processed/{dataset}.ng.dist"
     output:
-        tsv='results/{dataset}/{method}/{dataset}.sensspec'
+        query_accnos="results/{dataset}/{method}/{dataset}.ng.accnos",
+        list_accnos="results/{dataset}/{method}/{dataset}.userLabel.pick.accnos",
+        list="results/{dataset}/{method}/{dataset}.userLabel.pick.list",
+        tsv='results/{dataset}/{method}/{dataset}.userLabel.pick.sensspec'
     params:
-        outdir='results/{dataset}/{method}/'
+        outdir='results/{dataset}/{method}/',
+        label='userLabel',
+        cutoff=0.03
     log:
         'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:
         """
-        mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            sens.spec(list={input.list}, count={input.count}, column={input.dist}) '
+        mothur '#set.logfile(name={log});
+            set.dir(output={params.outdir});
+            list.seqs(count={input.count_table});
+            get.seqs(list={input.list}, accnos=current);
+            list.seqs(list=current);
+            sens.spec(list=current, count=current, column={input.dist}, label={params.label}, cutoff={params.cutoff})
+            '
         """
 
-rule calc_diversity4:
+rule summary:
     input:
-        list="results/{dataset}/{method}/{dataset}.list",
-        count=rules.prep_count_table.output.count,
+        list="results/{dataset}/{method}/{dataset}.list"
     output:
-        list_accnos="results/{dataset}/{method}/{dataset}.accnos",
-        tsv='results/{dataset}/{method}/{dataset}.groups.summary'
+        tsv='results/{dataset}/{method}/{dataset}.summary'
     params:
-        outdir="results/{dataset}/{method}/"
+        outdir='results/{dataset}/{method}/'
     log:
-        "log/{dataset}/calc_diversity.{dataset}.method_{method}.txt"
+        'log/{dataset}/summary.single.{dataset}.{method}.log'
     shell:
         """
-        mothur "#set.logfile(name={log}); set.dir(output={params.outdir});
-        list.seqs(list={input.list});
-        get.seqs(count={input.count}, accnos=current);
-        make.shared(list={input.list}, count=current, label=0.03);
-        summary.single(shared=current, calc=nseqs-sobs-shannon-invsimpson) "
+        mothur "#set.logfile(name={log});
+                set.dir(output={params.outdir});
+                summary.single(list={input.list}, calc=sobs)
+                "
         """
 
 rule fraction_reads_mapped4:
     input:
         code="code/py/fraction_mapped_vsearch.py",
-        mapped=rules.calc_diversity4.output.list_accnos,
-        query=rules.prep_count_table.output.count,
-        ref=rules.list_ref_seqs.output.accnos
+        query=rules.sensspec_vsearch.output.query_accnos,
+        mapped=rules.sensspec_vsearch.output.list_accnos,
     output:
-        txt='results/{dataset}/{method}/fraction-mapped_{dataset}.txt'
+        tsv='results/{dataset}/{method}/fraction_mapped_{dataset}.tsv'
     script:
         "code/py/fraction_mapped_vsearch.py"
+
+rule fraction_map_sanity_check:
+    input:
+        code="code/py/fraction_mapped_sanity_check.py",
+        query=rules.vsearch_sort.output.fna,
+        unmapped=rules.vsearch_closed_ref.output.unmatched,
+        tsv=rules.fraction_reads_mapped4.output.tsv
+    output:
+        txt='results/{dataset}/{method}/fraction_mapped_sanity_check.txt'
+    script:
+        "code/py/fraction_mapped_sanity_check.py"
 
 rule reformat_vsearch_results:
     input:
@@ -318,8 +349,8 @@ rule reformat_vsearch_results:
         fcns='code/R/functions.R',
         bench='benchmarks/{dataset}/vsearch.method_{method}.{dataset}.txt',
         sensspec=rules.sensspec_vsearch.output.tsv,
-        div=rules.calc_diversity4.output.tsv,
-        map=rules.fraction_reads_mapped4.output.txt
+        map=rules.fraction_reads_mapped4.output.tsv,
+        summary=rules.summary.output.tsv
     output:
         tsv='results/{dataset}/{method}/results.{dataset}.tsv'
     script:
