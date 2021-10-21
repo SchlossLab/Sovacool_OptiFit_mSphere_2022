@@ -31,16 +31,13 @@ the subworkflows and renders the [paper](paper).
     ```
 1. Install the dependencies.
 
-    Most are listed in the conda environment file.
+    Almost all are listed in the conda environment file.
     ```
     conda env create -f config/env.simple.yaml
     conda activate optifit
     ```
 
-    You will also need to download mothur v1.37.0 and put the binary file in `bin/mothur-1.37.0`.
-    Most of the commands use mothur v.1.46.1 except for one command.
-
-    I used a custom version of `ggraph` for the algorithm figure.
+    Additionally, I used a custom version of `ggraph` for the algorithm figure.
     You can install it with devtools from R:
     ```r
     devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
