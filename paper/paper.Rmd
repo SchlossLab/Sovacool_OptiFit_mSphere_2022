@@ -28,7 +28,7 @@ knitr::opts_chunk$set(fig.path = here::here('figures/'),
                       dpi = 300)
 ```
 
-```{r deps, message = FALSE}
+```{r deps, include=FALSE, message = FALSE}
 library(assertthat)
 library(cowplot)
 library(glue)
@@ -249,7 +249,7 @@ sequences _de novo_, then cluster the query sequences to the reference OTUs.
 
 ### Reference clustering with public databases
 
-```{r db_names}
+```{r db_names, include = FALSE}
 db_names <- names(dn_dbs_mcc)
 db_names_upper <- case_when(db_names == 'gg' ~ 'Greengenes', 
                            TRUE ~ toupper(db_names))
@@ -290,7 +290,7 @@ figs('workflow', 'path') %>%
   grid::grid.raster() 
 ```
 
-```{r}
+```{r, include = FALSE}
 assert_that(!is.unsorted(c(frac_fit_rdp, frac_fit_silva, frac_fit_gg)))
 assert_that((frac_fit_gg - frac_fit_silva) < 10)
 assert_that((frac_fit_gg - frac_fit_rdp) > 40)
@@ -311,7 +311,7 @@ The database chosen affects the final closed reference OTU assignments
 considerably in terms of both MCC score and fraction of query sequences that
 could be clustered into the reference OTUs.
 
-```{r}
+```{r, include = FALSE}
 assert_that(!is.unsorted(c(closed_fit_silva_human_sec, 
                            opticlust_human_sec,
                            open_fit_silva_human_sec)))
@@ -338,7 +338,7 @@ figs('results_sum', 'path') %>%
   grid::grid.raster() 
 ```
 
-```{r}
+```{r, include = FALSE}
 assert_that(mcc_closed_fit_db_vs_vsearch > 10)
 assert_that(frac_vsearch_vs_fit > 10)
 assert_that((open_fit_gg_mcc - open_vsearch_mcc) > 0.20)
@@ -394,7 +394,7 @@ split into a reference fraction and a query fraction.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were clustered to the _de novo_ OTUs with OptiFit.
 
-```{r}
+```{r, include = FALSE}
 close_enough(mcc_opticlust_vs_fit_split_simple, 0.02)
 assert_that((frac_fit_split - frac_fit_gg) > 20)
 assert_that(!is.unsorted(c(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_split_vs_clust, sec_open_fit_split_vs_db)))
@@ -424,7 +424,7 @@ figs('results_split', 'path') %>%
   tiff::readTIFF() %>% 
   grid::grid.raster() 
 ```
-```{r}
+```{r, include = FALSE}
 close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
 assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
 assert_that(frac_fit_split_human_simple_1 < frac_fit_split_human_simple_9)
@@ -453,7 +453,7 @@ Thus, the reference fraction did not affect OTU quality in terms of MCC score,
 but did affect the run time and the fraction of sequences that mapped during the
 closed reference clustering.
 
-```{r}
+```{r, include = FALSE}
 close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
 assert_that(sec_fit_split_dist < sec_fit_split_abun & sec_fit_split_abun < sec_fit_split_simple)
 close_enough(frac_fit_split_simple, frac_fit_split_abun)
@@ -494,7 +494,7 @@ Open reference OptiFit performs slower than OptiClust due to the additional _de
 novo_ clustering step, so users may prefer OptiClust for tasks that do not
 require reference OTUs.
 
-```{r}
+```{r, include = FALSE}
 ref_seqs <- read_tsv(here('subworkflows', '0_prep_db', 'data', 
                           'seq_counts.tsv')) %>% 
   pivot_wider(names_from = ref, values_from = nseqs) %>% as.list()
