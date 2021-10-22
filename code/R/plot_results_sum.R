@@ -107,7 +107,7 @@ color_labels <- lapply(
   }
 ) %>% unlist()
 
-mothur_vsearch %>%
+plot_results_sum <- mothur_vsearch %>%
   ggplot(aes(value, strategy, color = tool, shape = method)) +
   # stat_summary(geom = "linerange",
   #              fun.data = med_iqr,

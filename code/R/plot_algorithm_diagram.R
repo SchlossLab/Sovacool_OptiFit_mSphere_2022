@@ -123,7 +123,7 @@ theme = ttheme_default(
 ncol = 1, rel_heights = c(0.1, 1)
 )
 
-table_plot /
+plot_diagram <- table_plot /
   optifit_graphs +
   plot_layout(heights = c(0.75, 1, 1.5, 1, 0.3))
 
