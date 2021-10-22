@@ -22,7 +22,8 @@ theme_set(theme_bw())
 ```
 
 ``` r
-seq_stats <- c("human","marine","mouse","soil") %>% map_dfr(function(x) {
+dataset_names <- c("human","marine","mouse","soil")
+seq_stats <- dataset_names %>% map_dfr(function(x) {
   read_tsv(glue('subworkflows/1_prep_samples/data/{x}/seq_stats.tsv')) %>% 
     mutate(dataset = x)
 }) %>% pivot_longer(c(similarity, abundance), names_to = 'statistic')
@@ -52,6 +53,20 @@ seq_stats %>%
     ## Warning: Removed 34675 rows containing non-finite values (stat_bin).
 
 ![](figures/hist_sim_abun_log10-1.png)<!-- -->
+
+``` r
+seq_stats %>% 
+  ggplot(aes(x=value, fill=statistic)) +
+  geom_histogram(bins=10) +
+  scale_x_log10() +
+  facet_grid(dataset ~ statistic, scales='free')
+```
+
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+
+    ## Warning: Removed 34675 rows containing non-finite values (stat_bin).
+
+![](figures/hist_sim_abun_log10bins-1.png)<!-- -->
 
 ### boxplots
 
@@ -100,7 +115,7 @@ totals <- seq_stats %>%
   summarize(tot_simi = sum(similarity),
             tot_abun = sum(abundance))
 
-rel_stats <- c("human", "marine", "mouse", "soil") %>% map_dfr(function(x) {
+rel_stats <- dataset_names %>% map_dfr(function(x) {
   read_tsv(glue('subworkflows/1_prep_samples/data/{x}/seq_stats.tsv')) %>% 
     mutate(dataset = x,
            rel_sim = similarity / (totals %>% 
@@ -215,3 +230,88 @@ rel_stats %>%
 | marine  |   0 |     26 | 374.8955 | 5495 |
 | mouse   |   0 |    125 | 380.7253 | 1941 |
 | soil    |   0 |     22 | 136.0720 | 3778 |
+
+``` r
+quantile_custom <- function(x, by = 0.05) {
+  x %>% 
+    quantile(., seq.int(from = 0.1, to = 1, by = by))
+}
+get_quantile <- function(dat, dataset_name, var = abundance) {
+  quantiles <- dat %>% 
+    filter(dataset == dataset_name) %>% 
+    pull({{ var }}) %>%  
+    quantile_custom()
+  data.frame(quant = names(quantiles), 
+             value = quantiles, 
+             row.names = NULL) %>% 
+    mutate(dataset = dataset_name)
+}
+get_dataset_quantiles <- function(dat, column = abundance) {
+  dataset_names %>% 
+    map_dfr(function(x) {get_quantile(dat = dat, 
+                                    dataset_name = x,
+                                    var = {{column}})
+                         }) %>% 
+    pivot_wider(names_from = dataset, values_from = value) 
+}
+```
+
+### abundance quantiles
+
+``` r
+rel_stats %>% 
+  get_dataset_quantiles(column = abundance) %>% 
+  knitr::kable()
+```
+
+| quant |   human | marine |  mouse |  soil |
+|:------|--------:|-------:|-------:|------:|
+| 10%   |       1 |      1 |      1 |     1 |
+| 15%   |       1 |      1 |      1 |     1 |
+| 20%   |       1 |      1 |      1 |     1 |
+| 25%   |       1 |      1 |      1 |     1 |
+| 30%   |       1 |      1 |      1 |     1 |
+| 35%   |       1 |      1 |      1 |     1 |
+| 40%   |       1 |      1 |      1 |     1 |
+| 45%   |       1 |      1 |      1 |     1 |
+| 50%   |       1 |      1 |      1 |     1 |
+| 55%   |       1 |      1 |      1 |     1 |
+| 60%   |       1 |      1 |      1 |     1 |
+| 65%   |       1 |      1 |      1 |     1 |
+| 70%   |       2 |      1 |      1 |     1 |
+| 75%   |       2 |      1 |      1 |     1 |
+| 80%   |       2 |      1 |      1 |     1 |
+| 85%   |       3 |      1 |      2 |     1 |
+| 90%   |       5 |      2 |      2 |     2 |
+| 95%   |      13 |      6 |      5 |     5 |
+| 100%  | 1286715 | 156918 | 264594 | 42712 |
+
+### similarity quantiles
+
+``` r
+rel_stats %>% 
+  get_dataset_quantiles(column = similarity) %>% 
+  knitr::kable()
+```
+
+| quant | human | marine | mouse |   soil |
+|:------|------:|-------:|------:|-------:|
+| 10%   |    12 |      0 |    21 |    0.0 |
+| 15%   |    22 |      1 |    31 |    2.0 |
+| 20%   |    35 |      1 |    40 |    3.0 |
+| 25%   |    53 |      2 |    49 |    5.0 |
+| 30%   |    76 |      4 |    60 |    7.0 |
+| 35%   |   101 |      6 |    72 |    9.0 |
+| 40%   |   134 |     10 |    86 |   13.0 |
+| 45%   |   181 |     16 |   102 |   17.0 |
+| 50%   |   239 |     26 |   125 |   22.0 |
+| 55%   |   305 |     40 |   173 |   29.0 |
+| 60%   |   403 |     59 |   226 |   40.0 |
+| 65%   |   509 |     88 |   335 |   54.0 |
+| 70%   |   641 |    135 |   472 |   74.0 |
+| 75%   |   798 |    197 |   664 |  106.0 |
+| 80%   |  1052 |    285 |   845 |  159.0 |
+| 85%   |  1398 |    442 |   991 |  233.0 |
+| 90%   |  2058 |    742 |  1172 |  376.8 |
+| 95%   |  2572 |   2962 |  1399 |  702.0 |
+| 100%  |  4159 |   5495 |  1941 | 3778.0 |
