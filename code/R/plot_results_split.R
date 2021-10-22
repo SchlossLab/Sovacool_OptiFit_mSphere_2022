@@ -110,7 +110,7 @@ color_labels <- lapply(
 ) %>% unlist()
 color_values <- append(color_breaks, list(`NA` = "#000000"))
 dat %>%
-  filter((ref_weight == "simple" | ref_frac == 0.5) | method == "_de novo_") %>%
+  filter(((ref_weight == "simple" | ref_frac == 0.5) | method == "_de novo_") & !is.na(value)) %>%
   ggplot(aes(ref_frac, value, color = ref_weight, shape = method)) +
   coord_flip() +
   stat_summary(
