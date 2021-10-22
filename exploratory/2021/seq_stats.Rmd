@@ -7,6 +7,16 @@ output:
 
 # Similarity & Abundance of Sequences
 
+Each sequence has an absolute abundance and similarity value, where similarity
+is the count of other sequences within the dataset that it is similar to per the
+0.03 distance threshold. I was wondering if the distributions of those values
+would have some pattern that corresponded to what we see with the MCC scores for
+weighting by those methods. There isn't anything obviously weird or wrong. For
+all datasets most sequences are very low abundance (expected). Both marine and
+soil have a much lower median similarity value than human and mouse, and the
+marine and soil datasets also have a huge spread in MCC between open & closed
+with similarity weighting.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
@@ -29,7 +39,7 @@ seq_stats <- c("human","marine","mouse","soil") %>% map_dfr(function(x) {
 }) %>% pivot_longer(c(similarity, abundance), names_to = 'statistic')
 ```
 
-## histograms
+### histograms
 
 ```{r hist_sim_abun}
 seq_stats %>% 
@@ -37,8 +47,6 @@ seq_stats %>%
   geom_histogram() +
   facet_grid(dataset ~ statistic, scales='free')
 ```
-
-### log10
 
 ```{r hist_sim_abun_log10}
 seq_stats %>% 
@@ -48,9 +56,15 @@ seq_stats %>%
   facet_wrap("dataset")
 ```
 
-## boxplots
+### boxplots
 
 ```{r box_sim_abun}
+seq_stats %>% 
+  ggplot(aes(x=value, y=dataset, fill=statistic)) +
+  geom_boxplot() +
+  facet_wrap('statistic', scales = 'free')
+``` 
+```{r box_sim_abun_log10}
 seq_stats %>% 
   ggplot(aes(x=value, y=dataset, fill=statistic)) +
   geom_boxplot() +
@@ -59,7 +73,7 @@ seq_stats %>%
 ``` 
 
 
-## abundance vs similarity
+### abundance vs similarity
 
 ```{r point_abun_sim}
 seq_stats %>% 
@@ -71,4 +85,94 @@ seq_stats %>%
 ```
 
 
+## relative abundance & simlarity
 
+```{r calc_relative_stats}
+totals <- seq_stats %>%
+  pivot_wider(names_from = statistic) %>% 
+  group_by(dataset) %>% 
+  summarize(tot_simi = sum(similarity),
+            tot_abun = sum(abundance))
+
+rel_stats <- c("human", "marine", "mouse", "soil") %>% map_dfr(function(x) {
+  read_tsv(glue('subworkflows/1_prep_samples/data/{x}/seq_stats.tsv')) %>% 
+    mutate(dataset = x,
+           rel_sim = similarity / (totals %>% 
+                                     filter(dataset == x) %>% 
+                                     pull(tot_simi)),
+           rel_abun = abundance / (totals %>% 
+                                     filter(dataset == x) %>% 
+                                     pull(tot_abun))
+           )
+})
+```
+
+### rel abun vs rel sim
+
+```{r point_rel_abun_sim}
+rel_stats %>% 
+  ggplot(aes(x = rel_abun, y = rel_sim, color = dataset)) +
+  geom_point(alpha=0.7) +
+  facet_wrap('dataset')
+```
+```{r point_rel_abun_sim_log10}
+rel_stats %>% 
+  ggplot(aes(x = rel_abun, y = rel_sim, color = dataset)) +
+  geom_point(alpha=0.7) +
+  scale_x_log10() +
+  facet_wrap('dataset')
+```
+
+### relative boxplots
+
+```{r box_rel_sim_abun}
+rel_stats %>% pivot_longer(c(rel_sim, rel_abun), names_to = 'statistic') %>% 
+  ggplot(aes(x=value, y=dataset, fill=statistic)) +
+  geom_boxplot() +
+  facet_wrap('statistic', scales = 'free')
+``` 
+
+
+```{r box_rel_sim_abun_log10}
+rel_stats %>% pivot_longer(c(rel_sim, rel_abun), names_to = 'statistic') %>% 
+  ggplot(aes(x=value, y=dataset, fill=statistic)) +
+  geom_boxplot() +
+  scale_x_log10() +
+  facet_wrap('statistic', scales = 'free')
+```
+
+### relative histograms
+
+```{r hist_rel_sim_abun}
+rel_stats %>%  pivot_longer(c(rel_sim, rel_abun), names_to = 'statistic') %>% 
+  ggplot(aes(x=value, fill=statistic)) +
+  geom_histogram() +
+  facet_wrap("dataset")
+```
+
+```{r hist_rel_sim_abun_log10}
+rel_stats %>%  pivot_longer(c(rel_sim, rel_abun), names_to = 'statistic') %>% 
+  ggplot(aes(x=value, fill=statistic)) +
+  geom_histogram() +
+  scale_x_log10() +
+  facet_wrap("dataset")
+```
+
+## summary stats
+
+```{r summary_abundance}
+rel_stats %>% 
+  group_by(dataset) %>% 
+  summarize_at(vars(abundance), 
+               list(min=min, median=median, mean=mean, max=max)) %>% 
+  knitr::kable()
+```
+
+
+```{r summary_similarity}
+rel_stats %>% 
+  group_by(dataset) %>% 
+  summarize_at(vars(similarity), 
+               list(min=min, median=median, mean=mean, max=max)) %>% 
+  knitr::kable()
+```
