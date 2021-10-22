@@ -19,11 +19,12 @@ subworkflow prep_samples:
     configfile:
         config['configpath']
 
+regions = ['bact_v4']
+printrefs = ['f'] # do not include the reference sequences in the final MCC score since we only care about the dataset of interest, not the public database.
+dist_thresh = config['dist_thresh']
 datasets = config['datasets']
 refs = config['references']
-regions = ['bact_v4']
 methods = config['methods']
-printrefs = config['printrefs']
 seeds = range(1, config['seeds'] + 1)
 
 rule rbind_optifit_dbs:
@@ -83,7 +84,8 @@ rule preclust_db:
         dist=temp("data/{dataset}_{ref}_{region}/preclust_db/{ref}.{region}.filter.unique.precluster.dist")
     params:
         tax="data/{dataset}_{ref}_{region}/preclust_db/{ref}.bacteria.pick.tax",
-        outdir="data/{dataset}_{ref}_{region}/preclust_db/"
+        outdir="data/{dataset}_{ref}_{region}/preclust_db/",
+        cutoff=dist_thresh
     resources:
         procs=8,
         walltime_hrs=48
@@ -96,7 +98,7 @@ rule preclust_db:
         filter.seqs(fasta={input.fasta_db}, hard={input.hard_filter});
         unique.seqs(fasta=current, format=count);
         pre.cluster(fasta=current, count=current, diffs=2, processors={resources.procs});
-        dist.seqs(fasta=current, cutoff=0.03, processors={resources.procs});
+        dist.seqs(fasta=current, cutoff={params.cutoff}, processors={resources.procs});
 
         list.seqs(fasta=current);
         get.seqs(accnos=current, taxonomy={input.tax});
@@ -113,7 +115,8 @@ rule cluster_db:
         list=temp("results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.list"),
         sensspec=temp("results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/{ref}.{region}.filter.unique.precluster.opti_mcc.sensspec")
     params:
-        outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/"
+        outdir="results/{dataset}_{ref}_{region}/cluster_db/seed_{seed}/",
+        cutoff=dist_thresh
     log:
         "log/{dataset}_{ref}_{region}/cluster_db.seed_{seed}.log"
     benchmark:
@@ -125,7 +128,7 @@ rule cluster_db:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster(column={input.dist}, count={input.count}, cutoff=0.03) '
+        cluster(column={input.dist}, count={input.count}, cutoff={params.cutoff}) '
         """
 
 rule mutate_db_sensspec:
@@ -201,7 +204,8 @@ rule calc_dists_combined:
     output:
         column=temp("data/{dataset}_{ref}_{region}/combined_seqs/{dataset}_{ref}.{region}.all.dist")
     params:
-        outdir="data/{dataset}_{ref}_{region}/combined_seqs/"
+        outdir="data/{dataset}_{ref}_{region}/combined_seqs/",
+        cutoff=dist_thresh
     log:
         "log/{dataset}_{ref}_{region}/calc_dists_combined.log"
     resources:
@@ -209,7 +213,7 @@ rule calc_dists_combined:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
+            dist.seqs(fasta={input.fasta}, cutoff={params.cutoff}, processors={resources.procs}) '
         """
 
 rule fit_to_ref_db:

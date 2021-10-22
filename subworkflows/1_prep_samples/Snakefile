@@ -2,7 +2,7 @@ import os
 
 configfile: 'config/config.yaml'
 
-dist_thresh=0.03
+dist_thresh=config['dist_thresh']
 datasets = config['datasets']
 seeds = range(1, config['seeds']+1)
 
@@ -214,7 +214,8 @@ rule calc_dists_dataset:
     output:
         column="results/{dataset}/{dataset}.dist"
     params:
-        outdir="results/{dataset}/"
+        outdir="results/{dataset}/",
+        cutoff=dist_thresh
     log:
         "log/{dataset}/calc_dists.log"
     resources:
@@ -222,7 +223,7 @@ rule calc_dists_dataset:
     shell:
         """
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
-            dist.seqs(fasta={input.fasta}, cutoff=0.03, processors={resources.procs}) '
+            dist.seqs(fasta={input.fasta}, cutoff={params.cutoff}, processors={resources.procs}) '
         """
 
 rule cluster_dataset:
@@ -234,7 +235,8 @@ rule cluster_dataset:
         sensspec=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.sensspec'),
         steps=temp('results/{dataset}/cluster/seed_{seed}/{dataset}.opti_mcc.steps')
     params:
-        outdir="results/{dataset}/cluster/seed_{seed}/"
+        outdir="results/{dataset}/cluster/seed_{seed}/",
+        cutoff=dist_thresh
     log:
         "log/{dataset}/cluster.seed_{seed}.log"
     benchmark:
@@ -246,7 +248,7 @@ rule cluster_dataset:
         mothur '#set.logfile(name={log}); set.dir(output={params.outdir});
         set.seed(seed={wildcards.seed});
         set.current(processors={resources.procs});
-        cluster(column={input.dist}, count={input.count_table}, cutoff=0.03) '
+        cluster(column={input.dist}, count={input.count_table}, cutoff={params.cutoff}) '
         """
 
 rule cbind_opticlust_seed:

@@ -1,3 +1,4 @@
+dist_thresh: 0.03
 datasets:
 - soil
 references:
@@ -5,10 +6,7 @@ references:
 weights:
 - simple
 methods:
-- de_novo
 - closed
-printrefs:
-- f
 ref_fracs:
     start: 5
     stop: 6

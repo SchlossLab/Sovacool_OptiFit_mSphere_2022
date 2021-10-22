@@ -8,12 +8,15 @@ vsearch commands adapted from:
 
 # config params
 configfile: 'config/config.yaml'
+
+dist_thresh = config['dist_thresh']
 datasets = config['datasets']
 refs = config['references']
 methods = config['methods']
 
+perc_identity = 1 - dist_thresh  # to match mothur's 0.03 dissimilarity threshold
+
 # hard-coded params, same as used in Pat's 2015 PeerJ paper
-perc_identity = 0.97  # to match mothur's 0.3 dissimilarity threshold
 min_seq_length = 30
 max_accepts = 16
 max_rejects = 64
@@ -93,7 +96,7 @@ rule degap:
     params:
         outdir="data/{dataset}/processed/",
         prefix='{dataset}.ng',
-        cutoff=0.03
+        cutoff=dist_thresh
     resources:
         procs=8
     shell:
@@ -291,7 +294,7 @@ rule sensspec_vsearch:
     params:
         outdir='results/{dataset}/{method}/',
         label='userLabel',
-        cutoff=0.03
+        cutoff=dist_thresh
     log:
         'log/{dataset}/sensspec.method_{method}.{dataset}.txt'
     shell:

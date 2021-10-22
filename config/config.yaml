@@ -1,3 +1,4 @@
+dist_thresh: 0.03
 datasets:
 - human
 - marine
@@ -14,8 +15,6 @@ weights:
 methods:
 - open
 - closed
-printrefs:
-- f
 ref_fracs:
     start: 1
     stop: 10

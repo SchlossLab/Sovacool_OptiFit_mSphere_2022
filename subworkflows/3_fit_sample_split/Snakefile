@@ -9,10 +9,10 @@ subworkflow prep_samples:
     configfile:
         f"{config['configpath']}"
 
-dist_thresh = 0.03
+printrefs = ['t'] # include the reference sequences in the final MCC score for the most fair comparison to OptiClust
+dist_thresh = config['dist_thresh']
 datasets = config['datasets']
 methods = config['methods']
-printrefs = config['printrefs']
 seeds = range(1, config['seeds'] + 1)
 random_refweight_options = config['weights']
 
