@@ -33,7 +33,8 @@ theme_set(theme_bw())
 ```
 
 ```{r dat}
-seq_stats <- c("human","marine","mouse","soil") %>% map_dfr(function(x) {
+dataset_names <- c("human","marine","mouse","soil")
+seq_stats <- dataset_names %>% map_dfr(function(x) {
   read_tsv(glue('subworkflows/1_prep_samples/data/{x}/seq_stats.tsv')) %>% 
     mutate(dataset = x)
 }) %>% pivot_longer(c(similarity, abundance), names_to = 'statistic')
@@ -54,6 +55,13 @@ seq_stats %>%
   geom_histogram() +
   scale_x_log10() +
   facet_wrap("dataset")
+```
+```{r hist_sim_abun_log10bins}
+seq_stats %>% 
+  ggplot(aes(x=value, fill=statistic)) +
+  geom_histogram(bins=10) +
+  scale_x_log10() +
+  facet_grid(dataset ~ statistic, scales='free')
 ```
 
 ### boxplots
@@ -94,7 +102,7 @@ totals <- seq_stats %>%
   summarize(tot_simi = sum(similarity),
             tot_abun = sum(abundance))
 
-rel_stats <- c("human", "marine", "mouse", "soil") %>% map_dfr(function(x) {
+rel_stats <- dataset_names %>% map_dfr(function(x) {
   read_tsv(glue('subworkflows/1_prep_samples/data/{x}/seq_stats.tsv')) %>% 
     mutate(dataset = x,
            rel_sim = similarity / (totals %>% 
@@ -176,3 +184,45 @@ rel_stats %>%
                list(min=min, median=median, mean=mean, max=max)) %>% 
   knitr::kable()
 ```
+
+```{r quantiles}
+quantile_custom <- function(x, by = 0.05) {
+  x %>% 
+    quantile(., seq.int(from = 0.1, to = 1, by = by))
+}
+get_quantile <- function(dat, dataset_name, var = abundance) {
+  quantiles <- dat %>% 
+    filter(dataset == dataset_name) %>% 
+    pull({{ var }}) %>%  
+    quantile_custom()
+  data.frame(quant = names(quantiles), 
+             value = quantiles, 
+             row.names = NULL) %>% 
+    mutate(dataset = dataset_name)
+}
+get_dataset_quantiles <- function(dat, column = abundance) {
+  dataset_names %>% 
+    map_dfr(function(x) {get_quantile(dat = dat, 
+                                    dataset_name = x,
+                                    var = {{column}})
+                         }) %>% 
+    pivot_wider(names_from = dataset, values_from = value) 
+}
+```
+ 
+### abundance quantiles
+ 
+```{r abun_quant}
+rel_stats %>% 
+  get_dataset_quantiles(column = abundance) %>% 
+  knitr::kable()
+```
+
+### similarity quantiles
+ 
+```{r simi_quant}
+rel_stats %>% 
+  get_dataset_quantiles(column = similarity) %>% 
+  knitr::kable()
+```
+
