@@ -29,6 +29,7 @@ knitr::opts_chunk$set(fig.path = here::here('figures/'),
 ```
 
 ```{r deps, message = FALSE}
+library(assertthat)
 library(cowplot)
 library(glue)
 library(here)
@@ -40,10 +41,7 @@ snakemake <- params$snakemake
 if (is_character(snakemake)) {
   stop("You need to knit this R Markdown document from the Snakemake workflow")
 }
-load(here(snakemake@input[['rda']]))
-ref_seqs <- read_tsv(here('subworkflows', '0_prep_db', 'data', 
-                          'seq_counts.tsv')) %>% 
-  pivot_wider(names_from = ref, values_from = nseqs) %>% as.list()
+load(here("results", "stats.RData"))
 
 figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
@@ -54,6 +52,10 @@ figs <- function(fig_name, attribute) {
     value <- eval(parse(text = value))
   }
   return(value)
+}
+
+close_enough <- function(x, y, tol = 10^-2) {
+  assert_that(all(near(x, y, tol = tol)))
 }
 ```
 
@@ -251,6 +253,12 @@ sequences _de novo_, then cluster the query sequences to the reference OTUs.
 db_names <- names(dn_dbs_mcc)
 db_names_upper <- case_when(db_names == 'gg' ~ 'Greengenes', 
                            TRUE ~ toupper(db_names))
+close_enough(dn_dbs_mcc['gg'], dn_dbs_mcc['silva'])
+close_enough(dn_dbs_mcc['gg'], dn_dbs_mcc['rdp'], 10^-1)
+mcc_decreasing <- c(closed_fit_rdp_mcc, closed_fit_silva_mcc, closed_fit_gg_mcc,
+                    open_fit_silva_mcc, open_fit_gg_mcc, open_fit_rdp_mcc, 
+                    opticlust_mcc)
+assert_that(!is.unsorted(mcc_decreasing))
 ```
 
 To test how OptiFit performs for reference-based clustering, we clustered each
@@ -282,6 +290,12 @@ figs('workflow', 'path') %>%
   grid::grid.raster() 
 ```
 
+```{r}
+assert_that(!is.unsorted(c(frac_fit_rdp, frac_fit_silva, frac_fit_gg)))
+assert_that((frac_fit_gg - frac_fit_silva) < 10)
+assert_that((frac_fit_gg - frac_fit_rdp) > 40)
+```
+
 Since closed reference clustering does not cluster query sequences that could
 not be clustered into reference OTUs, an additional measure of clustering
 performance to consider is the fraction of query sequences that were able to be
@@ -296,6 +310,13 @@ sequences into OTUs.
 The database chosen affects the final closed reference OTU assignments
 considerably in terms of both MCC score and fraction of query sequences that
 could be clustered into the reference OTUs.
+
+```{r}
+assert_that(!is.unsorted(c(closed_fit_silva_human_sec, 
+                           opticlust_human_sec,
+                           open_fit_silva_human_sec)))
+```
+
 
 Despite the drawbacks, closed reference methods have been used when fast
 execution speed is required, such as when using very large datasets
@@ -315,6 +336,13 @@ clustering sacrifices OTU quality for execution speed.
 figs('results_sum', 'path') %>% 
   tiff::readTIFF() %>% 
   grid::grid.raster() 
+```
+
+```{r}
+assert_that(mcc_closed_fit_db_vs_vsearch > 10)
+assert_that(frac_vsearch_vs_fit > 10)
+assert_that((open_fit_gg_mcc - open_vsearch_mcc) > 0.20)
+assert_that((sec_vsearch_vs_open_fit_db - sec_closed_fit_db_vs_vsearch) < 5)
 ```
 
 To compare to the reference clustering methods used by QIIME2, we clustered each
@@ -366,6 +394,12 @@ split into a reference fraction and a query fraction.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were clustered to the _de novo_ OTUs with OptiFit.
 
+```{r}
+close_enough(mcc_opticlust_vs_fit_split_simple, 0.02)
+assert_that((frac_fit_split - frac_fit_gg) > 20)
+assert_that(!is.unsorted(c(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_split_vs_clust, sec_open_fit_split_vs_db)))
+```
+
 First, we tested whether OptiFit performed as well as _de novo_ clustering when
 using the split dataset strategy with half of the sequences selected for
 the reference by a simple random sample (a 50% split) 
@@ -385,11 +419,15 @@ Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
-
 ```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
 figs('results_split', 'path') %>% 
   tiff::readTIFF() %>% 
   grid::grid.raster() 
+```
+```{r}
+close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
+assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
+assert_that(frac_fit_split_human_simple_1 < frac_fit_split_human_simple_9)
 ```
 
 While we initially tested this strategy using a 50% split of the data into
@@ -415,16 +453,21 @@ Thus, the reference fraction did not affect OTU quality in terms of MCC score,
 but did affect the run time and the fraction of sequences that mapped during the
 closed reference clustering.
 
+```{r}
+close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
+assert_that(sec_fit_split_dist < sec_fit_split_abun & sec_fit_split_abun < sec_fit_split_simple)
+close_enough(frac_fit_split_simple, frac_fit_split_abun)
+assert_that(frac_fit_split_dist < frac_fit_split_simple)
+```
+
 After testing the split strategy using a simple random sample to select the
 reference sequences, we then investigated other methods of splitting the data.
 We tested three methods for selecting the fraction of sequences to be used as
 the reference at a size of 50%: a simple random sample, weighting sequences by
 relative abundance, and weighting by similarity to other sequences in the
 dataset (Figure \ref{fig:results_split}).
-OTU quality in terms of MCC was similar with the simple and abundance-weighted
-sampling (median MCCs of `r mcc_fit_split_simple` and `r mcc_fit_split_abun`,
-respectively), but worse for similarity-weighted sampling (median MCC of
-`r mcc_fit_split_dist`).
+OTU quality in terms of MCC was similar across all three sampling methods
+(median MCC of `r mcc_fit_split_simple`).
 In closed-reference clustering mode, the fraction of sequences that mapped were
 similar for simple and abundance-weighted sampling (median fraction mapped of 
 `r frac_fit_split_simple` and `r frac_fit_split_abun`, respectively), but worse 
@@ -432,8 +475,8 @@ for similarity-weighted sampling (median fraction mapped of `r frac_fit_split_di
 While simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
 similarity-weighted samples with a median runtime of `r sec_fit_split_dist`
-seconds compared to `r sec_fit_split_simple` and `r sec_fit_split_abun` seconds
-for simple and abundance-weighted sampling, respectively.
+seconds compared to `r sec_fit_split_abun` and `r sec_fit_split_simple` seconds
+for abundance-weighted and simple random sampling, respectively.
 Thus, employing more complicated sampling strategies such as abundance-weighted
 and similarity-weighted sampling did not confer any advantages over selecting
 the reference via a simple random sample, and in fact decreased OTU quality in
@@ -450,6 +493,14 @@ reference mode, regardless of strategy employed.
 Open reference OptiFit performs slower than OptiClust due to the additional _de
 novo_ clustering step, so users may prefer OptiClust for tasks that do not
 require reference OTUs.
+
+```{r}
+ref_seqs <- read_tsv(here('subworkflows', '0_prep_db', 'data', 
+                          'seq_counts.tsv')) %>% 
+  pivot_wider(names_from = ref, values_from = nseqs) %>% as.list()
+assert_that(ref_seqs[['rdp']] < ref_seqs[['silva']])
+assert_that(ref_seqs[['silva']] < ref_seqs[['gg']])
+```
 
 When clustering to public databases, OTU quality dropped in closed reference mode
 to different degrees depending on the database and dataset source, and no more
