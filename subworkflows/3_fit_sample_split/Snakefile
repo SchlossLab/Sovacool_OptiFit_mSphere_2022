@@ -7,9 +7,9 @@ subworkflow prep_samples:
     workdir:
         "../1_prep_samples/"
     configfile:
-        f"{config['configpath']}"
+        config['configpath']
 
-printrefs = ['t'] # include the reference sequences in the final MCC score for the most fair comparison to OptiClust
+printrefs = ['t'] # include the reference sequences in the final MCC score for the most fair comparison to OptiClust.
 dist_thresh = config['dist_thresh']
 datasets = config['datasets']
 methods = config['methods']
