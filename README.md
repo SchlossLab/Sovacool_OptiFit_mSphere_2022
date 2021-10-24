@@ -58,7 +58,7 @@ the subworkflows and renders the [paper](paper).
     ```
     Or on an HPC running slurm:
     ```
-    sbatch code/slurm/submit.sh
+    sbatch code/slurm/submit_all.sh
     ```
     (You will first need to edit your email and slurm account info in the 
     [submission script](code/slurm/submit.sh) 
