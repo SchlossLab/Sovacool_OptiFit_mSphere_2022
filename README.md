@@ -1,8 +1,8 @@
-# OptiFitAnalysis
+# OptiFit: an improved method for fitting amplicon sequences to existing OTUs
 
 Benchmarking the OptiFit algorithm in [mothur](https://github.com/mothur/mothur).
 
-Find more details on how to use OptiFit and descriptions of the parameter
+Find details on how to use OptiFit and descriptions of the parameter
 options on the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
 ## The Workflow
