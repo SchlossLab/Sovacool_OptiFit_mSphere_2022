@@ -455,7 +455,9 @@ closed reference clustering.
 
 ```{r, include = FALSE}
 close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
-assert_that(sec_fit_split_dist < sec_fit_split_abun & sec_fit_split_abun < sec_fit_split_simple)
+assert_that(!is.unsorted(c(sec_fit_split_dist, 
+                           sec_fit_split_simple, 
+                           sec_fit_split_abun)))
 close_enough(frac_fit_split_simple, frac_fit_split_abun)
 assert_that(frac_fit_split_dist < frac_fit_split_simple)
 ```
@@ -475,8 +477,8 @@ for similarity-weighted sampling (median fraction mapped of `r frac_fit_split_di
 While simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
 similarity-weighted samples with a median runtime of `r sec_fit_split_dist`
-seconds compared to `r sec_fit_split_abun` and `r sec_fit_split_simple` seconds
-for abundance-weighted and simple random sampling, respectively.
+seconds compared to `r sec_fit_split_simple` and `r sec_fit_split_abun`  seconds
+for simple and abundance-weighted sampling, respectively.
 Thus, employing more complicated sampling strategies such as abundance-weighted
 and similarity-weighted sampling did not confer any advantages over selecting
 the reference via a simple random sample, and in fact decreased OTU quality in

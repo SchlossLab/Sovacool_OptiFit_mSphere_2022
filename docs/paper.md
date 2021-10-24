@@ -366,15 +366,15 @@ First, we tested whether OptiFit performed as well as *de novo*
 clustering when using the split dataset strategy with half of the
 sequences selected for the reference by a simple random sample (a 50%
 split) (Figure ; self-split). OTU quality was similar to that from
-OptiClust regardless of mode (0.026% difference in median MCC). In
+OptiClust regardless of mode (0.025% difference in median MCC). In
 closed reference mode, OptiFit was able to cluster 84.7% of query
 sequences to reference OTUs with the split strategy, a great improvement
 over the average 59.0% of sequences clustered to the Greengenes
 database. In terms of run time, closed and open reference OptiFit
-performed faster than OptiClust on whole datasets by 28.5% and 32.8%,
-respectively. The split dataset strategy also performed 1.7% faster than
-the database strategy in closed reference mode and 46.6% faster in open
-reference mode. Thus, reference clustering with the split dataset
+performed faster than OptiClust on whole datasets by 36.2% and 34.2%,
+respectively. The split dataset strategy also performed 12.3% faster
+than the database strategy in closed reference mode and 47.7% faster in
+open reference mode. Thus, reference clustering with the split dataset
 strategy creates as high quality OTUs as *de novo* clustering yet at a
 faster run time, and fits far more query sequences than the database
 strategy.
@@ -397,10 +397,10 @@ size, reference sets with 10% to 90% of the sequences were created, with
 the remaining sequences used for the query (Figure ). OTU quality was
 remarkably consistent across reference fraction sizes. For example,
 splitting the human dataset 100 times yielded a coefficient of variation
-(i.e. the standard deviation divided by the mean) of 0.00019 for the MCC
+(i.e. the standard deviation divided by the mean) of 0.0002 for the MCC
 score across all fractions. Run time generally decreased as the
 reference fraction increased; for the human dataset, the median run time
-was 362.5 seconds with 10% of sequences in the reference and 261.7
+was 367.6 seconds with 10% of sequences in the reference and 269.0
 seconds with 90% of sequences in the reference. In closed reference
 mode, the fraction of sequences that mapped increased as the reference
 size increased; for the human dataset, the median fraction mapped was
@@ -424,8 +424,8 @@ similarity-weighted sampling (median fraction mapped of 0.89). While
 simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
 similarity-weighted samples with a median runtime of 91.4 seconds
-compared to 116.9 and 119.2 seconds for abundance-weighted and simple
-random sampling, respectively. Thus, employing more complicated sampling
+compared to 109.7 and 111.7 seconds for simple and abundance-weighted
+sampling, respectively. Thus, employing more complicated sampling
 strategies such as abundance-weighted and similarity-weighted sampling
 did not confer any advantages over selecting the reference via a simple
 random sample, and in fact decreased OTU quality in the case of
