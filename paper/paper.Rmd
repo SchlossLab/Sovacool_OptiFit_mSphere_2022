@@ -366,7 +366,7 @@ to the single reference sequence, while OptiFit considers the distances between
 all pairs of reference and query sequences in an OTU. 
 When open reference clustering, OptiFit produced higher quality OTUs than
 VSEARCH against the Greengenes database, with median MCC scores of 
-`r open_fit_gg_mcc` and `r open_vsearch_mcc`, respectively).
+`r open_fit_gg_mcc` and `r open_vsearch_mcc`, respectively.
 In terms of run time, OptiFit outperformed VSEARCH in both closed and open
 reference mode by `r sec_closed_fit_db_vs_vsearch`% and 
 `r sec_vsearch_vs_open_fit_db`% on average, respectively.
@@ -582,7 +582,7 @@ prior to clustering.
 
 ### Reference database clustering
 
-To generate reference OTUs from independent databases, we downloaded sequences
+To generate reference OTUs from public databases, we downloaded sequences
 from the Greengenes database (v13_8_99) [@desantis_greengenes_2006], SILVA
 non-redundant database (v132) [@quast_silva_2013], and the Ribosomal Database
 Project (v16) [@cole_ribosomal_2014].
@@ -592,18 +592,19 @@ Processed reads from each of the four datasets were clustered with OptiFit to
 the reference OTUs generated from each of the three databases.
 When reference clustering with VSEARCH, processed datasets were clustered directly to
 the unprocessed Greengenes 97% OTU reference alignment, since this method is how
-VSEARCH is typically used by the QIIME2 software reference-based clustering
+VSEARCH is typically used by the QIIME2 software for reference-based clustering
 [@bolyen_reproducible_2019; @noauthor_clustering_nodate].
 
 ### Split dataset clustering
 
-For each dataset, a fraction of the sequences was selected to be clustered _de
+For each dataset, half of the sequences were selected to be clustered _de
 novo_ into reference OTUs with OptiClust.
-We used three methods for selecting the fraction of sequences to be used
+We used three methods for selecting the subset of sequences to be used
 as the reference: a simple random sample, weighting sequences by relative
 abundance, and weighting by similarity to other sequences in the dataset.
-Dataset splitting was repeated with reference fractions ranging from 10% to 90%
-of the dataset and for 100 random seeds.
+Dataset splitting was repeated with 100 random seeds.
+With the simple random sampling method, dataset splitting was also repeated with
+reference fractions ranging from 10% to 90% of the dataset.
 For each dataset split, the remaining query sequences were clustered into the
 reference OTUs with OptiFit.
 
@@ -622,16 +623,21 @@ as described by Westcott _et al._ [@westcott_opticlust_2017].
 
 ### Data and Code Availability
 
-We implemented the analysis workflow in Snakemake [@koster_snakemake_2012] and
-wrote scripts in R [@r_core_team_r_2020], Python [@van_rossum_python_2009], and
-GNU bash [@noauthor_bash_nodate].
-Software used includes mothur v1.45.0 [@schloss_introducing_2009], VSEARCH
-v2.13.3 [@rognes_vsearch_2016], numpy [@harris_array_2020], the tidyverse
-metapackage [@wickham_welcome_2019], R Markdown [@xie_r_2018], ggtext
-[@wilke_ggtext_2020], the SRA toolkit [@noauthor_sra-tools_nodate], and the
-conda environment manager [@noauthor_anaconda_2016].
-The complete workflow, manuscript, and conda environment are available at
-https://github.com/SchlossLab/Sovacool_OptiFit_2021.
+We implemented the analysis workflow in Snakemake [@koster_snakemake_2012] 
+and wrote scripts in R [@r_core_team_r_2020], 
+Python [@van_rossum_python_2009], 
+and GNU bash [@noauthor_bash_nodate].
+Software used includes mothur v1.46.1 [@schloss_introducing_2009], 
+VSEARCH v2.15.2 [@rognes_vsearch_2016], 
+the tidyverse metapackage [@wickham_welcome_2019], 
+R Markdown [@xie_r_2018], 
+ggraph [@pederson_ggraph_2021], 
+ggtext [@wilke_ggtext_2020], 
+numpy [@harris_array_2020], 
+the SRA toolkit [@noauthor_sra-tools_nodate], 
+and conda [@noauthor_anaconda_2016].
+The complete workflow and supporting files required to reproduce this manuscript
+are available at https://github.com/SchlossLab/Sovacool_OptiFit_2021.
 <!-- TODO: update repo link with journal title -->
 
 ## Acknowledgements

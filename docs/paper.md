@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-10-22
+2021-10-23
 
 \usepackage{helvet} % Helvetica font
 \renewcommand*\familydefault{\sfdefault} % Use the sans serif version of the font
@@ -336,7 +336,7 @@ between each query sequence to the single reference sequence, while
 OptiFit considers the distances between all pairs of reference and query
 sequences in an OTU. When open reference clustering, OptiFit produced
 higher quality OTUs than VSEARCH against the Greengenes database, with
-median MCC scores of 0.86 and 0.56, respectively). In terms of run time,
+median MCC scores of 0.86 and 0.56, respectively. In terms of run time,
 OptiFit outperformed VSEARCH in both closed and open reference mode by
 64.3% and 65.6% on average, respectively. Thus, the more stringent OTU
 definition employed by OptiFit, which prefers the query sequence to be
@@ -521,7 +521,7 @@ pairs of sequences within each dataset prior to clustering.
 
 ### Reference database clustering
 
-To generate reference OTUs from independent databases, we downloaded
+To generate reference OTUs from public databases, we downloaded
 sequences from the Greengenes database (v13_8\_99)
 ([6](#ref-desantis_greengenes_2006)), SILVA non-redundant database
 (v132) ([12](#ref-quast_silva_2013)), and the Ribosomal Database Project
@@ -532,21 +532,21 @@ four datasets were clustered with OptiFit to the reference OTUs
 generated from each of the three databases. When reference clustering
 with VSEARCH, processed datasets were clustered directly to the
 unprocessed Greengenes 97% OTU reference alignment, since this method is
-how VSEARCH is typically used by the QIIME2 software reference-based
+how VSEARCH is typically used by the QIIME2 software for reference-based
 clustering ([7](#ref-noauthor_clustering_nodate),
 [18](#ref-bolyen_reproducible_2019)).
 
 ### Split dataset clustering
 
-For each dataset, a fraction of the sequences was selected to be
-clustered *de novo* into reference OTUs with OptiClust. We used three
-methods for selecting the fraction of sequences to be used as the
-reference: a simple random sample, weighting sequences by relative
-abundance, and weighting by similarity to other sequences in the
-dataset. Dataset splitting was repeated with reference fractions ranging
-from 10% to 90% of the dataset and for 100 random seeds. For each
-dataset split, the remaining query sequences were clustered into the
-reference OTUs with OptiFit.
+For each dataset, half of the sequences were selected to be clustered
+*de novo* into reference OTUs with OptiClust. We used three methods for
+selecting the subset of sequences to be used as the reference: a simple
+random sample, weighting sequences by relative abundance, and weighting
+by similarity to other sequences in the dataset. Dataset splitting was
+repeated with 100 random seeds. With the simple random sampling method,
+dataset splitting was also repeated with reference fractions ranging
+from 10% to 90% of the dataset. For each dataset split, the remaining
+query sequences were clustered into the reference OTUs with OptiFit.
 
 ### Benchmarking
 
@@ -566,14 +566,15 @@ We implemented the analysis workflow in Snakemake
 ([19](#ref-koster_snakemake_2012)) and wrote scripts in R
 ([20](#ref-r_core_team_r_2020)), Python
 ([21](#ref-van_rossum_python_2009)), and GNU bash
-([22](#ref-noauthor_bash_nodate)). Software used includes mothur v1.45.0
-([23](#ref-schloss_introducing_2009)), VSEARCH v2.13.3
-([5](#ref-rognes_vsearch_2016)), numpy ([24](#ref-harris_array_2020)),
-the tidyverse metapackage ([25](#ref-wickham_welcome_2019)), R Markdown
-([26](#ref-xie_r_2018)), ggtext ([27](#ref-wilke_ggtext_2020)), the SRA
-toolkit ([28](#ref-noauthor_sra-tools_nodate)), and the conda
-environment manager ([29](#ref-noauthor_anaconda_2016)). The complete
-workflow, manuscript, and conda environment are available at
+([22](#ref-noauthor_bash_nodate)). Software used includes mothur v1.46.1
+([23](#ref-schloss_introducing_2009)), VSEARCH v2.15.2
+([5](#ref-rognes_vsearch_2016)), the tidyverse metapackage
+([24](#ref-wickham_welcome_2019)), R Markdown ([25](#ref-xie_r_2018)),
+ggraph ([26](#ref-pederson_ggraph_2021)), ggtext
+([27](#ref-wilke_ggtext_2020)), numpy ([28](#ref-harris_array_2020)),
+the SRA toolkit ([29](#ref-noauthor_sra-tools_nodate)), and conda
+([30](#ref-noauthor_anaconda_2016)). The complete workflow and
+supporting files required to reproduce this manuscript are available at
 <https://github.com/SchlossLab/Sovacool_OptiFit_2021>.
 <!-- TODO: update repo link with journal title -->
 
@@ -868,23 +869,9 @@ doi:[10.1128/AEM.01541-09](https://doi.org/10.1128/AEM.01541-09).</span>
 
 </div>
 
-<div id="ref-harris_array_2020" class="csl-entry">
-
-<span class="csl-left-margin">24. </span><span
-class="csl-right-inline">**Harris CR**, **Millman KJ**, **van der Walt
-SJ**, **Gommers R**, **Virtanen P**, **Cournapeau D**, **Wieser E**,
-**Taylor J**, **Berg S**, **Smith NJ**, **Kern R**, **Picus M**, **Hoyer
-S**, **van Kerkwijk MH**, **Brett M**, **Haldane A**, **del Río JF**,
-**Wiebe M**, **Peterson P**, **Gérard-Marchant P**, **Sheppard K**,
-**Reddy T**, **Weckesser W**, **Abbasi H**, **Gohlke C**, **Oliphant
-TE**. 2020. Array programming with NumPy. Nature **585**:357–362.
-doi:[10.1038/s41586-020-2649-2](https://doi.org/10.1038/s41586-020-2649-2).</span>
-
-</div>
-
 <div id="ref-wickham_welcome_2019" class="csl-entry">
 
-<span class="csl-left-margin">25. </span><span
+<span class="csl-left-margin">24. </span><span
 class="csl-right-inline">**Wickham H**, **Averick M**, **Bryan J**,
 **Chang W**, **McGowan LD**, **François R**, **Grolemund G**, **Hayes
 A**, **Henry L**, **Hester J**, **Kuhn M**, **Pedersen TL**, **Miller
@@ -898,10 +885,19 @@ doi:[10.21105/joss.01686](https://doi.org/10.21105/joss.01686).</span>
 
 <div id="ref-xie_r_2018" class="csl-entry">
 
-<span class="csl-left-margin">26. </span><span
+<span class="csl-left-margin">25. </span><span
 class="csl-right-inline">**Xie Y**, **Allaire JJ**, **Grolemund G**.
 2018. R Markdown: The Definitive Guide. Taylor & Francis, CRC
 Press.</span>
+
+</div>
+
+<div id="ref-pederson_ggraph_2021" class="csl-entry">
+
+<span class="csl-left-margin">26. </span><span
+class="csl-right-inline">**Pedersen TL**. 2021. [Ggraph: An
+implementation of grammar of graphics for graphs and
+networks](https://CRAN.R-project.org/package=ggraph).</span>
 
 </div>
 
@@ -913,9 +909,23 @@ rendering support for ’Ggplot2’. Manual.</span>
 
 </div>
 
-<div id="ref-noauthor_sra-tools_nodate" class="csl-entry">
+<div id="ref-harris_array_2020" class="csl-entry">
 
 <span class="csl-left-margin">28. </span><span
+class="csl-right-inline">**Harris CR**, **Millman KJ**, **van der Walt
+SJ**, **Gommers R**, **Virtanen P**, **Cournapeau D**, **Wieser E**,
+**Taylor J**, **Berg S**, **Smith NJ**, **Kern R**, **Picus M**, **Hoyer
+S**, **van Kerkwijk MH**, **Brett M**, **Haldane A**, **del Río JF**,
+**Wiebe M**, **Peterson P**, **Gérard-Marchant P**, **Sheppard K**,
+**Reddy T**, **Weckesser W**, **Abbasi H**, **Gohlke C**, **Oliphant
+TE**. 2020. Array programming with NumPy. Nature **585**:357–362.
+doi:[10.1038/s41586-020-2649-2](https://doi.org/10.1038/s41586-020-2649-2).</span>
+
+</div>
+
+<div id="ref-noauthor_sra-tools_nodate" class="csl-entry">
+
+<span class="csl-left-margin">29. </span><span
 class="csl-right-inline">SRA-Tools - NCBI.
 http://ncbi.github.io/sra-tools/.</span>
 
@@ -923,7 +933,7 @@ http://ncbi.github.io/sra-tools/.</span>
 
 <div id="ref-noauthor_anaconda_2016" class="csl-entry">
 
-<span class="csl-left-margin">29. </span><span
+<span class="csl-left-margin">30. </span><span
 class="csl-right-inline">2016. Anaconda Software Distribution. Anaconda
 Documentation. Anaconda Inc.</span>
 
