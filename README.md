@@ -16,9 +16,9 @@ The workflow is split into five subworkflows:
 - **[2_fit_reference_db](subworkflows/2_fit_reference_db)** — fit datasets to
     reference databases.
 - **[3_fit_sample_split](subworkflows/3_fit_sample_split)** — split datasets;
-    cluster one fraction _de novo_ and fit the remaining sequences to the 
+    cluster one fraction _de novo_ and fit the remaining sequences to the
     _de novo_ OTUs.
-- **[4_vsearch](subworkflows/4_vsearch)** — run vsearch clustering for 
+- **[4_vsearch](subworkflows/4_vsearch)** — run vsearch clustering for
     comparison.
 
 The main workflow ([`Snakefile`](Snakefile)) creates plots from the results of
@@ -60,71 +60,96 @@ the subworkflows and renders the [paper](paper).
     ```
     sbatch code/slurm/submit_all.sh
     ```
-    (You will first need to edit your email and slurm account info in the 
-    [submission script](code/slurm/submit.sh) 
+    (You will first need to edit your email and slurm account info in the
+    [submission script](code/slurm/submit.sh)
     and [cluster config](config/cluster.json).)
 
-## Developer Notes
+## Directory Structure
 
-### Project progress
-
-See the [Analysis Roadmap](https://github.com/SchlossLab/OptiFitAnalysis/blob/master/AnalysisRoadmap.md).
-
-### Whitespace in Python
-
-I have my editor set to convert tabs to spaces with a tab length of 4.
-In [Atom](https://atom.io) you can use 
-[:untabify](https://atom.io/packages/tabs-to-spaces) to convert tabs to spaces.
-It's crucial for this to be consistent within Python & Snakemake files.
-If you get an error while running snakemake like:
 ```
-Unexpected keyword <word> in rule definition (Snakefile, line <line>)
-```
-It's likely a whitespace issue.
+.
+├── OptiFit.Rproj
+├── README.md
+├── Snakefile
+├── code
+│   ├── R
+│   ├── bash
+│   ├── py
+│   ├── slurm
+│   └── tests
+├── config
+│   ├── cluster.json
+│   ├── config.yaml
+│   ├── config_test.yaml
+│   ├── env.export.yaml
+│   ├── env.simple.yaml
+│   └── slurm
+│       └── config.yaml
+├── docs
+│   ├── paper.md
+│   ├── paper.pdf
+│   └── slides
+├── exploratory
+│   ├── 2018_fall_rotation
+│   ├── 2019_winter_rotation
+│   ├── 2020-05_May-Oct
+│   ├── 2020-11_Nov-Dec
+│   ├── 2021
+│   │   ├── figures
+│   │   ├── plots.Rmd
+│   │   ├── plots.md
+│   ├── AnalysisRoadmap.md
+│   └── DeveloperNotes.md
+├── figures
+├── log
+├── paper
+│   ├── figures.yaml
+│   ├── head.tex
+│   ├── msphere.csl
+│   ├── paper.Rmd
+│   ├── preamble.tex
+│   └── references.bib
+├── results
+│   ├── aggregated.tsv
+│   ├── stats.RData
+│   └── summarized.tsv
+└── subworkflows
+    ├── 0_prep_db
+    │   ├── README.md
+    │   └── Snakefile
+    ├── 1_prep_samples
+    │   ├── README.md
+    │   ├── Snakefile
+    │   ├── data
+    │   │   ├── human
+    │   │       └── SRR_Acc_List.txt
+    │   │   ├── marine
+    │   │       └── SRR_Acc_List.txt
+    │   │   ├── mouse
+    │   │       └── SRR_Acc_List.txt
+    │   │   └── soil
+    │   │       └── SRR_Acc_List.txt
+    │   └── results
+    │       ├── dataset_sizes.tsv
+    │       └── opticlust_results.tsv
+    ├── 2_fit_reference_db
+    │   ├── README.md
+    │   ├── Snakefile
+    │   └── results
+    │       ├── denovo_dbs.tsv
+    │       ├── optifit_dbs_results.tsv
+    │       └── ref_sizes.tsv
+    ├── 3_fit_sample_split
+    │   ├── README.md
+    │   ├── Snakefile
+    │   └── results
+    │       ├── optifit_crit_check.tsv
+    │       └── optifit_split_results.tsv
+    └── 4_vsearch
+        ├── README.md
+        ├── Snakefile
+        └── results
+            ├── vsearch_abbr.md
+            └── vsearch_results.tsv
 
-### Managing software dependencies
-
-I use the [conda](https://conda.io/docs/) package manager to manage software
-dependencies.
-If you don't already have it, I recommend installing the
-[Miniconda](https://conda.io/miniconda.html) Python 3 distribution.
-If you're experiencing slowness when solving conda environments, follow the
-suggestions [here](https://github.com/bioconda/bioconda-recipes/issues/13774)
-and also check out [mamba](https://mamba.readthedocs.io/en/latest/)
-
-#### Create a conda environment
-
-If you plan to run this workflow on the GreatLakes HPC or another 64-bit Linux
-machine, you can get an exact replica of my conda environment with:
 ```
-conda env create --file config/env.export.yaml
-```
-
-Otherwise, run:
-```
-conda env create --name optifit --file config/env.simple.yaml
-```
-
-#### Activate
-
-Activate the environment before running any code with:
-```
-conda activate optifit
-```
-
-#### Update the environment
-
-Install new packages with:
-```
-conda install new_package_name
-```
-
-Always update the environment file after installing new packages:
-```
-conda env export > config/env.export.yaml
-```
-
-And update the simple version (`config/env.simple.yaml`) with your favorite text
-editor. 
-The exported file `config/env.export.yaml` contains an exhaustive list of
-dependencies and their exact version numbers.
