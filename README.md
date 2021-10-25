@@ -1,7 +1,10 @@
-# OptiFit: an improved method for fitting amplicon sequences to existing OTUs
+# OptiFit
 
-Benchmarking the OptiFit algorithm in [mothur](https://github.com/mothur/mothur).
+**an improved method for fitting amplicon sequences to existing OTUs**
 
+This repository contains the complete analysis workflow used to benchmark the
+OptiFit algorithm in [mothur](https://github.com/mothur/mothur)
+and produce the accompanying manuscript.
 Find details on how to use OptiFit and descriptions of the parameter
 options on the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
@@ -50,6 +53,12 @@ the subworkflows and renders the [paper](paper).
     The schtools package is also needed to render the manuscript:
     ```r
     devtools::install_github('SchlossLab/schtools')
+    ```
+    Finally, if you do not have LaTeX already, you'll need to install a LaTeX
+    distribution before rendering the manuscript as a PDF.
+    You can use `tinytex` to do so:
+    ```r
+    tinytex::install_tinytex()
     ```
 1. Run the entire pipeline.
     Locally:
@@ -149,7 +158,5 @@ the subworkflows and renders the [paper](paper).
         ├── README.md
         ├── Snakefile
         └── results
-            ├── vsearch_abbr.md
             └── vsearch_results.tsv
-
 ```
