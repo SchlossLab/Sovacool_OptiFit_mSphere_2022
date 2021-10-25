@@ -14,7 +14,7 @@ output:
       in_header: preamble.tex
       before_body: head.tex
     html_preview: false
-csl: msystems.csl
+csl: msphere.csl
 fontsize: 12pt
 geometry: margin=1.0in
 repository_url: https://github.com/SchlossLab/OptiFitAnalysis
@@ -43,7 +43,7 @@ if (is_character(snakemake)) {
 }
 load(here("results", "stats.RData"))
 
-figures_meta <- yaml::read_yaml(here('config', 'figures.yaml'))
+figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
 figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {

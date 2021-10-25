@@ -3,7 +3,7 @@ import os
 import yaml
 
 configfile: 'config/config.yaml'
-figs_meta_filename = 'config/figures.yaml'
+figs_meta_filename = 'paper/figures.yaml'
 fig_meta = yaml.safe_load(open(figs_meta_filename))
 
 subworkflow prep_db:
@@ -122,7 +122,7 @@ rule render_paper:
         fcns="code/R/functions.R",
         rda=rules.calc_results_stats.output.rda,
         deps=['paper/preamble.tex', 'paper/head.tex',
-              'paper/references.bib', 'paper/msystems.csl',
+              'paper/references.bib', 'paper/msphere.csl',
               figs_meta_filename,
               rules.plot_algorithm.output,
               rules.plot_workflow.output,
