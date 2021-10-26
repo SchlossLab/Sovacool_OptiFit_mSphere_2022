@@ -4,4 +4,4 @@
 *.R linguist-language=R
 paper/paper.tex linguist-vendored=true
 paper/references.bib linguist-vendored=true
-*data/* linguist-vendored=true
+code/tests/data/* linguist-vendored=true
