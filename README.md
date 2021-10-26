@@ -1,10 +1,13 @@
-# OptiFit
+# OptiFit <a href='http://github.com/SchlossLab/Sovacool_OptiFit_2021/'><img src='https://raw.githubusercontent.com/mothur/logo/master/mothur_RGB.png' align="right" height="120" /></a>
 
-**an improved method for fitting amplicon sequences to existing OTUs**
+### an improved method for fitting amplicon sequences to existing OTUs
+
+[![build](https://github.com/SchlossLab/Sovacool_OptiFit_2021/actions/workflows/build.yml/badge.svg)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/actions/workflows/build.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/blob/main/LICENSE.md)
 
 This repository contains the complete analysis workflow used to benchmark the
 OptiFit algorithm in [mothur](https://github.com/mothur/mothur)
-and produce the accompanying manuscript.
+and produce the accompanying [manuscript](docs/paper.pdf).
 Find details on how to use OptiFit and descriptions of the parameter
 options on the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
