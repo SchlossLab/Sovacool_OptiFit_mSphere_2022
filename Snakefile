@@ -38,7 +38,8 @@ subworkflow vsearch:
 
 rule paper:
     input:
-        pdf='docs/paper.pdf'
+        pdf='docs/paper.pdf',
+        md='paper/paper.md'
 
 rule subtargets: # it takes a long time to build the DAG for some of these
     input:
@@ -115,11 +116,10 @@ rule plot_results_split:
     script:
         'code/R/plot_results_split.R'
 
-rule render_paper:
+rule render_markdown:
     input:
         Rmd="paper/paper.Rmd",
         R='code/R/render.R',
-        fcns="code/R/functions.R",
         rda=rules.calc_results_stats.output.rda,
         deps=['paper/preamble.tex', 'paper/head.tex',
               'paper/references.bib', 'paper/msphere.csl',
@@ -130,10 +130,21 @@ rule render_paper:
               rules.plot_results_split.output
               ]
     output:
-        pdf='docs/paper.pdf',
-        md='docs/paper.md'
+        md='paper/paper.md'
     params:
-        outdir='docs/'
+        format='github_document'
+    script:
+        'code/R/render.R'
+
+rule render_pdf:
+    input:
+        Rmd="paper/paper.Rmd",
+        R='code/R/render.R',
+        md_output=rules.render_markdown.output.md
+    output:
+        pdf='docs/paper.pdf'
+    params:
+        format='pdf_document'
     script:
         'code/R/render.R'
 
