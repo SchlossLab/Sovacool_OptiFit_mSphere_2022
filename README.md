@@ -8,8 +8,8 @@
 This repository contains the complete analysis workflow used to benchmark the
 OptiFit algorithm in [mothur](https://github.com/mothur/mothur)
 and produce the accompanying [manuscript](docs/paper.pdf).
-Find details on how to use OptiFit and descriptions of the parameter
-options on the mothur wiki: https://mothur.org/wiki/cluster.fit/.
+Find details on how to use OptiFit and descriptions of the parameter options on
+the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
 ## The Workflow
 
@@ -48,18 +48,22 @@ the subworkflows and renders the [paper](paper).
     conda env create -f config/env.simple.yaml
     conda activate optifit
     ```
-    Additionally, I used a custom version of `ggraph` for the algorithm figure.
-    You can install it with devtools from R:
+    Additionally, I used a custom version of
+    [`ggraph`](https://ggraph.data-imaginist.com/)
+    for the algorithm figure.
+    You can install it with `devtools` from R:
     ```r
     devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
     ```
-    The schtools package is also needed to render the manuscript:
+    The [`schtools`](https://github.com/SchlossLab/schtools)
+    package is also needed to render the manuscript:
     ```r
     devtools::install_github('SchlossLab/schtools')
     ```
     Finally, if you do not have LaTeX already, you'll need to install a LaTeX
     distribution before rendering the manuscript as a PDF.
-    You can use `tinytex` to do so:
+    You can use [`tinytex`](https://yihui.org/tinytex/)
+    to do so:
     ```r
     tinytex::install_tinytex()
     ```
