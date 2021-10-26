@@ -17,7 +17,7 @@ algorithm:
        OptiFit stops iterating over sequences once the MCC score stabilizes (in
        this example; only one iteration over each sequence is needed).
   dim: c(6.87,5.5)
-  path: here('figures', 'algorithm.tiff')
+  path: as.character('../figures/algorithm.tiff')
 workflow:
   cap: \textbf{The Analysis Workflow.}
        Reference sequences from Greengenes, the RDP, and SILVA were downloaded,
@@ -35,7 +35,7 @@ workflow:
        The final MCC score was reported for all OptiClust and OptiFit
        repetitions.
   dim: c(6,4)
-  path: here('figures', 'workflow.tiff')
+  path: as.character('../figures/workflow.tiff')
 results_sum:
   cap: \textbf{Benchmarking Results.}
        The median MCC score, fraction of query sequences that mapped in
@@ -48,7 +48,7 @@ results_sum:
        Reference-based clustering was repeated with open and closed mode.
        For additional comparison, VSEARCH was used for _de novo_ and reference-based clustering against the Greengenes database.
   dim: c(6,6)
-  path: here('figures', 'results_sum.tiff')
+  path: as.character('../figures/results_sum.tiff')
 results_split:
   cap: \textbf{Split dataset strategy.}
        The median MCC score, fraction of query sequences that mapped in
@@ -63,4 +63,4 @@ results_split:
        100 random seeds.
        _De novo_ clustering each dataset is also shown for comparison.
   dim: c(6.87,8)
-  path: here('figures', 'results_split.tiff')
+  path: as.character('../figures/results_split.tiff')

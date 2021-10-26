@@ -1,54 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-10-25
-
-\usepackage{helvet} % Helvetica font
-\renewcommand*\familydefault{\sfdefault} % Use the sans serif version of the font
-\usepackage[T1]{fontenc}
-
-\usepackage[none]{hyphenat}
-
-\usepackage{setspace}
-\doublespacing
-\setlength{\parskip}{1em}
-
-\usepackage{lineno}
-
-\usepackage{pdfpages}
-\usepackage{comment}
-\usepackage[labelfont=bf]{caption}
-\usepackage{fancyhdr}
-\usepackage{lastpage}
-
-\pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0pt}
-\rfoot{\thepage}
-
-\usepackage{xcolor}
-\definecolor{queryGreen}{HTML}{1B9E77}
-\definecolor{refOrange}{HTML}{D95F02}
-
-
-\begin{center}
-\vspace{25mm}
-
-Kelly L. Sovacool${^1}$, Sarah L. Westcott${^2}$, M. Brodie Mumphrey${^1}$, Gabrielle A. Dotson${^1}$, Patrick D. Schloss${^2\dagger}$
-
-$1$ Department of Computational Medicine and Bioinformatics, University of Michigan
-
-$2$ Department of Microbiology and Immunology, University of Michigan
-
-\vspace{30mm}
-
-$\dagger$ To whom correspondence should be addressed: pschloss@umich.edu
-
-\end{center}
-
-
-\newpage
-\linenumbers
+2021-10-26
 
 ## Abstract
 
@@ -218,8 +171,7 @@ sequence were moved to one of the OTUs containing at least one other
 similar sequence. The sequence is then moved to the OTU which would
 result in the best MCC score. OptiFit stops iterating over sequences
 once the MCC score stabilizes (in this example; only one iteration over
-each sequence is
-needed).](/Users/kelly/projects/schloss-lab/optiFit/figures/algorithm-1.png)
+each sequence is needed).](../figures/algorithm-1.png)
 
 OptiFit begins where OptiClust ends, starting with a list of reference
 OTUs and their sequences, a list of query sequences to cluster to the
@@ -277,8 +229,7 @@ repeated 100 times for each dataset and database combination. Datasets
 were also randomly split into a reference and query fraction, and the
 query sequences were fit to the reference sequences with OptiFit for 100
 repetitions. The final MCC score was reported for all OptiClust and
-OptiFit
-repetitions.](/Users/kelly/projects/schloss-lab/optiFit/figures/workflow-1.png)
+OptiFit repetitions.](../figures/workflow-1.png)
 
 Since closed reference clustering does not cluster query sequences that
 could not be clustered into reference OTUs, an additional measure of
@@ -315,7 +266,7 @@ the other 50%, or fitting the dataset to a reference database
 (Greengenes, SILVA, or RDP). Reference-based clustering was repeated
 with open and closed mode. For additional comparison, VSEARCH was used
 for *de novo* and reference-based clustering against the Greengenes
-database.](/Users/kelly/projects/schloss-lab/optiFit/figures/results_sum-1.png)
+database.](../figures/results_sum-1.png)
 
 To compare to the reference clustering methods used by QIIME2, we
 clustered each dataset with VSEARCH against the Greengenes database of
@@ -327,7 +278,7 @@ OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference
 sequences is considered when assigning sequences to OTUs.
 <!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced 13.9%
-higher quality OTUs than VSEARCH in terms of MCC, but performed 
+higher quality OTUs than VSEARCH in terms of MCC, but performed
 52.0% slower than VSEARCH.--> In closed reference mode, OptiFit produced
 27.2% higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
 24.7% more query sequences than OptiFit to the Greengenes reference
@@ -388,7 +339,7 @@ similarity to other sequences in the dataset. With the simple random
 sample method, dataset splitting was repeated with reference fractions
 ranging from 10% to 90% of the dataset and for 100 random seeds. *De
 novo* clustering each dataset is also shown for
-comparison.](/Users/kelly/projects/schloss-lab/optiFit/figures/results_split-1.png)
+comparison.](../figures/results_split-1.png)
 
 While we initially tested this strategy using a 50% split of the data
 into reference and query fractions, we next investigated whether there
