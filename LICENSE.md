@@ -2,11 +2,11 @@
 
 ## MIT License
 
-The software codes are made available under the
-[OSI][osi]-approved
-[MIT license][mit-license].
+All code included in this repository is made available under the
+[OSI][osi]-approved [MIT license][mit-license].
 
-Copyright (c) 2018-2021 Kelly L. Sovacool, Sarah L. Westcott, M. Brodie Mumphrey, Gabrielle A. Doston, and Patrick D. Schloss
+Copyright (c) 2021 Kelly L. Sovacool, Sarah L. Westcott, M. Brodie
+Mumphrey, Gabrielle A. Doston, and Patrick D. Schloss
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -31,8 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 All text, images, non-software materials are made available under the
 [Creative Commons Attribution license][cc-by-human].
-The following is a human-readable summary of
-(and not a substitute for) the
+The following is a human-readable summary of (and not a substitute for) the
 [full legal text of the CC BY 4.0 license][cc-by-legal].
 
 You are free:
@@ -47,13 +46,12 @@ license terms.
 
 Under the following terms:
 
-* **Attribution**---You must give appropriate credit (mentioning that
-  your work is derived from work that is Copyright ©
-  the authors and, where practical, linking to
-  https://github.com/SchlossLab/Sovacool_OptiFit_2021), provide a
-  [link to the license][cc-by-human], and indicate if changes were made. You may do
-  so in any reasonable manner, but not in any way that suggests the
-  licensor endorses you or your use.
+* **Attribution**---You must give appropriate credit (mentioning that your work
+  is derived from work that is Copyright © Sovacool _et al._ and, where
+  practical, linking to https://github.com/SchlossLab/Sovacool_OptiFit_2021),
+  provide a [link to the license][cc-by-human], and indicate if changes were
+  made. You may do so in any reasonable manner, but not in any way that suggests
+  the licensor endorses you or your use.
 
 **No additional restrictions**---You may not apply legal terms or
 technological measures that legally restrict others from doing
