@@ -14,7 +14,6 @@ output:
 csl: msphere.csl
 fontsize: 12pt
 geometry: margin=1.0in
-repository_url: https://github.com/SchlossLab/OptiFitAnalysis
 params:
     snakemake: "none"
 ---
@@ -40,6 +39,7 @@ snakemake <- params$snakemake
 if (is_character(snakemake)) {
   stop("You need to knit this R Markdown document from the Snakemake workflow")
 }
+
 load(here("results", "stats.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
@@ -136,14 +136,13 @@ between all pairs of sequences in the dataset to cluster them into OTUs by
 maximizing the Matthews Correlation Coefficient (MCC)
 [@westcott_opticlust_2017].
 This approach takes into account the distances between all pairs of sequences
-when assigning query sequences to OTUs, in contrast to other _de novo_
-methods such as the greedy clustering algorithms implemented in USEARCH and
-VSEARCH, which only consider the distance between the query sequence and a
-representative centroid sequence in the OTU [@edgar_search_2010;
-@rognes_vsearch_2016].
+when assigning query sequences to OTUs, in contrast to other _de novo_ methods
+such as the greedy clustering algorithms implemented in USEARCH and VSEARCH
+[@edgar_search_2010; @rognes_vsearch_2016].
 In methods employing greedy clustering algorithms, only the distance between
-each sequence and the centroid sequence is considered while clustering.
-As a result, distances between pairs of sequences in the same OTU are frequenty
+each sequence and a representative centroid sequence in the OTU is considered
+while clustering.
+As a result, distances between pairs of sequences in the same OTU are frequently
 larger than the specified threshold, i.e. they are false positives.
 In contrast, the OptiClust algorithm takes into account the distance between all
 pairs of sequences when considering how to cluster sequences into OTUs and is
@@ -176,7 +175,7 @@ To overcome the limitations of current reference-based and _de novo_ clustering
 algorithms while maintaining OTU quality, we developed OptiFit, a
 reference-based clustering algorithm.
 While other tools represent reference OTUs with a single sequence, OptiFit uses
-multiple sequences in existing OTUs as the reference and fits new sequences
+multiple sequences in existing OTUs as the reference and fits new sequences to 
 those reference OTUs.
 In contrast to other tools, OptiFit considers all pairwise distance scores
 between reference and query sequences when assigning sequences to OTUs in order
@@ -201,10 +200,10 @@ OptiClust first seeds each sequence into its own OTU as a singleton.
 Then for each sequence, OptiClust considers whether the sequence should move to
 a different OTU or remain in its current OTU, choosing the option that results
 in a better Matthews correlation coefficient (MCC) [@westcott_opticlust_2017].
-The MCC uses all values from a confusion matrix and ranges from zero to one,
-with a score of one occurring when all sequence pairs are true positives and
-true negatives, and a score of zero when all pairs are false positives and false
-negatives.
+The MCC uses all values from a confusion matrix and ranges from negative one to
+one, with a score of one occurring when all sequence pairs are true positives
+and true negatives and a score of negative one occurring when all pairs are
+false positives and false negatives.
 Sequence pairs that are similar to each other (i.e. within the distance
 threshold) are counted as true positives if they are clustered into the same OTU,
 and false negatives if they are not in the the same OTU.
@@ -248,12 +247,7 @@ sequences _de novo_, then cluster the query sequences to the reference OTUs.
 
 ### Reference clustering with public databases
 
-```{r db_names, include = FALSE}
-db_names <- names(dn_dbs_mcc)
-db_names_upper <- case_when(db_names == 'gg' ~ 'Greengenes',
-                           TRUE ~ toupper(db_names))
-close_enough(dn_dbs_mcc['gg'], dn_dbs_mcc['silva'])
-close_enough(dn_dbs_mcc['gg'], dn_dbs_mcc['rdp'], 10^-1)
+```{r assert_db_mccs, include = FALSE}
 mcc_decreasing <- c(closed_fit_rdp_mcc, closed_fit_silva_mcc, closed_fit_gg_mcc,
                     open_fit_silva_mcc, open_fit_gg_mcc, open_fit_rdp_mcc,
                     opticlust_mcc)
@@ -267,7 +261,9 @@ non-redundant database, and the Ribosomal Database Project (RDP)
 Reference OTUs for each database were created by performing _de novo_ clustering
 with OptiClust at a distance threshold of 3% using the V4 region of each
 sequence (see Figure \ref{fig:workflow}).
-The _de novo_ MCC scores were `r dn_dbs_mcc` for `r db_names_upper`,
+After trimming to the V4 region, the databases contained 
+`r dn_dbs %>% pull('nseqs')` unique sequences and produced _de novo_ MCC scores 
+of `r dn_dbs %>% pull('med_mcc')` for `r dn_dbs %>% pull('refname')`, 
 respectively.
 Clustering sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and
@@ -289,7 +285,7 @@ figs('workflow', 'path') %>%
   grid::grid.raster()
 ```
 
-```{r, include = FALSE}
+```{r assert_db_frac, include = FALSE}
 assert_that(!is.unsorted(c(frac_fit_rdp, frac_fit_silva, frac_fit_gg)))
 assert_that((frac_fit_gg - frac_fit_silva) < 10)
 assert_that((frac_fit_gg - frac_fit_rdp) > 40)
@@ -310,7 +306,7 @@ The database chosen affects the final closed reference OTU assignments
 considerably in terms of both MCC score and fraction of query sequences that
 could be clustered into the reference OTUs.
 
-```{r, include = FALSE}
+```{r assert_db_sec, include = FALSE}
 assert_that(!is.unsorted(c(closed_fit_silva_human_sec,
                            opticlust_human_sec,
                            open_fit_silva_human_sec)))
@@ -337,7 +333,7 @@ figs('results_sum', 'path') %>%
   grid::grid.raster()
 ```
 
-```{r, include = FALSE}
+```{r assert_vsearch, include = FALSE}
 assert_that(mcc_closed_fit_db_vs_vsearch > 10)
 assert_that(frac_vsearch_vs_fit > 10)
 assert_that((open_fit_gg_mcc - open_vsearch_mcc) > 0.20)
@@ -353,9 +349,6 @@ query sequence's similarity to the single reference sequence.
 In contrast, OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference sequences
 is considered when assigning sequences to OTUs.
-<!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced `r mcc_opticlust_vs_vsearch`%
-higher quality OTUs than VSEARCH in terms of MCC, but performed
-`r sec_opticlust_vs_vsearch`% slower than VSEARCH.-->
 In closed reference mode, OptiFit produced `r mcc_closed_fit_db_vs_vsearch`%
 higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
 `r frac_vsearch_vs_fit`% more query sequences than OptiFit to the Greengenes
@@ -393,7 +386,7 @@ split into a reference fraction and a query fraction.
 Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were clustered to the _de novo_ OTUs with OptiFit.
 
-```{r, include = FALSE}
+```{r assert_split_simple, include = FALSE}
 close_enough(mcc_opticlust_vs_fit_split_simple, 0.02)
 assert_that((frac_fit_split - frac_fit_gg) > 20)
 assert_that(!is.unsorted(c(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_split_vs_clust, sec_open_fit_split_vs_db)))
@@ -452,7 +445,7 @@ Thus, the reference fraction did not affect OTU quality in terms of MCC score,
 but did affect the run time and the fraction of sequences that mapped during the
 closed reference clustering.
 
-```{r, include = FALSE}
+```{r assert_split_strat, include = FALSE}
 close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
 assert_that(!is.unsorted(c(sec_fit_split_dist,
                            sec_fit_split_simple,
@@ -495,12 +488,13 @@ Open reference OptiFit performs slower than OptiClust due to the additional _de
 novo_ clustering step, so users may prefer OptiClust for tasks that do not
 require reference OTUs.
 
-```{r, include = FALSE}
-ref_seqs <- read_tsv(here('subworkflows', '0_prep_db', 'data',
-                          'seq_counts.tsv')) %>%
-  pivot_wider(names_from = ref, values_from = nseqs) %>% as.list()
-assert_that(ref_seqs[['rdp']] < ref_seqs[['silva']])
-assert_that(ref_seqs[['silva']] < ref_seqs[['gg']])
+```{r assert_ref_sizes, include = FALSE}
+ref_seqs <- dn_dbs %>% pull(nseqs) 
+names(ref_seqs) <- dn_dbs %>% pull(ref)
+assert_that(!is.unsorted(ref_seqs[['rdp']], 
+                         ref_seqs[['silva']], 
+                         ref_seqs[['gg']])
+            )
 ```
 
 When clustering to public databases, OTU quality dropped in closed reference mode

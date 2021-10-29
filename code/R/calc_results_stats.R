@@ -44,10 +44,14 @@ sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
 ################################################################################
 # de novo ref dbs
 
-dn_dbs_mcc <- read_tsv("subworkflows/2_fit_reference_db/results/denovo_dbs.tsv") %>%
+dn_dbs <- read_tsv("subworkflows/2_fit_reference_db/results/denovo_dbs.tsv") %>%
   group_by(ref) %>%
-  summarize(med_mcc = median(mcc)) %>%
-  deframe()
+  summarize(med_mcc = median(mcc)) %>% 
+  full_join(read_tsv(here('subworkflows', '0_prep_db', 'data',
+                          'seq_counts.tsv')),
+            by = "ref") %>% 
+  mutate(refname = case_when(ref == 'gg' ~ 'Greengenes',
+                             TRUE ~ toupper(ref)))
 
 ################################################################################
 # ref db open
@@ -351,6 +355,7 @@ frac_fit_split_human_simple_1 <- dat %>%
     tool == "mothur",
     dataset == "human",
     ref_weight == "simple",
+    method == 'closed',
     ref_frac == 0.1
   ) %>%
   pull(frac_map_median) %>%
@@ -362,6 +367,7 @@ frac_fit_split_human_simple_9 <- dat %>%
     tool == "mothur",
     dataset == "human",
     ref_weight == "simple",
+    method == 'closed',
     ref_frac == 0.9
   ) %>%
   pull(frac_map_median) %>%
@@ -406,6 +412,7 @@ frac_fit_split_simple <- dat %>%
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "simple",
+    method == 'closed',
     ref_frac == 0.5
   ) %>%
   pull(frac_map_median) %>%
@@ -416,6 +423,7 @@ frac_fit_split_abun <- dat %>%
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "abundance",
+    method == 'closed',
     ref_frac == 0.5
   ) %>%
   pull(frac_map_median) %>%
@@ -426,6 +434,7 @@ frac_fit_split_dist <- dat %>%
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "distance",
+    method == 'closed',
     ref_frac == 0.5
   ) %>%
   pull(frac_map_median) %>%
