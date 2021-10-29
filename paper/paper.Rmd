@@ -14,7 +14,6 @@ output:
 csl: msphere.csl
 fontsize: 12pt
 geometry: margin=1.0in
-repository_url: https://github.com/SchlossLab/OptiFitAnalysis
 params:
     snakemake: "none"
 ---
