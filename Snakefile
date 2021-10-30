@@ -5,6 +5,10 @@ import yaml
 configfile: 'config/config.yaml'
 figs_meta_filename = 'paper/figures.yaml'
 fig_meta = yaml.safe_load(open(figs_meta_filename))
+img_dpi = 300
+workflow_dim = fig_meta['workflow']['dim'].strip('c(').rstrip(')')
+workflow_width = float(workflow_dim.split(',')[0]) * img_dpi
+workflow_height = float(workflow_dim.split(',')[1]) * img_dpi
 
 subworkflow prep_db:
     workdir:
@@ -82,16 +86,20 @@ rule plot_algorithm:
     script:
         'code/R/plot_algorithm_diagram.R'
 
-rule plot_workflow:
+rule plot_workflow: # https://stackoverflow.com/a/20536144/5787827
     input:
         gv='figures/workflow.gv'
     output:
+        tmp=temp('figures/workflow.tmp.tiff'),
         tiff='figures/workflow.tiff'
     params:
-        dim=fig_meta['workflow']['dim'].strip('c(').rstrip(')')
+        dim=workflow_dim,
+        width=workflow_width,
+        height=workflow_height
     shell:
         """
-        dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output}
+        dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output.tmp}
+        convert {output.tmp} -gravity center -background white -extent {params.width}x{params.height} {output.tiff}
         """
 
 rule plot_results_sum:

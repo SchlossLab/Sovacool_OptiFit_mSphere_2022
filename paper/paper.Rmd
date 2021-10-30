@@ -282,7 +282,7 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, fig.dim=c(5.64,4), fig.cap=figs('workflow','cap')}
+```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
 figs('workflow', 'path') %>%
   tiff::readTIFF() %>%
   grid::grid.raster()
