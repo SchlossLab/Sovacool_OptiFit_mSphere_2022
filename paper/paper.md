@@ -79,13 +79,12 @@ Coefficient (MCC) ([1](#ref-westcott_opticlust_2017)). This approach
 takes into account the distances between all pairs of sequences when
 assigning query sequences to OTUs, in contrast to other *de novo*
 methods such as the greedy clustering algorithms implemented in USEARCH
-and VSEARCH, which only consider the distance between the query sequence
-and a representative centroid sequence in the OTU
-([4](#ref-edgar_search_2010), [5](#ref-rognes_vsearch_2016)). In methods
-employing greedy clustering algorithms, only the distance between each
-sequence and the centroid sequence is considered while clustering. As a
+and VSEARCH ([4](#ref-edgar_search_2010),
+[5](#ref-rognes_vsearch_2016)). In methods employing greedy clustering
+algorithms, only the distance between each sequence and a representative
+centroid sequence in the OTU is considered while clustering. As a
 result, distances between pairs of sequences in the same OTU are
-frequenty larger than the specified threshold, i.e. they are false
+frequently larger than the specified threshold, i.e. they are false
 positives. In contrast, the OptiClust algorithm takes into account the
 distance between all pairs of sequences when considering how to cluster
 sequences into OTUs and is thus less willing to take on false positives.
@@ -118,8 +117,8 @@ To overcome the limitations of current reference-based and *de novo*
 clustering algorithms while maintaining OTU quality, we developed
 OptiFit, a reference-based clustering algorithm. While other tools
 represent reference OTUs with a single sequence, OptiFit uses multiple
-sequences in existing OTUs as the reference and fits new sequences those
-reference OTUs. In contrast to other tools, OptiFit considers all
+sequences in existing OTUs as the reference and fits new sequences to
+those reference OTUs. In contrast to other tools, OptiFit considers all
 pairwise distance scores between reference and query sequences when
 assigning sequences to OTUs in order to produce OTUs of the highest
 possible quality. Here, we tested the OptiFit algorithm with the
@@ -145,18 +144,18 @@ Then for each sequence, OptiClust considers whether the sequence should
 move to a different OTU or remain in its current OTU, choosing the
 option that results in a better Matthews correlation coefficient (MCC)
 ([1](#ref-westcott_opticlust_2017)). The MCC uses all values from a
-confusion matrix and ranges from zero to one, with a score of one
-occurring when all sequence pairs are true positives and true negatives,
-and a score of zero when all pairs are false positives and false
-negatives. Sequence pairs that are similar to each other (i.e. within
-the distance threshold) are counted as true positives if they are
-clustered into the same OTU, and false negatives if they are not in the
-the same OTU. Sequence pairs that are not similar to each other are true
-negatives if they are not clustered into the same OTU, and false
-positives if they are not in the same OTU. OptiClust iterations continue
-until the MCC stabilizes or until a maximum number of iterations is
-reached. This process produces *de novo* OTU assignments with the most
-optimal MCC given the input sequences.
+confusion matrix and ranges from negative one to one, with a score of
+one occurring when all sequence pairs are true positives and true
+negatives and a score of negative one occurring when all pairs are false
+positives and false negatives. Sequence pairs that are similar to each
+other (i.e. within the distance threshold) are counted as true positives
+if they are clustered into the same OTU, and false negatives if they are
+not in the the same OTU. Sequence pairs that are not similar to each
+other are true negatives if they are not clustered into the same OTU,
+and false positives if they are not in the same OTU. OptiClust
+iterations continue until the MCC stabilizes or until a maximum number
+of iterations is reached. This process produces *de novo* OTU
+assignments with the most optimal MCC given the input sequences.
 
 ![ Here we present a toy example of the OptiFit algorithm fitting query
 sequences to existing OTUs, given the list of all sequence pairs that
@@ -205,18 +204,19 @@ Database Project (RDP) ([6](#ref-desantis_greengenes_2006),
 [12](#ref-quast_silva_2013), [13](#ref-cole_ribosomal_2014)). Reference
 OTUs for each database were created by performing *de novo* clustering
 with OptiClust at a distance threshold of 3% using the V4 region of each
-sequence (see Figure ). The *de novo* MCC scores were 0.72, 0.74, and
-0.73 for Greengenes, RDP, and SILVA, respectively. Clustering sequences
-to Greengenes and SILVA in closed reference mode performed similarly,
-with median MCC scores of 0.85 and 0.77 respectively, while the median
-MCC was 0.35 when clustering to RDP (Figure ). For comparison,
-clustering datasets with OptiClust produced an average MCC score of
-0.87. This gap in OTU quality mostly disappeared when clustering in open
-reference mode, which produced median MCCs of 0.86 with Greengenes, 0.85
-with SILVA, and 0.86 with the RDP. Thus, open reference OptiFit produced
-OTUs of very similar quality as *de novo* clustering, and closed
-reference OptiFit followed closely behind as long as a suitable
-reference database was chosen.
+sequence (see Figure ). After trimming to the V4 region, the databases
+contained 174,979, 16,192, and 173,648 unique sequences and produced *de
+novo* MCC scores of 0.72, 0.74, and 0.73 for Greengenes, RDP, and SILVA,
+respectively. Clustering sequences to Greengenes and SILVA in closed
+reference mode performed similarly, with median MCC scores of 0.85 and
+0.77 respectively, while the median MCC was 0.35 when clustering to RDP
+(Figure ). For comparison, clustering datasets with OptiClust produced
+an average MCC score of 0.87. This gap in OTU quality mostly disappeared
+when clustering in open reference mode, which produced median MCCs of
+0.86 with Greengenes, 0.85 with SILVA, and 0.86 with the RDP. Thus, open
+reference OptiFit produced OTUs of very similar quality as *de novo*
+clustering, and closed reference OptiFit followed closely behind as long
+as a suitable reference database was chosen.
 
 ![ Reference sequences from Greengenes, the RDP, and SILVA were
 downloaded, preprocessed with mothur by trimming to the V4 region, and
@@ -276,25 +276,23 @@ VSEARCH maps sequences to the reference based on each individual query
 sequence’s similarity to the single reference sequence. In contrast,
 OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference
-sequences is considered when assigning sequences to OTUs.
-<!--**TODO: delete or move this sentence:** _De novo_ clustering with OptiClust produced 13.9%
-higher quality OTUs than VSEARCH in terms of MCC, but performed
-52.0% slower than VSEARCH.--> In closed reference mode, OptiFit produced
-27.2% higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
-24.7% more query sequences than OptiFit to the Greengenes reference
-database (Figure ). This is because VSEARCH only considers the distances
-between each query sequence to the single reference sequence, while
-OptiFit considers the distances between all pairs of reference and query
-sequences in an OTU. When open reference clustering, OptiFit produced
-higher quality OTUs than VSEARCH against the Greengenes database, with
-median MCC scores of 0.86 and 0.56, respectively. In terms of run time,
-OptiFit outperformed VSEARCH in both closed and open reference mode by
-58.8% and 51.6% on average, respectively. Thus, the more stringent OTU
-definition employed by OptiFit, which prefers the query sequence to be
-similar to all other sequences in the OTU rather than to only one
-sequence, resulted in fewer sequences being clustered to reference OTUs
-than when using VSEARCH, but caused OptiFit to outperform VSEARCH in
-terms of both OTU quality and execution time.
+sequences is considered when assigning sequences to OTUs. In closed
+reference mode, OptiFit produced 27.2% higher quality OTUs than VSEARCH,
+but VSEARCH was able to cluster 24.7% more query sequences than OptiFit
+to the Greengenes reference database (Figure ). This is because VSEARCH
+only considers the distances between each query sequence to the single
+reference sequence, while OptiFit considers the distances between all
+pairs of reference and query sequences in an OTU. When open reference
+clustering, OptiFit produced higher quality OTUs than VSEARCH against
+the Greengenes database, with median MCC scores of 0.86 and 0.56,
+respectively. In terms of run time, OptiFit outperformed VSEARCH in both
+closed and open reference mode by 58.8% and 51.6% on average,
+respectively. Thus, the more stringent OTU definition employed by
+OptiFit, which prefers the query sequence to be similar to all other
+sequences in the OTU rather than to only one sequence, resulted in fewer
+sequences being clustered to reference OTUs than when using VSEARCH, but
+caused OptiFit to outperform VSEARCH in terms of both OTU quality and
+execution time.
 
 ### Reference clustering with split datasets
 
@@ -355,7 +353,7 @@ was 367.6 seconds with 10% of sequences in the reference and 269.0
 seconds with 90% of sequences in the reference. In closed reference
 mode, the fraction of sequences that mapped increased as the reference
 size increased; for the human dataset, the median fraction mapped was
-0.92 with 10% of sequences in the reference and 0.97 with 90% of
+0.85 with 10% of sequences in the reference and 0.95 with 90% of
 sequences in the reference. These trends held for the other datasets as
 well. Thus, the reference fraction did not affect OTU quality in terms
 of MCC score, but did affect the run time and the fraction of sequences
@@ -370,8 +368,8 @@ similarity to other sequences in the dataset (Figure ). OTU quality in
 terms of MCC was similar across all three sampling methods (median MCC
 of 0.87). In closed-reference clustering mode, the fraction of sequences
 that mapped were similar for simple and abundance-weighted sampling
-(median fraction mapped of 0.97 and 0.96, respectively), but worse for
-similarity-weighted sampling (median fraction mapped of 0.89). While
+(median fraction mapped of 0.85 and 0.84, respectively), but worse for
+similarity-weighted sampling (median fraction mapped of 0.56). While
 simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
 similarity-weighted samples with a median runtime of 91.4 seconds
