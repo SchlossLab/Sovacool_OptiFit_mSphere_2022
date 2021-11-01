@@ -90,16 +90,17 @@ rule plot_workflow: # https://stackoverflow.com/a/20536144/5787827
     input:
         gv='figures/workflow.gv'
     output:
-        tmp=temp('figures/workflow.tmp.tiff'),
         tiff='figures/workflow.tiff'
     params:
+        tmp='figures/workflow.tmp.tiff',
         dim=workflow_dim,
         width=workflow_width,
         height=workflow_height
     shell:
         """
         dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output.tmp}
-        convert {output.tmp} -gravity center -background white -extent {params.width}x{params.height} {output.tiff}
+        convert {params.tmp} -gravity center -background white -extent {params.width}x{params.height} {output.tiff}
+        rm {params.tmp}
         """
 
 rule plot_results_sum:
