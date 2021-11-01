@@ -55,7 +55,7 @@ results_split:
        closed-reference clustering, and runtime in seconds from repeating each
        clustering method 100 times.
        Each dataset was split into a reference and query fraction.
-       References sequences were selected via a simple random sample, weighting
+       Reference sequences were selected via a simple random sample, weighting
        sequences by relative abundance, or weighting by similarity to other
        sequences in the dataset.
        With the simple random sample method, dataset splitting was repeated

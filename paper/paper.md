@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-10-30
+2021-10-31
 
 ## Abstract
 
@@ -331,7 +331,7 @@ strategy.
 ![ The median MCC score, fraction of query sequences that mapped in
 closed-reference clustering, and runtime in seconds from repeating each
 clustering method 100 times. Each dataset was split into a reference and
-query fraction. References sequences were selected via a simple random
+query fraction. Reference sequences were selected via a simple random
 sample, weighting sequences by relative abundance, or weighting by
 similarity to other sequences in the dataset. With the simple random
 sample method, dataset splitting was repeated with reference fractions
