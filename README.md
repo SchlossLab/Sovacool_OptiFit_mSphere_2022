@@ -33,21 +33,27 @@ the subworkflows and renders the [paper](paper).
 ## Quickstart
 
 1. Before cloning, configure git symlinks:
-    ```bash
+   
+   ```bash
     git config --global core.symlinks true
     ```
     Otherwise, git will create text files in place of symlinks.
+    
 1. Clone this repository.
-    ```bash
+   
+   ```bash
     git clone https://github.com/SchlossLab/OptiFitAnalysis
     cd OptiFitAnalysis/
     ```
+    
 1. Install the dependencies.
+    
     Almost all are listed in the conda environment file.
     ```bash
     conda env create -f config/env.simple.yaml
     conda activate optifit
     ```
+    
     Additionally, I used a custom version of
     [`ggraph`](https://ggraph.data-imaginist.com/)
     for the algorithm figure.
@@ -55,11 +61,13 @@ the subworkflows and renders the [paper](paper).
     ```r
     devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
     ```
+    
     The [`schtools`](https://github.com/SchlossLab/schtools)
     package is also needed to render the manuscript:
     ```r
     devtools::install_github('SchlossLab/schtools')
     ```
+    
     Finally, if you do not have LaTeX already, you'll need to install a LaTeX
     distribution before rendering the manuscript as a PDF.
     You can use [`tinytex`](https://yihui.org/tinytex/)
@@ -67,17 +75,20 @@ the subworkflows and renders the [paper](paper).
     ```r
     tinytex::install_tinytex()
     ```
+    
 1. Run the entire pipeline.
+
     Locally:
     ```
     snakemake --cores 4
     ```
+    
     Or on an HPC running slurm:
     ```
     sbatch code/slurm/submit_all.sh
     ```
     (You will first need to edit your email and slurm account info in the
-    [submission script](code/slurm/submit.sh)
+    [submission script](code/slurm/)
     and [cluster config](config/cluster.json).)
 
 ## Directory Structure
