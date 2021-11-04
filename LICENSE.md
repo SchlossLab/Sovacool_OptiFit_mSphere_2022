@@ -29,8 +29,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## CC BY 4.0 License
 
-All text, images, non-software materials are made available under the
-[Creative Commons Attribution license][cc-by-human].
+All text, images, and other non-software materials are made available under
+the [Creative Commons Attribution license][cc-by-human].
 The following is a human-readable summary of (and not a substitute for) the
 [full legal text of the CC BY 4.0 license][cc-by-legal].
 
