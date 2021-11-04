@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-10-31
+2021-11-04
 
 ## Abstract
 
@@ -499,8 +499,9 @@ query sequences were clustered into the reference OTUs with OptiFit.
 
 ### Benchmarking
 
-Since OptiClust and OptiFit employ a random number generator to break
-ties when OTU assignments are of equal quality, they produce slightly
+OptiClust and OptiFit randomize the order of query sequences prior to
+clustering and employ a random number generator to break ties when OTU
+assignments are of equal quality. As a result, they produce slightly
 different OTU assignments when repeated with different random seeds. To
 capture any variation in OTU quality or execution time, clustering was
 repeated with 100 random seeds for each combination of parameters and
