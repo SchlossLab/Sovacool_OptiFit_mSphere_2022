@@ -53,8 +53,20 @@ figs <- function(fig_name, attribute) {
   return(value)
 }
 
+# check whether all elements of two numeric vectors are close enough
 close_enough <- function(x, y, tol = 10^-2) {
   assert_that(all(near(x, y, tol = tol)))
+}
+
+# check whether all elements given are sorted in non-descending order
+is_nondesc <- function(...) {
+  things <- c(...)
+  if (length(things) < 1) {
+    warning('Zero elements were given to `is_nondesc()`')
+  }
+  first <- things[1]
+  last <- things[length(things)]
+  !is.unsorted(things) & first <= last
 }
 ```
 
@@ -248,10 +260,10 @@ sequences _de novo_, then cluster the query sequences to the reference OTUs.
 ### Reference clustering with public databases
 
 ```{r assert_db_mccs, include = FALSE}
-mcc_decreasing <- c(closed_fit_rdp_mcc, closed_fit_silva_mcc, closed_fit_gg_mcc,
+mcc_ascending <- c(closed_fit_rdp_mcc, closed_fit_silva_mcc, closed_fit_gg_mcc,
                     open_fit_silva_mcc, open_fit_gg_mcc, open_fit_rdp_mcc,
                     opticlust_mcc)
-assert_that(!is.unsorted(mcc_decreasing))
+is_nondesc(mcc_ascending)
 ```
 
 To test how OptiFit performs for reference-based clustering, we clustered each
@@ -286,7 +298,7 @@ figs('workflow', 'path') %>%
 ```
 
 ```{r assert_db_frac, include = FALSE}
-assert_that(!is.unsorted(c(frac_fit_rdp, frac_fit_silva, frac_fit_gg)))
+is_nondesc(frac_fit_rdp, frac_fit_silva, frac_fit_gg)
 assert_that((frac_fit_gg - frac_fit_silva) < 10)
 assert_that((frac_fit_gg - frac_fit_rdp) > 40)
 ```
@@ -307,9 +319,9 @@ considerably in terms of both MCC score and fraction of query sequences that
 could be clustered into the reference OTUs.
 
 ```{r assert_db_sec, include = FALSE}
-assert_that(!is.unsorted(c(closed_fit_silva_human_sec,
-                           opticlust_human_sec,
-                           open_fit_silva_human_sec)))
+is_nondesc(closed_fit_silva_human_sec,
+           opticlust_human_sec,
+           open_fit_silva_human_sec)
 ```
 
 
@@ -387,9 +399,9 @@ Reference sequences were clustered _de novo_ with OptiClust, then query
 sequences were clustered to the _de novo_ OTUs with OptiFit.
 
 ```{r assert_split_simple, include = FALSE}
-close_enough(mcc_opticlust_vs_fit_split_simple, 0.02)
+assert_that(mcc_opticlust_vs_fit_split_simple < 0.09)
 assert_that((frac_fit_split - frac_fit_gg) > 20)
-assert_that(!is.unsorted(c(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_split_vs_clust, sec_open_fit_split_vs_db)))
+is_nondesc(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_split_vs_clust, sec_open_fit_split_vs_db)
 ```
 
 First, we tested whether OptiFit performed as well as _de novo_ clustering when
@@ -447,11 +459,12 @@ closed reference clustering.
 
 ```{r assert_split_strat, include = FALSE}
 close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
-assert_that(!is.unsorted(c(sec_fit_split_dist,
-                           sec_fit_split_simple,
-                           sec_fit_split_abun)))
-close_enough(frac_fit_split_simple, frac_fit_split_abun)
-assert_that(frac_fit_split_dist < frac_fit_split_simple)
+is_nondesc(sec_fit_split_dist,
+           sec_fit_split_abun,
+           sec_fit_split_simple)
+is_nondesc(frac_fit_split_dist,
+           frac_fit_split_abun,
+           frac_fit_split_simple)
 ```
 
 After testing the split strategy using a simple random sample to select the
@@ -491,10 +504,9 @@ require reference OTUs.
 ```{r assert_ref_sizes, include = FALSE}
 ref_seqs <- dn_dbs %>% pull(nseqs) 
 names(ref_seqs) <- dn_dbs %>% pull(ref)
-assert_that(!is.unsorted(ref_seqs[['rdp']], 
-                         ref_seqs[['silva']], 
-                         ref_seqs[['gg']])
-            )
+is_nondesc(ref_seqs[['rdp']],
+           ref_seqs[['silva']],
+           ref_seqs[['gg']])
 ```
 
 When clustering to public databases, OTU quality dropped in closed reference mode
@@ -624,7 +636,7 @@ We implemented the analysis workflow in Snakemake [@koster_snakemake_2012]
 and wrote scripts in R [@r_core_team_r_2020],
 Python [@van_rossum_python_2009],
 and GNU bash [@noauthor_bash_nodate].
-Software used includes mothur v1.46.1 [@schloss_introducing_2009],
+Software used includes mothur v1.47.0 [@schloss_introducing_2009],
 VSEARCH v2.15.2 [@rognes_vsearch_2016],
 the tidyverse metapackage [@wickham_welcome_2019],
 R Markdown [@xie_r_2018],

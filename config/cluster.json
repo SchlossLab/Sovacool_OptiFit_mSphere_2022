@@ -28,7 +28,7 @@
  },
  "calc_dists_db": {
   "procs": "{resources.procs}",
-  "walltime": "12:00:00"
+  "walltime": "4:00:00"
  },
  "calc_dists_dataset": {
   "procs": "{resources.procs}",
@@ -40,7 +40,7 @@
  },
  "degap": {
   "procs": "{resources.procs}",
-  "walltime": "4:00:00"
+  "walltime": "12:00:00"
  },
  "preprocess": {
   "procs": "{resources.procs}",
@@ -59,22 +59,28 @@
   "walltime": "48:00:00"
  },
  "fit_to_ref_db": {
-  "procs": "{resources.procs}"
+  "procs": "{resources.procs}",
+  "pmem": "1GB"
     },
 "cluster_combined": {
- "procs": "{resources.procs}"
+ "procs": "{resources.procs}",
+ "pmem": "1GB"
     },
 "cluster_db": {
- "procs": "{resources.procs}"
+ "procs": "{resources.procs}",
+ "pmem": "1GB"
     },
 "cluster_dataset": {
- "procs": "{resources.procs}"
+ "procs": "{resources.procs}",
+ "pmem": "1GB"
     },
 "cluster_ref": {
-    "procs": "{resources.procs}"
+ "procs": "{resources.procs}",
+ "pmem": "1GB"
     },
 "fit_subsample": {
-    "procs": "{resources.procs}"
+    "procs": "{resources.procs}",
+    "pmem": "1GB"
     },
 "fit_subsample_criteria": {
     "procs": "{resources.procs}"

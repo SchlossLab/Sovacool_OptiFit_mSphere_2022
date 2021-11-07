@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-11-04
+2021-11-07
 
 ## Abstract
 
@@ -251,9 +251,9 @@ of speed, we repeated each OptiFit and OptiClust run 100 times and
 measured the execution time. Across all dataset and database
 combinations, closed reference OptiFit outperformed both OptiClust and
 open reference OptiFit (Figure ). For example, with the human dataset
-fit to SILVA reference OTUs, the average run times in seconds were 362.5
-for closed reference OptiFit, 420.2 for *de novo* clustering the
-dataset, and 536.2 for open reference OptiFit. Thus, the OptiFit
+fit to SILVA reference OTUs, the average run times in seconds were 406.8
+for closed reference OptiFit, 455.3 for *de novo* clustering the
+dataset, and 559.4 for open reference OptiFit. Thus, the OptiFit
 algorithm continues the precedent that closed reference clustering
 sacrifices OTU quality for execution speed.
 
@@ -278,7 +278,7 @@ OptiFit accepts reference OTUs which each may contain multiple
 sequences, and the sequence similarity between all query and reference
 sequences is considered when assigning sequences to OTUs. In closed
 reference mode, OptiFit produced 27.2% higher quality OTUs than VSEARCH,
-but VSEARCH was able to cluster 24.7% more query sequences than OptiFit
+but VSEARCH was able to cluster 24.8% more query sequences than OptiFit
 to the Greengenes reference database (Figure ). This is because VSEARCH
 only considers the distances between each query sequence to the single
 reference sequence, while OptiFit considers the distances between all
@@ -286,7 +286,7 @@ pairs of reference and query sequences in an OTU. When open reference
 clustering, OptiFit produced higher quality OTUs than VSEARCH against
 the Greengenes database, with median MCC scores of 0.86 and 0.56,
 respectively. In terms of run time, OptiFit outperformed VSEARCH in both
-closed and open reference mode by 58.8% and 51.6% on average,
+closed and open reference mode by 54.6% and 49.5% on average,
 respectively. Thus, the more stringent OTU definition employed by
 OptiFit, which prefers the query sequence to be similar to all other
 sequences in the OTU rather than to only one sequence, resulted in fewer
@@ -315,14 +315,14 @@ First, we tested whether OptiFit performed as well as *de novo*
 clustering when using the split dataset strategy with half of the
 sequences selected for the reference by a simple random sample (a 50%
 split) (Figure ; self-split). OTU quality was similar to that from
-OptiClust regardless of mode (0.025% difference in median MCC). In
-closed reference mode, OptiFit was able to cluster 84.7% of query
+OptiClust regardless of mode (0.029% difference in median MCC). In
+closed reference mode, OptiFit was able to cluster 84.8% of query
 sequences to reference OTUs with the split strategy, a great improvement
 over the average 59.1% of sequences clustered to the Greengenes
 database. In terms of run time, closed and open reference OptiFit
-performed faster than OptiClust on whole datasets by 36.2% and 34.2%,
-respectively. The split dataset strategy also performed 14.2% faster
-than the database strategy in closed reference mode and 47.7% faster in
+performed faster than OptiClust on whole datasets by 34.7% and 33.5%,
+respectively. The split dataset strategy also performed 13.5% faster
+than the database strategy in closed reference mode and 43.5% faster in
 open reference mode. Thus, reference clustering with the split dataset
 strategy creates as high quality OTUs as *de novo* clustering yet at a
 faster run time, and fits far more query sequences than the database
@@ -346,10 +346,10 @@ size, reference sets with 10% to 90% of the sequences were created, with
 the remaining sequences used for the query (Figure ). OTU quality was
 remarkably consistent across reference fraction sizes. For example,
 splitting the human dataset 100 times yielded a coefficient of variation
-(i.e. the standard deviation divided by the mean) of 0.0002 for the MCC
+(i.e. the standard deviation divided by the mean) of 0.00022 for the MCC
 score across all fractions. Run time generally decreased as the
 reference fraction increased; for the human dataset, the median run time
-was 367.6 seconds with 10% of sequences in the reference and 269.0
+was 364.1 seconds with 10% of sequences in the reference and 291.3
 seconds with 90% of sequences in the reference. In closed reference
 mode, the fraction of sequences that mapped increased as the reference
 size increased; for the human dataset, the median fraction mapped was
@@ -372,8 +372,8 @@ that mapped were similar for simple and abundance-weighted sampling
 similarity-weighted sampling (median fraction mapped of 0.56). While
 simple and abundance-weighted sampling produced better quality OTUs than
 similarity-weighted sampling, OptiFit performed faster on
-similarity-weighted samples with a median runtime of 91.4 seconds
-compared to 109.7 and 111.7 seconds for simple and abundance-weighted
+similarity-weighted samples with a median runtime of 93.8 seconds
+compared to 123.2 and 122.6 seconds for simple and abundance-weighted
 sampling, respectively. Thus, employing more complicated sampling
 strategies such as abundance-weighted and similarity-weighted sampling
 did not confer any advantages over selecting the reference via a simple
@@ -516,7 +516,7 @@ We implemented the analysis workflow in Snakemake
 ([19](#ref-koster_snakemake_2012)) and wrote scripts in R
 ([20](#ref-r_core_team_r_2020)), Python
 ([21](#ref-van_rossum_python_2009)), and GNU bash
-([22](#ref-noauthor_bash_nodate)). Software used includes mothur v1.46.1
+([22](#ref-noauthor_bash_nodate)). Software used includes mothur v1.47.0
 ([23](#ref-schloss_introducing_2009)), VSEARCH v2.15.2
 ([5](#ref-rognes_vsearch_2016)), the tidyverse metapackage
 ([24](#ref-wickham_welcome_2019)), R Markdown ([25](#ref-xie_r_2018)),
