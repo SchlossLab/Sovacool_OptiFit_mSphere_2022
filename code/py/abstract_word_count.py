@@ -33,4 +33,7 @@ def main(src_filename, log_filename):
 
 
 if __name__ == "__main__":
-    main("paper/paper.Rmd", "log/count_words_abstract.log")
+    if "snakemake" in locals() or "snakemake" in globals():
+        main(snakemake.input.src, snakemake.output.txt)
+    else:
+        main("paper/paper.Rmd", "log/count_words_abstract.log")
