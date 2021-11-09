@@ -19,11 +19,6 @@ def check_wc(section_name, num_words, word_limit):
 
 
 def main(src_filename, log_filename):
-    wc_abs = word_count(src_filename, "## Abstract\n", "### Importance\n")
-    check_wc("abstract", wc_abs, 250)
-    word_limit_imp = 150
-    wc_imp = word_count(src_filename, "### Importance\n", "\\newpage\n")
-    check_wc("importance", wc_imp, 150)
     with open(log_filename, "w") as outfile:
         outfile.write("section\tword_count\n")
         for section, word_limit, starter, stopper in zip(
