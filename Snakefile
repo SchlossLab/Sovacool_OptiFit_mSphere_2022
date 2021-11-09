@@ -43,7 +43,8 @@ subworkflow vsearch:
 rule paper:
     input:
         pdf='docs/paper.pdf',
-        md='paper/paper.md'
+        md='paper/paper.md',
+        wc='log/count_words_abstract.log'
 
 rule subtargets: # it takes a long time to build the DAG for some of these
     input:
@@ -156,6 +157,15 @@ rule render_pdf:
         format='pdf_document'
     script:
         'code/R/render.R'
+
+rule count_words_abstract:
+    input:
+        py='code/py/abstract_word_count.py',
+        src='paper/paper.Rmd'
+    output:
+        txt='log/count_words_abstract.log'
+    script:
+        'code/py/abstract_word_count.py'
 
 rule create_test_data:
     input:
