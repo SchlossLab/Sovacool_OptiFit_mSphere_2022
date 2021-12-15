@@ -192,6 +192,15 @@ rule test_Python_code:
     shell:
         'python -m code.tests.test_python'
 
+rule diff_revisions:
+    input:
+        draft='paper/paper_v1.Rmd',
+        final='paper/paper.Rmd'
+    shell:
+        """
+        R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
+        """
+
 onsuccess:
     print("🎉 workflow complete!")
 
