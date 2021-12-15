@@ -20,8 +20,8 @@ params:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_knit$set(base.dir = here::here(),
-                     base.url = "../")
+#knitr::opts_knit$set(base.dir = here::here(),
+#                     base.url = "../")
 knitr::opts_chunk$set(fig.path = 'figures/',
                       dpi = 300)
 ```

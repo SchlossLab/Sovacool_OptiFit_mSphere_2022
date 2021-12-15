@@ -142,7 +142,8 @@ rule render_markdown:
     output:
         md='paper/paper.md'
     params:
-        format='github_document'
+        format='github_document',
+        include_figures=True
     script:
         'code/R/render.R'
 
@@ -154,7 +155,8 @@ rule render_pdf:
     output:
         pdf='docs/paper.pdf'
     params:
-        format='pdf_document'
+        format='pdf_document',
+        include_figures=True
     script:
         'code/R/render.R'
 
@@ -192,13 +194,31 @@ rule test_Python_code:
     shell:
         'python -m code.tests.test_python'
 
+rule render_draft:
+    input:
+        Rmd="paper/paper_v1.Rmd",
+        R='code/R/render.R'
+    output:
+        pdf='paper/paper_v1_no-figures.pdf'
+    params:
+        format='pdf_document',
+        include_figures=False
+    script:
+        'code/R/render.R'
+
 rule diff_revisions:
     input:
         draft='paper/paper_v1.Rmd',
         final='paper/paper.Rmd'
+    output:
+        diff='paper/paper_track-changes_no-figures.pdf'
+    params:
+        diff='diff.pdf'
     shell:
         """
         R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
+        mv {params.diff} {output.diff}
+        rm -r paper/paper*.tex paper/figures
         """
 
 onsuccess:
