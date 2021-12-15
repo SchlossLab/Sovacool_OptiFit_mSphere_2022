@@ -248,14 +248,21 @@ rule copy_figures:
             print(i, fig)
             shutil.copyfile(fig, f'paper/figures/Figure{i}.tiff')
 
-rule compile_response:
+rule render_response:
     input:
-        md='paper/response-to-reviewers.md'
+        Rmd='paper/response-to-reviewers.Rmd'
     output:
+        md='paper/response-to-reviewers.md',
         pdf='paper/response-to-reviewers.pdf'
+    params:
+        format='all'
     shell:
         """
-        pandoc {input.md} -o {output.pdf}
+        R -e '
+        rmarkdown::render(here::here("{input.Rmd}"),
+                          output_format = "{params.format}"
+                          )
+        '
         """
 
 rule minor_revisions:
@@ -264,7 +271,7 @@ rule minor_revisions:
         rules.render_docx.output.docx,
         rules.copy_figures.output,
         rules.diff_revisions.output.diff,
-        rules.compile_response.output.pdf
+        rules.render_response.output.pdf
     output:
         'paper/revisions.zip'
     shell:
