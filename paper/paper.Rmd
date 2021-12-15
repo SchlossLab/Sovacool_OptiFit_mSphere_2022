@@ -642,8 +642,7 @@ numpy [@harris_array_2020],
 the SRA toolkit [@noauthor_sra-tools_nodate],
 and conda [@noauthor_anaconda_2016].
 The complete workflow and supporting files required to reproduce this manuscript
-are available at https://github.com/SchlossLab/Sovacool_OptiFit_2021.
-<!-- TODO: update repo link with journal title -->
+are available at https://github.com/SchlossLab/Sovacool_OptiFit_mSphere_2022.
 
 ## Acknowledgements
 
