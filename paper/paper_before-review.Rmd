@@ -1,6 +1,6 @@
 ---
 title: "OptiFit: an improved method for fitting amplicon sequences to existing OTUs"
-date: '`r Sys.Date()`'
+date: '2021-11-08'
 bibliography: references.bib
 link-citations: true
 output:
@@ -20,8 +20,6 @@ params:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-#knitr::opts_knit$set(base.dir = here::here(),
-#                     base.url = "../")
 knitr::opts_chunk$set(fig.path = 'figures/',
                       dpi = 300)
 ```
