@@ -218,7 +218,7 @@ rule diff_revisions:
         """
         R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
         mv {params.diff} {output.diff}
-        rm -r paper/paper*.tex paper/figures
+        rm -r paper/paper*.tex
         """
 
 onsuccess:
