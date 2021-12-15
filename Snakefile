@@ -196,10 +196,10 @@ rule test_Python_code:
 
 rule render_draft:
     input:
-        Rmd="paper/paper_v1.Rmd",
+        Rmd="paper/paper_before-review.Rmd",
         R='code/R/render.R'
     output:
-        pdf='paper/paper_v1_no-figures.pdf'
+        pdf='paper/paper_before-review_no-figures.pdf'
     params:
         format='pdf_document',
         include_figures=False
@@ -208,7 +208,7 @@ rule render_draft:
 
 rule diff_revisions:
     input:
-        draft='paper/paper_v1.Rmd',
+        draft='paper/paper_before-review.Rmd',
         final='paper/paper.Rmd'
     output:
         diff='paper/paper_track-changes_no-figures.pdf'
