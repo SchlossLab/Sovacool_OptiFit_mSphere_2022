@@ -20,7 +20,7 @@ params:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_knit$set(base.dir = here::here(), 
+knitr::opts_knit$set(base.dir = here::here(),
                      base.url = "../")
 knitr::opts_chunk$set(fig.path = 'figures/',
                       dpi = 300)
@@ -44,7 +44,7 @@ figs <- function(fig_name, attribute, include_figures = params$include_figures) 
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {
     value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
-  } else if (attribute == 'dim' & isFALSE(include_figures)) {
+  } else if (attribute == 'dim' & !isTRUE(include_figures)) {
     value <- c(0.1,0.1)
   } else {
     value <- eval(parse(text = value))
