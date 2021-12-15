@@ -15,7 +15,7 @@ csl: msphere.csl
 fontsize: 12pt
 geometry: margin=1.0in
 params:
-    snakemake: "none"
+  include_figures: false
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
@@ -35,10 +35,6 @@ library(knitr)
 library(schtools)
 library(tidyverse)
 set.seed(20210624)
-snakemake <- params$snakemake
-if (is_character(snakemake)) {
-  stop("You need to knit this R Markdown document from the Snakemake workflow")
-}
 
 load(here("results", "stats.RData"))
 
@@ -223,7 +219,7 @@ of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
-```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+```{r algorithm, eval=params$include_figures, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
 figs('algorithm', 'path') %>%
   tiff::readTIFF() %>%
   grid::grid.raster()
@@ -287,7 +283,7 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
+```{r workflow, eval=params$include_figures, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
 figs('workflow', 'path') %>%
   tiff::readTIFF() %>%
   grid::grid.raster()
@@ -335,7 +331,7 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
-```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+```{r results_sum, eval=params$include_figures, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
 figs('results_sum', 'path') %>%
   tiff::readTIFF() %>%
   grid::grid.raster()
@@ -419,12 +415,12 @@ Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
-```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+```{r results_split, eval=params$include_figures, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
 figs('results_split', 'path') %>%
   tiff::readTIFF() %>%
   grid::grid.raster()
 ```
-```{r, include = FALSE}
+```{r assert_split_fracs, include = FALSE}
 close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
 assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
 assert_that(frac_fit_split_human_simple_1 < frac_fit_split_human_simple_9)
