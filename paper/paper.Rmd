@@ -39,14 +39,27 @@ set.seed(20210624)
 load(here("results", "stats.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
-figs <- function(fig_name, attribute) {
+
+figs <- function(fig_name, attribute, include_figures = params$include_figures) {
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {
     value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
+  } else if (attribute == 'dim' & isFALSE(include_figures)) {
+    value <- c(0.1,0.1)
   } else {
     value <- eval(parse(text = value))
   }
   return(value)
+}
+
+render_figure <- function(fig_name, include_figures = params$include_figures) {
+  if (isTRUE(include_figures)) {
+    figs(fig_name, 'path') %>%
+      tiff::readTIFF() %>%
+      grid::grid.raster()
+  } else {
+    ggplot() + theme_void()
+  }
 }
 
 # check whether all elements of two numeric vectors are close enough
@@ -223,10 +236,8 @@ of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
-```{r algorithm, eval=params$include_figures, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
-figs('algorithm', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+render_figure('algorithm')
 ```
 
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
@@ -287,10 +298,8 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, eval=params$include_figures, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
-figs('workflow', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
+render_figure('workflow')
 ```
 
 ```{r assert_db_frac, include = FALSE}
@@ -335,10 +344,8 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
-```{r results_sum, eval=params$include_figures, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
-figs('results_sum', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+render_figure('results_sum')
 ```
 
 ```{r assert_vsearch, include = FALSE}
@@ -419,11 +426,10 @@ Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
-```{r results_split, eval=params$include_figures, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
-figs('results_split', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+render_figure('results_split')
 ```
+
 ```{r assert_split_fracs, include = FALSE}
 close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
 assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
