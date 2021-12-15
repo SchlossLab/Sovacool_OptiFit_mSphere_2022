@@ -1,13 +1,10 @@
 ---
-date: '`r Sys.Date()`'
 output:
   pdf_document:
     latex_engine: xelatex
   github_document:
     html_preview: false
-header_includes:
-  - \usepackage{helvet} % Helvetica font
-  - \renewcommand*\familydefault{\sfdefault}
+mainfont: "Helvetica"
 fontsize: 12pt
 geometry: margin=1.0in
 ---

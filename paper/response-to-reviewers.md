@@ -1,4 +1,3 @@
-2021-12-15
 
 # Response to Reviewers
 
