@@ -9,6 +9,7 @@ output:
       in_header: preamble.tex
       before_body: head.tex
     fig_caption: yes
+    keep_tex: false
   github_document:
     html_preview: false
 csl: msphere.csl
@@ -34,7 +35,7 @@ library(schtools)
 library(tidyverse)
 set.seed(20210624)
 
-load(here("results", "stats.RData"))
+load(here("results", "stats_before-review.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
 
