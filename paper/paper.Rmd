@@ -15,13 +15,11 @@ csl: msphere.csl
 fontsize: 12pt
 geometry: margin=1.0in
 params:
-    snakemake: "none"
+  include_figures: false
 ---
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_knit$set(base.dir = here::here(), 
-                     base.url = "../")
 knitr::opts_chunk$set(fig.path = 'figures/',
                       dpi = 300)
 ```
@@ -35,22 +33,31 @@ library(knitr)
 library(schtools)
 library(tidyverse)
 set.seed(20210624)
-snakemake <- params$snakemake
-if (is_character(snakemake)) {
-  stop("You need to knit this R Markdown document from the Snakemake workflow")
-}
 
 load(here("results", "stats.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
-figs <- function(fig_name, attribute) {
+
+figs <- function(fig_name, attribute, include_figures = params$include_figures) {
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {
     value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
+  } else if (attribute == 'dim' & !isTRUE(include_figures)) {
+    value <- c(0.1,0.1)
   } else {
     value <- eval(parse(text = value))
   }
   return(value)
+}
+
+render_figure <- function(fig_name, include_figures = params$include_figures) {
+  if (isTRUE(include_figures)) {
+    figs(fig_name, 'path') %>%
+      tiff::readTIFF() %>%
+      grid::grid.raster()
+  } else {
+    ggplot() + theme_void()
+  }
 }
 
 # check whether all elements of two numeric vectors are close enough
@@ -224,9 +231,7 @@ This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
 ```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
-figs('algorithm', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+render_figure('algorithm')
 ```
 
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
@@ -288,9 +293,7 @@ clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
 ```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
-figs('workflow', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+render_figure('workflow')
 ```
 
 ```{r assert_db_frac, include = FALSE}
@@ -336,9 +339,7 @@ Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
 ```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
-figs('results_sum', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+render_figure('results_sum')
 ```
 
 ```{r assert_vsearch, include = FALSE}
@@ -420,11 +421,10 @@ quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
 ```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
-figs('results_split', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+render_figure('results_split')
 ```
-```{r, include = FALSE}
+
+```{r assert_split_fracs, include = FALSE}
 close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
 assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
 assert_that(frac_fit_split_human_simple_1 < frac_fit_split_human_simple_9)
@@ -642,8 +642,7 @@ numpy [@harris_array_2020],
 the SRA toolkit [@noauthor_sra-tools_nodate],
 and conda [@noauthor_anaconda_2016].
 The complete workflow and supporting files required to reproduce this manuscript
-are available at https://github.com/SchlossLab/Sovacool_OptiFit_2021.
-<!-- TODO: update repo link with journal title -->
+are available at https://github.com/SchlossLab/Sovacool_OptiFit_mSphere_2022.
 
 ## Acknowledgements
 
