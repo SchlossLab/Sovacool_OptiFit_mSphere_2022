@@ -1,5 +1,6 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
 import os
+import shutil
 import yaml
 
 configfile: 'config/config.yaml'
@@ -44,7 +45,9 @@ rule paper:
     input:
         pdf='docs/paper.pdf',
         md='paper/paper.md',
-        wc='log/count_words_abstract.log'
+        wc='log/count_words_abstract.log',
+        diff='paper/paper_track-changes_no-figures.pdf'
+        #zip='paper/revisions.zip'
 
 rule subtargets: # it takes a long time to build the DAG for some of these
     input:
@@ -142,7 +145,8 @@ rule render_markdown:
     output:
         md='paper/paper.md'
     params:
-        format='github_document'
+        format='github_document',
+        include_figures=False
     script:
         'code/R/render.R'
 
@@ -154,7 +158,8 @@ rule render_pdf:
     output:
         pdf='docs/paper.pdf'
     params:
-        format='pdf_document'
+        format='pdf_document',
+        include_figures=True
     script:
         'code/R/render.R'
 
@@ -191,6 +196,89 @@ rule test_Python_code:
         dat=rules.create_test_data.output
     shell:
         'python -m code.tests.test_python'
+
+rule render_draft:
+    input:
+        Rmd="paper/paper_before-review.Rmd",
+        R='code/R/render.R'
+    output:
+        pdf='paper/paper_before-review_no-figures.pdf'
+    params:
+        format='pdf_document',
+        include_figures=False
+    script:
+        'code/R/render.R'
+
+rule diff_revisions:
+    input:
+        draft='paper/paper_before-review.Rmd',
+        final='paper/paper.Rmd'
+    output:
+        diff='paper/paper_track-changes_no-figures.pdf'
+    params:
+        diff='diff.pdf'
+    shell:
+        """
+        R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
+        mv {params.diff} {output.diff}
+        """
+
+rule render_docx:
+    input:
+        Rmd="paper/paper.Rmd"
+    output:
+        docx='paper/paper_no-figures.docx'
+    params:
+        format='word_document',
+        include_figures=False
+    script:
+        'code/R/render.R'
+
+rule copy_figures:
+    input:
+        [rules.plot_algorithm.output.tiff,
+         rules.plot_workflow.output.tiff,
+         rules.plot_results_sum.output.tiff,
+         rules.plot_results_split.output.tiff]
+    output:
+        [f'paper/figures/Figure{i}.tiff' for i in range(1,4+1)]
+    run:
+        for i, fig in enumerate(input):
+            i += 1
+            print(i, fig)
+            shutil.copyfile(fig, f'paper/figures/Figure{i}.tiff')
+
+rule render_response:
+    input:
+        Rmd='paper/response-to-reviewers.Rmd'
+    output:
+        md='paper/response-to-reviewers.md',
+        pdf='paper/response-to-reviewers.pdf'
+    params:
+        format='all'
+    shell:
+        """
+        R -e '
+        rmarkdown::render(here::here("{input.Rmd}"),
+                          output_format = "{params.format}"
+                          )
+        '
+        """
+
+rule minor_revisions:
+    input:
+        rules.render_pdf.output.pdf,
+        rules.render_docx.output.docx,
+        rules.copy_figures.output,
+        rules.diff_revisions.output.diff,
+        rules.render_response.output.pdf
+    output:
+        'paper/revisions.zip'
+    shell:
+        """
+        zip -j {output} {input}
+        rm -f paper/paper*.tex paper/paper*.log paper/figures/*.png paper/figures/*.pdf
+        """
 
 onsuccess:
     print("🎉 workflow complete!")
