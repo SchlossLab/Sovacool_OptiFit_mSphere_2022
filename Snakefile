@@ -153,13 +153,15 @@ rule diff_revisions:
         rda=[rules.calc_results_stats.output.rda,
              'results/stats_before-review.RData'],
         tex=['paper/preamble.tex', 'paper/head.tex',
-              'paper/references.bib', 'paper/msphere.csl']
+              'paper/references.bib', 'paper/msphere.csl'],
+        draft_pdf='paper/paper_before-review_no-figures.pdf'
     output:
         diff='paper/paper_track-changes_no-figures.pdf'
     params:
         diff='diff.pdf'
     shell:
         """
+        cp paper/figures/*.pdf figures/
         R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
         mv {params.diff} {output.diff}
         rm diff.log
@@ -304,8 +306,7 @@ rule zip_revisions:
     shell:
         """
         zip -j {output} {input}
-        rm -f paper/paper*.tex paper/paper*.log \
-              figures/*.png figures/*.pdf
+        rm -f paper/paper*.tex paper/paper*.log
         """
 
 onsuccess:
