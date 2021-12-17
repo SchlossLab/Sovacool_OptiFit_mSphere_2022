@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2021-11-08
+2021-12-15
 
 ## Abstract
 
@@ -165,7 +165,7 @@ sequence were moved to one of the OTUs containing at least one other
 similar sequence. The sequence is then moved to the OTU which would
 result in the best MCC score. OptiFit stops iterating over sequences
 once the MCC score stabilizes (in this example; only one iteration over
-each sequence is needed).](../figures/algorithm-1.png)
+each sequence is needed).](figures/algorithm-1.png)
 
 OptiFit begins where OptiClust ends, starting with a list of reference
 OTUs and their sequences, a list of query sequences to cluster to the
@@ -224,7 +224,7 @@ repeated 100 times for each dataset and database combination. Datasets
 were also randomly split into a reference and query fraction, and the
 query sequences were fit to the reference sequences with OptiFit for 100
 repetitions. The final MCC score was reported for all OptiClust and
-OptiFit repetitions.](../figures/workflow-1.png)
+OptiFit repetitions.](figures/workflow-1.png)
 
 Since closed reference clustering does not cluster query sequences that
 could not be clustered into reference OTUs, an additional measure of
@@ -261,7 +261,7 @@ the other 50%, or fitting the dataset to a reference database
 (Greengenes, SILVA, or RDP). Reference-based clustering was repeated
 with open and closed mode. For additional comparison, VSEARCH was used
 for *de novo* and reference-based clustering against the Greengenes
-database.](../figures/results_sum-1.png)
+database.](figures/results_sum-1.png)
 
 To compare to the reference clustering methods used by QIIME2, we
 clustered each dataset with VSEARCH against the Greengenes database of
@@ -332,7 +332,7 @@ similarity to other sequences in the dataset. With the simple random
 sample method, dataset splitting was repeated with reference fractions
 ranging from 10% to 90% of the dataset and for 100 random seeds. *De
 novo* clustering each dataset is also shown for
-comparison.](../figures/results_split-1.png)
+comparison.](figures/results_split-1.png)
 
 While we initially tested this strategy using a 50% split of the data
 into reference and query fractions, we next investigated whether there
