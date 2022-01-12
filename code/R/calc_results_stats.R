@@ -11,7 +11,7 @@ coeff_var <- function(x) {
 
 
 dat <- read_tsv(here("results", "summarized.tsv"))
-agg <- read_tsv(here('results', 'aggregated.tsv'))
+agg <- read_tsv(here("results", "aggregated.tsv"))
 ################################################################################
 # de novo datasets
 opticlust_mcc <- agg %>%
@@ -33,7 +33,7 @@ opticlust_mem <- agg %>%
     strategy == "de_novo",
     tool == "mothur"
   ) %>%
-  pull(mem_gb) %>% 
+  pull(mem_gb) %>%
   median()
 dn_vsearch_mcc <- agg %>%
   filter(strategy == "de_novo", tool == "vsearch") %>%
@@ -286,10 +286,12 @@ mcc_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_mcc, closed_vsearch_mcc) 
 ################################################################################
 # fit split
 cv_fit_split_mcc <- agg %>%
-  filter(strategy == "self-split",
-         tool == "mothur",
-         ref_weight == "simple",
-         ref_frac == 0.5) %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "simple",
+    ref_frac == 0.5
+  ) %>%
   pull(mcc) %>%
   coeff_var()
 
@@ -354,20 +356,23 @@ mem_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_mem, opticlust_mem)
 mem_open_fit_split_vs_clust <- rel_diff(open_fit_split_mem, opticlust_mem)
 
 cv_fit_split_mcc_human_simple <- agg %>%
-  filter(strategy == "self-split",
-         tool == "mothur",
-         dataset == "human",
-         ref_weight == "simple") %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == "human",
+    ref_weight == "simple"
+  ) %>%
   pull(mcc) %>%
   coeff_var()
 
-cv_fit_split_mem_human_simple <- agg %>% filter(
-  strategy == "self-split",
-  tool == "mothur",
-  dataset == "human",
-  ref_weight == "simple"
-) %>%
-  pull(mem_gb) %>% 
+cv_fit_split_mem_human_simple <- agg %>%
+  filter(
+    strategy == "self-split",
+    tool == "mothur",
+    dataset == "human",
+    ref_weight == "simple"
+  ) %>%
+  pull(mem_gb) %>%
   coeff_var()
 
 sec_fit_split_human_simple_1 <- agg %>%
