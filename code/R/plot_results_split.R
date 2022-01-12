@@ -48,7 +48,7 @@ dat <- list(optifit_split, opticlust) %>%
     method %>% as.character() != "closed" ~ NA_real_,
     TRUE ~ fraction_mapped
   )) %>%
-  pivot_longer(c(mcc, fraction_mapped, sec, mem_gb),
+  pivot_longer(c(mcc, fraction_mapped, sec),
     names_to = "metric"
   ) %>%
   mutate(
@@ -57,10 +57,9 @@ dat <- list(optifit_split, opticlust) %>%
         metric == "mcc" ~ "MCC",
         metric == "fraction_mapped" ~ "Fraction Mapped",
         metric == "sec" ~ "Runtime (sec)",
-        metric == 'mem_gb' ~ "Memory Usage (GB)",
         TRUE ~ metric
       ),
-      levels = c("MCC", "Fraction Mapped", "Runtime (sec)", "Memory Usage (GB)")
+      levels = c("MCC", "Fraction Mapped", "Runtime (sec)")
     ),
     strategy = factor(
       case_when(

@@ -45,7 +45,9 @@ rule paper:
     input:
         pdf='docs/paper.pdf',
         md='paper/paper.md',
-        wc='log/count_words_abstract.log'
+        wc='log/count_words_abstract.log',
+        diff='paper/paper_track-changes_no-figures.pdf'
+        #zip='paper/revisions.zip'
 
 rule subtargets: # it takes a long time to build the DAG for some of these
     input:
@@ -219,7 +221,6 @@ rule diff_revisions:
         """
         R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
         mv {params.diff} {output.diff}
-        rm -f diff.log
         """
 
 rule render_docx:
@@ -264,7 +265,7 @@ rule render_response:
         '
         """
 
-rule zip_revisions:
+rule minor_revisions:
     input:
         rules.render_pdf.output.pdf,
         rules.render_docx.output.docx,
