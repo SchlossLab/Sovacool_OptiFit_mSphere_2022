@@ -11,32 +11,37 @@ coeff_var <- function(x) {
 
 
 dat <- read_tsv(here("results", "summarized.tsv"))
-
+agg <- read_tsv(here('results', 'aggregated.tsv'))
 ################################################################################
 # de novo datasets
-opticlust_mcc <- dat %>%
+opticlust_mcc <- agg %>%
   filter(
     method == "de_novo",
     tool == "mothur"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
-opticlust_sec <- dat %>%
+opticlust_sec <- agg %>%
   filter(
     method == "de_novo",
     tool == "mothur"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
-dn_vsearch_mcc <-
-  dat %>%
-  filter(strategy == "de_novo", tool == "vsearch") %>%
-  pull(mcc_median) %>%
+opticlust_mem <- agg %>%
+  filter(
+    strategy == "de_novo",
+    tool == "mothur"
+  ) %>%
+  pull(mem_gb) %>% 
   median()
-dn_vsearch_sec <-
-  dat %>%
+dn_vsearch_mcc <- agg %>%
   filter(strategy == "de_novo", tool == "vsearch") %>%
-  pull(sec_median) %>%
+  pull(mcc) %>%
+  median()
+dn_vsearch_sec <- agg %>%
+  filter(strategy == "de_novo", tool == "vsearch") %>%
+  pull(sec) %>%
   median()
 mcc_opticlust_vs_vsearch <- rel_diff(opticlust_mcc, dn_vsearch_mcc)
 sec_opticlust_vs_vsearch <- abs(rel_diff(dn_vsearch_sec, opticlust_sec))
@@ -60,80 +65,80 @@ dn_dbs <- read_tsv("subworkflows/2_fit_reference_db/results/denovo_dbs.tsv") %>%
 
 ################################################################################
 # ref db open
-open_fit_db_mcc <- dat %>%
+open_fit_db_mcc <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "mothur"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
 mcc_open_fit_db_vs_clust <- rel_diff(opticlust_mcc, open_fit_db_mcc)
 
-open_fit_gg_mcc <- dat %>%
+open_fit_gg_mcc <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "mothur",
     ref == "gg"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-open_fit_silva_mcc <- dat %>%
+open_fit_silva_mcc <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "mothur",
     ref == "silva"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-open_fit_rdp_mcc <- dat %>%
+open_fit_rdp_mcc <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "mothur",
     ref == "rdp"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-open_vsearch_mcc <- dat %>%
+open_vsearch_mcc <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "vsearch",
     ref == "gg"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 mcc_open_fit_db_vs_vsearch <- rel_diff(open_fit_gg_mcc, open_vsearch_mcc)
 
-open_vsearch_sec <- dat %>%
+open_vsearch_sec <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "vsearch",
     ref == "gg"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
-open_fit_db_sec <- dat %>%
+open_fit_db_sec <- agg %>%
   filter(
     method == "open",
     strategy == "database",
     tool == "mothur"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 sec_vsearch_vs_open_fit_db <- rel_diff(open_vsearch_sec, open_fit_db_sec)
 sec_opticlust_vs_open_fit_db <- rel_diff(opticlust_sec, open_fit_db_sec) %>% abs()
 
 # human dataset to silva
-open_fit_silva_human_sec <- dat %>%
+open_fit_silva_human_sec <- agg %>%
   filter(
     method == "open",
     strategy == "database",
@@ -141,9 +146,9 @@ open_fit_silva_human_sec <- dat %>%
     ref == "silva",
     dataset == "human"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
-closed_fit_silva_human_sec <- dat %>%
+closed_fit_silva_human_sec <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
@@ -151,143 +156,144 @@ closed_fit_silva_human_sec <- dat %>%
     ref == "silva",
     dataset == "human"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
-opticlust_human_sec <- dat %>%
+opticlust_human_sec <- agg %>%
   filter(
     method == "de_novo",
     tool == "mothur",
     dataset == "human"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
 ################################################################################
 # ref db closed
-closed_fit_db_mcc <- dat %>%
+closed_fit_db_mcc <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 mcc_closed_fit_db_vs_clust <- rel_diff(closed_fit_db_mcc, opticlust_mcc) %>% abs()
 
-closed_fit_gg_mcc <- dat %>%
+closed_fit_gg_mcc <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "gg"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
-closed_fit_silva_mcc <- dat %>%
+closed_fit_silva_mcc <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "silva"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
-closed_fit_rdp_mcc <- dat %>%
+closed_fit_rdp_mcc <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "rdp"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-frac_fit_db <- dat %>%
+frac_fit_db <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur"
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
-frac_fit_gg <- dat %>%
+frac_fit_gg <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "gg"
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
-frac_fit_silva <- dat %>%
+frac_fit_silva <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "silva"
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
-frac_fit_rdp <- dat %>%
+frac_fit_rdp <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur",
     ref == "rdp"
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
-frac_vsearch <- dat %>%
+frac_vsearch <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "vsearch",
     ref == "gg"
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
 frac_vsearch_vs_fit <- rel_diff(frac_vsearch, frac_fit_gg)
 
-closed_fit_db_sec <- dat %>%
+closed_fit_db_sec <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "mothur"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 sec_closed_fit_db_vs_clust <- rel_diff(closed_fit_db_sec, opticlust_sec) %>% abs()
-closed_vsearch_sec <- dat %>%
+
+closed_vsearch_sec <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "vsearch"
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 sec_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_sec, closed_vsearch_sec) %>% abs()
 
-closed_vsearch_mcc <- dat %>%
+closed_vsearch_mcc <- agg %>%
   filter(
     method == "closed",
     strategy == "database",
     tool == "vsearch"
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 mcc_closed_fit_db_vs_vsearch <- rel_diff(closed_fit_db_mcc, closed_vsearch_mcc) %>% abs()
 
 ################################################################################
 # fit split
-cv_fit_split_mcc <- coeff_var(dat %>% filter(
-  strategy == "self-split",
-  tool == "mothur",
-  ref_weight == "simple",
-  ref_frac == 0.5
-) %>%
-  pull(mcc_median))
+cv_fit_split_mcc <- agg %>%
+  filter(strategy == "self-split",
+         tool == "mothur",
+         ref_weight == "simple",
+         ref_frac == 0.5) %>%
+  pull(mcc) %>%
+  coeff_var()
 
-frac_fit_split <- dat %>%
+frac_fit_split <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -295,10 +301,10 @@ frac_fit_split <- dat %>%
     method == "closed",
     ref_frac == 0.5
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
 
-closed_fit_split_sec <- dat %>%
+closed_fit_split_sec <- agg %>%
   filter(
     method == "closed",
     strategy == "self-split",
@@ -306,9 +312,9 @@ closed_fit_split_sec <- dat %>%
     ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
-open_fit_split_sec <- dat %>%
+open_fit_split_sec <- agg %>%
   filter(
     method == "open",
     strategy == "self-split",
@@ -316,23 +322,55 @@ open_fit_split_sec <- dat %>%
     ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
-sec_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_sec, opticlust_sec) %>% abs()
-sec_open_fit_split_vs_clust <- rel_diff(open_fit_split_sec, opticlust_sec) %>% abs()
-sec_open_fit_split_vs_db <- rel_diff(open_fit_split_sec, open_fit_db_sec) %>% abs()
-sec_closed_fit_split_vs_db <- rel_diff(closed_fit_split_sec, closed_fit_db_sec) %>% abs()
+sec_closed_fit_split_vs_clust <- rel_diff(opticlust_sec, closed_fit_split_sec) %>% abs()
+sec_open_fit_split_vs_clust <- rel_diff(opticlust_sec, open_fit_split_sec) %>% abs()
+sec_open_fit_split_vs_db <- rel_diff(open_fit_db_sec, open_fit_split_sec) %>% abs()
+sec_closed_fit_split_vs_db <- rel_diff(closed_fit_db_sec, closed_fit_split_sec) %>% abs()
 
-cv_fit_split_mcc_human_simple <- coeff_var(dat %>% filter(
+closed_fit_split_mem <- agg %>%
+  filter(
+    method == "closed",
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "simple",
+    ref_frac == 0.5
+  ) %>%
+  pull(mem_gb) %>%
+  median()
+open_fit_split_mem <- agg %>%
+  filter(
+    method == "open",
+    strategy == "self-split",
+    tool == "mothur",
+    ref_weight == "simple",
+    ref_frac == 0.5
+  ) %>%
+  pull(mem_gb) %>%
+  median()
+mem_closed_fit_split_vs_clust <- rel_diff(closed_fit_split_mem, opticlust_mem)
+mem_open_fit_split_vs_clust <- rel_diff(open_fit_split_mem, opticlust_mem)
+
+cv_fit_split_mcc_human_simple <- agg %>%
+  filter(strategy == "self-split",
+         tool == "mothur",
+         dataset == "human",
+         ref_weight == "simple") %>%
+  pull(mcc) %>%
+  coeff_var()
+
+cv_fit_split_mem_human_simple <- agg %>% filter(
   strategy == "self-split",
   tool == "mothur",
   dataset == "human",
   ref_weight == "simple"
 ) %>%
-  pull(mcc_median))
+  pull(mem_gb) %>% 
+  coeff_var()
 
-sec_fit_split_human_simple_1 <- dat %>%
+sec_fit_split_human_simple_1 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -340,10 +378,10 @@ sec_fit_split_human_simple_1 <- dat %>%
     ref_weight == "simple",
     ref_frac == 0.1
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
-sec_fit_split_human_simple_9 <- dat %>%
+sec_fit_split_human_simple_9 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -351,10 +389,10 @@ sec_fit_split_human_simple_9 <- dat %>%
     ref_weight == "simple",
     ref_frac == 0.9
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
-frac_fit_split_human_simple_1 <- dat %>%
+frac_fit_split_human_simple_1 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -363,10 +401,10 @@ frac_fit_split_human_simple_1 <- dat %>%
     method == "closed",
     ref_frac == 0.1
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median()
 
-frac_fit_split_human_simple_9 <- dat %>%
+frac_fit_split_human_simple_9 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -375,44 +413,44 @@ frac_fit_split_human_simple_9 <- dat %>%
     method == "closed",
     ref_frac == 0.9
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median()
 
-mcc_fit_split_simple <- dat %>%
+mcc_fit_split_simple <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 mcc_opticlust_vs_fit_split_simple <- rel_diff(opticlust_mcc, mcc_fit_split_simple)
 
 #####
 # fit split at ref_frac 0.5
 
-mcc_fit_split_abun <- dat %>%
+mcc_fit_split_abun <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "abundance",
     ref_frac == 0.5
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-mcc_fit_split_dist <- dat %>%
+mcc_fit_split_dist <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "distance",
     ref_frac == 0.5
   ) %>%
-  pull(mcc_median) %>%
+  pull(mcc) %>%
   median()
 
-frac_fit_split_simple <- dat %>%
+frac_fit_split_simple <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -420,10 +458,10 @@ frac_fit_split_simple <- dat %>%
     method == "closed",
     ref_frac == 0.5
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median()
 
-frac_fit_split_abun <- dat %>%
+frac_fit_split_abun <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -431,10 +469,10 @@ frac_fit_split_abun <- dat %>%
     method == "closed",
     ref_frac == 0.5
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median()
 
-frac_fit_split_dist <- dat %>%
+frac_fit_split_dist <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
@@ -442,59 +480,59 @@ frac_fit_split_dist <- dat %>%
     method == "closed",
     ref_frac == 0.5
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median()
 
-sec_fit_split_simple <- dat %>%
+sec_fit_split_simple <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "simple",
     ref_frac == 0.5
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
-sec_fit_split_abun <- dat %>%
+sec_fit_split_abun <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "abundance",
     ref_frac == 0.5
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
-sec_fit_split_dist <- dat %>%
+sec_fit_split_dist <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     ref_weight == "distance",
     ref_frac == 0.5
   ) %>%
-  pull(sec_median) %>%
+  pull(sec) %>%
   median()
 
 ##########
 
-frac_fit_split_1 <- dat %>%
+frac_fit_split_1 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     method == "closed",
     ref_frac == 1
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
 
-frac_fit_split_9 <- dat %>%
+frac_fit_split_9 <- agg %>%
   filter(
     strategy == "self-split",
     tool == "mothur",
     method == "closed",
     ref_frac == 0.9
   ) %>%
-  pull(frac_map_median) %>%
+  pull(fraction_mapped) %>%
   median() * 100
 
 
