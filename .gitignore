@@ -12,6 +12,12 @@ __pycache__/
 benchmarks/
 bin/
 core.*
+figures/*-1.pdf
+figures/*-1.png
+paper/figures/*.tiff
+paper/figures/*-1.pdf
+paper/paper_before-review_no-figures.pdf
+paper/revisions.zip
 subworkflows/*/data
 test/
 tmp/

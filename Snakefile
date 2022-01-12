@@ -1,5 +1,6 @@
 " Download references & datasets, process with mothur, and benchmark the OptiFit algorithm "
 import os
+import shutil
 import yaml
 
 configfile: 'config/config.yaml'
@@ -44,7 +45,8 @@ rule paper:
     input:
         pdf='docs/paper.pdf',
         md='paper/paper.md',
-        wc='log/count_words_abstract.log'
+        wc='log/count_words_abstract.log',
+        zip='paper/revisions.zip'
 
 rule subtargets: # it takes a long time to build the DAG for some of these
     input:
@@ -99,8 +101,11 @@ rule plot_workflow: # https://stackoverflow.com/a/20536144/5787827
         height=workflow_height
     shell:
         """
-        dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {output.tmp}
-        convert {params.tmp} -gravity center -background white -extent {params.width}x{params.height} {output.tiff}
+        dot -T tiff -Gsize={params.dim}\! -Gdpi=300 {input.gv} > {params.tmp}
+        convert {params.tmp} -gravity center \
+                             -background white \
+                             -extent {params.width}x{params.height} \
+                             {output.tiff}
         rm {params.tmp}
         """
 
@@ -126,23 +131,77 @@ rule plot_results_split:
     script:
         'code/R/plot_results_split.R'
 
+rule render_draft:
+    input:
+        Rmd="paper/paper_before-review.Rmd",
+        R='code/R/render.R',
+        rda='results/stats_before-review.RData',
+        tex=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msphere.csl']
+    output:
+        pdf='paper/paper_before-review_no-figures.pdf'
+    params:
+        format='pdf_document',
+        include_figures=False
+    script:
+        'code/R/render.R'
+
+rule diff_revisions:
+    input:
+        draft='paper/paper_before-review.Rmd',
+        final='paper/paper.Rmd',
+        rda=[rules.calc_results_stats.output.rda,
+             'results/stats_before-review.RData'],
+        tex=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msphere.csl'],
+        draft_pdf='paper/paper_before-review_no-figures.pdf'
+    output:
+        diff='paper/paper_track-changes_no-figures.pdf'
+    params:
+        diff='diff.pdf'
+    shell:
+        """
+        cp paper/figures/*.pdf figures/
+        R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
+        mv {params.diff} {output.diff}
+        rm diff.log
+        """
+
+rule render_docx:
+    input:
+        Rmd="paper/paper.Rmd",
+        rda=rules.calc_results_stats.output.rda,
+        tex=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msphere.csl']
+    output:
+        docx='paper/paper_no-figures.docx'
+    params:
+        format='word_document',
+        include_figures=False
+    script:
+        'code/R/render.R'
+
 rule render_markdown:
     input:
         Rmd="paper/paper.Rmd",
         R='code/R/render.R',
         rda=rules.calc_results_stats.output.rda,
-        deps=['paper/preamble.tex', 'paper/head.tex',
-              'paper/references.bib', 'paper/msphere.csl',
-              figs_meta_filename,
+        tex=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msphere.csl'],
+        figs=[figs_meta_filename,
               rules.plot_algorithm.output,
               rules.plot_workflow.output,
               rules.plot_results_sum.output,
               rules.plot_results_split.output
-              ]
+              ],
+        other_formats=[rules.render_draft.output,
+                       rules.diff_revisions.output,
+                       rules.render_docx.output]
     output:
         md='paper/paper.md'
     params:
-        format='github_document'
+        format='github_document',
+        include_figures=True
     script:
         'code/R/render.R'
 
@@ -150,11 +209,23 @@ rule render_pdf:
     input:
         Rmd="paper/paper.Rmd",
         R='code/R/render.R',
-        md_output=rules.render_markdown.output.md
+        rda=rules.calc_results_stats.output.rda,
+        tex=['paper/preamble.tex', 'paper/head.tex',
+              'paper/references.bib', 'paper/msphere.csl'],
+        figs=[figs_meta_filename,
+              rules.plot_algorithm.output,
+              rules.plot_workflow.output,
+              rules.plot_results_sum.output,
+              rules.plot_results_split.output
+              ],
+        other_formats=[rules.render_draft.output,
+                       rules.diff_revisions.output,
+                       rules.render_docx.output]
     output:
         pdf='docs/paper.pdf'
     params:
-        format='pdf_document'
+        format='pdf_document',
+        include_figures=True
     script:
         'code/R/render.R'
 
@@ -191,6 +262,52 @@ rule test_Python_code:
         dat=rules.create_test_data.output
     shell:
         'python -m code.tests.test_python'
+
+rule copy_figures:
+    input:
+        [rules.plot_algorithm.output.tiff,
+         rules.plot_workflow.output.tiff,
+         rules.plot_results_sum.output.tiff,
+         rules.plot_results_split.output.tiff]
+    output:
+        [f'paper/figures/Figure{i}.tiff' for i in range(1,4+1)]
+    run:
+        for i, fig in enumerate(input):
+            i += 1
+            print(i, fig)
+            shutil.copyfile(fig, f'paper/figures/Figure{i}.tiff')
+
+rule render_response:
+    input:
+        Rmd='paper/response-to-reviewers.Rmd'
+    output:
+        md='paper/response-to-reviewers.md',
+        pdf='paper/response-to-reviewers.pdf'
+    params:
+        format='all'
+    shell:
+        """
+        R -e '
+        rmarkdown::render(here::here("{input.Rmd}"),
+                          output_format = "{params.format}"
+                          )
+        '
+        """
+
+rule zip_revisions:
+    input:
+        rules.render_pdf.output.pdf,
+        rules.render_docx.output.docx,
+        rules.copy_figures.output,
+        rules.diff_revisions.output.diff,
+        rules.render_response.output.pdf
+    output:
+        'paper/revisions.zip'
+    shell:
+        """
+        zip -j {output} {input}
+        rm -f paper/paper*.tex paper/paper*.log
+        """
 
 onsuccess:
     print("🎉 workflow complete!")

@@ -49,6 +49,7 @@ the subworkflows and renders the [paper](paper).
 1. Install the dependencies.
     
     Almost all are listed in the conda environment file.
+    Everything needed to run the analysis workflow is listed here.
     ```bash
     conda env create -f config/env.simple.yaml
     conda activate optifit
@@ -65,15 +66,22 @@ the subworkflows and renders the [paper](paper).
     The [`schtools`](https://github.com/SchlossLab/schtools)
     package is also needed to render the manuscript:
     ```r
-    devtools::install_github('SchlossLab/schtools')
+    install.packages('schtools')
     ```
     
-    Finally, if you do not have LaTeX already, you'll need to install a LaTeX
+    If you do not have LaTeX already, you'll need to install a LaTeX
     distribution before rendering the manuscript as a PDF.
     You can use [`tinytex`](https://yihui.org/tinytex/)
     to do so:
     ```r
     tinytex::install_tinytex()
+    ```
+
+    I also used [`latexdiffr`](https://github.com/hughjonesd/latexdiffr) 
+    to create a PDF with changes tracked prior to
+    submitting revisions to the journal.
+    ```r
+    devtools::install_github("hughjonesd/latexdiffr")
     ```
     
 1. Run the entire pipeline.
