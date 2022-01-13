@@ -162,7 +162,7 @@ rule diff_revisions:
         diff='diff.pdf'
     shell:
         """
-        cp paper/figures/*.pdf figures/
+        cp -r paper/figures/blanks/ figures/blanks/
         R -e "latexdiffr::latexdiff('{input.draft}', '{input.final}')"
         mv {params.diff} {output.diff}
         rm diff.log
@@ -194,10 +194,7 @@ rule render_markdown:
               rules.plot_workflow.output,
               rules.plot_results_sum.output,
               rules.plot_results_split.output
-              ],
-        other_formats=[rules.render_draft.output,
-                       rules.diff_revisions.output,
-                       rules.render_docx.output]
+              ]
     output:
         md='paper/paper.md'
     params:
@@ -218,10 +215,7 @@ rule render_pdf:
               rules.plot_workflow.output,
               rules.plot_results_sum.output,
               rules.plot_results_split.output
-              ],
-        other_formats=[rules.render_draft.output,
-                       rules.diff_revisions.output,
-                       rules.render_docx.output]
+              ]
     output:
         pdf='docs/paper.pdf'
     params:

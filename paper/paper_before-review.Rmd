@@ -21,7 +21,9 @@ params:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_chunk$set(fig.path = 'figures/',
+knitr::opts_chunk$set(fig.path = dplyr::if_else(params$include_figures, 
+                                                'figures/',
+                                                'figures/blanks/'),
                       dpi = 300)
 ```
 

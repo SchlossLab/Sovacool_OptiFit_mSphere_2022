@@ -23,7 +23,7 @@ params:
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(fig.path = dplyr::if_else(params$include_figures, 
                                                 'figures/',
-                                                'blanks/'),
+                                                'figures/blanks/'),
                       dpi = 300
                       )
 ```
