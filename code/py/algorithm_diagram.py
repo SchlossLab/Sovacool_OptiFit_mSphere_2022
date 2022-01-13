@@ -3,7 +3,7 @@
 from collections import defaultdict, Counter
 from copy import deepcopy
 from itertools import combinations
-from math import sqrt, factorial#, comb
+from math import sqrt, factorial  # , comb
 import numpy
 import pandas
 
@@ -32,10 +32,12 @@ def create_optifit():
     optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs=54)
     return optifit
 
-def write_iters(optifit_iters, outdir = "figures/algorithm_steps"):
+
+def write_iters(optifit_iters, outdir="figures/algorithm_steps"):
     for i, iter_dir in enumerate(optifit_iters):
-        iter_dir['nodes'].to_csv(f"{outdir}/{i}_nodes")
-        iter_dir['edges'].to_csv(f"{outdir}/{i}_edges")
+        iter_dir["nodes"].to_csv(f"{outdir}/{i}_nodes")
+        iter_dir["edges"].to_csv(f"{outdir}/{i}_edges")
+
 
 def opticlust_example():
     dist_frame = {
@@ -460,6 +462,7 @@ class OptiIter:
     @property
     def to_dict(self):
         return {"nodes": self.nodes, "edges": self.edges}
+
 
 class OptiOption:
     def __init__(self, curr_fitmap, curr_seq, sim_seq):
