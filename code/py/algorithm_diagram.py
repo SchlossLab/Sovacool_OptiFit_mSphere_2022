@@ -401,6 +401,20 @@ class OptiFit:
                     iteration = OptiIter(curr_fitmap, seq, self.query_seqs)
                     iterations.append(iteration.to_dict)
                     curr_fitmap = iteration.best_map
+        return 
+
+    @property   
+    def iterate_obj(self):
+        iterations = list()
+        curr_fitmap = self.fitmap
+        prev_mcc = 0
+        while not numpy.isclose(prev_mcc, self.mcc):
+            prev_mcc = self.mcc
+            for seq in self.query_seqs:
+                if seq in self.fitmap.dist_mat:
+                    iteration = OptiIter(curr_fitmap, seq, self.query_seqs)
+                    iterations.append(iteration)
+                    curr_fitmap = iteration.best_map
         return iterations
 
 
