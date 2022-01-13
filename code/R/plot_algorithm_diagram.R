@@ -9,7 +9,7 @@ library(reticulate)
 library(tidygraph)
 library(tidyverse)
 set.seed(20200308)
-#use_python('/usr/local/bin/python3')
+# use_python('/usr/local/bin/python3')
 source_python(here("code", "py", "algorithm_diagram.py"))
 optifit <- create_optifit()
 optifit_iters <- optifit$iterate %>%
