@@ -403,9 +403,9 @@ class OptiFit:
                     iteration = OptiIter(curr_fitmap, seq, self.query_seqs)
                     iterations.append(iteration.to_dict)
                     curr_fitmap = iteration.best_map
-        return 
+        return
 
-    @property   
+    @property
     def iterate_obj(self):
         iterations = list()
         curr_fitmap = self.fitmap
