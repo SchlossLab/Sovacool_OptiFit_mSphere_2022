@@ -81,7 +81,8 @@ rule calc_results_stats:
 
 rule plot_algorithm:
     input:
-        R='code/R/plot_algorithm_diagram.R'
+        R='code/R/plot_algorithm_diagram.R',
+        py='code/py/algorithm_diagram.py'
     output:
         tiff='figures/algorithm.tiff'
     params:
