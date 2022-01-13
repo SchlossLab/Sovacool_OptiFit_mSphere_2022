@@ -137,6 +137,7 @@ plot_results_split <- dat %>%
     legend.title = element_blank(),
     legend.position = "top",
     legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+    legend.spacing.x = unit(0.5, 'pt'),
     plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
     panel.grid.minor.y = element_blank(),
     axis.title.x = element_blank(),
@@ -146,8 +147,7 @@ plot_results_split <- dat %>%
   guides(
     shape = guide_legend(order = 1),
     colour = guide_legend(
-      override.aes = list(size = -1),
-      order = 2
+      override.aes = list(size = -1)
     )
   )
 

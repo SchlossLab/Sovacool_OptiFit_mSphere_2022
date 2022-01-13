@@ -3,9 +3,17 @@
 from collections import defaultdict, Counter
 from copy import deepcopy
 from itertools import combinations
-from math import comb, sqrt
+from math import sqrt, factorial#, comb
 import numpy
 import pandas
+
+
+def binom_coeff(n, k):
+    """
+    apparently `from math import comb` isn't working in reticulate right now,
+    so we gotta do it this way
+    """
+    return 0 if k > n else int(factorial(n) / (factorial(k) * factorial(n - k)))
 
 
 def create_optifit():
@@ -17,9 +25,17 @@ def create_optifit():
             "seq2": ["Y", "C", "G", "N", "C", "M", "N", "F"],
         }
     )
-    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs=53)
+    # original opticlust supplement example had 50 sequences, with 15 pairs
+    # being within the distance threshold.
+    # we now want to fit 4 query sequences to those reference OTUs.
+    # thus n_seqs = 50 + 4 = 54.
+    optifit = OptiFit(ref_otus, query_seqs, query_dist_mat, n_seqs=54)
     return optifit
 
+def write_iters(optifit_iters, outdir = "figures/algorithm_steps"):
+    for i, iter_dir in enumerate(optifit_iters):
+        iter_dir['nodes'].to_csv(f"{outdir}/{i}_nodes")
+        iter_dir['edges'].to_csv(f"{outdir}/{i}_edges")
 
 def opticlust_example():
     dist_frame = {
@@ -296,7 +312,7 @@ class otuMap:
         n_unsim_seqs = self.n_seqs - n_sim_seqs
         # number of distances within the distance threshold, i.e. they're included in dist_mat
         # n_dists = sum([len(dist_mat[s1]) for s1 in dist_mat]) / 2
-        return comb(n_unsim_seqs, 2) + n_unsim_seqs * n_sim_seqs
+        return binom_coeff(n_unsim_seqs, 2) + n_unsim_seqs * n_sim_seqs
 
     @property
     def conf_mat(self):
@@ -430,7 +446,6 @@ class OptiIter:
     @property
     def to_dict(self):
         return {"nodes": self.nodes, "edges": self.edges}
-
 
 class OptiOption:
     def __init__(self, curr_fitmap, curr_seq, sim_seq):

@@ -9,6 +9,7 @@ output:
       in_header: preamble.tex
       before_body: head.tex
     fig_caption: yes
+    keep_tex: false
   github_document:
     html_preview: false
 csl: msphere.csl
@@ -20,8 +21,6 @@ params:
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_knit$set(base.dir = here::here(), 
-                     base.url = "../")
 knitr::opts_chunk$set(fig.path = 'figures/',
                       dpi = 300)
 ```
@@ -39,14 +38,27 @@ set.seed(20210624)
 load(here("results", "stats.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
-figs <- function(fig_name, attribute) {
+
+figs <- function(fig_name, attribute, include_figures = params$include_figures) {
   value <- figures_meta[[fig_name]][[attribute]]
   if (attribute == 'cap') {
     value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
+  } else if (attribute == 'dim' & !isTRUE(include_figures)) {
+    value <- c(0.1,0.1)
   } else {
     value <- eval(parse(text = value))
   }
   return(value)
+}
+
+render_figure <- function(fig_name, include_figures = params$include_figures) {
+  if (isTRUE(include_figures)) {
+    figs(fig_name, 'path') %>%
+      tiff::readTIFF() %>%
+      grid::grid.raster()
+  } else {
+    ggplot() + theme_void()
+  }
 }
 
 # check whether all elements of two numeric vectors are close enough
@@ -219,10 +231,8 @@ of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
-```{r algorithm, eval=params$include_figures, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
-figs('algorithm', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+render_figure('algorithm')
 ```
 
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
@@ -283,10 +293,8 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, eval=params$include_figures, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
-figs('workflow', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
+render_figure('workflow')
 ```
 
 ```{r assert_db_frac, include = FALSE}
@@ -331,10 +339,8 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
 
-```{r results_sum, eval=params$include_figures, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
-figs('results_sum', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+render_figure('results_sum')
 ```
 
 ```{r assert_vsearch, include = FALSE}
@@ -408,6 +414,11 @@ the average `r frac_fit_gg`% of sequences clustered to the Greengenes database.
 In terms of run time, closed and open reference OptiFit performed faster than
 OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and
 `r sec_open_fit_split_vs_clust`%, respectively.
+Random access memory (RAM) usage was similar, with OptiFit requiring slightly 
+more RAM in gigabytes than OptiFit. 
+Open and closed reference OptiFit required `r mem_open_fit_split_vs_clust`% and
+`r mem_closed_fit_split_vs_clust`% more RAM than OptiClust, respectively 
+(data not shown).
 The split dataset strategy also performed `r sec_closed_fit_split_vs_db`% faster
 than the database strategy in closed reference mode and
 `r sec_open_fit_split_vs_db`% faster in open reference mode.
@@ -415,13 +426,12 @@ Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
 
-```{r results_split, eval=params$include_figures, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
-figs('results_split', 'path') %>%
-  tiff::readTIFF() %>%
-  grid::grid.raster()
+```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+render_figure('results_split')
 ```
+
 ```{r assert_split_fracs, include = FALSE}
-close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
+close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-2)
 assert_that(sec_fit_split_human_simple_1 > sec_fit_split_human_simple_9)
 assert_that(frac_fit_split_human_simple_1 < frac_fit_split_human_simple_9)
 ```
@@ -440,14 +450,17 @@ Run time generally decreased as the reference fraction increased; for the human
 dataset, the median run time was `r sec_fit_split_human_simple_1` seconds with
 10% of sequences in the reference and `r sec_fit_split_human_simple_9` seconds
 with 90% of sequences in the reference.
+The RAM usage was virtually the same across reference fraction sizes, with a
+coefficient of variation of `r cv_fit_split_mem_human_simple` for the human
+dataset (data not shown).
 In closed reference mode, the fraction of sequences that mapped increased as the
 reference size increased; for the human dataset, the median fraction mapped was
 `r frac_fit_split_human_simple_1` with 10% of sequences in the reference and
 `r frac_fit_split_human_simple_9` with 90% of sequences in the reference.
 These trends held for the other datasets as well.
-Thus, the reference fraction did not affect OTU quality in terms of MCC score,
-but did affect the run time and the fraction of sequences that mapped during the
-closed reference clustering.
+Thus, the reference fraction did not affect OTU quality in terms of MCC score
+nor the memory usage, but did affect the run time and the fraction of sequences
+that mapped during the closed reference clustering.
 
 ```{r assert_split_strat, include = FALSE}
 close_enough(c(mcc_fit_split_simple, mcc_fit_split_abun), mcc_fit_split_dist)
@@ -638,8 +651,7 @@ numpy [@harris_array_2020],
 the SRA toolkit [@noauthor_sra-tools_nodate],
 and conda [@noauthor_anaconda_2016].
 The complete workflow and supporting files required to reproduce this manuscript
-are available at https://github.com/SchlossLab/Sovacool_OptiFit_2021.
-<!-- TODO: update repo link with journal title -->
+are available at https://github.com/SchlossLab/Sovacool_OptiFit_mSphere_2022.
 
 ## Acknowledgements
 
