@@ -1,4 +1,5 @@
 *.bak
+*.docx
 *.log
 *.out
 *KLS*
@@ -11,6 +12,7 @@
 __pycache__/
 benchmarks/
 bin/
+blanks
 core.*
 figures/*-1.pdf
 figures/*-1.png
