@@ -427,7 +427,7 @@ In terms of run time, closed and open reference OptiFit performed faster than
 OptiClust on whole datasets by `r sec_closed_fit_split_vs_clust`% and
 `r sec_open_fit_split_vs_clust`%, respectively.
 Random access memory (RAM) usage was similar, with OptiFit requiring slightly 
-more RAM in gigabytes than OptiFit. 
+more RAM in gigabytes than OptiClust. 
 Open and closed reference OptiFit required `r mem_open_fit_split_vs_clust`% and
 `r mem_closed_fit_split_vs_clust`% more RAM than OptiClust, respectively 
 (data not shown).

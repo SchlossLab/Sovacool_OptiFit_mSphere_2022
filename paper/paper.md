@@ -344,7 +344,7 @@ over the average 59% of sequences clustered to the Greengenes database.
 In terms of run time, closed and open reference OptiFit performed faster
 than OptiClust on whole datasets by 39.6% and 36.8%, respectively.
 Random access memory (RAM) usage was similar, with OptiFit requiring
-slightly more RAM in gigabytes than OptiFit. Open and closed reference
+slightly more RAM in gigabytes than OptiClust. Open and closed reference
 OptiFit required 1.8% and 1.2% more RAM than OptiClust, respectively
 (data not shown). The split dataset strategy also performed 6.7% faster
 than the database strategy in closed reference mode and 65.5% faster in
