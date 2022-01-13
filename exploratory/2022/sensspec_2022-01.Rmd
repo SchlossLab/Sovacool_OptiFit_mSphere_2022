@@ -40,7 +40,7 @@ dat_agg %>%
   ylim(0, 1) + xlim(0, 1)
 ```
 
-```{r conf_matrix, fig.dim=c(6.87,6.87)}
+```{r conf_matrix, fig.dim=c(6.87,5)}
 dat_agg %>% 
   filter(dataset == 'human', 
          ref == 'gg' | strategy != 'database') %>%
