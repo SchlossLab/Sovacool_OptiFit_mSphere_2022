@@ -97,8 +97,8 @@ med_iqr <- function(x) {
 }
 
 color_list <- list(
-  mothur = RColorBrewer::brewer.pal(3, "Set1")[1],
-  vsearch = RColorBrewer::brewer.pal(3, "Set1")[2]
+  `OptiClust (_de novo_) or OptiFit` = RColorBrewer::brewer.pal(3, "Set1")[1],
+  VSEARCH = RColorBrewer::brewer.pal(3, "Set1")[2]
 )
 color_labels <- lapply(
   names(color_list),
@@ -107,7 +107,10 @@ color_labels <- lapply(
   }
 ) %>% unlist()
 
-plot_results_sum <- mothur_vsearch %>%
+plot_results_sum <- mothur_vsearch %>% 
+  mutate(tool = case_when(tool == "vsearch" ~ "VSEARCH",
+                          tool == "mothur" ~ "OptiClust (_de novo_) or OptiFit")
+         ) %>% 
   ggplot(aes(value, strategy, color = tool, shape = method)) +
   # stat_summary(geom = "linerange",
   #              fun.data = med_iqr,
@@ -136,13 +139,13 @@ plot_results_sum <- mothur_vsearch %>%
     legend.text = element_markdown(),
     legend.position = "top",
     legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+    legend.spacing.x = unit(0.5, 'pt'),
     plot.margin = unit(x = c(0, 0, 0, 0), units = "pt")
   ) +
   guides(
     shape = guide_legend(order = 1),
     colour = guide_legend(
-      override.aes = list(size = -1),
-      order = 2
+       override.aes = list(size = -1)
     )
   )
 
