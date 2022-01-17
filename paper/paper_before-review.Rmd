@@ -39,7 +39,7 @@ set.seed(20210624)
 
 load(here("results", "stats_before-review.RData"))
 
-figures_meta <- yaml::read_yaml(here('paper', 'figures.yaml'))
+figures_meta <- yaml::read_yaml(here('paper', 'figures_before-review.yaml'))
 
 figs <- function(fig_name, attribute, include_figures = params$include_figures) {
   value <- figures_meta[[fig_name]][[attribute]]
@@ -237,10 +237,6 @@ of iterations is reached.
 This process produces _de novo_ OTU assignments with the most optimal MCC given
 the input sequences.
 
-```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
-render_figure('algorithm')
-```
-
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to cluster to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03)
@@ -299,10 +295,6 @@ Thus, open reference OptiFit produced OTUs of very similar quality as _de novo_
 clustering, and closed reference OptiFit followed closely behind as long as a
 suitable reference database was chosen.
 
-```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
-render_figure('workflow')
-```
-
 ```{r assert_db_frac, include = FALSE}
 is_nondesc(frac_fit_rdp, frac_fit_silva, frac_fit_gg)
 assert_that((frac_fit_gg - frac_fit_silva) < 10)
@@ -344,10 +336,6 @@ OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
 `r open_fit_silva_human_sec` for open reference OptiFit.
 Thus, the OptiFit algorithm continues the precedent that closed reference
 clustering sacrifices OTU quality for execution speed.
-
-```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
-render_figure('results_sum')
-```
 
 ```{r assert_vsearch, include = FALSE}
 assert_that(mcc_closed_fit_db_vs_vsearch > 10)
@@ -426,10 +414,6 @@ than the database strategy in closed reference mode and
 Thus, reference clustering with the split dataset strategy creates as high
 quality OTUs as _de novo_ clustering yet at a faster run time, and fits far more
 query sequences than the database strategy.
-
-```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
-render_figure('results_split')
-```
 
 ```{r assert_split_fracs, include = FALSE}
 close_enough(cv_fit_split_mcc_human_simple, 0, tol = 10^-3)
@@ -668,5 +652,25 @@ SLW designed and implemented the OptiFit algorithm and assisted in debugging the
 MBM and GAD contributed analysis code.
 PDS conceived the study, supervised the project, and assisted in debugging the analysis code.
 All authors reviewed and edited the manuscript.
+
+\newpage
+
+```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+render_figure('algorithm')
+```
+
+```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
+render_figure('workflow')
+```
+
+```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+render_figure('results_sum')
+```
+
+```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+render_figure('results_split')
+```
+
+\newpage
 
 ## References
