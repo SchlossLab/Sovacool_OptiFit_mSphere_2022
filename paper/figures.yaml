@@ -1,21 +1,33 @@
 algorithm:
   cap: \textbf{The OptiFit Algorithm.}
-       Here we present a toy example of the OptiFit algorithm fitting query
-       sequences to existing OTUs, given the list of all sequence pairs that
-       are within the distance threshold (here 3% is used).
+       Here we present a toy example of the OptiFit algorithm fitting query  
+       sequences to existing OTUs, given the list of all sequence pairs that 
+       are within the distance threshold of 3%.
+       Previously, 50 reference sequences were clustered _de novo_ with 
+       OptiClust (see the OptiClust supplemental text [@westcott_opticlust_2017]). 
+       Reference sequences A through Q (colored \textcolor{refOrange}{orange})
+       were within the distance threshold to at  least one other reference 
+       sequence; the remaining reference sequences formed additional singleton 
+       OTUs (not shown).
        The goal of OptiFit is to assign the query sequences W through Z
-       (colored \textcolor{queryGreen}{green}) to the reference OTUs created by
-       clustering Sequences A through Q (colored \textcolor{refOrange}{orange})
-       which were previously clustered _de novo_ with OptiClust (see the
-       OptiClust supplemental text [@westcott_opticlust_2017]).
-       Initially, OptiFit places each query sequence in its own OTU.
+       (colored \textcolor{queryGreen}{green}) to the reference OTUs.
+       Here, there are 50 reference sequences and 4 query sequences which make
+       1,431 sequence pairs, of which 23 pairs are within the 3% distance 
+       threshold.
+       Initially (step 1), OptiFit places each query sequence in its own OTU,
+       resulting in 14 true positives, 9 false negatives, 0 false positives, 
+       and 1,408 true negatives for an MCC score of 0.78.
        Then, for each query sequence (\textbf{bolded}), OptiFit determines what
        the new MCC score would be if that sequence were moved to one of the
-       OTUs containing at least one other similar sequence.
+       OTUs containing at least one other similar sequence (steps 2-4).
        The sequence is then moved to the OTU which would result in the best MCC
        score.
-       OptiFit stops iterating over sequences once the MCC score stabilizes (in
-       this example; only one iteration over each sequence is needed).
+       OptiFit stops iterating over sequences once the MCC score stabilizes.
+       In this example, only one iteration over each sequence was needed.
+       Note that sequence Z was dissimilar from all other sequences and thus 
+       it remained a singleton.
+       The final MCC score is 0.91 with 20 true positives, 3 false negatives,
+       1 false positive, and 1407 true negatives.
   dim: c(6.87,5.5)
   path: as.character('../figures/algorithm.tiff')
 workflow:
@@ -41,12 +53,17 @@ results_sum:
        The median MCC score, fraction of query sequences that mapped in
        closed-reference clustering, and runtime in seconds from repeating each
        clustering method 100 times.
-       Each dataset underwent _de novo_ clustering using OptiClust or
-       reference-based clustering using OptiFit with one of two strategies;
-       splitting the dataset and fitting 50% the sequences to the other 50%, or
-       fitting the dataset to a reference database (Greengenes, SILVA, or RDP).
+       Each dataset underwent three clustering strategies; 
+       1) _de novo_ clustering the whole dataset using OptiClust, 
+       2) splitting the dataset with 50% of the sequences as a reference set and
+       the other 50% as a query set, clustering the references using OptiClust,
+       then clustering the query sequences to the reference OTUs with OptiFit, 
+       and 
+       3) clustering the dataset to a reference database 
+       (Greengenes, SILVA, or RDP).
        Reference-based clustering was repeated with open and closed mode.
-       For additional comparison, VSEARCH was used for _de novo_ and reference-based clustering against the Greengenes database.
+       For additional comparison, VSEARCH was used for _de novo_ and 
+       reference-based clustering against the Greengenes database.
   dim: c(6,6)
   path: as.character('../figures/results_sum.tiff')
 results_split:
@@ -61,6 +78,7 @@ results_split:
        With the simple random sample method, dataset splitting was repeated
        with reference fractions ranging from 10% to 90% of the dataset and for
        100 random seeds.
-       _De novo_ clustering each dataset is also shown for comparison.
+       _De novo_ clustering each dataset with OptiClust is also shown for 
+       comparison.
   dim: c(6.87,8)
   path: as.character('../figures/results_split.tiff')
