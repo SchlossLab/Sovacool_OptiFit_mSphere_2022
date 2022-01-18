@@ -48,7 +48,7 @@ Also, it may be helpful to remind the reader how quality was determined
 We describe MCC in more detail under the description of the OptiFit
 algorithm, which we expect readers would read just before looking at
 Figure 1. We added a few more details to the MCC description in this
-section (L111-113 and L117-118), In the caption of Figure 1 we also
+section (L111-113 and L117-118). In the caption of Figure 1 we also
 added examples of the confusion matrix values for the first and last MCC
 scores.
 
