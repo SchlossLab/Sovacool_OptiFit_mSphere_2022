@@ -138,7 +138,8 @@ rule render_draft:
         R='code/R/render.R',
         rda='results/stats_before-review.RData',
         tex=['paper/preamble.tex', 'paper/head.tex',
-              'paper/references.bib', 'paper/msphere.csl']
+              'paper/references.bib', 'paper/msphere.csl'],
+        figs='paper/figures_before-review.yaml'
     output:
         pdf='paper/paper_before-review_no-figures.pdf'
     params:
@@ -155,6 +156,7 @@ rule diff_revisions:
              'results/stats_before-review.RData'],
         tex=['paper/preamble.tex', 'paper/head.tex',
               'paper/references.bib', 'paper/msphere.csl'],
+        figs='paper/figures.yaml',
         draft_pdf='paper/paper_before-review_no-figures.pdf'
     output:
         diff='paper/paper_track-changes_no-figures.pdf'
@@ -173,7 +175,8 @@ rule render_docx:
         Rmd="paper/paper.Rmd",
         rda=rules.calc_results_stats.output.rda,
         tex=['paper/preamble.tex', 'paper/head.tex',
-              'paper/references.bib', 'paper/msphere.csl']
+              'paper/references.bib', 'paper/msphere.csl'],
+        figs='paper/figures.yaml'
     output:
         docx='paper/paper_no-figures.docx'
     params:
