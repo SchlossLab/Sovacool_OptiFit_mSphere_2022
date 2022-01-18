@@ -1,0 +1,66 @@
+algorithm:
+  cap: \textbf{The OptiFit Algorithm.}
+       Here we present a toy example of the OptiFit algorithm fitting query
+       sequences to existing OTUs, given the list of all sequence pairs that
+       are within the distance threshold (here 3% is used).
+       The goal of OptiFit is to assign the query sequences W through Z
+       (colored \textcolor{queryGreen}{green}) to the reference OTUs created by
+       clustering Sequences A through Q (colored \textcolor{refOrange}{orange})
+       which were previously clustered _de novo_ with OptiClust (see the
+       OptiClust supplemental text [@westcott_opticlust_2017]).
+       Initially, OptiFit places each query sequence in its own OTU.
+       Then, for each query sequence (\textbf{bolded}), OptiFit determines what
+       the new MCC score would be if that sequence were moved to one of the
+       OTUs containing at least one other similar sequence.
+       The sequence is then moved to the OTU which would result in the best MCC
+       score.
+       OptiFit stops iterating over sequences once the MCC score stabilizes (in
+       this example; only one iteration over each sequence is needed).
+  dim: c(6.87,5.5)
+  path: as.character('../figures/algorithm.tiff')
+workflow:
+  cap: \textbf{The Analysis Workflow.}
+       Reference sequences from Greengenes, the RDP, and SILVA were downloaded,
+       preprocessed with mothur by trimming to the V4 region, and clustered _de
+       novo_ with OptiClust for 100 repetitions.
+       Datasets from human, marine, mouse, and soil microbiomes were
+       downloaded, preprocessed with mothur by aligning to the SILVA V4
+       reference alignment, then clustered _de novo_ with OptiClust for 100
+       repetitions.
+       Individual datasets were fit to reference databases with OptiFit;
+       OptiFit was repeated 100 times for each dataset and database combination.
+       Datasets were also randomly split into a reference and query fraction,
+       and the query sequences were fit to the reference sequences with OptiFit
+       for 100 repetitions.
+       The final MCC score was reported for all OptiClust and OptiFit
+       repetitions.
+  dim: c(6,4)
+  path: as.character('../figures/workflow.tiff')
+results_sum:
+  cap: \textbf{Benchmarking Results.}
+       The median MCC score, fraction of query sequences that mapped in
+       closed-reference clustering, and runtime in seconds from repeating each
+       clustering method 100 times.
+       Each dataset underwent _de novo_ clustering using OptiClust or
+       reference-based clustering using OptiFit with one of two strategies;
+       splitting the dataset and fitting 50% the sequences to the other 50%, or
+       fitting the dataset to a reference database (Greengenes, SILVA, or RDP).
+       Reference-based clustering was repeated with open and closed mode.
+       For additional comparison, VSEARCH was used for _de novo_ and reference-based clustering against the Greengenes database.
+  dim: c(6,6)
+  path: as.character('../figures/results_sum.tiff')
+results_split:
+  cap: \textbf{Split dataset strategy.}
+       The median MCC score, fraction of query sequences that mapped in
+       closed-reference clustering, and runtime in seconds from repeating each
+       clustering method 100 times.
+       Each dataset was split into a reference and query fraction.
+       Reference sequences were selected via a simple random sample, weighting
+       sequences by relative abundance, or weighting by similarity to other
+       sequences in the dataset.
+       With the simple random sample method, dataset splitting was repeated
+       with reference fractions ranging from 10% to 90% of the dataset and for
+       100 random seeds.
+       _De novo_ clustering each dataset is also shown for comparison.
+  dim: c(6.87,8)
+  path: as.character('../figures/results_split.tiff')
