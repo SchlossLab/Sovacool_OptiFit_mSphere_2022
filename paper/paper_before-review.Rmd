@@ -40,27 +40,19 @@ set.seed(20210624)
 load(here("results", "stats_before-review.RData"))
 
 figures_meta <- yaml::read_yaml(here('paper', 'figures_before-review.yaml'))
-
-figs <- function(fig_name, attribute, include_figures = params$include_figures) {
+include_figures = params$include_figures
+figs <- function(fig_name, attribute) {
   value <- figures_meta[[fig_name]][[attribute]]
-  if (attribute == 'cap') {
-    value <- glue("\\label{fig:[fig_name]}[value]", .open='[', .close = ']')
-  } else if (attribute == 'dim' & !isTRUE(include_figures)) {
-    value <- c(0.1,0.1)
-  } else {
+  if (attribute != 'cap') {
     value <- eval(parse(text = value))
   }
   return(value)
 }
 
-render_figure <- function(fig_name, include_figures = params$include_figures) {
-  if (isTRUE(include_figures)) {
+render_figure <- function(fig_name) {
     figs(fig_name, 'path') %>%
       tiff::readTIFF() %>%
       grid::grid.raster()
-  } else {
-    ggplot() + theme_void()
-  }
 }
 
 # check whether all elements of two numeric vectors are close enough
@@ -240,7 +232,7 @@ the input sequences.
 OptiFit begins where OptiClust ends, starting with a list of reference OTUs and
 their sequences, a list of query sequences to cluster to the reference OTUs, and
 the sequence pairs that are within the distance threshold (e.g. 0.03)
-(Figure \ref{fig:algorithm}).
+(Figure 1).
 Initially, all query sequences are placed into separate OTUs.
 Then, the algorithm iteratively reassigns the query sequences to the reference
 OTUs to optimize the MCC.
@@ -276,7 +268,7 @@ non-redundant database, and the Ribosomal Database Project (RDP)
 [@desantis_greengenes_2006; @quast_silva_2013; @cole_ribosomal_2014].
 Reference OTUs for each database were created by performing _de novo_ clustering
 with OptiClust at a distance threshold of 3% using the V4 region of each
-sequence (see Figure \ref{fig:workflow}).
+sequence (see Figure 2).
 After trimming to the V4 region, the databases contained 
 `r dn_dbs %>% pull('nseqs')` unique sequences and produced _de novo_ MCC scores 
 of `r dn_dbs %>% pull('med_mcc')` for `r dn_dbs %>% pull('refname')`, 
@@ -284,8 +276,7 @@ respectively.
 Clustering sequences to Greengenes and SILVA in closed reference mode performed
 similarly, with median MCC scores of `r closed_fit_gg_mcc` and
 `r closed_fit_silva_mcc` respectively, while the median MCC
-was `r closed_fit_rdp_mcc` when clustering to RDP
-(Figure \ref{fig:results_sum}).
+was `r closed_fit_rdp_mcc` when clustering to RDP (Figure 3).
 For comparison, clustering datasets with OptiClust produced an average MCC score
 of `r opticlust_mcc`.
 This gap in OTU quality mostly disappeared when clustering in open reference
@@ -307,7 +298,7 @@ performance to consider is the fraction of query sequences that were able to be
 clustered.
 On average, more sequences were clustered with Greengenes as the reference
 (`r frac_fit_gg`%) than with SILVA (`r frac_fit_silva`%) or with the RDP
-(`r frac_fit_rdp`%) (Figure \ref{fig:results_sum}).
+(`r frac_fit_rdp`%) (Figure 3).
 This mirrored the result reported above that Greengenes produced better OTUs in
 terms of MCC score than either SILVA or RDP.
 Note that _de novo_ and open reference clustering methods always cluster 100% of
@@ -329,7 +320,7 @@ execution speed is required, such as when using very large datasets
 To compare performance in terms of speed, we repeated each OptiFit and OptiClust
 run 100 times and measured the execution time.
 Across all dataset and database combinations, closed reference OptiFit
-outperformed both OptiClust and open reference OptiFit (Figure \ref{fig:results_sum}).
+outperformed both OptiClust and open reference OptiFit (Figure 3).
 For example, with the human dataset fit to SILVA reference OTUs, the average run
 times in seconds were `r closed_fit_silva_human_sec` for closed reference
 OptiFit, `r opticlust_human_sec` for _de novo_ clustering the dataset, and
@@ -356,7 +347,7 @@ is considered when assigning sequences to OTUs.
 In closed reference mode, OptiFit produced `r mcc_closed_fit_db_vs_vsearch`%
 higher quality OTUs than VSEARCH, but VSEARCH was able to cluster
 `r frac_vsearch_vs_fit`% more query sequences than OptiFit to the Greengenes
-reference database (Figure \ref{fig:results_sum}).
+reference database (Figure 3).
 This is because VSEARCH only considers the distances between each query sequence
 to the single reference sequence, while OptiFit considers the distances between
 all pairs of reference and query sequences in an OTU.
@@ -399,7 +390,7 @@ is_nondesc(sec_closed_fit_split_vs_db, sec_closed_fit_db_vs_clust, sec_open_fit_
 First, we tested whether OptiFit performed as well as _de novo_ clustering when
 using the split dataset strategy with half of the sequences selected for
 the reference by a simple random sample (a 50% split)
-(Figure \ref{fig:results_sum}; self-split).
+(Figure 3; self-split).
 OTU quality was similar to that from OptiClust regardless of
 mode (`r mcc_opticlust_vs_fit_split_simple`% difference in median MCC).
 In closed reference mode, OptiFit was able to cluster `r frac_fit_split`% of query
@@ -426,7 +417,7 @@ reference and query fractions, we next investigated whether there was
 an optimal reference fraction size.
 To identify the best reference size, reference sets with 10% to 90% of the
 sequences were created, with the remaining sequences used for the query
-(Figure \ref{fig:results_split}).
+(Figure 4).
 OTU quality was remarkably consistent across reference fraction sizes.
 For example, splitting the human dataset 100 times yielded a coefficient of
 variation (i.e. the standard deviation divided by the mean) of
@@ -459,7 +450,7 @@ reference sequences, we then investigated other methods of splitting the data.
 We tested three methods for selecting the fraction of sequences to be used as
 the reference at a size of 50%: a simple random sample, weighting sequences by
 relative abundance, and weighting by similarity to other sequences in the
-dataset (Figure \ref{fig:results_split}).
+dataset (Figure 4).
 OTU quality in terms of MCC was similar across all three sampling methods
 (median MCC of `r mcc_fit_split_simple`).
 In closed-reference clustering mode, the fraction of sequences that mapped were
@@ -653,24 +644,39 @@ MBM and GAD contributed analysis code.
 PDS conceived the study, supervised the project, and assisted in debugging the analysis code.
 All authors reviewed and edited the manuscript.
 
-\newpage
+## Figures
 
-```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap')}
+```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap'), eval=include_figures}
 render_figure('algorithm')
 ```
 
-```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap')}
+```{r fig1cap, results='asis', eval=!include_figures}
+cat(paste('\\textbf{Figure 1}:', figs('algorithm', 'cap')))
+```
+
+```{r workflow, fig.dim=figs('workflow', 'dim'), fig.cap=figs('workflow','cap'), eval=include_figures}
 render_figure('workflow')
 ```
 
-```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap')}
+```{r fig2cap, results='asis', eval=!include_figures}
+cat(paste('\\textbf{Figure 2}:', figs('workflow', 'cap')))
+```
+
+```{r results_sum, fig.dim=figs('results_sum', 'dim'), fig.cap=figs('results_sum', 'cap'), eval=include_figures}
 render_figure('results_sum')
 ```
 
-```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap')}
+```{r fig3cap, results='asis', eval=!include_figures}
+cat(paste('\\textbf{Figure 3}:', figs('results_sum', 'cap')))
+```
+
+```{r results_split, fig.dim=figs('results_split', 'dim'), fig.cap=figs('results_split', 'cap'), eval=include_figures}
 render_figure('results_split')
 ```
 
-\newpage
+```{r fig4cap, results='asis', eval=!include_figures}
+cat(paste('\\textbf{Figure 4}:', figs('results_split', 'cap')))
+```
+
 
 ## References
