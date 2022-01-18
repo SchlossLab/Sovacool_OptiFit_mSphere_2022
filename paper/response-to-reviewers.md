@@ -50,7 +50,7 @@ algorithm, which we expect readers would read just before looking at
 Figure 1. We added a few more details to the MCC description in this
 section (L111-113 and L117-118). In the caption of Figure 1 we also
 added examples of the confusion matrix values for the first and last MCC
-scores.
+scores (L439-443, L449-450).
 
 We revised the sentence formerly at L172 to note that we mean “quality”
 in terms of MCC score (L184).
@@ -281,7 +281,8 @@ designated a singleton (outside of the distance threshold discussed in
 lines 111-113). If I’m correct, I encourage the authors to make this
 point explicitly in Figure 1’s caption.**
 
-That’s correct, we added a sentence to the caption as you suggested.
+That’s correct, we added a sentence to the caption as you suggested
+(L448-449).
 
 **Figure 3: I suggest changing the label for “de novo” to “OptiClust (de
 novo)” or similar to emphasize that OptiClust was being used for those
@@ -300,4 +301,4 @@ clear that de novo clustering was performed with OptiClust, and 4
 different reference based trials were performed (self-split (referencing
 the OptiClust-ed reference subset), referencing GG, SILVA, & RDP).**
 
-We edited the caption to make the workflow more clear.
+We edited the caption to make the workflow more clear (L464-469).

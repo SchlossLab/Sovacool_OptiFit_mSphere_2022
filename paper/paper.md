@@ -413,7 +413,7 @@ not sacrifice OTU quality for consistency of OTU assignments.
 
 ## Materials and Methods
 
-### Data Processing Steps
+### Data processing steps
 
 We downloaded 16S rRNA gene amplicon sequences from four published
 datasets isolated from soil ([8](#ref-johnston_metagenomics_2016)),
@@ -474,7 +474,7 @@ measure the run time of every clustering job. We calculated the MCC on
 each set of OTUs to quantify the quality of clustering, as described by
 Westcott *et al.* ([1](#ref-westcott_opticlust_2017)).
 
-### Data and Code Availability
+### Data and code availability
 
 We implemented the analysis workflow in Snakemake
 ([19](#ref-koster_snakemake_2012)) and wrote scripts in R
@@ -509,70 +509,6 @@ OptiFit algorithm and assisted in debugging the analysis code. MBM and
 GAD contributed analysis code. PDS conceived the study, supervised the
 project, and assisted in debugging the analysis code. All authors
 reviewed and edited the manuscript.
-
-## Figures
-
-![ Here we present a toy example of the OptiFit algorithm fitting query
-sequences to existing OTUs, given the list of all sequence pairs that
-are within the distance threshold of 3%. Previously, 50 reference
-sequences were clustered *de novo* with OptiClust (see the OptiClust
-supplemental text ([1](#ref-westcott_opticlust_2017))). Reference
-sequences A through Q (colored ) were within the distance threshold to
-at least one other reference sequence; the remaining reference sequences
-formed additional singleton OTUs (not shown). The goal of OptiFit is to
-assign the query sequences W through Z (colored ) to the reference OTUs.
-Here, there are 50 reference sequences and 4 query sequences which make
-1,431 sequence pairs, of which 23 pairs are within the 3% distance
-threshold. Initially (step 1), OptiFit places each query sequence in its
-own OTU, resulting in 14 true positives, 9 false negatives, 0 false
-positives, and 1,408 true negatives for an MCC score of 0.78. Then, for
-each query sequence (), OptiFit determines what the new MCC score would
-be if that sequence were moved to one of the OTUs containing at least
-one other similar sequence (steps 2-4). The sequence is then moved to
-the OTU which would result in the best MCC score. OptiFit stops
-iterating over sequences once the MCC score stabilizes. In this example,
-only one iteration over each sequence was needed. Note that sequence Z
-was dissimilar from all other sequences and thus it remained a
-singleton. The final MCC score is 0.91 with 20 true positives, 3 false
-negatives, 1 false positive, and 1407 true
-negatives.](figures/algorithm-1.png)
-
-![ Reference sequences from Greengenes, the RDP, and SILVA were
-downloaded, preprocessed with mothur by trimming to the V4 region, and
-clustered *de novo* with OptiClust for 100 repetitions. Datasets from
-human, marine, mouse, and soil microbiomes were downloaded, preprocessed
-with mothur by aligning to the SILVA V4 reference alignment, then
-clustered *de novo* with OptiClust for 100 repetitions. Individual
-datasets were fit to reference databases with OptiFit; OptiFit was
-repeated 100 times for each dataset and database combination. Datasets
-were also randomly split into a reference and query fraction, and the
-query sequences were fit to the reference sequences with OptiFit for 100
-repetitions. The final MCC score was reported for all OptiClust and
-OptiFit repetitions.](figures/workflow-1.png)
-
-![ The median MCC score, fraction of query sequences that mapped in
-closed-reference clustering, and runtime in seconds from repeating each
-clustering method 100 times. Each dataset underwent three clustering
-strategies; 1) *de novo* clustering the whole dataset using OptiClust,
-2) splitting the dataset with 50% of the sequences as a reference set
-and the other 50% as a query set, clustering the references using
-OptiClust, then clustering the query sequences to the reference OTUs
-with OptiFit, and 3) clustering the dataset to a reference database
-(Greengenes, SILVA, or RDP). Reference-based clustering was repeated
-with open and closed mode. For additional comparison, VSEARCH was used
-for *de novo* and reference-based clustering against the Greengenes
-database.](figures/results_sum-1.png)
-
-![ The median MCC score, fraction of query sequences that mapped in
-closed-reference clustering, and runtime in seconds from repeating each
-clustering method 100 times. Each dataset was split into a reference and
-query fraction. Reference sequences were selected via a simple random
-sample, weighting sequences by relative abundance, or weighting by
-similarity to other sequences in the dataset. With the simple random
-sample method, dataset splitting was repeated with reference fractions
-ranging from 10% to 90% of the dataset and for 100 random seeds. *De
-novo* clustering each dataset with OptiClust is also shown for
-comparison.](figures/results_split-1.png)
 
 ## References
 
@@ -917,3 +853,65 @@ Documentation. Anaconda Inc.</span>
 </div>
 
 </div>
+
+![ Here we present a toy example of the OptiFit algorithm fitting query
+sequences to existing OTUs, given the list of all sequence pairs that
+are within the distance threshold of 3%. Previously, 50 reference
+sequences were clustered *de novo* with OptiClust (see the OptiClust
+supplemental text ([1](#ref-westcott_opticlust_2017))). Reference
+sequences A through Q (colored ) were within the distance threshold to
+at least one other reference sequence; the remaining reference sequences
+formed additional singleton OTUs (not shown). The goal of OptiFit is to
+assign the query sequences W through Z (colored ) to the reference OTUs.
+Here, there are 50 reference sequences and 4 query sequences which make
+1,431 sequence pairs, of which 23 pairs are within the 3% distance
+threshold. Initially (step 1), OptiFit places each query sequence in its
+own OTU, resulting in 14 true positives, 9 false negatives, 0 false
+positives, and 1,408 true negatives for an MCC score of 0.78. Then, for
+each query sequence (), OptiFit determines what the new MCC score would
+be if that sequence were moved to one of the OTUs containing at least
+one other similar sequence (steps 2-4). The sequence is then moved to
+the OTU which would result in the best MCC score. OptiFit stops
+iterating over sequences once the MCC score stabilizes. In this example,
+only one iteration over each sequence was needed. Note that sequence Z
+was dissimilar from all other sequences and thus it remained a
+singleton. The final MCC score is 0.91 with 20 true positives, 3 false
+negatives, 1 false positive, and 1407 true
+negatives.](figures/algorithm-1.png)
+
+![ Reference sequences from Greengenes, the RDP, and SILVA were
+downloaded, preprocessed with mothur by trimming to the V4 region, and
+clustered *de novo* with OptiClust for 100 repetitions. Datasets from
+human, marine, mouse, and soil microbiomes were downloaded, preprocessed
+with mothur by aligning to the SILVA V4 reference alignment, then
+clustered *de novo* with OptiClust for 100 repetitions. Individual
+datasets were fit to reference databases with OptiFit; OptiFit was
+repeated 100 times for each dataset and database combination. Datasets
+were also randomly split into a reference and query fraction, and the
+query sequences were fit to the reference sequences with OptiFit for 100
+repetitions. The final MCC score was reported for all OptiClust and
+OptiFit repetitions.](figures/workflow-1.png)
+
+![ The median MCC score, fraction of query sequences that mapped in
+closed-reference clustering, and runtime in seconds from repeating each
+clustering method 100 times. Each dataset underwent three clustering
+strategies; 1) *de novo* clustering the whole dataset using OptiClust,
+2) splitting the dataset with 50% of the sequences as a reference set
+and the other 50% as a query set, clustering the references using
+OptiClust, then clustering the query sequences to the reference OTUs
+with OptiFit, and 3) clustering the dataset to a reference database
+(Greengenes, SILVA, or RDP). Reference-based clustering was repeated
+with open and closed mode. For additional comparison, VSEARCH was used
+for *de novo* and reference-based clustering against the Greengenes
+database.](figures/results_sum-1.png)
+
+![ The median MCC score, fraction of query sequences that mapped in
+closed-reference clustering, and runtime in seconds from repeating each
+clustering method 100 times. Each dataset was split into a reference and
+query fraction. Reference sequences were selected via a simple random
+sample, weighting sequences by relative abundance, or weighting by
+similarity to other sequences in the dataset. With the simple random
+sample method, dataset splitting was repeated with reference fractions
+ranging from 10% to 90% of the dataset and for 100 random seeds. *De
+novo* clustering each dataset with OptiClust is also shown for
+comparison.](figures/results_split-1.png)

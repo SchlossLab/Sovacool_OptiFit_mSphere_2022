@@ -566,7 +566,7 @@ that does not sacrifice OTU quality for consistency of OTU assignments.
 
 ## Materials and Methods
 
-### Data Processing Steps
+### Data processing steps
 
 We downloaded 16S rRNA gene amplicon sequences from four published datasets
 isolated from soil [@johnston_metagenomics_2016], marine
@@ -627,7 +627,7 @@ every clustering job.
 We calculated the MCC on each set of OTUs to quantify the quality of clustering,
 as described by Westcott _et al._ [@westcott_opticlust_2017].
 
-### Data and Code Availability
+### Data and code availability
 
 We implemented the analysis workflow in Snakemake [@koster_snakemake_2012]
 and wrote scripts in R [@r_core_team_r_2020],
@@ -662,7 +662,22 @@ MBM and GAD contributed analysis code.
 PDS conceived the study, supervised the project, and assisted in debugging the analysis code.
 All authors reviewed and edited the manuscript.
 
-## Figures
+## References
+
+\setlength{\parindent}{-0.25in}
+\setlength{\leftskip}{0.25in}
+\noindent
+
+<div id="refs"></div>
+
+\setlength{\parindent}{0in}
+\setlength{\leftskip}{0in}
+
+\newpage
+
+```{r figheader, eval=!include_figures, results='asis'}
+cat('## Figure Captions\n')
+```
 
 ```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap'), eval=include_figures}
 render_figure('algorithm')
@@ -696,5 +711,3 @@ render_figure('results_split')
 cat(paste('\\textbf{Figure 4}:', figs('results_split', 'cap')))
 ```
 
-
-## References

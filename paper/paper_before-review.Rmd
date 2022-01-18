@@ -644,7 +644,22 @@ MBM and GAD contributed analysis code.
 PDS conceived the study, supervised the project, and assisted in debugging the analysis code.
 All authors reviewed and edited the manuscript.
 
-## Figures
+## References
+
+\setlength{\parindent}{-0.25in}
+\setlength{\leftskip}{0.25in}
+\noindent
+
+<div id="refs"></div>
+
+\setlength{\parindent}{0in}
+\setlength{\leftskip}{0in}
+
+\newpage
+
+```{r figheader, eval=!include_figures, results='asis'}
+cat('## Figure Captions\n')
+```
 
 ```{r algorithm, fig.dim=figs('algorithm','dim'), fig.cap=figs('algorithm','cap'), eval=include_figures}
 render_figure('algorithm')
@@ -678,5 +693,3 @@ render_figure('results_split')
 cat(paste('\\textbf{Figure 4}:', figs('results_split', 'cap')))
 ```
 
-
-## References
