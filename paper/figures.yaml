@@ -59,11 +59,8 @@ results_sum:
        the other 50% as a query set, clustering the references using OptiClust,
        then clustering the query sequences to the reference OTUs with OptiFit, 
        and 
-       3) clustering the dataset to a reference database.
-       Each dataset underwent _de novo_ clustering using OptiClust or
-       reference-based clustering using OptiFit with one of two strategies;
-       splitting the dataset and fitting 50% the sequences to the other 50%, or
-       fitting the dataset to a reference database (Greengenes, SILVA, or RDP).
+       3) clustering the dataset to a reference database 
+       (Greengenes, SILVA, or RDP).
        Reference-based clustering was repeated with open and closed mode.
        For additional comparison, VSEARCH was used for _de novo_ and 
        reference-based clustering against the Greengenes database.
