@@ -291,7 +291,7 @@ In Figure 3, we show results from *de novo* clustering with both the
 OptiClust algorithm in mothur (red triangles) and VSEARCH (blue
 triangles). Changing the label to “OptiClust (*de novo*)” would not be
 accurate, as VSEARCH does not use the OptiClust algorithm. Instead, we
-changed the red color label from “mothur” to “OptiClust (\_de novo) or
+changed the red color label from “mothur” to “OptiClust (*de novo*) or
 OptiFit” in Figure 3.
 
 **Figure 3: The second sentence in the caption (“Each dataset…”) is
