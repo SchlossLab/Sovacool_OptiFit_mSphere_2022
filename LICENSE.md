@@ -5,7 +5,7 @@
 All code included in this repository is made available under the
 [OSI][osi]-approved [MIT license][mit-license].
 
-Copyright (c) 2021 Kelly L. Sovacool, Sarah L. Westcott, M. Brodie
+Copyright (c) 2022 Kelly L. Sovacool, Sarah L. Westcott, M. Brodie
 Mumphrey, Gabrielle A. Doston, and Patrick D. Schloss
 
 Permission is hereby granted, free of charge, to any person obtaining
