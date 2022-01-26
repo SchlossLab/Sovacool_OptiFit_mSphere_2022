@@ -63,12 +63,6 @@ the subworkflows and renders the [paper](paper).
     devtools::install_github('kelly-sovacool/ggraph', ref = 'iss-297_ggtext')
     ```
     
-    The [`schtools`](https://github.com/SchlossLab/schtools)
-    package is also needed to render the manuscript:
-    ```r
-    install.packages('schtools')
-    ```
-    
     If you do not have LaTeX already, you'll need to install a LaTeX
     distribution before rendering the manuscript as a PDF.
     You can use [`tinytex`](https://yihui.org/tinytex/)
