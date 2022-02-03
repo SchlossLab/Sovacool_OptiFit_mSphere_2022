@@ -16,7 +16,7 @@ the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
 > Sovacool KL, Westcott SL, Mumphrey MB, Dotson GA, Schloss PD. 
 > 2022. OptiFit: An Improved Method for Fitting Amplicon Sequences to Existing OTUs. 
-> mSphere. 10.1128/msphere.00916-21
+> mSphere. doi.org/10.1128/msphere.00916-21
 
 
 A bibtex entry for LaTeX users:
