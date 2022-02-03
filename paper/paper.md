@@ -1,7 +1,7 @@
 OptiFit: an improved method for fitting amplicon sequences to existing
 OTUs
 ================
-2022-01-18
+2022-02-03
 
 ## Abstract
 
@@ -154,7 +154,7 @@ the distance threshold) are counted as true positives if they are
 clustered into the same OTU, and false negatives if they are not in the
 the same OTU. Sequence pairs that are not similar to each other are true
 negatives if they are not clustered into the same OTU, and false
-positives if they are not in the same OTU. Thus, a pair of sequences is
+positives if they are in the same OTU. Thus, a pair of sequences is
 considered correctly assigned when their OTU assignment matches the OTU
 definition set by the distance threshold. OptiClust iterations continue
 until the MCC stabilizes or until a maximum number of iterations is
