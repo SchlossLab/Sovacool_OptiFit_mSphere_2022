@@ -11,6 +11,26 @@ and produce the accompanying [manuscript](docs/paper.pdf).
 Find details on how to use OptiFit and descriptions of the parameter options on
 the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
+## Citation
+
+
+> Sovacool KL, Westcott SL, Mumphrey MB, Dotson GA, Schloss PD. 
+> 2022. OptiFit: An Improved Method for Fitting Amplicon Sequences to Existing OTUs. 
+> mSphere. 10.1128/msphere.00916-21
+
+
+A bibtex entry for LaTeX users:
+
+```
+@article{sovacool_optifit_2022,
+author = {Kelly L. Sovacool  and Sarah L. Westcott  and M. Brodie Mumphrey  and Gabrielle A. Dotson  and Patrick D. Schloss},
+title = {OptiFit: an Improved Method for Fitting Amplicon Sequences to Existing OTUs},
+journal = {mSphere},
+year = {2022},
+doi = {10.1128/msphere.00916-21}
+URL = {https://journals.asm.org/doi/10.1128/msphere.00916-21},
+```
+
 ## The Workflow
 
 The workflow is split into five subworkflows:
