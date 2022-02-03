@@ -3,7 +3,9 @@
 ### an improved method for fitting amplicon sequences to existing OTUs
 
 [![build](https://github.com/SchlossLab/Sovacool_OptiFit_2021/actions/workflows/build.yml/badge.svg)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/actions/workflows/build.yml)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/blob/main/LICENSE.md)
+[![license](https://img.shields.io/badge/License-MIT%2BCC--BY-blue)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/blob/main/LICENSE.md)
+[![DOI](https://zenodo.org/badge/150322192.svg)](https://zenodo.org/badge/latestdoi/150322192)
+[![paper](https://img.shields.io/badge/paper-mSphere-red)](https://journals.asm.org/doi/10.1128/msphere.00916-21)
 
 This repository contains the complete analysis workflow used to benchmark the
 OptiFit algorithm in [mothur](https://github.com/mothur/mothur)
@@ -13,11 +15,9 @@ the mothur wiki: https://mothur.org/wiki/cluster.fit/.
 
 ## Citation
 
-
 > Sovacool KL, Westcott SL, Mumphrey MB, Dotson GA, Schloss PD. 
 > 2022. OptiFit: An Improved Method for Fitting Amplicon Sequences to Existing OTUs. 
 > mSphere. http://dx.doi.org/10.1128/msphere.00916-21
-
 
 A bibtex entry for LaTeX users:
 
