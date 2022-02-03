@@ -62,8 +62,8 @@ the subworkflows and renders the [paper](paper).
 1. Clone this repository.
    
    ```bash
-    git clone https://github.com/SchlossLab/OptiFitAnalysis
-    cd OptiFitAnalysis/
+    git clone https://github.com/SchlossLab/Sovacool_OptiFit_mSphere_2022
+    cd Sovacool_OptiFit_mSphere_2022
     ```
     
 1. Install the dependencies.
