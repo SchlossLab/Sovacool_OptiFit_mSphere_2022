@@ -5,7 +5,8 @@
 [![license](https://img.shields.io/badge/License-MIT%2BCC--BY-blue)](https://github.com/SchlossLab/Sovacool_OptiFit_2021/blob/main/LICENSE.md)
 [![DOI](https://zenodo.org/badge/150322192.svg)](https://zenodo.org/badge/latestdoi/150322192)
 [![paper](https://img.shields.io/badge/paper-mSphere-red)](https://journals.asm.org/doi/10.1128/msphere.00916-21)
-
+<div data-badge-popover="bottom" data-badge-type="1" data-doi="10.1128/msphere.00916-21" data-hide-no-mentions="true" class="altmetric-embed"></div>
+<span class="__dimensions_badge_embed__" data-doi="10.1128/msphere.00916-21" data-style="large_rectangle" data-hide-zero-citations="true"></span><script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
 
 - The mothur wiki page: [cluster.fit](https://mothur.org/wiki/cluster.fit/)
 - The manuscript: [paper.pdf](paper.pdf)
