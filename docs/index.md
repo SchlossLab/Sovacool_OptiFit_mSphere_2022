@@ -1,3 +1,8 @@
+<!-- for dimensions badges -->
+<script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+
+<!-- for altmetrics badges -->
+<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script> 
 
 ### OptiFit: an improved method for fitting amplicon sequences to existing OTUs
 
@@ -6,7 +11,7 @@
 [![DOI](https://zenodo.org/badge/150322192.svg)](https://zenodo.org/badge/latestdoi/150322192)
 [![paper](https://img.shields.io/badge/paper-mSphere-red)](https://journals.asm.org/doi/10.1128/msphere.00916-21)
 <div data-badge-popover="bottom" data-badge-type="1" data-doi="10.1128/msphere.00916-21" data-hide-no-mentions="true" class="altmetric-embed"></div>
-<span class="__dimensions_badge_embed__" data-doi="10.1128/msphere.00916-21" data-style="large_rectangle" data-hide-zero-citations="true"></span><script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+<span class="__dimensions_badge_embed__" data-doi="10.1128/msphere.00916-21" data-style="large_rectangle" data-hide-zero-citations="true"></span>
 
 - The mothur wiki page: [cluster.fit](https://mothur.org/wiki/cluster.fit/)
 - The manuscript: [paper.pdf](paper.pdf)
